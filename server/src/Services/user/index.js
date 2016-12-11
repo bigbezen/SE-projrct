@@ -1,3 +1,4 @@
+var logger          = require('./src/Utils/Logger/logger');
 
 var login = function(user){
     console.log('login');

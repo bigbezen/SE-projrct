@@ -1,3 +1,1 @@
-/**
- * Created by shaha on 11/28/2016.
- */
+var logger          = require('./src/Utils/Logger/logger');

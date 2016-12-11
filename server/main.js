@@ -2,7 +2,8 @@ var express         = require('express');
 var bodyparser      = require('body-parser');
 var path            = require('path');
 
-var user            = require('./services/user/index');
+
+
 
 var app = express();
 
@@ -12,6 +13,14 @@ app.use(bodyparser.json());
 app.listen(port);
 app.locals.baseurl = "http://localhost:" + port;
 console.log('server is now running on port: ' + port);
+
+
+
+
+
+
+
+
 
 app.use('/scripts', express.static(path.join(__dirname, '/../scripts')));
 

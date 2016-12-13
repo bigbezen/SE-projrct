@@ -1,4 +1,4 @@
-var userUnitTest = require( './../../src/Services/user/userUnitTest.js');
+var userUnitTest = require( './userUnitTest.js');
 var storeUnitTest = require( './storeUnitTest.js');
 var shiftUnitTest = require( './shiftUnitTest.js');
 var reportsUnitTest = require( './reportsUnitTest.js');
@@ -8,7 +8,7 @@ var notificationsUnitTest = require( './notificationsUnitTest.js');
 var messagesUnitTest = require( './messagesUnitTest.js');
 var encouragementsUnitTest = require( './encouragementsUnitTest.js');
 
-describe('grouped', function () {
+describe('unit tests', function () {
     userUnitTest;
     storeUnitTest;
     shiftUnitTest;

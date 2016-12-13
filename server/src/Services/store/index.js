@@ -4,6 +4,7 @@ var dal             = require('../../DAL/dal');
 var permissions     = require('../permissions/index');
 
 var addStore = function(sessionId, storeDetails, cb) {
+    logger.info('Services.addStore.index', {'session-id': sessionId});
     permissions.validatePermissionForSessionId(sessionId, 'addStore', function(err, user) {
         if(user != null) {
             var store = new storeModel();

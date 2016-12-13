@@ -5,6 +5,9 @@ var mongoose        = require('mongoose');
 
 var logger          = require('./src/Utils/Logger/logger');
 
+var storeService    = require('./src/Services/store/index');
+var userService     = require('./src/Services/user/index');
+
 
 var app = express();
 
@@ -18,10 +21,7 @@ app.locals.mongourl = 'mongodb://localhost/IBBLS';
 _connectToDb();
 _setapApiEndpoints();
 
-console.log('server is now running on port: ' + port);
-logger.debug('hello hello');
-
-
+logger.info('server is now running on port: ', {'port': port});
 
 
 function _connectToDb(){
@@ -31,6 +31,7 @@ function _connectToDb(){
     db.once('open', function() {
         console.log('connected to db successfuly');
     });
+
 }
 
 function _setapApiEndpoints() {
@@ -111,6 +112,7 @@ function _setapApiEndpoints() {
 //Management Services
 
     app.post('/management/addUser', function (req, res) {
+        userService.addUser();
         res.status(200).send('add new user');
     });
 
@@ -123,7 +125,15 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addStore', function (req, res) {
-        res.status(200).send('add new user');
+        storeService.addStore(req.param('session-id'), req.param('store'), function(err){
+            if(err != null){
+                res.status(200).send(err);
+            }
+            else{
+                res.status(200).send('store added successfully');
+            }
+        });
+
     });
 
     app.post('/management/editStore', function (req, res) {

@@ -25,7 +25,7 @@ module.exports = {
 
     getUserByUsername: async function(username){
         return userModel.findOne({'username': username});
-    }
+    },
 
     editeStore: function (storeDetails, cb) {
         storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true }, cb)

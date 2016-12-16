@@ -53,16 +53,24 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/user/logout', function (req, res) {
-        res.status(200).send('logout');
+    app.post('/user/logout', async function (req, res) {
+        var result = await userService.logout(req.body.sessionId);
+        if(result.code == 200)
+            res.status(200).send('logout succeeded');
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.post('/user/retrievePassword', function (req, res) {
         res.status(200).send('retrievePassword');
     });
 
-    app.post('/user/changePassword', function (req, res) {
-        res.status(200).send('changePassword');
+    app.post('/user/changePassword', async function (req, res) {
+        var result = await userService.changePassword(req.body.sessionId, req.body.oldPass, req.body.newPass);
+        if(result.code == 200)
+            res.status(200).send('changed password succeeded');
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.get('/user/getProfile', function (req, res) {
@@ -116,9 +124,14 @@ function _setapApiEndpoints() {
 
 //Management Services
 
-    app.post('/management/addUser', function (req, res) {
-        userService.addUser();
-        res.status(200).send('add new user');
+    app.post('/management/addUser', async function (req, res) {
+        var result = await userService.addUser(req.body.sessionId, req.body.userDetails);
+        if(result.code == 200){
+            res.status(200).send(result.user);
+        }
+        else{
+            res.status(result.code).send(result.err);
+        }
     });
 
     app.post('/management/editUser', function (req, res) {

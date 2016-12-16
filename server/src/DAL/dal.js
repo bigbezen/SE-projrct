@@ -7,12 +7,12 @@ var storeModel           = require('../Models/store');
 var userModel            = require('../Models/user');
 
 module.exports = {
-    addUser: function (user) {
-        user.save();
+    addUser: async function (user) {
+        return user.save();
     },
 
-    getUserBySessionId: function(sessionId, cb) {
-        user = userModel.findOne({'sessionId': sessionId}, cb)
+    editUser: async function (user) {
+        return user.save();
     },
 
     addStore: function (store) {
@@ -25,6 +25,10 @@ module.exports = {
 
     getUserByUsername: async function(username){
         return userModel.findOne({'username': username});
+    },
+
+    getUserById: async function(Id){
+        return userModel.findOne({'personal.id': Id});
     },
 
     editeStore: function (storeDetails, cb) {

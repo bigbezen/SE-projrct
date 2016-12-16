@@ -15,11 +15,13 @@ module.exports = {
         store.save();
     },
 
-    getUserBySessionId: function(sessionId, cb) {
-        user = userModel.findOne({'sessionId': sessionId}, function (err, user) {
-            cb(err, user);
-        });
+    getUserBySessionId: async function(sessionId) {
+        return userModel.findOne({'sessionId': sessionId});
     },
+
+    getUserByUsername: async function(username){
+        return userModel.findOne({'username': username});
+    }
 
 
 };

@@ -1,12 +1,14 @@
-var express         = require('express');
-var bodyparser      = require('body-parser');
-var path            = require('path');
-var mongoose        = require('mongoose');
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-var logger          = require('./src/Utils/Logger/logger');
+var express = require('express');
+var bodyparser = require('body-parser');
+var path = require('path');
+var mongoose = require('mongoose');
 
-var storeService    = require('./src/Services/store/index');
-var userService     = require('./src/Services/user/index');
+var logger = require('./src/Utils/Logger/logger');
+
+var storeService = require('./src/Services/store/index');
+var userService = require('./src/Services/user/index');
 
 var app = express();
 
@@ -20,18 +22,16 @@ app.locals.mongourl = 'mongodb://localhost/IBBLS';
 _connectToDb();
 _setapApiEndpoints();
 
-logger.info('server is now running on port: ', {'port': port});
+logger.info('server is now running on port: ', { 'port': port });
 
-
-function _connectToDb(){
+function _connectToDb() {
     mongoose.Promise = global.Promise;
     mongoose.connect(app.locals.mongourl);
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function() {
+    db.once('open', function () {
         console.log('connected to db successfuly');
     });
-
 }
 
 function _setapApiEndpoints() {
@@ -42,16 +42,21 @@ function _setapApiEndpoints() {
         res.sendFile(path.join(__dirname, '../index.html'));
     });
 
-//User Services
-    app.post('/user/login', async function (req, res) {
-        var result = await userService.login(req.body.username, req.body.password);
-        if(result.sessionId != null){
-            res.status(200).send(result);
-        }
-        else{
-            res.status(401).send();
-        }
-    });
+    //User Services
+    app.post('/user/login', (() => {
+        var _ref = _asyncToGenerator(function* (req, res) {
+            var result = yield userService.login(req.body.username, req.body.password);
+            if (result.sessionId != null) {
+                res.status(200).send(result);
+            } else {
+                res.status(401).send();
+            }
+        });
+
+        return function (_x, _x2) {
+            return _ref.apply(this, arguments);
+        };
+    })());
 
     app.post('/user/logout', function (req, res) {
         res.status(200).send('logout');
@@ -69,7 +74,7 @@ function _setapApiEndpoints() {
         res.status(200).send('get profile');
     });
 
-//Salesman Services
+    //Salesman Services
     app.post('/salesman/enterShift', function (req, res) {
         res.status(200).send('enter shift');
     });
@@ -114,7 +119,7 @@ function _setapApiEndpoints() {
         res.status(200).send('registration to shift');
     });
 
-//Management Services
+    //Management Services
 
     app.post('/management/addUser', function (req, res) {
         userService.addUser();
@@ -130,15 +135,13 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addStore', function (req, res) {
-        storeService.addStore(req.param('session-id'), req.param('store'), function(err){
-            if(err != null){
+        storeService.addStore(req.param('session-id'), req.param('store'), function (err) {
+            if (err != null) {
                 res.status(200).send(err);
-            }
-            else{
+            } else {
                 res.status(200).send('store added successfully');
             }
         });
-
     });
 
     app.post('/management/editStore', function (req, res) {
@@ -185,7 +188,7 @@ function _setapApiEndpoints() {
         res.status(200).send('delete user');
     });
 
-//Manager Services
+    //Manager Services
 
     app.post('/manager/addNotificationRule', function (req, res) {
         res.status(200).send('add new notification rule');

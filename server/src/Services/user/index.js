@@ -16,7 +16,7 @@ var login = function(username, password){
 var addUser = function() {
     var newUser = new userModel();
     newUser.password =  cypher.encrypt("matan");
-    newUser.sessionId = '12345';
+    newUser.sessionId = '123456';
     newUser.jobDetails.userType = 'manager';
     dal.addUser(newUser);
 };

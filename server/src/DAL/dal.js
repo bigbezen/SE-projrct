@@ -11,16 +11,52 @@ module.exports = {
         user.save();
     },
 
+    getUserBySessionId: function(sessionId, cb) {
+        user = userModel.findOne({'sessionId': sessionId}, cb)
+    },
+
     addStore: function (store) {
         store.save();
     },
 
-    getUserBySessionId: function(sessionId, cb) {
-        user = userModel.findOne({'sessionId': sessionId}, function (err, user) {
-            cb(err, user);
-        });
+    GetStoreByObectId: function (storeDetails, cb) {
+        store = storeModel.findOne({'_id': mongoose.Types.ObjectId(storeDetails._id)}, cb)
     },
 
+    editeStore: function (storeDetails, cb) {
+        storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true }, cb)
+    },
 
+    deleteStore: function (storeDetails, cb) {
+        storeModel.remove({'_id': mongoose.Types.ObjectId(storeDetails._id)},cb);
+    },
+    
+    getAllStores: function (cb) {
+        storeModel.find({}, cb);
+    },
+
+    getStoreByNameAndArea: function (storeDetails, cb) {
+        storeModel.find({'name': storeDetails.name, 'area': storeDetails.area}, cb);
+    },
+
+    addProduct: function(product){
+        product.save();
+    },
+
+    editProduct: function(productDetails, cb){
+        productModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, productDetails, { upsert: true }, cb)
+    },
+
+    deleteProduct: function(productDetails, cb){
+        productModel.remove({'_id': mongoose.Types.ObjectId(productDetails._id)},cb)
+    },
+
+    getAllProducts: function (cb) {
+        productModel.find({}, cb);
+    },
+
+    dropDb: function (cb) {
+        mongoose.collection.remove({}, cb)
+    }
 };
 

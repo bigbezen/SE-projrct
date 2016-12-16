@@ -18,7 +18,14 @@ var validatePermissionForSessionId = function(sessionId, funcName, cb) {
 
 var funcNameToPermission = {
     'addUser': ['manager'],
-    'addStore': ['manager']
+    'addStore': ['manager'],
+    'deleteStore': ['manager'],
+    'editStore': ['manager'],
+    'getAllStores': ['manager','salesman'],
+    'addProduct': ['manager'],
+    'getAllProducts': ['manager','salesman'],
+    'editProduct': ['manager'],
+    'deleteProduct': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

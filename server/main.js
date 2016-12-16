@@ -7,6 +7,7 @@ var logger          = require('./src/Utils/Logger/logger');
 
 var storeService    = require('./src/Services/store/index');
 var userService     = require('./src/Services/user/index');
+var productService  = require('./src/Services/product/index');
 
 var app = express();
 
@@ -31,7 +32,6 @@ function _connectToDb(){
     db.once('open', function() {
         console.log('connected to db successfuly');
     });
-
 }
 
 function _setapApiEndpoints() {
@@ -130,36 +130,94 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addStore', function (req, res) {
-        storeService.addStore(req.param('session-id'), req.param('store'), function(err){
+        storeService.addStore(req.body.sessionId, req.body.storeDetails, function(err, store){
             if(err != null){
-                res.status(200).send(err);
+                res.status(404).send(err);
             }
             else{
-                res.status(200).send('store added successfully');
+                res.status(200).send(store);
             }
         });
 
     });
 
     app.post('/management/editStore', function (req, res) {
-        res.status(200).send('edit user');
+        storeService.editStore(req.body.sessionId, req.body.storeDetails, function (err) {
+            if (err != null) {
+                res.status(404).send(err);
+            }
+            else {
+                res.status(200).send('store edit successfully');
+            }
+        });
     });
 
     app.post('/management/deleteStore', function (req, res) {
-        res.status(200).send('delete user');
+        storeService.deleteStroe(req.body.sessionId, req.body.storeDetails, function (err) {
+            if (err != null) {
+                res.status(404).send(err);
+            }
+            else {
+                res.status(200).send('store delete successfully');
+            }
+        });
+    });
+
+    app.post('/management/getAllStores', function (req, res) {
+        storeService.getAllStores(req.body.sessionId, function (err, stores) {
+            if (err != null) {
+                res.status(404).send(err);
+            }
+            else {
+                res.status(200).send(stores);
+            }
+        });
     });
 
     app.post('/management/addProduct', function (req, res) {
-        res.status(200).send('add new user');
+        productService.addProduct(req.body.sessionId, req.body.productDetails, function(err ,product){
+            if(err != null){
+                res.status(404).send(err);
+            }
+            else{
+                res.status(200).send(product);
+            }
+        });
     });
 
     app.post('/management/editProduct', function (req, res) {
-        res.status(200).send('edit user');
+        productService.editProduct(req.body.sessionId, req.body.productDetails, function (err) {
+            if (err != null) {
+                res.status(404).send(err);
+            }
+            else {
+                res.status(200).send('product edit successfully');
+            }
+        });
     });
 
     app.post('/management/deleteProduct', function (req, res) {
-        res.status(200).send('delete user');
+        productService.deleteProduct(req.body.sessionId, req.body.productDetails, function(err) {
+            if (err != null) {
+                res.status(404).send(err);
+            }
+            else {
+                res.status(200).send('product delete successfully');
+            }
+        });
     });
+
+    app.post('/management/getAllProducts', function (req, res) {
+        productService.getAllProducts(req.body.sessionId, function(err ,products) {
+            if (err != null) {
+                res.status(404).send(err);
+            }
+            else {
+                res.status(200).send(products);
+            }
+        });
+    });
+
 
     app.post('/management/addEncouragement', function (req, res) {
         res.status(200).send('add new user');

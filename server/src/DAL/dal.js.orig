@@ -11,9 +11,13 @@ module.exports = {
         return user.save();
     },
 
+<<<<<<< HEAD
     getUserBySessionId: function (sessionId, cb) {
+        user = userModel.findOne({ 'sessionId': sessionId }, cb);
+=======
+    editUser: async function (user) {
         return user.save();
-        user = userModel.findOne({'sessionId': sessionId}, cb)
+>>>>>>> origin/userService
     },
 
     addStore: function (store) {
@@ -28,13 +32,18 @@ module.exports = {
         return userModel.findOne({ 'username': username });
     },
 
+<<<<<<< HEAD
+
+    editeStore: async function (storeDetails) {
+        return storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true })
+=======
     getUserById: async function(Id){
         return userModel.findOne({'personal.id': Id});
     },
 
-
-    editeStore: async function (storeDetails) {
-        return storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true })
+    editeStore: function (storeDetails, cb) {
+        storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true }, cb)
+>>>>>>> origin/userService
     },
 
     deleteStore: async function (storeDetails) {

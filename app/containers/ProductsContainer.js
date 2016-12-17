@@ -9,7 +9,7 @@ var ProductDetails = require('../containers/ProductDetails');
 
 var ProductsContainer = React.createClass({
     handleProductsSelection: function () {
-        return console.log("products")
+        return console.log("productsדד")
             .then(function (n) {
                 console.log(n);
             })

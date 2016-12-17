@@ -11,13 +11,12 @@ module.exports = {
         return user.save();
     },
 
-    getUserBySessionId: function (sessionId, cb) {
-        return user.save();
-        user = userModel.findOne({'sessionId': sessionId}, cb)
-    },
-
     addStore: function (store) {
         store.save();
+    },
+
+    editUser: async function (user) {
+        return user.save();
     },
 
     getUserBySessionId: async function(sessionId){
@@ -33,7 +32,7 @@ module.exports = {
     },
 
 
-    editeStore: async function (storeDetails) {
+    editStore: async function (storeDetails) {
         return storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true })
     },
 

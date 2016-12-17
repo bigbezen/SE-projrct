@@ -11,52 +11,78 @@ module.exports = {
         user.save();
     },
 
-    getUserBySessionId: function(sessionId, cb) {
-        user = userModel.findOne({'sessionId': sessionId}, cb)
+    getUserBySessionId: function (sessionId, cb) {
+        user = userModel.findOne({ 'sessionId': sessionId }, cb);
     },
 
     addStore: function (store) {
         store.save();
     },
 
-    getUserBySessionId: async function(sessionId) {
-        return userModel.findOne({'sessionId': sessionId});
+    getUserBySessionId: async function(sessionId){
+        return userModel.findOne({ 'sessionId': sessionId })
     },
 
     getUserByUsername: async function(username){
-        return userModel.findOne({'username': username});
+        return userModel.findOne({ 'username': username });
     },
 
-    editeStore: function (storeDetails, cb) {
-        storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true }, cb)
+
+    editeStore: async function (storeDetails) {
+        return storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true })
     },
 
-    deleteStore: function (storeDetails, cb) {
-        storeModel.remove({'_id': mongoose.Types.ObjectId(storeDetails._id)},cb);
+    deleteStore: async function (storeDetails) {
+        return storeModel.remove({'_id': mongoose.Types.ObjectId(storeDetails._id)});
     },
 
-    getAllStores: function (cb) {
-        storeModel.find({}, cb);
+    getAllStores: async function(){
+        return storeModel.find({});
     },
 
-    getStoreByNameAndArea: function (storeDetails, cb) {
-        storeModel.find({'name': storeDetails.name, 'area': storeDetails.area}, cb);
+    getStoreByNameAndArea: async function (storeDetails) {
+        return storeModel.findOne({'name': storeDetails.name, 'area': storeDetails.area});
     },
 
     addProduct: function(product){
         product.save();
     },
 
-    editProduct: function(productDetails, cb){
-        productModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, productDetails, { upsert: true }, cb)
+    editProduct: async function(productDetails){
+        return productModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, productDetails, { upsert: true })
     },
 
-    deleteProduct: function(productDetails, cb){
-        productModel.remove({'_id': mongoose.Types.ObjectId(productDetails._id)},cb)
+    deleteProduct: async function(productDetails){
+        return productModel.remove({'_id': mongoose.Types.ObjectId(productDetails._id)});
     },
 
-    getAllProducts: function (cb) {
-        productModel.find({}, cb);
+    getAllProducts: async function () {
+        return productModel.find({});
+    },
+
+    getProductByNameAndCatagory: async function(productDetails){
+        return productModel.findOne({'name': productDetails.name, 'category': productDetails.category});
+    },
+
+    addEncouragement: function(Encouragement){
+        Encouragement.save();
+    },
+
+    editEncouragement: async function(EncouragementDetails){
+        return encouragementModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, EncouragementDetails, { upsert: true })
+    },
+
+    deleteEncouragement: async function(EncouragementDetails){
+        return encouragementModel.remove({'_id': mongoose.Types.ObjectId(EncouragementDetails._id)})
+    },
+
+    getAllEncouragements: async function () {
+        return encouragementModel.find({});
+    },
+
+    getProductsById: async function(encouragementDetails){
+        var products = encouragementDetails.products.map(x => mongoose.Types.ObjectId(x));
+        return productModel.find({'_id': {$in: products}});
     },
 
     dropDb: function (cb) {

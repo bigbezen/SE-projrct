@@ -4,9 +4,13 @@ var dal             = require('../../DAL/dal');
 var permissions     = require('../permissions/index');
 
 
-var addProduct = function(sessionId, productDetails,cb) {
-    permissions.validatePermissionForSessionId(sessionId, 'addProduct', function (err, user) {
-        if(user != null){
+var addProduct = async function(sessionId, productDetails) {
+    logger.info('Services.product.index.addProduct', {'session-id': sessionId});
+    var user = await permissions.validatePermissionForSessionId(sessionId, 'addProduct');
+    if(user != null){
+        var product = await dal.getProductByNameAndCatagory(productDetails);
+        //check if the store existing
+        if(product == null){
             var product = new productModel();
             product.name = productDetails.name;
             product.retailPrice = productDetails.retailPrice;
@@ -16,50 +20,56 @@ var addProduct = function(sessionId, productDetails,cb) {
             product.minRequiredAmount = productDetails.minRequiredAmount;
             product.notifyManager = productDetails.notifyManager;
             dal.addProduct(product);
-            cb(null, product);
-        }
-        else {
-            cb(err, null);
-        }
-    });
-};
-
-var editProduct = function (sessionId, productDetails, cb) {
-    permissions.validatePermissionForSessionId(sessionId, 'editProduct',function (err, user) {
-        if(user != null){
-            dal.editProduct(productDetails, cb);
+            return {'product': product, 'code': 200, 'err': null};
         }
         else{
-            cb(err)
+            return {'product': null, 'code': 409, 'err': null};
         }
-    });
+    }
+    else {
+        return {'product': null, 'code': 401, 'err': 'permission denied'};
+    }
 };
 
-var deleteProduct = function(sessionId, productDetails, cb){
-    permissions.validatePermissionForSessionId(sessionId, 'deleteProduct',function (err, user) {
-        if(user != null){
-            dal.deleteProduct(productDetails, cb)
-        }
-        else{
-            cb(err)
-        }
-    });
+var editProduct = async function (sessionId, productDetails) {
+    logger.info('Services.product.index.editProduct', {'session-id': sessionId});
+    var user = permissions.validatePermissionForSessionId(sessionId, 'editProduct');
+    if(user != null){
+        var product = await dal.editProduct(productDetails);
+        return {'product': product, 'code':200, 'err': null};
+    }
+    else{
+        return {'product': null, 'code': 401, 'err': 'permission denied'};
+    }
 };
 
-var getAllProduct = function(sessionId, cb){
-    permissions.validatePermissionForSessionId(sessionId, 'getAllProducts',function (err, user) {
-        if(user != null){
-            dal.getAllProducts(cb)
-        }
-        else{
-            cb(err, null)
-        }
-    });
+var deleteProduct = async function(sessionId, productDetails){
+    logger.info('Services.product.index.deleteProduct', {'session-id': sessionId});
+    var user = await permissions.validatePermissionForSessionId(sessionId, 'deleteProduct');
+    if(user != null){
+        var product = await dal.deleteProduct(productDetails);
+        return {'product': product, 'code':200, 'err': null};
+    }
+    else {
+        return {'product': null, 'code': 401, 'err': 'permission denied'};
+    }
+};
+
+var getAllProducts = async function(sessionId){
+    logger.info('Services.product.index.getAllProduct', {'session-id': sessionId});
+    var user = await permissions.validatePermissionForSessionId(sessionId, 'getAllProducts');
+    if(user != null) {
+        var products =  await dal.getAllProducts();
+        return {'products': products, 'code': 200, 'err': null};
+    }
+    else {
+        return {'products': null, 'code': 401, 'err': 'permission denied'};;
+    }
 };
 
 module.exports.addProduct = addProduct;
 module.exports.editProduct = editProduct;
 module.exports.deleteProduct = deleteProduct;
-module.exports.getAllProducts = getAllProduct;
+module.exports.getAllProducts = getAllProducts;
 
 

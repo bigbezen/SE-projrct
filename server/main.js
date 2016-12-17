@@ -5,9 +5,10 @@ var mongoose        = require('mongoose');
 
 var logger          = require('./src/Utils/Logger/logger');
 
-var storeService    = require('./src/Services/store/index');
-var userService     = require('./src/Services/user/index');
-var productService  = require('./src/Services/product/index');
+var storeService            = require('./src/Services/store/index');
+var userService             = require('./src/Services/user/index');
+var productService          = require('./src/Services/product/index');
+var encouragementServices   = require('./src/Services/encouragements/index');
 
 var app = express();
 
@@ -129,106 +130,131 @@ function _setapApiEndpoints() {
         res.status(200).send('delete user');
     });
 
-    app.post('/management/addStore', function (req, res) {
-        storeService.addStore(req.body.sessionId, req.body.storeDetails, function(err, store){
-            if(err != null){
-                res.status(404).send(err);
-            }
-            else{
-                res.status(200).send(store);
-            }
-        });
-
+    app.post('/management/addStore', async function (req, res) {
+        var result = await storeService.addStore(req.body.sessionId, req.body.storeDetails);
+        if (result.err != null)
+        {
+            res.status(result.code).send(result.err);
+        }
+        else
+        {
+            res.status(result.code).send(result.store);
+        }
     });
 
-    app.post('/management/editStore', function (req, res) {
-        storeService.editStore(req.body.sessionId, req.body.storeDetails, function (err) {
-            if (err != null) {
-                res.status(404).send(err);
-            }
-            else {
-                res.status(200).send('store edit successfully');
-            }
-        });
+    app.post('/management/editStore', async function (req, res) {
+        var result = await storeService.editStore(req.body.sessionId, req.body.storeDetails);
+        if (result.err != null)
+        {
+            res.status(result.code).send(result.err);
+        }
+        else
+        {
+            res.status(result.code).send(result.store);
+        }
     });
 
-    app.post('/management/deleteStore', function (req, res) {
-        storeService.deleteStroe(req.body.sessionId, req.body.storeDetails, function (err) {
-            if (err != null) {
-                res.status(404).send(err);
-            }
-            else {
-                res.status(200).send('store delete successfully');
-            }
-        });
+    app.post('/management/deleteStore', async function (req, res) {
+        var result = await storeService.deleteStroe(req.body.sessionId, req.body.storeDetails);
+        if (result.err != null)
+        {
+            res.status(result.code).send(result.err);
+        }
+        else
+        {
+            res.status(result.code).send(result.store);
+        }
     });
 
-    app.post('/management/getAllStores', function (req, res) {
-        storeService.getAllStores(req.body.sessionId, function (err, stores) {
-            if (err != null) {
-                res.status(404).send(err);
-            }
-            else {
-                res.status(200).send(stores);
-            }
-        });
+    app.post('/management/getAllStores', async function (req, res) {
+        var result = await storeService.getAllStores(req.body.sessionId);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.stores);
+        }
     });
 
-    app.post('/management/addProduct', function (req, res) {
-        productService.addProduct(req.body.sessionId, req.body.productDetails, function(err ,product){
-            if(err != null){
-                res.status(404).send(err);
-            }
-            else{
-                res.status(200).send(product);
-            }
-        });
+    app.post('/management/addProduct', async function (req, res) {
+        var result = await productService.addProduct(req.body.sessionId, req.body.productDetails);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.product);
+        }
     });
 
-    app.post('/management/editProduct', function (req, res) {
-        productService.editProduct(req.body.sessionId, req.body.productDetails, function (err) {
-            if (err != null) {
-                res.status(404).send(err);
-            }
-            else {
-                res.status(200).send('product edit successfully');
-            }
-        });
+    app.post('/management/editProduct', async function (req, res) {
+        var result = await productService.editProduct(req.body.sessionId, req.body.productDetails);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.product);
+        }
     });
 
-    app.post('/management/deleteProduct', function (req, res) {
-        productService.deleteProduct(req.body.sessionId, req.body.productDetails, function(err) {
-            if (err != null) {
-                res.status(404).send(err);
-            }
-            else {
-                res.status(200).send('product delete successfully');
-            }
-        });
+    app.post('/management/deleteProduct', async function (req, res) {
+        var result = await productService.deleteProduct(req.body.sessionId, req.body.productDetails);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.product);
+        }
     });
 
-    app.post('/management/getAllProducts', function (req, res) {
-        productService.getAllProducts(req.body.sessionId, function(err ,products) {
-            if (err != null) {
-                res.status(404).send(err);
-            }
-            else {
-                res.status(200).send(products);
-            }
-        });
+    app.post('/management/getAllProducts', async function (req, res) {
+        var result = await productService.getAllProducts(req.body.sessionId);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.products);
+        }
     });
 
 
-    app.post('/management/addEncouragement', function (req, res) {
-        res.status(200).send('add new user');
+    app.post('/management/addEncouragement', async function (req, res) {
+        var result = await encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.encouragement);
+        }
     });
 
-    app.post('/management/editEncouragement', function (req, res) {
-        res.status(200).send('edit user');
+    app.post('/management/editEncouragement', async function (req, res) {
+        var result = await encouragementServices.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.encouragement);
+        }
     });
 
-    app.post('/management/deleteEncouragement', function (req, res) {
-        res.status(200).send('delete user');
+    app.post('/management/deleteEncouragement', async function (req, res) {
+        var result = await encouragementServices.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.encouragement);
+        }
+    });
+
+    app.post('/management/getAllEncouragements', async function (req, res) {
+        var result = await encouragementServices.getAllEncouragements(req.body.sessionId);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.encouragements);
+        }
     });
 
     app.post('/management/addShift', function (req, res) {

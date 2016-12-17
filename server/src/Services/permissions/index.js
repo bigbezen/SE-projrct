@@ -1,19 +1,13 @@
 var dal = require('../../DAL/dal');
 
-var validatePermissionForSessionId = function(sessionId, funcName, cb) {
-    dal.getUserBySessionId(sessionId, function(err, user){
-        if(user != null){
-            if(funcNameToPermission[funcName].indexOf(user.jobDetails.userType) > -1){
-                cb(null, user);
-            }
-            else{
-                cb('no permission', null);
-            }
+var validatePermissionForSessionId = async function(sessionId, funcName, cb) {
+    var user = await dal.getUserBySessionId(sessionId)
+        if(user != null && (funcNameToPermission[funcName].indexOf(user.jobDetails.userType) > -1)){
+            return user;
         }
         else{
-            cb(err, null);
+            return null;
         }
-    });
 };
 
 var funcNameToPermission = {
@@ -25,7 +19,11 @@ var funcNameToPermission = {
     'addProduct': ['manager'],
     'getAllProducts': ['manager','salesman'],
     'editProduct': ['manager'],
-    'deleteProduct': ['manager']
+    'deleteProduct': ['manager'],
+    'addEncouragement': ['manager'],
+    'getAllEncouragements': ['manager','salesman'],
+    'editEncouragement': ['manager'],
+    'deleteEncouragement': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

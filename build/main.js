@@ -212,9 +212,9 @@ function _setapApiEndpoints() {
         };
     })());
 
-    app.post('/management/getAllStores', (() => {
+    app.get('/management/getAllStores', (() => {
         var _ref9 = _asyncToGenerator(function* (req, res) {
-            var result = yield storeService.getAllStores(req.body.sessionId);
+            var result = yield storeService.getAllStores(req.headers.sessionid);
             if (result.err != null) {
                 res.status(result.code).send(result.err);
             } else {
@@ -272,9 +272,9 @@ function _setapApiEndpoints() {
         };
     })());
 
-    app.post('/management/getAllProducts', (() => {
+    app.get('/management/getAllProducts', (() => {
         var _ref13 = _asyncToGenerator(function* (req, res) {
-            var result = yield productService.getAllProducts(req.body.sessionId);
+            var result = yield productService.getAllProducts(req.headers.sessionid);
             if (result.err != null) {
                 res.status(result.code).send(result.err);
             } else {
@@ -332,9 +332,9 @@ function _setapApiEndpoints() {
         };
     })());
 
-    app.post('/management/getAllEncouragements', (() => {
+    app.get('/management/getAllEncouragements', (() => {
         var _ref17 = _asyncToGenerator(function* (req, res) {
-            var result = yield encouragementServices.getAllEncouragements(req.body.sessionId);
+            var result = yield encouragementServices.getAllEncouragements(req.headers.sessionid);
             if (result.err != null) {
                 res.status(result.code).send(result.err);
             } else {

@@ -183,8 +183,8 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/management/getAllStores', async function (req, res) {
-        var result = await storeService.getAllStores(req.body.sessionId);
+    app.get('/management/getAllStores', async function (req, res) {
+        var result = await storeService.getAllStores(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -223,8 +223,8 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/management/getAllProducts', async function (req, res) {
-        var result = await productService.getAllProducts(req.body.sessionId);
+    app.get('/management/getAllProducts', async function (req, res) {
+        var result = await productService.getAllProducts(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -264,8 +264,8 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/management/getAllEncouragements', async function (req, res) {
-        var result = await encouragementServices.getAllEncouragements(req.body.sessionId);
+    app.get('/management/getAllEncouragements', async function (req, res) {
+        var result = await encouragementServices.getAllEncouragements(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }

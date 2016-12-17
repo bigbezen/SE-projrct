@@ -9,6 +9,8 @@ var logger = require('./src/Utils/Logger/logger');
 
 var storeService = require('./src/Services/store/index');
 var userService = require('./src/Services/user/index');
+var productService = require('./src/Services/product/index');
+var encouragementServices = require('./src/Services/encouragements/index');
 
 var app = express();
 
@@ -58,21 +60,42 @@ function _setapApiEndpoints() {
         };
     })());
 
-    app.post('/user/logout', function (req, res) {
-        res.status(200).send('logout');
-    });
+    app.post('/user/logout', (() => {
+        var _ref2 = _asyncToGenerator(function* (req, res) {
+            var result = yield userService.logout(req.body.sessionId);
+            if (result.code == 200) res.status(200).send('logout succeeded');else res.status(result.code).send(result.err);
+        });
+
+        return function (_x3, _x4) {
+            return _ref2.apply(this, arguments);
+        };
+    })());
 
     app.post('/user/retrievePassword', function (req, res) {
         res.status(200).send('retrievePassword');
     });
 
-    app.post('/user/changePassword', function (req, res) {
-        res.status(200).send('changePassword');
-    });
+    app.post('/user/changePassword', (() => {
+        var _ref3 = _asyncToGenerator(function* (req, res) {
+            var result = yield userService.changePassword(req.body.sessionId, req.body.oldPass, req.body.newPass);
+            if (result.code == 200) res.status(200).send('changed password succeeded');else res.status(result.code).send(result.err);
+        });
 
-    app.get('/user/getProfile', function (req, res) {
-        res.status(200).send('get profile');
-    });
+        return function (_x5, _x6) {
+            return _ref3.apply(this, arguments);
+        };
+    })());
+
+    app.get('/user/getProfile', (() => {
+        var _ref4 = _asyncToGenerator(function* (req, res) {
+            var result = yield userService.getProfile(req.headers.sessionid);
+            if (result.code == 200) res.status(200).send(result.user);else res.status(result.code).send(result.err);
+        });
+
+        return function (_x7, _x8) {
+            return _ref4.apply(this, arguments);
+        };
+    })());
 
     //Salesman Services
     app.post('/salesman/enterShift', function (req, res) {
@@ -121,10 +144,20 @@ function _setapApiEndpoints() {
 
     //Management Services
 
-    app.post('/management/addUser', function (req, res) {
-        userService.addUser();
-        res.status(200).send('add new user');
-    });
+    app.post('/management/addUser', (() => {
+        var _ref5 = _asyncToGenerator(function* (req, res) {
+            var result = yield userService.addUser(req.body.sessionId, req.body.userDetails);
+            if (result.code == 200) {
+                res.status(200).send(result.user);
+            } else {
+                res.status(result.code).send(result.err);
+            }
+        });
+
+        return function (_x9, _x10) {
+            return _ref5.apply(this, arguments);
+        };
+    })());
 
     app.post('/management/editUser', function (req, res) {
         res.status(200).send('edit user');
@@ -134,47 +167,185 @@ function _setapApiEndpoints() {
         res.status(200).send('delete user');
     });
 
-    app.post('/management/addStore', function (req, res) {
-        storeService.addStore(req.param('session-id'), req.param('store'), function (err) {
-            if (err != null) {
-                res.status(200).send(err);
+    app.post('/management/addStore', (() => {
+        var _ref6 = _asyncToGenerator(function* (req, res) {
+            var result = yield storeService.addStore(req.body.sessionId, req.body.storeDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
             } else {
-                res.status(200).send('store added successfully');
+                res.status(result.code).send(result.store);
             }
         });
-    });
 
-    app.post('/management/editStore', function (req, res) {
-        res.status(200).send('edit user');
-    });
+        return function (_x11, _x12) {
+            return _ref6.apply(this, arguments);
+        };
+    })());
 
-    app.post('/management/deleteStore', function (req, res) {
-        res.status(200).send('delete user');
-    });
+    app.post('/management/editStore', (() => {
+        var _ref7 = _asyncToGenerator(function* (req, res) {
+            var result = yield storeService.editStore(req.body.sessionId, req.body.storeDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.store);
+            }
+        });
 
-    app.post('/management/addProduct', function (req, res) {
-        res.status(200).send('add new user');
-    });
+        return function (_x13, _x14) {
+            return _ref7.apply(this, arguments);
+        };
+    })());
 
-    app.post('/management/editProduct', function (req, res) {
-        res.status(200).send('edit user');
-    });
+    app.post('/management/deleteStore', (() => {
+        var _ref8 = _asyncToGenerator(function* (req, res) {
+            var result = yield storeService.deleteStroe(req.body.sessionId, req.body.storeDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.store);
+            }
+        });
 
-    app.post('/management/deleteProduct', function (req, res) {
-        res.status(200).send('delete user');
-    });
+        return function (_x15, _x16) {
+            return _ref8.apply(this, arguments);
+        };
+    })());
 
-    app.post('/management/addEncouragement', function (req, res) {
-        res.status(200).send('add new user');
-    });
+    app.post('/management/getAllStores', (() => {
+        var _ref9 = _asyncToGenerator(function* (req, res) {
+            var result = yield storeService.getAllStores(req.body.sessionId);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.stores);
+            }
+        });
 
-    app.post('/management/editEncouragement', function (req, res) {
-        res.status(200).send('edit user');
-    });
+        return function (_x17, _x18) {
+            return _ref9.apply(this, arguments);
+        };
+    })());
 
-    app.post('/management/deleteEncouragement', function (req, res) {
-        res.status(200).send('delete user');
-    });
+    app.post('/management/addProduct', (() => {
+        var _ref10 = _asyncToGenerator(function* (req, res) {
+            var result = yield productService.addProduct(req.body.sessionId, req.body.productDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.product);
+            }
+        });
+
+        return function (_x19, _x20) {
+            return _ref10.apply(this, arguments);
+        };
+    })());
+
+    app.post('/management/editProduct', (() => {
+        var _ref11 = _asyncToGenerator(function* (req, res) {
+            var result = yield productService.editProduct(req.body.sessionId, req.body.productDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.product);
+            }
+        });
+
+        return function (_x21, _x22) {
+            return _ref11.apply(this, arguments);
+        };
+    })());
+
+    app.post('/management/deleteProduct', (() => {
+        var _ref12 = _asyncToGenerator(function* (req, res) {
+            var result = yield productService.deleteProduct(req.body.sessionId, req.body.productDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.product);
+            }
+        });
+
+        return function (_x23, _x24) {
+            return _ref12.apply(this, arguments);
+        };
+    })());
+
+    app.post('/management/getAllProducts', (() => {
+        var _ref13 = _asyncToGenerator(function* (req, res) {
+            var result = yield productService.getAllProducts(req.body.sessionId);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.products);
+            }
+        });
+
+        return function (_x25, _x26) {
+            return _ref13.apply(this, arguments);
+        };
+    })());
+
+    app.post('/management/addEncouragement', (() => {
+        var _ref14 = _asyncToGenerator(function* (req, res) {
+            var result = yield encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.encouragement);
+            }
+        });
+
+        return function (_x27, _x28) {
+            return _ref14.apply(this, arguments);
+        };
+    })());
+
+    app.post('/management/editEncouragement', (() => {
+        var _ref15 = _asyncToGenerator(function* (req, res) {
+            var result = yield encouragementServices.editEncouragement(req.body.sessionId, req.body.encouragementDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.encouragement);
+            }
+        });
+
+        return function (_x29, _x30) {
+            return _ref15.apply(this, arguments);
+        };
+    })());
+
+    app.post('/management/deleteEncouragement', (() => {
+        var _ref16 = _asyncToGenerator(function* (req, res) {
+            var result = yield encouragementServices.deleteEncouragement(req.body.sessionId, req.body.encouragementDetails);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.encouragement);
+            }
+        });
+
+        return function (_x31, _x32) {
+            return _ref16.apply(this, arguments);
+        };
+    })());
+
+    app.post('/management/getAllEncouragements', (() => {
+        var _ref17 = _asyncToGenerator(function* (req, res) {
+            var result = yield encouragementServices.getAllEncouragements(req.body.sessionId);
+            if (result.err != null) {
+                res.status(result.code).send(result.err);
+            } else {
+                res.status(result.code).send(result.encouragements);
+            }
+        });
+
+        return function (_x33, _x34) {
+            return _ref17.apply(this, arguments);
+        };
+    })());
 
     app.post('/management/addShift', function (req, res) {
         res.status(200).send('add new user');

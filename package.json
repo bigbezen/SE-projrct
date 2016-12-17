@@ -10,6 +10,7 @@
     "express": "^4.14.0",
     "mocha": "^3.2.0",
     "mongoose": "^4.7.2",
+    "nodemailer": "^2.7.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "winston": "^2.3.0",

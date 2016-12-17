@@ -73,8 +73,12 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.get('/user/getProfile', function (req, res) {
-        res.status(200).send('get profile');
+    app.get('/user/getProfile', async function (req, res) {
+        var result = await userService.getProfile(req.headers.sessionid);
+        if(result.code == 200)
+            res.status(200).send(result.user);
+        else
+            res.status(result.code).send(result.err);
     });
 
 //Salesman Services

@@ -1,4 +1,5 @@
 var logger          = require('../../Utils/Logger/logger');
+var mailer          = require('../../Utils/Mailer/index');
 var cypher          = require('../../Utils/Cypher/index');
 var dal             = require('../../DAL/dal');
 var permissions     = require('../permissions/index');
@@ -61,6 +62,7 @@ var addUser = async function(sessionId, userDetails) {
     newUser.jobDetails = userDetails.jobDetails;
     newUser.inbox = [];
     var res = await dal.addUser(newUser);
+    newUser.password = "";
     if(res != null){
         return {'code': 200, 'user': newUser};
     }
@@ -82,12 +84,23 @@ var changePassword = async function(sessionId, oldPass, newPass) {
         return {'code': 409, 'err': 'problem occurred with one of the parameters'};
     }
 
-    user.password = newPass;
+    user.password = cypher.encrypt(newPass);
     var res = await dal.editUser(user);
     if(res != null)
         return {'code': 200};
     else
         return {'code': 500, 'err': 'something went wrong'};
+};
+
+
+var getProfile = async function(sessionId) {
+    var user = await dal.getUserBySessionId(sessionId);
+    if(user == null){
+        return {'code': 403, 'err': 'unauthorized request'};
+    }
+
+    user.password = "";
+    return {'code': 200, 'user': user};
 };
 
 
@@ -109,3 +122,4 @@ module.exports.login = login;
 module.exports.logout = logout;
 module.exports.addUser = addUser;
 module.exports.changePassword = changePassword;
+module.exports.getProfile = getProfile;

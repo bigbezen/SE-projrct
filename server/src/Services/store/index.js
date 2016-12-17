@@ -35,7 +35,7 @@ var editStore = async function (sessionId, storeDetails) {
     logger.info('Services.store.index.editStore', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'editStore');
     if(user != null){
-        var store =  await dal.editeStore(storeDetails);
+        var store =  await dal.editStore(storeDetails);
         return {'store': store, 'code': 200, 'err': null};
     }else{
         return {'store': null, 'code': 401, 'err': 'permission denied'}

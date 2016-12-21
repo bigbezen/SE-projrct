@@ -11,13 +11,19 @@ module.exports = {
         return user.save();
     },
 
+    editUser: async function (user) {
+        return user.save();
+    },
+
+    deleteUser: async function(username){
+        return userModel.remove({'username': username});
+    },
+
     addStore: function (store) {
         store.save();
     },
 
-    editUser: async function (user) {
-        return user.save();
-    },
+
 
     getUserBySessionId: async function(sessionId){
         return userModel.findOne({ 'sessionId': sessionId })
@@ -89,8 +95,18 @@ module.exports = {
         return productModel.find({'_id': {$in: products}});
     },
 
-    dropDb: function (cb) {
-        mongoose.collection.remove({}, cb)
+    cleanDb: async function () {
+        var products = await productModel.find({});
+        products.map(x => x.remove());
+        var encs = await encouragementModel.find({});
+        encs.map(x => x.remove());
+        var shifts= await shiftModel.find({});
+        shifts.map(x => x.remove());
+        var stores = await storeModel.find({});
+        stores.map(x => x.remove());
+        var users = await userModel.find({});
+        users.map(x => x.remove());
     }
+
 };
 

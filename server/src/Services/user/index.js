@@ -31,7 +31,7 @@ var logout = async function(sessionId) {
     logger.info('Services.user.index.logout', {'session-id': sessionId});
     var user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 403, 'err': 'unauthorized request'};
+        return {'code': 403, 'err': 'user is not logged in'};
     }
 
     user.sessionId = "";
@@ -42,9 +42,13 @@ var logout = async function(sessionId) {
         return {'code': 500, 'err': 'something went wrong'};
 };
 
+
 var addUser = async function(sessionId, userDetails) {
-    //TODO: add permissions check
     logger.info('Services.user.index.addUser', {'session-id': sessionId});
+    //TODO: remove comment from authorization check
+    // var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser', null);
+    // if(isAuthorized == null)
+    //     return {'code': 403, 'err': 'user not authorized'};
 
     var isExistUsername = await dal.getUserByUsername(userDetails.username);
     var isExistId = await dal.getUserById(userDetails.personal.id);
@@ -71,6 +75,46 @@ var addUser = async function(sessionId, userDetails) {
     }
 };
 
+var editUser = async function(sessionId, username, userDetails){
+    logger.info('Services.user.index.editUser', {'sessionId': sessionId});
+
+    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
+    if(isAuthorized == null)
+        return {'code': 403, 'err': 'user not authorized'};
+
+    var user = await dal.getUserByUsername(username);
+    if(user == null)
+        return {'code': 409, 'err': 'problem occurred with one of the parameters'};
+    user.username = userDetails.username;
+    user.password =  cypher.encrypt(userDetails.password);
+    user.startDate = new Date(userDetails.startDate);
+    user.endDate = userDetails.endDate;
+    user.personal = userDetails.personal;
+    user.contact = userDetails.contact;
+    user.jobDetails = userDetails.jobDetails;
+
+    var res = await dal.editUser(user);
+    if(res != null){
+        return {'code': 200};
+    }
+    else{
+        return {'code': 500, 'err': 'could not insert user to database'};
+    }
+};
+
+
+var deleteUser = async function(sessionId, username) {
+    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
+    if (isAuthorized == null)
+        return {'code': 403, 'err': 'user not authorized'};
+
+    var user = await dal.getUserByUsername(username);
+    if (user == null)
+        return {'code': 409, 'err': 'problem occurred with one of the parameters'};
+
+    var res = await dal.deleteUser(username);
+    return {'code': 200};
+};
 
 var changePassword = async function(sessionId, oldPass, newPass) {
     logger.info('Services.user.index.changePassword', {'session-id': sessionId});
@@ -93,10 +137,27 @@ var changePassword = async function(sessionId, oldPass, newPass) {
 };
 
 
+var retrievePassword = async function(sessionId) {
+    logger.info('Services.user.index.retrievePassword', {'sessionId': sessionId});
+    var user = await dal.getUserBySessionId(sessionId);
+    if(user == null)
+        return {'code': 403, 'err': 'user is not logged in'};
+
+    if (mailer.sendMail([user.contact.email], mailer.subjects.retrievePassword,
+            'Your password is: ' + cypher.decrypt(user.password)))
+        return {'code': 200};
+    else
+        return {'code': 500, 'err': 'failed sending email'};
+
+
+};
+
+
 var getProfile = async function(sessionId) {
+    logger.info('Services.user.index.getProfile', {'sessionId': sessionId});
     var user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 403, 'err': 'unauthorized request'};
+        return {'code': 403, 'err': 'user is not logged in'};
     }
 
     user.password = "";
@@ -121,5 +182,8 @@ var _generateSessionId = async function() {
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.addUser = addUser;
+module.exports.editUser = editUser;
+module.exports.deleteUser = deleteUser;
 module.exports.changePassword = changePassword;
 module.exports.getProfile = getProfile;
+module.exports.retrievePassword = retrievePassword;

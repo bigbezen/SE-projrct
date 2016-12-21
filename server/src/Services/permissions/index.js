@@ -12,6 +12,8 @@ var validatePermissionForSessionId = async function(sessionId, funcName, cb) {
 
 var funcNameToPermission = {
     'addUser': ['manager'],
+    'editUser': ['manager'],
+    'deleteUser': ['manager'],
     'addStore': ['manager'],
     'deleteStore': ['manager'],
     'editStore': ['manager'],

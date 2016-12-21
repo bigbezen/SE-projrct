@@ -4,6 +4,7 @@ var path            = require('path');
 var mongoose        = require('mongoose');
 
 var logger          = require('./src/Utils/Logger/logger');
+var validator       = require('./src/Utils/Validators/index');
 
 var storeService            = require('./src/Services/store/index');
 var userService             = require('./src/Services/user/index');
@@ -29,7 +30,10 @@ function _connectToDb(){
     mongoose.Promise = global.Promise;
     mongoose.connect(app.locals.mongourl);
     var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
+    db.on('error', function(){
+        console.error.bind(console, 'connection error:');
+        throw 'Cant connect to DB...';
+    });
     db.once('open', function() {
         console.log('connected to db successfuly');
     });
@@ -45,6 +49,8 @@ function _setapApiEndpoints() {
 
 //User Services
     app.post('/user/login', async function (req, res) {
+        if (!validator.login(req.body))
+            res.status(404).send('invalid parameters');
         var result = await userService.login(req.body.username, req.body.password);
         if(result.sessionId != null){
             res.status(200).send(result);
@@ -55,6 +61,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/user/logout', async function (req, res) {
+        if (!validator.sessionId(req.body))
+            res.status(404).send('invalid parameters');
         var result = await userService.logout(req.body.sessionId);
         if(result.code == 200)
             res.status(200).send('logout succeeded');
@@ -62,11 +70,19 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.post('/user/retrievePassword', function (req, res) {
-        res.status(200).send('retrievePassword');
+    app.post('/user/retrievePassword', async function (req, res) {
+        if (!validator.sessionId(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await userService.retrievePassword(req.body.sessionId);
+        if(result.code == 200)
+            res.status(200).send('retrieved password successfully');
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.post('/user/changePassword', async function (req, res) {
+        if (!validator.changePassword(req.body))
+            res.status(404).send('invalid parameters');
         var result = await userService.changePassword(req.body.sessionId, req.body.oldPass, req.body.newPass);
         if(result.code == 200)
             res.status(200).send('changed password succeeded');
@@ -75,6 +91,8 @@ function _setapApiEndpoints() {
     });
 
     app.get('/user/getProfile', async function (req, res) {
+        if (!validator.sessionId(req.body))
+            res.status(404).send('invalid parameters');
         var result = await userService.getProfile(req.headers.sessionid);
         if(result.code == 200)
             res.status(200).send(result.user);
@@ -130,6 +148,8 @@ function _setapApiEndpoints() {
 //Management Services
 
     app.post('/management/addUser', async function (req, res) {
+        if (!validator.addUser(req.body))
+            res.status(404).send('invalid parameters');
         var result = await userService.addUser(req.body.sessionId, req.body.userDetails);
         if(result.code == 200){
             res.status(200).send(result.user);
@@ -139,12 +159,24 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/management/editUser', function (req, res) {
-        res.status(200).send('edit user');
+    app.post('/management/editUser', async function (req, res) {
+        var result = await userService.editUser(req.body.sessionId, req.body.username, req.body.userDetails);
+        if(result.code == 200){
+            res.status(200).send();
+        }
+        else{
+            res.status(result.code).send(result.err);
+        }
     });
 
-    app.post('/management/deleteUser', function (req, res) {
-        res.status(200).send('delete user');
+    app.post('/management/deleteUser', async function (req, res) {
+        var result = await userService.deleteUser(req.body.sessionId, req.body.username);
+        if(result.code == 200){
+            res.status(200).send();
+        }
+        else{
+            res.status(result.code).send(result.err);
+        }
     });
 
     app.post('/management/addStore', async function (req, res) {

@@ -17,9 +17,9 @@
     "nodemailer": "^2.7.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
+    "react-router": "^3.0.0",
     "winston": "^2.3.0",
-    "winston-mongodb": "^1.6.5",
-    "react-router": "^3.0.0"
+    "winston-mongodb": "^1.6.5"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -38,6 +38,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "babel-watch src/main.js",
+    "compile": "babel server/ -d build/",
     "production": "webpack -p"
   },
   "author": "",

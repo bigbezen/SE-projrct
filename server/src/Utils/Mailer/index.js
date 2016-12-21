@@ -2,6 +2,9 @@ var nodemailer = require('nodemailer');
 
 var transporter = nodemailer.createTransport('smtps://IBBLSServices%40gmail.com:0192837465@smtp.gmail.com');
 
+var subjects = {
+    'retrievePassword': 'IBBLS Services - Retrieved Details'
+};
 
 
 var sendMail = async function(recepientArr, subject, text) {
@@ -13,7 +16,8 @@ var sendMail = async function(recepientArr, subject, text) {
 
     };
     var result = await transporter.sendMail(mailOptions);
-    console.log(result);
+    return (result.accepted.length > 0);
 };
 
 module.exports.sendMail = sendMail;
+module.exports.subjects = subjects;

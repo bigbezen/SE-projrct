@@ -2,7 +2,7 @@
  * Created by lihiverchik on 17/12/2016.
  */
 var React = require('react');
-var Table = require('../components/Table');
+var Table = require('../components/EntitiesTable');
 var StoreDetails = require('../containers/StoreDetails');
 
 
@@ -15,7 +15,7 @@ var StoresContainer = React.createClass({
     },
     render: function () {
         return (
-            <Table onSelectStore={this.handleStoresSelection}/>
+            <div> storessss </div>
         )
     }
 });

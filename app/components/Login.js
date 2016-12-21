@@ -6,14 +6,12 @@ var ReactRouter = require('react-router');
 var Link = ReactRouter.Link
 var PropTypes = React.PropTypes;
 'use strict';
-var constantStrings = require('../utils/constantStrings');
-//var login = constantStrings.LOGIN;
 
 function Login(props) {
         return (
             <div className="jumbotron col-sm-offset-3 col-sm-6 text-center" >
                 <h1>Welcome</h1>
-                <h2>{constantStrings.LOGIN}</h2>
+                <h2>התחבר</h2>
 
                 <form onSubmit={props.onSubmitUser}>
                 <div className="form-group">

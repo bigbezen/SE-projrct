@@ -3,7 +3,6 @@
  */
 
 var React = require('react');
-var Table = require('../components/Table');
 
 //var ProductDetails = require('../containers/ProductDetails');
 
@@ -17,7 +16,7 @@ var UserDetails = React.createClass({
     },
     render: function () {
         return (
-            <Table onSelectStore={this.handleUserSelection}/>
+            <div></div>
         )
     }
 });

@@ -3,11 +3,11 @@
  */
 
 var React = require('react');
-var Table = require('../components/Table');
+var Table = require('../components/EntitiesTable');
 var UserDetails = require('../containers/UserDetails');
 
 
-var StoresContainer = React.createClass({
+var UserDetails = React.createClass({
     handleUsersSelection: function () {
         return console.log("users")
             .then(function (n) {
@@ -16,9 +16,9 @@ var StoresContainer = React.createClass({
     },
     render: function () {
         return (
-            <Table onSelectStore={this.handleUsersSelection}/>
+            <div> userssss!!!!!!</div>
         )
     }
 });
 
-module.exports = StoresContainer;
+module.exports = UserDetails;

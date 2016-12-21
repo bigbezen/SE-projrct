@@ -17,9 +17,10 @@
     "nodemailer": "^2.7.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
+    "react-router": "^3.0.0",
+    "react-uniform": "^1.2.1",
     "winston": "^2.3.0",
-    "winston-mongodb": "^1.6.5",
-    "react-router": "^3.0.0"
+    "winston-mongodb": "^1.6.5"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",

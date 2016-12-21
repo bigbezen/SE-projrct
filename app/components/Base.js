@@ -3,21 +3,23 @@
  */
 var React = require('react');
 var PropTypes = React.PropTypes;
-var constantStrings = require("../Utils/constantStrings");
 
 function Base(props) {
     return (
-        <div col-sm-offset-12 col-sm-1>
-            <button
-                className="btn btn-block btn-link"
-                onClick={props.OnLogoutUser}>
-                {constantStrings}/logoutString
-            </button>
+        <div className='main-container'>
+            <div className="col-sm-1 col-sm-offset-11">
+                <button
+                    className="btn btn-block btn-link">
+                    התנתק
+                </button>
+            </div>
+            {props.children}
         </div>
     )
 }
 
 Base.propTypes = {
-    OnLogoutUser: PropTypes.func.isRequired,
+    //onLogoutUser: PropTypes.func.isRequired,
+    children: PropTypes.isRequired
 }
 module.exports = Base;

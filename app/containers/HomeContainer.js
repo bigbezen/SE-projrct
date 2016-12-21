@@ -5,12 +5,12 @@
 var React = require('react');
 var Home = require('../components/Home');
 var UsersContainer = require('../containers/UsersContainer')
-var ProductsContainer = require('../containers/ProductContainer')
+var ProductsContainer = require('../containers/ProductsContainer')
 var StoresContainer = require('../containers/StoresContainer')
 
 
 var HomeContainer = React.createClass({
-    handleUsers: function () {
+    /*handleUsers: function () {
         return UsersContainer.handleUsersSelection()
             .then(function (n) {
                 console.log(n);
@@ -29,13 +29,13 @@ var HomeContainer = React.createClass({
             .then(function (n) {
                 console.log(n);
             })
-    },
+    },*/
 
     render: function () {
         return (
-            <Home onSelectUsers={this.handleUsers}
+            <Home /*onSelectUsers={this.handleUsers}
                   onSelectProducts={this.handleProducts}
-                  onSelectStores={this.handleStores}/>
+                  onSelectStores={this.handleStores}/*//>
         )
     }
 });

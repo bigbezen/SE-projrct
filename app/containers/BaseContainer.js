@@ -9,11 +9,11 @@ var Base = require('../components/Base');
 
 var BaseContainer = React.createClass({
     handleLogoutUser: function () {
-        return console.log("logout")
+        console.log("logout")
     },
     render: function () {
         return (
-            <Base onLogoutUser={this.handleLogoutUser}/>
+            <Base /*onLogoutUser={this.handleLogoutUser}*/ children={this.props.children}/>
         )
     }
 });

@@ -3,10 +3,21 @@
  */
 var axios = require('axios');
 var serverUrl = 'http://localhost:3000/';
-var sessionId = 0;
+var sessionId = null;
+var name = null;
+var userType = null;
+var sendCompleteResponse = true; //Change to 'false' to get only the body of the response
+
 
 function errorMessage(funcName, mess) {
     console.warn('Error in function:' + funcName + ': ' + mess);
+}
+
+function returnVal(info) {
+    if (sendCompleteResponse) {
+        return info;
+    }
+    return info.data;
 }
 
 var userRequests = {
@@ -16,41 +27,258 @@ var userRequests = {
             password:password
         }).then(function (info) {
             sessionId = info.data.sessionId;
-            console.log('the user ' + username + ' Was logged in, with sessionId: ' + sessionId);
-            return info;
-            })
-            .catch(function (err) {
-                errorMessage('login', err);
+            name = username;
+            userType = info.data.userType;
+            console.log('the user ' + username + ' Was logged in. sessionId: ' + sessionId);
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('login', err);
         })
     },
 
-    logout: function(){
-        //TODO: call the relevant function
+    logout: function() {
+        return axios.post(serverUrl + 'user/logout', {
+            sessionId:sessionId
+        }).then(function (info) {
+            console.log('the user ' + name + ' Was logged out. sessionId: ' + sessionId);
+            sessionId = null;
+            name = null;
+            userType = null;
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('logout', err);
+        })
     },
 
     retrievePassword: function(){
-        //TODO: call the relevant function
+        return axios.post(serverUrl + 'user/retrievePassword', {
+            sessionId:sessionId
+        }).then(function (info) {
+            console.log('the user ' + name + ' retrievePassword. sessionId: ' + sessionId);
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('retrievePassword', err);
+        })
     },
 
-    changePassword: function(){
-        //TODO: call the relevant function
+    changePassword: function(oldPass, newPass){
+        return axios.post(serverUrl + 'user/changePassword', {
+            sessionId:sessionId,
+            oldPass:oldPass,
+            newPass:newPass
+        }).then(function (info) {
+            console.log('the user ' + name + ' changePassword. sessionId: ' + sessionId);
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('changePassword', err);
+        })
     },
 
     getProfile: function(){
-        //TODO: call the relevant function
-    },
-
-    getProductByID: function(){
-        //TODO: call the relevant function
-    },
-
-    getAllUsers: function(){
-        //TODO: call the relevant function
-    },
-
-    getUserByID: function(userID){
-        //TODO: call the relevant function
+        return axios.get(serverUrl + 'user/getProfile', {
+            sessionId:sessionId
+        }).then(function (info) {
+            console.log('the user ' + name + ' getProfile. sessionId: ' + sessionId);
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('getProfile', err);
+        })
     }
 };
 
+var managementRequests = {
+    addUser: function(user) {
+        return axios.post(serverUrl + 'management/addUser', {
+            sessionId:sessionId,
+            userDetails:user
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('addUser', err);
+        })
+    },
+
+    //TODO: param
+    editUser: function(user) {
+        return axios.post(serverUrl + 'management/editUser', {
+            sessionId:sessionId,
+            userDetails:user
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('editUser', err);
+        })
+    },
+
+    //TODO: param
+    deleteUser: function(user) {
+        return axios.post(serverUrl + 'management/deleteUser', {
+            sessionId:sessionId,
+            userDetails:user
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('deleteUser', err);
+        })
+    },
+
+    addStore: function(store) {
+        return axios.post(serverUrl + 'management/addStore', {
+            sessionId:sessionId,
+            storeDetails:store
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('addStore', err);
+        })
+    },
+
+    editStore: function(store) {
+        return axios.post(serverUrl + 'management/editStore', {
+            sessionId:sessionId,
+            storeDetails:store
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('editStore', err);
+        })
+    },
+
+    deleteStore: function(store) {
+        return axios.post(serverUrl + 'management/deleteStore', {
+            sessionId:sessionId,
+            storeDetails:store
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('deleteStore', err);
+        })
+    },
+
+    getAllStores: function() {
+        return axios.get(serverUrl + 'management/getAllStores', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('getAllStores', err);
+        })
+    },
+
+    addProduct: function(product) {
+        return axios.post(serverUrl + 'management/addProduct', {
+            sessionId:sessionId,
+            productDetails:product
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('addProduct', err);
+        })
+    },
+
+    editProduct: function(product) {
+        return axios.post(serverUrl + 'management/editProduct', {
+            sessionId:sessionId,
+            productDetails:product
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('editProduct', err);
+        })
+    },
+
+    deleteProduct: function(product) {
+        return axios.post(serverUrl + 'management/deleteProduct', {
+            sessionId:sessionId,
+            productDetails:product
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('deleteProduct', err);
+        })
+    },
+
+    getAllProducts: function() {
+        return axios.post(serverUrl + 'management/getAllProducts', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('getAllProducts', err);
+        })
+    },
+
+    addEncouragement: function() {
+        errorMessage('addEncouragement', 'Not implemented yet');
+    },
+
+    editEncouragement: function() {
+        errorMessage('editEncouragement', 'Not implemented yet');
+    },
+
+    deleteEncouragement: function() {
+        errorMessage('deleteEncouragement', 'Not implemented yet');
+    },
+
+    addShift: function() {
+        errorMessage('addShift', 'Not implemented yet');
+    },
+
+    editShift: function() {
+        errorMessage('editShift', 'Not implemented yet');
+    },
+
+    deleteShift: function() {
+        errorMessage('deleteShift', 'Not implemented yet');
+    }
+};
+
+var managerRequests = {
+    addNotificationRule: function(){
+        errorMessage('addNotificationRule', 'Not implemented yet');
+    },
+
+    removeNotificationRule: function(){
+        errorMessage('removeNotificationRule', 'Not implemented yet');
+    },
+
+    setNotificationRule: function(){
+        errorMessage('setNotificationRule', 'Not implemented yet');
+    },
+
+    sendBroadcastMessage: function(){
+        errorMessage('sendBroadcastMessage', 'Not implemented yet');
+    },
+
+    getShiftNotes: function(){
+        errorMessage('getShiftNotes', 'Not implemented yet');
+    },
+
+    editSalesReport: function(){
+        errorMessage('editSalesReport', 'Not implemented yet');
+    },
+
+    getRecommendations: function(){
+        errorMessage('getRecommendations', 'Not implemented yet');
+    },
+
+    getShiftDetails: function(){
+        errorMessage('getShiftDetails', 'Not implemented yet');
+    },
+
+    getShortages: function(){
+        errorMessage('getShortages', 'Not implemented yet');
+    },
+
+    publishShifts: function(){
+        errorMessage('publishShifts', 'Not implemented yet');
+    },
+
+    getReports: function(){
+        errorMessage('getReports', 'Not implemented yet');
+    }
+};
+
+module.exports = managerRequests;
+module.exports = managementRequests;
 module.exports = userRequests;

@@ -5,9 +5,8 @@ var connection = require('../communication/connectionHandler')
 
 var helpers = {
     login: function(username, password){
-        console.log('userServices- Login function: username:' +username + ', pass' + password);
-        //return connection.login(username, password);
-        return connection.login('aviramad', '111111');
+        console.log('userServices- Login function: username: ' +username + ', pass: ' + password);
+        return connection.login(username, password);
     },
 
     logout: function(){
@@ -20,9 +19,9 @@ var helpers = {
         return connection.retrievePassword();
     },
 
-    changePassword: function(){
+    changePassword: function(oldPass, newPass){
         console.log('userServices- changePassword function');
-        return connection.changePassword();
+        return connection.changePassword(oldPass, newPass);
     },
 
     getProfile: function(){

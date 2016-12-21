@@ -199,7 +199,7 @@ var managementRequests = {
     },
 
     getAllProducts: function() {
-        return axios.post(serverUrl + 'management/getAllProducts', {
+        return axios.get(serverUrl + 'management/getAllProducts', {
             sessionId:sessionId
         }).then(function (info) {
             return returnVal(info);

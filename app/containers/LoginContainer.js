@@ -4,10 +4,11 @@
 var React = require('react');
 var Login = require('../components/Login');
 var userServices = require('../communication/userServices');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link
 
 var LoginContainer = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
     getInitialState: function () {
         return {
             username: '',
@@ -23,9 +24,13 @@ var LoginContainer = React.createClass({
             username: '',
             password: ''
         });
+        console.log(this.context);
+        var context = this.context;
         userServices.login(username, password).then(function (n) {
             if(n){
-                window.location = '/#/LoggedIn/Home';
+                context.router.push({
+                    pathname: '/LoggedIn/Home'
+                })
             }
             else{
                 console.log("error");

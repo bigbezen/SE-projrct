@@ -9,7 +9,7 @@ function Base(props) {
         <div className='main-container'>
             <div className="col-sm-1 col-sm-offset-11">
                 <button
-                    className="btn btn-block btn-link">
+                    className="btn btn-block btn-link" onClick={props.onLogoutUser}>
                     התנתק
                 </button>
             </div>
@@ -19,7 +19,7 @@ function Base(props) {
 }
 
 Base.propTypes = {
-    //onLogoutUser: PropTypes.func.isRequired,
+    onLogoutUser: PropTypes.func.isRequired,
     children: PropTypes.isRequired
 }
 module.exports = Base;

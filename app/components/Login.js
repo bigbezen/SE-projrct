@@ -11,6 +11,7 @@ function Login(props) {
         return (
             <div className="jumbotron col-sm-offset-3 col-sm-6 text-center" >
                 <h1>{constantsStrings.welcome_string}</h1>
+                <h2>blaaa</h2>
                 <form onSubmit={props.onSubmitUser}>
 
                     <div className="form-group ">

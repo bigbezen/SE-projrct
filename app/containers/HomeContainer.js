@@ -4,38 +4,34 @@
 
 var React = require('react');
 var Home = require('../components/Home');
-var UsersContainer = require('../containers/UsersContainer')
-var ProductsContainer = require('../containers/ProductsContainer')
-var StoresContainer = require('../containers/StoresContainer')
-
 
 var HomeContainer = React.createClass({
-    /*handleUsers: function () {
-        return UsersContainer.handleUsersSelection()
-            .then(function (n) {
-                console.log(n);
-            })
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+    handleSelectUsers: function () {
+        this.context.router.push({
+           pathname: '/LoggedIn/Users'
+        })
     },
 
-    handleStores: function () {
-        return StoresContainer.handleStoresSelection()
-            .then(function (n) {
-                console.log(n);
-            })
+    handleSelectStores: function () {
+        this.context.router.push({
+            pathname: '/LoggedIn/Stores'
+        })
     },
 
-    handleProducts: function () {
-        return ProductsContainer.handleProductsSelection()
-            .then(function (n) {
-                console.log(n);
-            })
-    },*/
+    handleSelectProducts: function () {
+        this.context.router.push({
+            pathname: '/LoggedIn/Products'
+        })
+    },
 
     render: function () {
-        return (
-            <Home /*onSelectUsers={this.handleUsers}
-                  onSelectProducts={this.handleProducts}
-                  onSelectStores={this.handleStores}/*//>
+        console.log("home container render");
+        return ( <Home onSelectUsers={this.handleSelectUsers}
+                       onSelectProducts={this.handleSelectProducts}
+                       onSelectStores={this.handleSelectStores}/>
         )
     }
 });

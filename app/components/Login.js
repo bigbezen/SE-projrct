@@ -5,7 +5,7 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link
 var PropTypes = React.PropTypes;
-var constantsStrings = require('../components/ConstantStrings');
+var constantsStrings = require('../utils/ConstantStrings');
 
 function Login(props) {
         return (

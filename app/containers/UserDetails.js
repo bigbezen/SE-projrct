@@ -4,19 +4,12 @@
 
 var React = require('react');
 
-//var ProductDetails = require('../containers/ProductDetails');
-
-
 var UserDetails = React.createClass({
-    handleUserSelection: function () {
-        return console.log("user details")
-            .then(function (n) {
-                console.log(n);
-            })
-    },
+
     render: function () {
+        console.log(this.props.location.query);
         return (
-            <div></div>
+            <div>user detailsssss</div>
         )
     }
 });

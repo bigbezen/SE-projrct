@@ -8,11 +8,17 @@ var userServices = require('../communication/userServices');
 
 
 var BaseContainer = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
     handleLogoutUser: function () {
         console.log('BaseContainer- Logout function');
+        var context = this.context;
         userServices.logout().then(function (n) {
             if(n){
-                window.location = '/#/Login';
+                context.router.push({
+                    pathname: '/'
+                })
             }
             else{
                 console.log("error");

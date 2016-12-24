@@ -3,7 +3,7 @@
  */
 var React = require('react');
 var PropTypes = React.PropTypes;
-var constantsStrings = require('../components/ConstantStrings');
+var constantsStrings = require('../utils/ConstantStrings');
 
 var Home = function (props) {
         console.log("Home component- render");

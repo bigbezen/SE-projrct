@@ -40,7 +40,7 @@ var deleteEncouragement = async function (sessionId, encouragementDetails) {
     logger.info('Services.Encouragement.index.deleteEncouragement', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'deleteEncouragement');
     if(user != null){
-        var encouragement =  await dal.deleteEncouragement(encouragementDetails)
+        var encouragement =  await dal.deleteEncouragement(iDencouragement);
         return {'encouragement': encouragement, 'code': 200, 'err': null};
     }else{
         return {'encouragement': null, 'code': 401, 'err': 'permission denied'}

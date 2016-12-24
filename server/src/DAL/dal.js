@@ -19,8 +19,8 @@ module.exports = {
         return userModel.remove({'username': username});
     },
 
-    addStore: function (store) {
-        store.save();
+    addStore: async function (store) {
+        return store.save();
     },
 
 
@@ -39,39 +39,39 @@ module.exports = {
 
 
     editStore: async function (storeDetails) {
-        return storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: true })
+        return storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: false })
     },
 
-    deleteStore: async function (storeDetails) {
-        return storeModel.remove({'_id': mongoose.Types.ObjectId(storeDetails._id)});
+    deleteStore: async function (storeId) {
+        return storeModel.remove({'_id': mongoose.Types.ObjectId(storeId)});
     },
 
     getAllStores: async function(){
         return storeModel.find({});
     },
 
-    getStoreByNameAndArea: async function (storeDetails) {
-        return storeModel.findOne({'name': storeDetails.name, 'area': storeDetails.area});
+    getStoreByNameAndArea: async function (name, area) {
+        return storeModel.findOne({'name': name, 'area': area});
     },
 
-    addProduct: function(product){
-        product.save();
+    addProduct: async function(product){
+        return product.save();
     },
 
     editProduct: async function(productDetails){
-        return productModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, productDetails, { upsert: true })
+        return productModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, productDetails, { upsert: false })
     },
 
-    deleteProduct: async function(productDetails){
-        return productModel.remove({'_id': mongoose.Types.ObjectId(productDetails._id)});
+    deleteProduct: async function(ProductId){
+        return productModel.remove({'_id': mongoose.Types.ObjectId(ProductId)});
     },
 
     getAllProducts: async function () {
         return productModel.find({});
     },
 
-    getProductByNameAndCatagory: async function(productDetails){
-        return productModel.findOne({'name': productDetails.name, 'category': productDetails.category});
+    getProductByNameAndCatagory: async function(name,category){
+        return productModel.findOne({'name': name, 'category': category});
     },
 
     addEncouragement: function(Encouragement){
@@ -79,11 +79,11 @@ module.exports = {
     },
 
     editEncouragement: async function(EncouragementDetails){
-        return encouragementModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, EncouragementDetails, { upsert: true })
+        return encouragementModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, EncouragementDetails, { upsert: false })
     },
 
-    deleteEncouragement: async function(EncouragementDetails){
-        return encouragementModel.remove({'_id': mongoose.Types.ObjectId(EncouragementDetails._id)})
+    deleteEncouragement: async function(iDencouragement){
+        return encouragementModel.remove({'_id': mongoose.Types.ObjectId(iDencouragement)})
     },
 
     getAllEncouragements: async function () {

@@ -8,7 +8,7 @@ var addStore = async function(sessionId, storeDetails) {
     var user = await permissions.validatePermissionForSessionId(sessionId, 'addStore');
         //check if to user have the permissions
     if(user != null) {
-        var store = await dal.getStoreByNameAndArea(storeDetails);
+        var store = await dal.getStoreByNameAndArea(storeDetails.name, storeDetails.area);
         //check if the store existing
         if (store == null) {
             var store = new storeModel();
@@ -19,7 +19,7 @@ var addStore = async function(sessionId, storeDetails) {
             store.address = storeDetails.address;
             store.area = storeDetails.area;
             store.channel = storeDetails.channel;
-            dal.addStore(store);
+            var res = await dal.addStore(store);
             return {'store': store, 'code': 200, 'err': null};
         }
         else {
@@ -42,11 +42,11 @@ var editStore = async function (sessionId, storeDetails) {
     }
 };
 
-var deleteStroe = async function (sessionId, storeDetails) {
+var deleteStroe = async function (sessionId, storeId) {
     logger.info('Services.store.index.deleteStore', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'deleteStore');
     if(user != null){
-        var store =  await dal.deleteStore(storeDetails)
+        var store =  await dal.deleteStore(storeId)
         return {'store': store, 'code': 200, 'err': null};
     }else{
         return {'store': null, 'code': 401, 'err': 'permission denied'}

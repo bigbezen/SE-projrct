@@ -8,7 +8,7 @@ var addProduct = async function(sessionId, productDetails) {
     logger.info('Services.product.index.addProduct', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'addProduct');
     if(user != null){
-        var product = await dal.getProductByNameAndCatagory(productDetails);
+        var product = await dal.getProductByNameAndCatagory(productDetails.name, productDetails.category);
         //check if the store existing
         if(product == null){
             var product = new productModel();
@@ -19,11 +19,11 @@ var addProduct = async function(sessionId, productDetails) {
             product.subCategory = productDetails.subCategory;
             product.minRequiredAmount = productDetails.minRequiredAmount;
             product.notifyManager = productDetails.notifyManager;
-            dal.addProduct(product);
+            var res = await dal.addProduct(product);
             return {'product': product, 'code': 200, 'err': null};
         }
         else{
-            return {'product': null, 'code': 409, 'err': null};
+            return {'product': null, 'code': 409, 'err': 'product already exist'};
         }
     }
     else {
@@ -33,7 +33,7 @@ var addProduct = async function(sessionId, productDetails) {
 
 var editProduct = async function (sessionId, productDetails) {
     logger.info('Services.product.index.editProduct', {'session-id': sessionId});
-    var user = permissions.validatePermissionForSessionId(sessionId, 'editProduct');
+    var user = await permissions.validatePermissionForSessionId(sessionId, 'editProduct');
     if(user != null){
         var product = await dal.editProduct(productDetails);
         return {'product': product, 'code':200, 'err': null};
@@ -43,11 +43,11 @@ var editProduct = async function (sessionId, productDetails) {
     }
 };
 
-var deleteProduct = async function(sessionId, productDetails){
+var deleteProduct = async function(sessionId, ProductId){
     logger.info('Services.product.index.deleteProduct', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'deleteProduct');
     if(user != null){
-        var product = await dal.deleteProduct(productDetails);
+        var product = await dal.deleteProduct(ProductId);
         return {'product': product, 'code':200, 'err': null};
     }
     else {

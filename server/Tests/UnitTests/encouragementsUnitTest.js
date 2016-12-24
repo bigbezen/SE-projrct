@@ -1,18 +1,254 @@
 var assert = require('chai').assert;
+var assert            = require('chai').assert;
+var dal               = require('../../src/DAL/dal');
+var storeService      = require('../../src/Services/store/index');
+var userModel         = require('../../src/Models/user');
 
 describe('encouranements unit test', function () {
 
-    describe('test 01', function () {
-        it('pass test', function () {
-            //implementation of the test came here
-            assert.equal(2, 2, 'not pass');
+    var manager;
+    var notManager;
+    var newStoreDetails = {'name': 'bana', 'managerName': 'shahaf', 'phone': '0542458658', 'city': 'beersheva', 'address': 'rager12', 'area': 'south', 'channel': 'hot'};
+    var editStoreDetails = {'name': 'bana-update', 'managerName': 'blabla', 'phone': '0542450958', 'city': 'rishon', 'address': 'rager142', 'area': 'center', 'channel': 'cold'};
+    beforeEach(async function () {
+        manager = new userModel();
+        manager.username = 'shahaf';
+        manager.sessionId = '123456';
+        manager.jobDetails.userType = 'manager';
+        var res = await dal.addUser(manager);
+
+        notManager = new userModel();
+        notManager.username = 'matan';
+        notManager.sessionId = '12123434';
+        notManager.jobDetails.userType = 'salesman';
+        res = await dal.addUser(notManager);
+    });
+
+    afterEach(async function () {
+        var res= await dal.cleanDb();
+    });
+
+    describe('test add store', function (){
+        it('add store not by manager',async function () {
+            var result = await storeService.addStore(notManager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null,'store return null');
+
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 0, 'the db not contains any store');
+        });
+
+        it('add store by manager', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+            assert.equal(result.store.name, newStoreDetails.name, 'store return same');
+
+            //get all the store to ensure that the store  added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the new store');
+            assert(result[0].name, newStoreDetails.name);
+        });
+
+        it('add store with existing name same area', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+            assert.equal(result.store.name, newStoreDetails.name, 'store return same');
+            //add the same store
+            result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'store already exist', 'store already exist');
+            assert.equal(result.code, 409, 'code 409 err');
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db not contains any store');
+            assert(result[0].name, newStoreDetails.name);
         });
     });
 
-    describe('test 02', function () {
-        it('pass test', function () {
-            //implementation of the test came here
-            assert.equal(2, 2, 'not pass');
+    describe('test edit store', function () {
+        it('edit store not by manager', async function () {
+            //add new store
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            //edit the store not be manager
+
+            result = await storeService.editStore(notManager.sessionId, editStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+
+            //get all the store to ensure that the store not changed
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db not contains any store');
+            assert.equal(result[0].name, newStoreDetails.name, 'same name like the new store');
+        });
+
+        it('edit store by manager', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await dal.getAllStores();
+            editStoreDetails._id = result[0]._id;
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+
+            //get all the store to ensure that the store  edited
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the edit store');
+            assert(result[0].name, editStoreDetails.name);
+        });
+
+        it('edit store name', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await dal.getAllStores();
+            editStoreDetails._id = result[0]._id;
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+
+            //get all the store to ensure that the store  edited
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the edit store');
+            assert(result[0].name, editStoreDetails.name);
+        });
+
+        it('edit store managerName', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await dal.getAllStores();
+            editStoreDetails._id = result[0]._id;
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+
+            //get all the store to ensure that the store  edited
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the edit store');
+            assert(result[0].managerName, editStoreDetails.managerName);
+        });
+        it('edit store phone', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await dal.getAllStores();
+            editStoreDetails._id = result[0]._id;
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+
+            //get all the store to ensure that the store  edited
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the edit store');
+            assert(result[0].phone, editStoreDetails.phone);
+        });
+        it('edit store city', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await dal.getAllStores();
+            editStoreDetails._id = result[0]._id;
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+
+            //get all the store to ensure that the store  edited
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the edit store');
+            assert(result[0].city, editStoreDetails.city);
+        });
+
+        it('edit store area', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await dal.getAllStores();
+            editStoreDetails._id = result[0]._id;
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+
+            //get all the store to ensure that the store  edited
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the edit store');
+            assert(result[0].area, editStoreDetails.area);
+        });
+
+        it('edit store channel', async function () {
+            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await dal.getAllStores();
+            editStoreDetails._id = result[0]._id;
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.isNull(result.err);
+            assert.equal(result.code, 200, 'code 200 ok');
+
+            //get all the store to ensure that the store  edited
+            result = await dal.getAllStores();
+            assert.equal(result.length, 1, 'the db contains the edit store');
+            assert(result[0].channel, editStoreDetails.channel);
+        });
+    });
+
+    describe('test delete store', function () {
+        it('delete store not by manager', async function() {
+            var result = await storeService.deleteStroe(notManager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 0, 'the db not contains any store');
+        });
+
+        it('delete store by manager', async function() {
+            var result = await storeService.addStore(notManager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 0, 'the db not contains any store');
+        });
+
+        it('delete store not existing store', async function() {
+            var result = await storeService.addStore(notManager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 0, 'the db not contains any store');
+        });
+    });
+
+    describe('test getAllStores store', function () {
+        it('getAll Stores store not by permission user', async function () {
+            var result = await storeService.deleteStroe(notManager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 0, 'the db not contains any store');
+        });
+
+        it('getAll Stores store by permission', async function () {
+            var result = await storeService.deleteStroe(notManager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 0, 'the db not contains any store');
+        });
+
+        it('getAll Stores store by permission', async function () {
+            var result = await storeService.deleteStroe(notManager.sessionId, newStoreDetails);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+
+            //get all the store to ensure that the store not added
+            result = await dal.getAllStores();
+            assert.equal(result.length, 0, 'the db not contains any store');
         });
     });
 

@@ -1,8 +1,8 @@
 /**
  * Created by lihiverchik on 14/12/2016.
  */
-var connection = require('../communication/connectionHandler')
-//var connection = require('../communication/connectionHandlerStub')
+//var connection = require('../communication/connectionHandler')
+var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
     addUser: function(user){

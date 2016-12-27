@@ -6,7 +6,9 @@ var ReactBsTable = require("react-bootstrap-table");
 var BootstrapTable = ReactBsTable.BootstrapTable;
 var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
+var communication = require('../communication/managementServices');
 
+/*
 var products =
     [{
         name :'אג\'וני ווקר blue',
@@ -25,6 +27,9 @@ var products =
         minRequiredAmount: 3,
         notifyManager: true
 }];
+*/
+
+var products = communication.getAllProducts();
 
 const category = {
     'ספיריט': 'ספיריט',

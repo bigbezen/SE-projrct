@@ -1,7 +1,5 @@
-var mongoose    = require('mongoose');
-var Schema      = mongoose.Schema;
-
-var storeSchema = new Schema({
+var storeModel = {
+    '_id' : String,
     'name': String,
     'managerName': String,
     'phone': String,
@@ -9,8 +7,8 @@ var storeSchema = new Schema({
     'address': String,
     'area': String,
     'channel': String
-});
+};
 
-var store = mongoose.model('store', storeSchema);
+function store(){};
 
 module.exports = store;

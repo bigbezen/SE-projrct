@@ -1,7 +1,5 @@
-var mongoose    = require('mongoose');
-var Schema      = mongoose.Schema;
-
-var userSchema = new Schema({
+var userModel= {
+    '_id' : String,
     'username': String,
     'password': String,
     'sessionId': String,
@@ -29,7 +27,6 @@ var userSchema = new Schema({
         'area': String,
         'channel': String,
         'encouragements': [
-            {type: mongoose.Schema.Types.ObjectId, ref: 'encouragements'}
         ]
     },
     'inbox': [
@@ -41,8 +38,8 @@ var userSchema = new Schema({
             'read': Boolean
         }
     ]
-});
+};
 
-var user = mongoose.model('user', userSchema);
+function user(){};
 
 module.exports = user;

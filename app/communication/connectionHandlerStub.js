@@ -5,10 +5,6 @@ var userObj = require('../Models/user');
 var storeObj = require('../models/store');
 var productObj = require('../models/product');
 
-function errorMessage(funcName, mess) {
-    console.warn('Error in function:' + funcName + ': ' + mess);
-}
-
 var userRequests = {
     login: function(username, password) {
         return 'you logged in';
@@ -83,33 +79,27 @@ var managementRequests = {
     },
 
     addEncouragement: function() {
-        errorMessage('addEncouragement', 'Not implemented yet');
     },
 
     editEncouragement: function() {
-        errorMessage('editEncouragement', 'Not implemented yet');
     },
 
     deleteEncouragement: function() {
-        errorMessage('deleteEncouragement', 'Not implemented yet');
     },
 
     addShift: function() {
-        errorMessage('addShift', 'Not implemented yet');
     },
 
     editShift: function() {
-        errorMessage('editShift', 'Not implemented yet');
     },
 
     deleteShift: function() {
-        errorMessage('deleteShift', 'Not implemented yet');
     }
 };
 
 function createUser() {
     var user1 = new userObj();
-
+    user1._id = '1';
     user1.username = 'aviramad';
     user1.password =  'pass1';
     user1.startDate = new Date('1/1/13');
@@ -126,10 +116,11 @@ function createUser() {
 }
 
 function createUsersCollection() {
-    var users = new arrayOf[userObj];
+    var users = [];
 
     // first user
     var user1 = new userObj();
+    user1._id = '1';
     user1.username = 'aviramad';
     user1.password =  'pass1';
     user1.startDate = new Date('1/1/13');
@@ -142,10 +133,11 @@ function createUsersCollection() {
     user1.jobDetails.userType = 'דייל';
     user1.inbox = [];
 
-    users.add(user1);
+    users.push(user1);
 
     // sec user
-    var user2 = new userModel();
+    var user2 = new userObj();
+    user2._id = '2';
     user2.username = 'darga';
     user2.password =  'pass2';
     user2.startDate = new Date('2/1/13');
@@ -158,10 +150,11 @@ function createUsersCollection() {
     user2.jobDetails.userType = 'דייל';
     user2.inbox = [];
 
-    users.add(user2);
+    users.push(user2);
 
     // 3th user
-    var user3 = new userModel();
+    var user3 = new userObj();
+    user3._id = '3';
     user3.username = 'lihiv';
     user3.password =  'pass3';
     user3.startDate = new Date('4/10/15');
@@ -174,10 +167,11 @@ function createUsersCollection() {
     user3.jobDetails.userType = 'דייל';
     user3.inbox = [];
 
-    users.add(user3);
+    users.push(user3);
 
     // 4th user
-    var user4 = new userModel();
+    var user4 = new userObj();
+    user4._id = '4';
     user4.username = 'shahafs';
     user4.password =  'pass4';
     user4.startDate = new Date('12/12/16');
@@ -190,10 +184,11 @@ function createUsersCollection() {
     user4.jobDetails.userType = 'סוכן שטח';
     user4.inbox = [];
 
-    users.add(user4);
+    users.push(user4);
 
     // 5th user
-    var user5 = new userModel();
+    var user5 = new userObj();
+    user5._id = '5';
     user5.username = 'bezen';
     user5.password =  'pass5';
     user5.startDate = new Date('5/6/14');
@@ -206,16 +201,17 @@ function createUsersCollection() {
     user5.jobDetails.userType = 'מנהל';
     user5.inbox = [];
 
-    users.add(user5);
+    users.push(user5);
 
     return users;
 }
 
 function createStoresCollection() {
-    var stores = new arrayOf[storeObj];
+    var stores = [];
 
     //store 1
     var store1 = new storeObj();
+    store1._id = '1';
     store1.name = 'בנא משקאות';
     store1.managerName = 'ישראל ישראלי';
     store1.phone = '052333333';
@@ -224,10 +220,11 @@ function createStoresCollection() {
     store1.area = 'דרום';
     store1.channel = 'מסחרי';
 
-    stores.add(store1);
+    stores.push(store1);
 
     //store 2
     var store2 = new storeObj();
+    store2._id = '2';
     store2.name = 'דרינק אנד קו';
     store2.managerName = 'מירי מסיקה';
     store2.phone = '052222222';
@@ -236,10 +233,11 @@ function createStoresCollection() {
     store2.area = 'דרום';
     store2.channel = 'מסחרי';
 
-    stores.add(store2);
+    stores.push(store2);
 
     //store 3
     var store3 = new storeObj();
+    store3._id = '3';
     store3.name = 'רמי לוי בעמ';
     store3.managerName = 'רמי לוי';
     store3.phone = '052111111';
@@ -248,10 +246,11 @@ function createStoresCollection() {
     store3.area = 'דרום';
     store3.channel = 'קלאסי';
 
-    stores.add(store3);
+    stores.push(store3);
 
     //store 4
     var store4 = new storeObj();
+    store4._id = '4';
     store4.name = 'טרמינל';
     store4.managerName = 'אביב גפן';
     store4.phone = '052333338';
@@ -260,7 +259,7 @@ function createStoresCollection() {
     store4.area = 'דרום';
     store4.channel = 'מסחרי';
 
-    stores.add(store4);
+    stores.push(store4);
 
     return stores;
 }
@@ -268,6 +267,7 @@ function createStoresCollection() {
 function createStore() {
     var store4 = new storeObj();
 
+    store4._id = '1';
     store4.name = 'טרמינל';
     store4.managerName = 'אביב גפן';
     store4.phone = '052333338';
@@ -280,10 +280,11 @@ function createStore() {
 }
 
 function createProductsCollection() {
-    var products = new arrayOf[productObj];
+    var products = [];
 
     // product 1
     var product1 = new productObj();
+    product1._id = '1';
     product1.name = 'אבסולוט';
     product1.retailPrice = 40;
     product1.salePrice = 50;
@@ -292,9 +293,10 @@ function createProductsCollection() {
     product1.minRequiredAmount = 20;
     product1.notifyManager = false;
 
-    products.add(product1);
+    products.push(product1);
 
     var product2 = new productObj();
+    product2._id = '2';
     product2.name = 'סמירנוף';
     product2.retailPrice = 50;
     product2.salePrice = 55;
@@ -303,9 +305,10 @@ function createProductsCollection() {
     product2.minRequiredAmount = 20;
     product2.notifyManager = false;
 
-    products.add(product2);
+    products.push(product2);
 
     var product3 = new productObj();
+    product3._id = '3';
     product3.name = 'קורווזיה VSOP';
     product3.retailPrice = 170;
     product3.salePrice = 220;
@@ -314,9 +317,10 @@ function createProductsCollection() {
     product3.minRequiredAmount = 5;
     product3.notifyManager = true;
 
-    products.add(product3);
+    products.push(product3);
 
     var product4 = new productObj();
+    product4._id = '4';
     product4.name = 'יין תבור';
     product4.retailPrice = 50;
     product4.salePrice = 70;
@@ -325,9 +329,10 @@ function createProductsCollection() {
     product4.minRequiredAmount = 15;
     product4.notifyManager = false;
 
-    products.add(product4);
+    products.push(product4);
 
     var product5 = new productObj();
+    product5._id = '5';
     product5.name ='ג\'וני ווקר blue';
     product5.retailPrice = 400;
     product5.salePrice = 600;
@@ -336,7 +341,7 @@ function createProductsCollection() {
     product5.minRequiredAmount = 3;
     product5.notifyManager = true;
 
-    products.add(product5);
+    products.push(product5);
 
     return products;
 }
@@ -344,6 +349,7 @@ function createProductsCollection() {
 function createProduct() {
     var product5 = new productObj();
 
+    product5._id = '1';
     product5.name = 'אבסולוט';
     product5.retailPrice = 40;
     product5.salePrice = 50;
@@ -355,8 +361,53 @@ function createProduct() {
     return product5;
 }
 
-
 /*
+function createProductsCollectionArray() {
+    var products  = [
+        {
+            name: 'אבסולוט',
+            retailPrice: 40,
+            salePrice: 50,
+            category: 'ספיריט',
+            subCategory: 'וודקה',
+            minRequiredAmount: 20,
+            notifyManager: false
+        }, {
+            name : 'סמירנוף',
+            retailPrice : 50,
+            salePrice : 55,
+            category : 'ספיריט',
+            subCategory : 'וודקה',
+            minRequiredAmount : 20,
+            notifyManager : false
+        }, {
+            name : 'קורווזיה VSOP',
+            retailPrice : 170,
+            salePrice : 220,
+            category : 'ספיריט',
+            subCategory : 'קוניאק',
+            minRequiredAmount : 5,
+            notifyManager : true
+        }, {
+            name : 'יין תבור',
+            retailPrice : 50,
+            salePrice : 70,
+            category : 'יין',
+            subCategory : 'הסדרה האיזורית',
+            minRequiredAmount : 15,
+            notifyManager : false
+        } ,{
+            name : 'ג\'וני ווקר blue',
+            retailPrice : 400,
+            salePrice : 600,
+            category : 'ספיריט',
+            subCategory : 'וויסקי',
+            minRequiredAmount : 3,
+            notifyManager : true
+        }];
+    return products;
+}
+*/
 
 var managerRequests = {
     addNotificationRule: function(){
@@ -405,9 +456,5 @@ var managerRequests = {
 };
 
 module.exports = managerRequests;
-module.exports = managementRequests;
-
- */
-
 module.exports = userRequests;
 module.exports = managementRequests;

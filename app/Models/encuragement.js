@@ -1,13 +1,11 @@
-var mongoose    = require('mongoose');
-var Schema      = mongoose.Schema;
+var product = require('../Models/product');
 
-var encouragementSchema = new Schema({
-    'products': [{type: mongoose.Schema.Types.ObjectId, ref: 'product'}],
+//TODO: change this!!!!
+var encouragement = {
+    '_id' : String,
     'numOfProducts': Number,
     'rate': Number,
     'active': Boolean
-});
-
-var encouragement = mongoose.model('encouragement', encouragementSchema);
+};
 
 module.exports = encouragement;

@@ -1,7 +1,5 @@
-var mongoose    = require('mongoose');
-var Schema      = mongoose.Schema;
-
-var productSchema = new Schema({
+var productModel = {
+    '_id': String,
     'name': String,
     'retailPrice': Number,
     'salePrice': Number,
@@ -9,8 +7,10 @@ var productSchema = new Schema({
     'subCategory': String,
     'minRequiredAmount': Number,
     'notifyManager': Boolean
-});
+};
 
-var product = mongoose.model('product', productSchema);
+
+
+function product(){};
 
 module.exports = product;

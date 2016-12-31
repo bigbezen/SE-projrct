@@ -1,0 +1,24 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RunUnitTests" type="mocha-javascript-test-runner" factoryName="Mocha">
+    <node-interpreter>project</node-interpreter>
+    <node-options />
+    <working-directory>$PROJECT_DIR$</working-directory>
+    <pass-parent-env>true</pass-parent-env>
+    <envs />
+    <ui>bdd</ui>
+    <extra-mocha-options />
+    <test-kind>TEST_FILE</test-kind>
+    <test-file>$PROJECT_DIR$/build/Tests/UnitTests/UnitTestController.js</test-file>
+    <method>
+      <option name="NpmBeforeRunTask" enabled="true">
+        <package-json value="$PROJECT_DIR$/package.json" />
+        <command value="run" />
+        <scripts>
+          <script value="compile" />
+        </scripts>
+        <node-interpreter value="project" />
+        <envs />
+      </option>
+    </method>
+  </configuration>
+</component>

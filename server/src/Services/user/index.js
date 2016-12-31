@@ -5,6 +5,7 @@ var dal             = require('../../DAL/dal');
 var permissions     = require('../permissions/index');
 
 var userModel       = require('../../Models/user');
+var inboxModel      = require('../../Models/message');
 
 var hashGenerator   = require('hash-generator');
 
@@ -23,7 +24,7 @@ var login = async function(username, password){
             return {'code': '500', 'err': 'something went wrong'};
     }
     else{
-        return {'sessionId': null, 'err': 'error while logging in'};
+        return {'code': 409, 'err': 'error while logging in'};
     }
 };
 
@@ -31,10 +32,10 @@ var logout = async function(sessionId) {
     logger.info('Services.user.index.logout', {'session-id': sessionId});
     var user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 403, 'err': 'user is not logged in'};
+        return {'code': 401, 'err': 'user is not logged in'};
     }
 
-    user.sessionId = "";
+    user.sessionId = undefined;
     var res = await dal.editUser(user);
     if(res != null)
         return {'code': 200};
@@ -42,13 +43,12 @@ var logout = async function(sessionId) {
         return {'code': 500, 'err': 'something went wrong'};
 };
 
-
 var addUser = async function(sessionId, userDetails) {
     logger.info('Services.user.index.addUser', {'session-id': sessionId});
     //TODO: remove comment from authorization check
-    // var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser', null);
-    // if(isAuthorized == null)
-    //     return {'code': 403, 'err': 'user not authorized'};
+    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': 'user not authorized'};
 
     var isExistUsername = await dal.getUserByUsername(userDetails.username);
     var isExistId = await dal.getUserById(userDetails.personal.id);
@@ -66,8 +66,10 @@ var addUser = async function(sessionId, userDetails) {
     newUser.jobDetails = userDetails.jobDetails;
     newUser.inbox = [];
     var res = await dal.addUser(newUser);
-    newUser.password = "";
     if(res != null){
+        dal.createInbox(newUser._id);
+        newUser = newUser.toObject();
+        delete newUser.password;
         return {'code': 200, 'user': newUser};
     }
     else{
@@ -80,13 +82,19 @@ var editUser = async function(sessionId, username, userDetails){
 
     var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
     if(isAuthorized == null)
-        return {'code': 403, 'err': 'user not authorized'};
+        return {'code': 401, 'err': 'user not authorized'};
 
     var user = await dal.getUserByUsername(username);
     if(user == null)
         return {'code': 409, 'err': 'problem occurred with one of the parameters'};
+
+    var isExistUsername = await dal.getUserByUsername(userDetails.username);
+    var isExistId = await dal.getUserById(userDetails.personal.id);
+    if(isExistUsername != null || isExistId != null){
+        return {'code': 409, 'err': 'Username or Id already exists'}
+    }
+
     user.username = userDetails.username;
-    user.password =  cypher.encrypt(userDetails.password);
     user.startDate = new Date(userDetails.startDate);
     user.endDate = userDetails.endDate;
     user.personal = userDetails.personal;
@@ -102,17 +110,17 @@ var editUser = async function(sessionId, username, userDetails){
     }
 };
 
-
 var deleteUser = async function(sessionId, username) {
     var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
     if (isAuthorized == null)
-        return {'code': 403, 'err': 'user not authorized'};
+        return {'code': 401, 'err': 'user not authorized'};
 
     var user = await dal.getUserByUsername(username);
     if (user == null)
         return {'code': 409, 'err': 'problem occurred with one of the parameters'};
 
     var res = await dal.deleteUser(username);
+    //TODO: check return value of remove from mongo
     return {'code': 200};
 };
 
@@ -121,7 +129,7 @@ var changePassword = async function(sessionId, oldPass, newPass) {
 
     var user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 403, 'err': 'unauthorized request'};
+        return {'code': 401, 'err': 'unauthorized request'};
     }
 
     if(user.password != cypher.encrypt(oldPass)){
@@ -136,12 +144,11 @@ var changePassword = async function(sessionId, oldPass, newPass) {
         return {'code': 500, 'err': 'something went wrong'};
 };
 
-
 var retrievePassword = async function(sessionId) {
     logger.info('Services.user.index.retrievePassword', {'sessionId': sessionId});
     var user = await dal.getUserBySessionId(sessionId);
     if(user == null)
-        return {'code': 403, 'err': 'user is not logged in'};
+        return {'code': 401, 'err': 'user is not logged in'};
 
     if (mailer.sendMail([user.contact.email], mailer.subjects.retrievePassword,
             'Your password is: ' + cypher.decrypt(user.password)))
@@ -152,18 +159,39 @@ var retrievePassword = async function(sessionId) {
 
 };
 
-
 var getProfile = async function(sessionId) {
     logger.info('Services.user.index.getProfile', {'sessionId': sessionId});
     var user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 403, 'err': 'user is not logged in'};
+        return {'code': 401, 'err': 'user is not logged in'};
     }
 
-    user.password = "";
+    user = user.toObject();
+    delete user.password;
+    delete user.sessionId;
     return {'code': 200, 'user': user};
 };
 
+var getAllUsers = async function(sessionId){
+    logger.info('Services.user.index.getAllUsers', {'sessionId': sessionId});
+    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getAllUsers', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    var users = await dal.getAllUses();
+    if(users != null) {
+    var usersAsObjects = [];
+        for(var user of users){
+            user = user.toObject();
+            delete user.password;
+            delete user.sessionId;
+            usersAsObjects.push(user);
+        }
+        return {'code': 200, 'users': usersAsObjects};
+    }
+    else
+        return {'code': 500, 'err': 'something went wrong'};
+};
 
 var _generateSessionId = async function() {
     var isDuplicateSessionId = true;
@@ -187,3 +215,4 @@ module.exports.deleteUser = deleteUser;
 module.exports.changePassword = changePassword;
 module.exports.getProfile = getProfile;
 module.exports.retrievePassword = retrievePassword;
+module.exports.getAllUsers = getAllUsers;

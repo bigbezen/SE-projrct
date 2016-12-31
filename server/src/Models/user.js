@@ -33,14 +33,16 @@ var userSchema = new Schema({
         ]
     },
     'inbox': [
-        {
-            'type': String,
-            'sender': String,
-            'content': String,
-            'date': Date,
-            'read': Boolean
-        }
+        {type: mongoose.Schema.Types.ObjectId, ref: 'messages'}
     ]
+// {
+//     'type': String,
+//     'sender': String,
+//     'content': String,
+//     'date': Date,
+//     'read': Boolean
+// }
+
 });
 
 var user = mongoose.model('user', userSchema);

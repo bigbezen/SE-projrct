@@ -74,8 +74,8 @@ module.exports = {
         return productModel.findOne({'name': name, 'category': category});
     },
 
-    addEncouragement: function(Encouragement){
-        Encouragement.save();
+    addEncouragement: async function(Encouragement){
+        return Encouragement.save();
     },
 
     editEncouragement: async function(EncouragementDetails){
@@ -88,6 +88,10 @@ module.exports = {
 
     getAllEncouragements: async function () {
         return encouragementModel.find({});
+    },
+
+    getProductById: async function (productId){
+        return productModel.findOne({'_id': productId});
     },
 
     getProductsById: async function(encouragementDetails){

@@ -13,15 +13,23 @@ var addEncouragement = async function(sessionId, encouragementDetails) {
         encouragement.numOfProducts = encouragementDetails.numOfProducts;
         encouragement.rate = encouragementDetails.rate;
 
+        //check if all the products id belongs to products
+        for (i = 0; i < encouragementDetails.products.length; i++) {
+           var exist = await dal.getProductById(encouragementDetails.products[i]);
+           if(exist == null){
+               return {'encouragement': null, 'code': 404, 'err': 'product not found'};
+           }
+        }
+
         //create id object from the string id
         var products = await dal.getProductsById(encouragementDetails);
         encouragement.products = products;
 
-        dal.addEncouragement(encouragement);
+        var res = await dal.addEncouragement(encouragement);
         return {'encouragement': encouragement, 'code': 200, 'err': null};
     }
     else{
-        return {'encouragement': null, 'code': 409, 'err': 'permission denied'};
+        return {'encouragement': null, 'code': 401, 'err': 'permission denied'};
     }
 };
 

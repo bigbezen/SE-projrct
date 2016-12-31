@@ -92,7 +92,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/user/getProfile', async function (req, res) {
-        if (!validator.sessionId(req.body))
+        if(!('sessionid' in req.headers))
             res.status(404).send('invalid parameters');
         var result = await userService.getProfile(req.headers.sessionid);
         if(result.code == 200)
@@ -135,12 +135,15 @@ function _setapApiEndpoints() {
     });
 
     app.get('/salesman/getBroadcastMessages', async function (req, res) {
+        if(!('sessionid' in req.headers))
+            res.status(404).send('invalid parameters');
         var sessionId = req.headers.sessionid;
         var result = await messageService.getInbox(sessionId);
         if(result.code == 200)
             res.status(200).send(result.inbox);
         else
             res.status(result.code).send(result.err);
+        messageService.markAsRead(sessionId);
     });
 
     app.post('/salesman/enterShift', function (req, res) {
@@ -355,10 +358,13 @@ function _setapApiEndpoints() {
     });
 
     app.post('/manager/sendBroadcastMessage', async function (req, res) {
-        // var result = await messageService.sendBroadcast(req.body.sessionId, req.body.content);
-        // res.status(200).send(result);
+        if (!validator.sendBroadcastMessage(req.body))
+            res.status(404).send('invalid parameters');
         var result = await messageService.sendBroadcast(req.body.sessionId, req.body.content, req.body.date);
-        res.status(200).send('hello');
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.get('/manager/getShiftNotes', function (req, res) {

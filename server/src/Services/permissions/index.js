@@ -28,7 +28,7 @@ var funcNameToPermission = {
     'editEncouragement': ['manager'],
     'deleteEncouragement': ['manager'],
     'sendBroadcast': ['manager', 'agent'],
-    'getInbox': ['salesman']
+    'getInbox': ['salesman'],
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

@@ -24,16 +24,20 @@ var sendBroadcast = async function(sessionId, content, date){
         return {'code':200};
     else
         return {'code': 500, 'err': 'could not send broadcast message'};
-
-
-
-
 };
 
-//var createInbox = async function()
 
-var markAsRead = async function(){
+var markAsRead = async function(sessionId){
+    logger.info('Services.messages.index.markAsRead', {'sessionId': sessionId});
 
+    var user = await permissions.validatePermissionForSessionId(sessionId, 'getInbox');
+    if(user == null)
+        return {'code': 401, 'err': 'user not authorized'};
+    var result = await dal.markMessagesAsRead(user._id);
+    if(result != null)
+        return {'code': 200};
+    else
+        return {'code': 500};
 
 };
 
@@ -44,12 +48,12 @@ var getInbox = async function(sessionId){
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var inbox = await dal.getInbox(user._id);
-    if(inbox != null)
-        return {'code': 200, 'inbox': inbox.messages};
-    else
-        return {'code': 500, 'err': 'could not get user inbox'};
+    var messagesIds = user.inbox.toObject();
+    var inbox = await dal.getMessages(messagesIds);
+
+    return {'code': 200, 'inbox': inbox};
 };
 
 module.exports.sendBroadcast = sendBroadcast;
 module.exports.getInbox = getInbox;
+module.exports.markAsRead = markAsRead;

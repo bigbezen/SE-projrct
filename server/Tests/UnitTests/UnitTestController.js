@@ -12,8 +12,7 @@ var mongoose = require('mongoose');
 
 _connectToTestDb();
 
-describe('unit tests', function () {
-});
+
 
 function _connectToTestDb(){
     mongoose.Promise = global.Promise;

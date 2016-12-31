@@ -38,6 +38,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "babel-watch src/main.js",
+    "clean": "rimraf build/*",
     "compile": "babel server/ -d build/",
     "production": "webpack -p"
   },

@@ -9,7 +9,8 @@ var validator       = require('./src/Utils/Validators/index');
 var storeService            = require('./src/Services/store/index');
 var userService             = require('./src/Services/user/index');
 var productService          = require('./src/Services/product/index');
-var encouragementServices   = require('./src/Services/encouragements/index');
+var encouragementService    = require('./src/Services/encouragements/index');
+var messageService          = require('./src/Services/messages/index');
 
 var app = express();
 
@@ -133,8 +134,13 @@ function _setapApiEndpoints() {
         res.status(200).send('get sales history');
     });
 
-    app.get('/salesman/getBroadcastMessages', function (req, res) {
-        res.status(200).send('get broadcast messages');
+    app.get('/salesman/getBroadcastMessages', async function (req, res) {
+        var sessionId = req.headers.sessionid;
+        var result = await messageService.getInbox(sessionId);
+        if(result.code == 200)
+            res.status(200).send(result.inbox);
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.post('/salesman/enterShift', function (req, res) {
@@ -160,6 +166,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editUser', async function (req, res) {
+        if (!validator.editUser(req.body))
+            res.status(404).send('invalid parameters');
         var result = await userService.editUser(req.body.sessionId, req.body.username, req.body.userDetails);
         if(result.code == 200){
             res.status(200).send();
@@ -170,9 +178,23 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteUser', async function (req, res) {
+        if (!validator.deleteUser(req.body))
+            res.status(404).send('invalid parameters');
         var result = await userService.deleteUser(req.body.sessionId, req.body.username);
         if(result.code == 200){
             res.status(200).send();
+        }
+        else{
+            res.status(result.code).send(result.err);
+        }
+    });
+
+    app.get('/management/getAllUsers', async function(req, res){
+        if(!('sessionid' in req.header))
+            res.status(404).send('invalid parameters');
+        var result = await userService.getAllUsers(req.header.sessionid);
+        if(result.code == 200){
+            res.status(200).send(result.users);
         }
         else{
             res.status(result.code).send(result.err);
@@ -332,8 +354,11 @@ function _setapApiEndpoints() {
         res.status(200).send('set new notification rule');
     });
 
-    app.post('/manager/sendBroadcastMessage', function (req, res) {
-        res.status(200).send('send a broadcast message');
+    app.post('/manager/sendBroadcastMessage', async function (req, res) {
+        // var result = await messageService.sendBroadcast(req.body.sessionId, req.body.content);
+        // res.status(200).send(result);
+        var result = await messageService.sendBroadcast(req.body.sessionId, req.body.content, req.body.date);
+        res.status(200).send('hello');
     });
 
     app.get('/manager/getShiftNotes', function (req, res) {

@@ -11,6 +11,7 @@ var userService             = require('./src/Services/user/index');
 var productService          = require('./src/Services/product/index');
 var encouragementService    = require('./src/Services/encouragements/index');
 var messageService          = require('./src/Services/messages/index');
+var shiftSerice             = require('./src/Services/shift/index');
 
 var app = express();
 
@@ -102,19 +103,23 @@ function _setapApiEndpoints() {
     });
 
 //Salesman Services
-    app.post('/salesman/enterShift', function (req, res) {
+    app.post('/salesman/startShift', function (req, res) {
         res.status(200).send('enter shift');
     });
 
-    app.post('/salesman/exitShift', function (req, res) {
+    app.post('/salesman/finishShift', function (req, res) {
         res.status(200).send('exit shift');
     });
 
-    app.post('/salesman/addSale', function (req, res) {
+    app.post('/salesman/reportSale', function (req, res) {
         res.status(200).send('add new sale');
     });
 
-    app.post('/salesman/addShiftNote', function (req, res) {
+    app.post('/salesman/reportOpened', function (req, res) {
+        res.status(200).send('add new sale');
+    });
+
+    app.post('/salesman/addShiftComment', function (req, res) {
         res.status(200).send('add shift note');
     });
 
@@ -122,7 +127,11 @@ function _setapApiEndpoints() {
         res.status(200).send('get encouragements list');
     });
 
-    app.get('/salesman/shifts', function (req, res) {
+    app.get('/salesman/getAllShifts', function (req, res) {
+        res.status(200).send('get shifts list');
+    });
+
+    app.get('/salesman/getCurrentShift', function (req, res) {
         res.status(200).send('get shifts list');
     });
 
@@ -144,10 +153,6 @@ function _setapApiEndpoints() {
         else
             res.status(result.code).send(result.err);
         messageService.markAsRead(sessionId);
-    });
-
-    app.post('/salesman/enterShift', function (req, res) {
-        res.status(200).send('enter shift');
     });
 
     app.post('/salesman/shiftRegister', function (req, res) {
@@ -331,11 +336,17 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/management/addShift', function (req, res) {
-        res.status(200).send('add new user');
+    app.post('/management/addShifts', async function (req, res) {
+        if (!validator.addShifts(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.addShifts(req.body.sessionId, req.body.shiftArr);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
-    app.post('/management/editShift', function (req, res) {
+    app.post('/management/editShifts', function (req, res) {
         res.status(200).send('edit user');
     });
 

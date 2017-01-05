@@ -10,7 +10,7 @@ var shiftSchema = new Schema({
     'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'users'},
     'constraints': [
         {
-            'stewardId': {type: mongoose.Schema.Types.ObjectId, ref: 'users'},
+            'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'users'},
             'isAvailable': Boolean,
             'comment': String
         }
@@ -30,7 +30,8 @@ var shiftSchema = new Schema({
             'timeOfSale': Date,
             'quantity': Number
         }
-    ]
+    ],
+    'shiftComments': ['String']
 });
 
 var shift = mongoose.model('shift', shiftSchema);

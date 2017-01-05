@@ -1,4 +1,5 @@
 var mongoose    = require('mongoose');
+var moment      = require('moment');
 
 var productModel        = require('../Models/product');
 var encouragementModel  = require('../Models/encouragement');
@@ -24,7 +25,9 @@ module.exports = {
         return store.save();
     },
 
-
+    updateUser: async function(user){
+        return userModel.findOneAndUpdate(user._id, user, {upsert: false});
+    },
 
     getUserBySessionId: async function(sessionId){
         return userModel.findOne({ 'sessionId': sessionId })
@@ -52,6 +55,11 @@ module.exports = {
 
     getAllStores: async function(){
         return storeModel.find({});
+    },
+
+    getStoresByIds: async function(ids){
+        ids = ids.map(x => mongoose.Types.ObjectId(x));
+        storeModel.find({'_id': {$in: ids}});
     },
 
     getStoreByNameAndArea: async function (name, area) {
@@ -103,6 +111,40 @@ module.exports = {
         return productModel.find({'_id': {$in: products}});
     },
 
+    getShiftsByIds: async function(shiftIds){
+        shiftIds = shiftIds.map(x => mongoose.Types.ObjectId(x));
+        return shiftModel.find({'_id': {$in: shiftIds}});
+    },
+
+    updateShift: async function(shift){
+        // shift.salesReport = shift.salesReport.map(function(product){
+        //     product.productId = mongoose.Types.ObjectId(product.productId);
+        //     return product;
+        // });
+        return shiftModel.findOneAndUpdate(mongoose.Types.ObjectId(shift._id), shift, {upsert: false});
+    },
+
+
+
+    publishShifts: async function(shiftArr){
+        results = [];
+        var result;
+        for(shift of shiftArr){
+            result = await shiftModel.findOneAndUpdate({'_id': shift._id}, {'salesmanId': shift.salesmanId, 'status': shift.status});
+            if(result.ok != 1)
+                results.push(shift._id);
+        }
+        return results;
+    },
+
+    getSalesmanCurrentShift: async function(salesmanId){
+        var today = moment().startOf('day');
+        var tomorrow = moment(today).add(1, 'days');
+
+        return shiftModel.findOne({$and: [{'salesmanId': mongoose.Types.objectId(salesmanId)},
+            {'status': 'PUBLISHED'}, {'startTime': {$gte: today.toDate(), $lt: tomorrow.toDate()}}]});
+    },
+
     sendBroadcast: async function(msg){
         var save = await msg.save();
         var update = await userModel.update({'jobDetails.userType': 'salesman'}, {$push: {inbox: msg._id}}, {multi: true});
@@ -118,13 +160,17 @@ module.exports = {
         return messageModel.find({'_id': {$in: messagesIds}});
     },
 
+    addShift: async function(shift){
+        return shift.save();
+    },
+
 
     cleanDb: async function () {
         var products = await productModel.find({});
         products.map(x => x.remove());
         var encs = await encouragementModel.find({});
         encs.map(x => x.remove());
-        var shifts= await shiftModel.find({});
+        var shifts = await shiftModel.find({});
         shifts.map(x => x.remove());
         var stores = await storeModel.find({});
         stores.map(x => x.remove());

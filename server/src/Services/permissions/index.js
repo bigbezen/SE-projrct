@@ -29,6 +29,15 @@ var funcNameToPermission = {
     'deleteEncouragement': ['manager'],
     'sendBroadcast': ['manager', 'agent'],
     'getInbox': ['salesman'],
+    'addShifts': ['manager'],
+    'publishShifts': ['manager'],
+    'startShift': ['salesman'],
+    'addShiftComment': ['salesman'],
+    'reportOpened': ['salesman'],
+    'reportSale': ['salesman'],
+    'endShift': ['salesman'],
+    'getActiveShift': ['salesman'],
+    'getActiveShiftEncouragements': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

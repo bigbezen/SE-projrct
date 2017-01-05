@@ -98,6 +98,15 @@ module.exports = {
 
     sendBroadcastMessage: function(params){
         return checkParams(params, ['sessionId', 'content', 'date'], ['string', 'string', 'string'])
+    },
+
+    addShifts: function(params){
+        var res = checkParams(params, ['sessionId', 'shiftsArr'], ['string', 'object']);
+        for(shift of params.shiftsArr){
+            if(res)
+                res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], ['string', 'string', 'string', 'string'])
+        }
+        return res;
     }
 
 

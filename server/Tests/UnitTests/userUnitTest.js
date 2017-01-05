@@ -28,7 +28,7 @@ var getUserDetails = function(){
                     "zip": "11111"
                 },
                 "phone": "054-9999999",
-                "email": "shahafstein@gmail.com"
+                "email": "b@gmail.com"
             },
             "jobDetails": {
                 "userType": "salesman",

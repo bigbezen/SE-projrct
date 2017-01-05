@@ -45,7 +45,6 @@ var logout = async function(sessionId) {
 
 var addUser = async function(sessionId, userDetails) {
     logger.info('Services.user.index.addUser', {'session-id': sessionId});
-    //TODO: remove comment from authorization check
     var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser', null);
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
@@ -57,8 +56,9 @@ var addUser = async function(sessionId, userDetails) {
     }
 
     var newUser = new userModel();
+    var generatedPassword = Math.random().toString(36).substring(2,10);
     newUser.username = userDetails.username;
-    newUser.password =  cypher.encrypt(userDetails.password);
+    newUser.password =  cypher.encrypt(generatedPassword);
     newUser.startDate = new Date(userDetails.startDate);
     newUser.endDate = userDetails.endDate;
     newUser.personal = userDetails.personal;

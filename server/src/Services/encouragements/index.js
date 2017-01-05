@@ -76,7 +76,12 @@ var getAllEncouragements = async function (sessionId) {
     }
 };
 
+var calculateEncouragements = async function(saleReport){
+
+};
+
 module.exports.addEncouragement = addEncouragement;
 module.exports.editEncouragement = editEncouragement;
 module.exports.deleteEncouragement = deleteEncouragement;
 module.exports.getAllEncouragements = getAllEncouragements;
+module.exports.calculateEncouragements = calculateEncouragements;

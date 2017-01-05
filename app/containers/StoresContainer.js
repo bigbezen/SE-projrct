@@ -3,30 +3,25 @@ var ReactBsTable = require("react-bootstrap-table");
 var BootstrapTable = ReactBsTable.BootstrapTable;
 var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
-
-var stores =
-    [{
-        name : 'דרינק אנד קו',
-        managerName : 'מירי מסיקה',
-        phone : '052222222',
-        city : 'באר שבע',
-        address : 'האורגים 12',
-        area : 'דרום',
-        channel : 'מסחרי'
-    },
-        {
-            name : 'דרינק אנד קו2',
-            managerName : 'אביב גפן',
-            phone : '052333333',
-            city : 'תל אביב',
-            address : 'האורגים 12',
-            area : 'מרכז',
-            channel : 'מסחרי'
-        }];
+var managementServices = require('../communication/managementServices');
+var helpers = require('../utils/Helpers');
 
 var StoresContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
+    },
+    getInitialState() {
+        return{
+            stores: null
+        }
+    },
+    componentWillMount() {
+        this.updateStores();
+    },
+    updateStores() {
+        this.setState({
+            stores: managementServices.getAllStores()
+        });
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('Store #', rowIndex);
@@ -39,6 +34,11 @@ var StoresContainer = React.createClass({
     onClickDeleteButton: function(cell, row, rowIndex){
         console.log('Store #', rowIndex);
         console.log(row);
+    },
+    onClickAddButton: function(){
+        this.context.router.push({
+            pathname: '/LoggedIn/Store'
+        })
     },
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
@@ -60,10 +60,11 @@ var StoresContainer = React.createClass({
             </button>
         )
     },
-    render: function () {
+    renderTable: function () {
         return (
             <div className="col-sm-offset-1 col-sm-10">
-                <BootstrapTable data={stores} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-btn-floating" onClick={this.onClickAddButton}> + </button>
+                <BootstrapTable data={this.state.stores} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'name'
                         dataAlign = 'right'
@@ -100,14 +101,16 @@ var StoresContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'area'
                         dataAlign = 'right'
-                        filter={ { type: 'TextFilter' ,placeholder:constantStrings.selectArea_string} }>
+                        filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.store_area }
+                        filter={ { type: 'SelectFilter', placeholder:constantStrings.selectArea_string, options: constantStrings.store_area } }>
                         {constantStrings.area_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'channel'
                         dataAlign = 'right'
-                        filter={ { type: 'TextFilter' ,placeholder:constantStrings.selectChannel_string} }>
-                        {constantStrings.channel_string}
+                        filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.store_channel }
+                        filter={ { type: 'SelectFilter', placeholder:constantStrings.selectChannel_string, options: constantStrings.store_channel } }>
+                    {constantStrings.channel_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataAlign = 'right'
@@ -122,6 +125,23 @@ var StoresContainer = React.createClass({
                 </BootstrapTable>
             </div>
         )
+    },
+    renderLoading:function () {
+        return(
+            <div>
+                <h1>loading...</h1>
+            </div>
+        )
+    },
+    render: function () {
+        if(this.state.stores != null)
+        {
+            return this.renderTable();
+        }
+        else
+        {
+            return this.renderLoading();
+        }
     }
 });
 

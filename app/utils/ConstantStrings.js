@@ -15,6 +15,9 @@ class ConstantStrings extends React.Component {
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';
+    static add_string = 'הוספה';
+    static logout_string = 'התנתק';
+
 
     //products
     static id_string = 'מס׳ סידורי';
@@ -39,6 +42,10 @@ class ConstantStrings extends React.Component {
     static gender_string = 'מין';
     static startDate_string = 'תאריך התחלה';
     static role_string = 'תפקיד';
+    static endDate_string = 'תאריך סיום';
+    static birthDate_string = 'תאריך לידה';
+    static street_string = 'מספר בית';
+    static zip_string = 'מיקוד';
 
     //filter strings
     static enterID_string = 'הכנס ת״ז..'
@@ -66,7 +73,49 @@ class ConstantStrings extends React.Component {
     static selectArea_string = 'בחר איזור..'
     static selectChannel_string = 'בחר ערוץ..'
 
+    static product_category =
+    {
+        'ספיריט': 'ספיריט',
+        'יין' : 'יין'
+    };
 
+    static product_subCategory =
+    {
+        'בלנד סקוטי': 'בלנד סקוטי',
+        'סינגל מאלט סקוטי': 'סינגל מאלט סקוטי',
+        'וויסקי אמריקאי/קנדי': 'וויסקי אמריקאי/קנדי',
+        'ארבעת הלבנים': 'ארבעת הלבנים',
+        'אפרטיף/דגסטיף': 'אפרטיף/דגסטיף',
+        'תבור הר/פנינים' : 'תבור הר/פנינים',
+        'תבור אדמה' : 'תבור אדמה',
+        'תבור אדמה 2' : 'תבור אדמה 2',
+        'L.E' : 'L.E',
+    };
+
+    static user_gender =
+    {
+        'זכר': 'זכר',
+        'נקבה': 'נקבה'
+    };
+
+    static user_role =
+    {
+        'דייל': 'דייל',
+        'סוכן שטח': 'סוכן שטח'
+     };
+
+    static store_area =
+    {
+        'צפון': 'צפון',
+        'דרום': 'דרום',
+        'מרכז': 'מרכז'
+    };
+
+    static store_channel =
+     {
+         'מסחרי': 'מסחרי',
+         'קלאסי': 'קלאסי'
+     };
 }
 
 module.exports = ConstantStrings;

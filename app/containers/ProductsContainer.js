@@ -6,48 +6,25 @@ var ReactBsTable = require("react-bootstrap-table");
 var BootstrapTable = ReactBsTable.BootstrapTable;
 var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
-var communication = require('../communication/managementServices');
-
-/*
-var products =
-    [{
-        name :'אג\'וני ווקר blue',
-        retailPrice: 500,
-        salePrice: 600,
-        category: 'ספיריט',
-        subCategory: 'וויסקי',
-        minRequiredAmount: 3,
-        notifyManager: true
-    }, {
-        name :'ג\'וני ווקר blue',
-        retailPrice: 400,
-        salePrice: 600,
-        category: 'ספיריט',
-        subCategory: 'וויסקי',
-        minRequiredAmount: 3,
-        notifyManager: true
-}];
-*/
-
-var products = communication.getAllProducts();
-
-const category = {
-    'ספיריט': 'ספיריט',
-    'בלהה': 'בלהה',
-};
-
-const subCategory = {
-    'וויסקי': 'וויסקי',
-    'בלהה': 'בלהה',
-};
-
-function enumFormatter(cell, row, enumObject) {
-    return enumObject[cell];
-}
+var helpers = require('../utils/Helpers');
+var managementServices = require('../communication/managementServices');
 
 var ProductsContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
+    },
+    getInitialState() {
+        return{
+            products: null
+        }
+    },
+    componentWillMount() {
+        this.updateProducts();
+    },
+    updateProducts() {
+        this.setState({
+            products: managementServices.getAllProducts()
+        });
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('Product #', rowIndex);
@@ -60,6 +37,13 @@ var ProductsContainer = React.createClass({
     onClickDeleteButton: function(cell, row, rowIndex){
         console.log('Product #', rowIndex);
         console.log(row);
+        managementServices.deleteProduct(row);
+        this.updateProducts();
+    },
+    onClickAddButton: function(){
+        this.context.router.push({
+            pathname: '/LoggedIn/Product'
+        })
     },
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
@@ -81,10 +65,11 @@ var ProductsContainer = React.createClass({
             </button>
         )
     },
-    render: function () {
+    renderTable: function () {
         return (
             <div className="col-sm-offset-1 col-sm-10">
-            <BootstrapTable data={products} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-btn-floating" onClick={this.onClickAddButton}> + </button>
+            <BootstrapTable data={this.state.products} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                 <TableHeaderColumn
                     dataField = 'name'
                     dataAlign = 'right'
@@ -112,15 +97,15 @@ var ProductsContainer = React.createClass({
                 <TableHeaderColumn
                     dataField = 'category'
                     dataAlign = 'right'
-                    filterFormatted dataFormat={ enumFormatter } formatExtraData={ category }
-                    filter={ { type: 'SelectFilter', placeholder:constantStrings.selectCategory_string, options: category } }>
+                    filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.product_category }
+                    filter={ { type: 'SelectFilter', placeholder:constantStrings.selectCategory_string, options: constantStrings.product_category } }>
                     {constantStrings.category_string}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField = 'subCategory'
                     dataAlign = 'right'
-                    filterFormatted dataFormat={ enumFormatter } formatExtraData={ subCategory }
-                    filter={ { type: 'SelectFilter', placeholder:constantStrings.selectSubCategory_string,options: subCategory } }>
+                    filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.product_subCategory }
+                    filter={ { type: 'SelectFilter', placeholder:constantStrings.selectSubCategory_string,options: constantStrings.product_subCategory } }>
                     {constantStrings.subCategory_string}
                 </TableHeaderColumn>
                 <TableHeaderColumn
@@ -146,6 +131,23 @@ var ProductsContainer = React.createClass({
             </BootstrapTable>
             </div>
         )
+    },
+    renderLoading:function () {
+        return(
+            <div>
+                <h1>loading...</h1>
+            </div>
+        )
+    },
+    render: function () {
+        if(this.state.products != null)
+        {
+            return this.renderTable();
+        }
+        else
+        {
+            return this.renderLoading();
+        }
     }
 });
 

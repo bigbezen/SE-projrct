@@ -3,24 +3,8 @@ var ReactBsTable = require("react-bootstrap-table");
 var BootstrapTable = ReactBsTable.BootstrapTable;
 var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
-
-var users =
-    [{
-        startDate : new Date('12/12/16'),
-        id : '543564365',
-        firstName : 'שחף',
-        lastName : 'שטיין',
-        sex : 'זכר',
-        userType: 'סוכן שטח',
-    },
-        {
-            startDate : new Date('12/4/16'),
-            id : '123456789',
-            firstName : 'ליהיא',
-            lastName : 'ורצ׳יק',
-            sex : 'נקבה',
-            userType: 'דייל',
-    }];
+var helpers = require('../utils/Helpers');
+var managementServices = require('../communication/managementServices');
 
 function dateFormatter(cell, row) {
     return `${('0' + cell.getDate()).slice(-2)}/${('0' + (cell.getMonth() + 1)).slice(-2)}/${cell.getFullYear()}`;
@@ -29,6 +13,19 @@ function dateFormatter(cell, row) {
 var UsersContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
+    },
+    getInitialState() {
+        return{
+            users: null
+        }
+    },
+    componentWillMount() {
+        this.updateUsers();
+    },
+    updateUsers() {
+        /*this.setState({
+            users: managementServices.getAllUsers()
+        }); */
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('User #', rowIndex);
@@ -41,6 +38,13 @@ var UsersContainer = React.createClass({
     onClickDeleteButton: function(cell, row, rowIndex){
         console.log('User #', rowIndex);
         console.log(row);
+        managementServices.deleteUser(row);
+        this.updateUsers();
+    },
+    onClickAddButton: function(){
+        this.context.router.push({
+            pathname: '/LoggedIn/User'
+        })
     },
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
@@ -62,10 +66,11 @@ var UsersContainer = React.createClass({
             </button>
         )
     },
-    render: function () {
+    renderTable: function () {
         return (
             <div className="col-sm-offset-1 col-sm-10">
-                <BootstrapTable data={users} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-btn-floating" onClick={this.onClickAddButton}> + </button>
+                <BootstrapTable data={this.state.users} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'id'
                         dataAlign = 'right'
@@ -90,13 +95,15 @@ var UsersContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'sex'
                         dataAlign = 'right'
-                        filter = { { type: 'TextFilter', placeholder:constantStrings.selectGender_string} }>
-                        {constantStrings.gender_string}
+                        filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.user_gender }
+                        filter={ { type: 'SelectFilter', placeholder:constantStrings.selectGender_string, options: constantStrings.user_gender } }>
+                    {constantStrings.gender_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'userType'
                         dataAlign = 'right'
-                        filter = { { type: 'TextFilter', placeholder:constantStrings.selectRole_string} }>
+                        filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.user_role }
+                        filter={ { type: 'SelectFilter', placeholder:constantStrings.selectRole_string, options: constantStrings.user_role } }>
                         {constantStrings.role_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
@@ -119,6 +126,23 @@ var UsersContainer = React.createClass({
                 </BootstrapTable>
             </div>
         )
+    },
+    renderLoading:function () {
+        return(
+            <div>
+                <h1>loading...</h1>
+            </div>
+        )
+    },
+    render: function () {
+        if(this.state.users != null)
+        {
+            return this.renderTable();
+        }
+        else
+        {
+            return this.renderLoading();
+        }
     }
 });
 

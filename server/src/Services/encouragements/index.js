@@ -36,6 +36,15 @@ var addEncouragement = async function(sessionId, encouragementDetails) {
 var editEncouragement = async function (sessionId, encouragementDetails) {
     logger.info('Services.Encouragement.index.editEncouragement', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'editEncouragement');
+
+    //check if all the products id belongs to products
+    for (i = 0; i < encouragementDetails.products.length; i++) {
+        var exist = await dal.getProductById(encouragementDetails.products[i]);
+        if(exist == null){
+            return {'encouragement': null, 'code': 404, 'err': 'product not found'};
+        }
+    }
+
     if(user != null){
         var encouragement =  await dal.editEncouragement(encouragementDetails);
         return {'encouragement': encouragement, 'code': 200, 'err': null};
@@ -44,11 +53,11 @@ var editEncouragement = async function (sessionId, encouragementDetails) {
     }
 };
 
-var deleteEncouragement = async function (sessionId, encouragementDetails) {
+var deleteEncouragement = async function (sessionId, encouragementId) {
     logger.info('Services.Encouragement.index.deleteEncouragement', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'deleteEncouragement');
     if(user != null){
-        var encouragement =  await dal.deleteEncouragement(iDencouragement);
+        var encouragement =  await dal.deleteEncouragement(encouragementId);
         return {'encouragement': encouragement, 'code': 200, 'err': null};
     }else{
         return {'encouragement': null, 'code': 401, 'err': 'permission denied'}

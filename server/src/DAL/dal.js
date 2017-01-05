@@ -83,7 +83,7 @@ module.exports = {
     },
 
     editEncouragement: async function(EncouragementDetails){
-        return encouragementModel.update({'_id': mongoose.Types.ObjectId(productDetails._id)}, EncouragementDetails, { upsert: false })
+        return encouragementModel.update({'_id': mongoose.Types.ObjectId(EncouragementDetails._id)}, EncouragementDetails, { upsert: false })
     },
 
     deleteEncouragement: async function(iDencouragement){

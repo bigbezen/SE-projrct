@@ -7,27 +7,27 @@ var connection = require('../communication/connectionHandler')
 var helpers = {
     login: function(username, password){
         console.log('userServices- Login function: username: ' +username + ', pass: ' + password);
-        return connection.login(username, password);
+        return connection.userRequests.login(username, password);
     },
 
     logout: function(){
         console.log('userServices- Logout function');
-        return connection.logout();
+        return connection.userRequests.logout();
     },
 
     retrievePassword: function(){
         console.log('userServices- retrievePassword function');
-        return connection.retrievePassword();
+        return connection.userRequests.retrievePassword();
     },
 
     changePassword: function(oldPass, newPass){
         console.log('userServices- changePassword function');
-        return connection.changePassword(oldPass, newPass);
+        return connection.userRequests.changePassword(oldPass, newPass);
     },
 
     getProfile: function(){
         console.log('userServices- getProfile function');
-        return connection.getProfile();
+        return connection.userRequests.getProfile();
     }
 };
 

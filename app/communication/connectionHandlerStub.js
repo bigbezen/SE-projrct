@@ -289,7 +289,7 @@ function createProductsCollection() {
     product1.retailPrice = 40;
     product1.salePrice = 50;
     product1.category = 'ספיריט';
-    product1.subCategory = 'וודקה';
+    product1.subCategory = 'בלנד סקוטי';
     product1.minRequiredAmount = 20;
     product1.notifyManager = false;
 
@@ -301,7 +301,7 @@ function createProductsCollection() {
     product2.retailPrice = 50;
     product2.salePrice = 55;
     product2.category = 'ספיריט';
-    product2.subCategory = 'וודקה';
+    product2.subCategory = 'בלנד סקוטי';
     product2.minRequiredAmount = 20;
     product2.notifyManager = false;
 
@@ -313,7 +313,7 @@ function createProductsCollection() {
     product3.retailPrice = 170;
     product3.salePrice = 220;
     product3.category = 'ספיריט';
-    product3.subCategory = 'קוניאק';
+    product3.subCategory = 'ארבעת הלבנים';
     product3.minRequiredAmount = 5;
     product3.notifyManager = true;
 
@@ -325,7 +325,7 @@ function createProductsCollection() {
     product4.retailPrice = 50;
     product4.salePrice = 70;
     product4.category = 'יין';
-    product4.subCategory = 'הסדרה האיזורית';
+    product4.subCategory = 'תבור אדמה';
     product4.minRequiredAmount = 15;
     product4.notifyManager = false;
 
@@ -337,7 +337,7 @@ function createProductsCollection() {
     product5.retailPrice = 400;
     product5.salePrice = 600;
     product5.category = 'ספיריט';
-    product5.subCategory = 'וויסקי';
+    product5.subCategory = 'וויסקי אמריקאי/קנדי';
     product5.minRequiredAmount = 3;
     product5.notifyManager = true;
 
@@ -360,54 +360,6 @@ function createProduct() {
 
     return product5;
 }
-
-/*
-function createProductsCollectionArray() {
-    var products  = [
-        {
-            name: 'אבסולוט',
-            retailPrice: 40,
-            salePrice: 50,
-            category: 'ספיריט',
-            subCategory: 'וודקה',
-            minRequiredAmount: 20,
-            notifyManager: false
-        }, {
-            name : 'סמירנוף',
-            retailPrice : 50,
-            salePrice : 55,
-            category : 'ספיריט',
-            subCategory : 'וודקה',
-            minRequiredAmount : 20,
-            notifyManager : false
-        }, {
-            name : 'קורווזיה VSOP',
-            retailPrice : 170,
-            salePrice : 220,
-            category : 'ספיריט',
-            subCategory : 'קוניאק',
-            minRequiredAmount : 5,
-            notifyManager : true
-        }, {
-            name : 'יין תבור',
-            retailPrice : 50,
-            salePrice : 70,
-            category : 'יין',
-            subCategory : 'הסדרה האיזורית',
-            minRequiredAmount : 15,
-            notifyManager : false
-        } ,{
-            name : 'ג\'וני ווקר blue',
-            retailPrice : 400,
-            salePrice : 600,
-            category : 'ספיריט',
-            subCategory : 'וויסקי',
-            minRequiredAmount : 3,
-            notifyManager : true
-        }];
-    return products;
-}
-*/
 
 var managerRequests = {
     addNotificationRule: function(){
@@ -502,7 +454,7 @@ var salesmanRequests = {
 };
 
 
-module.exports = managerRequests;
-module.exports = userRequests;
-module.exports = managementRequests;
-//module.exports = salesmanRequests;
+module.exports.managerRequests = managerRequests;
+module.exports.managementRequests = managementRequests;
+module.exports.userRequests = userRequests;
+module.exports.salesmanRequests = salesmanRequests;

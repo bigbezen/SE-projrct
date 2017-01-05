@@ -166,6 +166,7 @@ var managementRequests = {
     },
 
     addProduct: function(product) {
+        console.log('add product');
         return axios.post(serverUrl + 'management/addProduct', {
             sessionId:sessionId,
             productDetails:product
@@ -177,6 +178,7 @@ var managementRequests = {
     },
 
     editProduct: function(product) {
+        console.log('edit product');
         return axios.post(serverUrl + 'management/editProduct', {
             sessionId:sessionId,
             productDetails:product
@@ -391,7 +393,7 @@ var salesmanRequests = {
     }
 };
 
-module.exports = managerRequests;
-module.exports = managementRequests;
-module.exports = userRequests;
-//module.exports = salesmanRequests;
+module.exports.managerRequests = managerRequests;
+module.exports.managementRequests = managementRequests;
+module.exports.userRequests = userRequests;
+module.exports.salesmanRequests = salesmanRequests;

@@ -16,7 +16,7 @@ var sendBroadcast = async function(sessionId, content, date){
     msg.sender = sender.username;
     msg.content = content;
     msg.type = 'broadcast';
-    msg.date = new Date(date);
+    msg.date = date;
 
 
     var res = await dal.sendBroadcast(msg);
@@ -50,7 +50,7 @@ var getInbox = async function(sessionId){
 
     var messagesIds = user.inbox.toObject();
     var inbox = await dal.getMessages(messagesIds);
-
+    inbox = inbox.map(x => x.toObject());
     return {'code': 200, 'inbox': inbox};
 };
 

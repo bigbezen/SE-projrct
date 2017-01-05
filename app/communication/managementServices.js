@@ -1,93 +1,93 @@
 /**
  * Created by lihiverchik on 14/12/2016.
  */
-//var connection = require('../communication/connectionHandler')
-var connection = require('../communication/connectionHandlerStub')
+var connection = require('../communication/connectionHandler')
+//var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
     addUser: function(user){
         console.log('managementervices- addUser');
-        return connection.addUser(user);
+        return connection.managementRequests.addUser(user);
     },
 
     editUser: function(user){
         console.log('managementervices- editUser');
-        return connection.editUser(user);
+        return connection.managementRequests.editUser(user);
     },
 
     deleteUser: function(user){
         console.log('managementervices- deleteUser');
-        return connection.deleteUser(user);
+        return connection.managementRequests.deleteUser(user);
     },
 
     addStore: function(store){
         console.log('managementervices- addStore');
-        return connection.addStore(store);
+        return connection.managementRequests.addStore(store);
     },
 
     editStore: function(store){
         console.log('managementervices- editStore');
-        return connection.editStore(store);
+        return connection.managementRequests.editStore(store);
     },
 
     deleteStore: function(store){
         console.log('managementervices- deleteStore');
-        return connection.deleteStore(store);
+        return connection.managementRequests.deleteStore(store);
     },
 
     getAllStores: function(){
         console.log('managementervices- getAllStores');
-        return connection.getAllStores();
+        return connection.managementRequests.getAllStores();
     },
 
     addProduct: function(product){
-        console.log('managementervices- addProduct');
-        return connection.addProduct(product);
+        console.log('managementervices- addProduct. '+ product);
+        return connection.managementRequests.addProduct(product);
     },
 
     editProduct: function(product){
         console.log('managementervices- editProduct');
-        return connection.editProduct(product);
+        return connection.managementRequests.editProduct(product);
     },
 
     getAllProducts: function(){
         console.log('managementervices- getAllProducts');
-        return connection.getAllProducts();
+        return connection.managementRequests.getAllProducts();
     },
 
     deleteProduct: function(product){
         console.log('managementervices- deleteProduct');
-        return connection.deleteProduct(product);
+        return connection.managementRequests.deleteProduct(product);
     },
 
     addEncouragement: function(){
         console.log('managementervices- addEncouragement');
-        return connection.addEncouragement();
+        return connection.managementRequests.addEncouragement();
     },
 
     editEncouragement: function(){
         console.log('managementervices- editEncouragement');
-        return connection.editEncouragement();
+        return connection.managementRequests.editEncouragement();
     },
 
     deleteEncouragement: function(){
         console.log('managementervices- deleteEncouragement');
-        return connection.deleteEncouragement();
+        return connection.managementRequests.deleteEncouragement();
     },
 
     addShift: function(){
         console.log('managementervices- addShift');
-        return connection.addShift();
+        return connection.managementRequests.addShift();
     },
 
     editShift: function(){
         console.log('managementervices- editShift');
-        return connection.editShift();
+        return connection.managementRequests.editShift();
     },
 
     deleteShift: function(){
         console.log('managementervices- deleteShift');
-        return connection.deleteShift();
+        return connection.managementRequests.deleteShift();
     }
 };
 

@@ -5,7 +5,7 @@ var encouragementModel  = require('../Models/encouragement');
 var shiftModel          = require('../Models/shift');
 var storeModel          = require('../Models/store');
 var userModel           = require('../Models/user');
-var messageModel        = require('../Models/message');
+var messageModel          = require('../Models/message');
 
 module.exports = {
     addUser: async function (user) {
@@ -133,6 +133,5 @@ module.exports = {
         var messages = await messageModel.find({});
         messages.map(x => x.remove());
     }
-
 };
 

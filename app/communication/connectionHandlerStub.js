@@ -455,6 +455,54 @@ var managerRequests = {
     }
 };
 
+var salesmanRequests = {
+    enterShift: function() {
+        //TODO: this about what
+    },
+
+    exitShift: function() {
+        //TODO: this about what
+    },
+
+    addSale: function(){
+        //TODO: this about what
+    },
+
+    addShiftNote: function(){
+        //TODO: this about what
+    },
+
+    getShiftNotesBySalesman: function(){
+        //TODO: this about what
+    },
+
+    encouragements: function(){
+        //TODO: this about what
+    },
+
+    shifts: function(){
+        //TODO: this about what
+    },
+
+    addShiftsConstraints: function(){
+        //TODO: this about what
+    },
+
+    salesHistory: function(){
+        //TODO: this about what
+    },
+
+    getBroadcastMessages: function(){
+        //TODO: this about what
+    },
+
+    shiftRegister: function(){
+        //TODO: this about what
+    }
+};
+
+
 module.exports = managerRequests;
 module.exports = userRequests;
 module.exports = managementRequests;
+module.exports = salesmanRequests;

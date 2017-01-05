@@ -279,6 +279,119 @@ var managerRequests = {
     }
 };
 
+var salesmanRequests = {
+    enterShift: function() {
+        return axios.post(serverUrl + 'salesman/enterShift', {
+        }).then(function (info) {
+            sessionId = info.data.sessionId;
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('enterShift', err);
+        })
+    },
+
+    exitShift: function() {
+        return axios.post(serverUrl + 'salesman/exitShift', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('exitShift', err);
+        })
+    },
+
+    addSale: function(){
+        return axios.post(serverUrl + 'salesman/addSale', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('addSale', err);
+        })
+    },
+
+    addShiftNote: function(){
+        return axios.post(serverUrl + 'salesman/addShiftNote', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('addShiftNote', err);
+        })
+    },
+
+    getShiftNotesBySalesman: function(){
+        return axios.get(serverUrl + 'salesman/getShiftNotes', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('getShiftNotes', err);
+        })
+    },
+
+    encouragements: function(){
+        return axios.post(serverUrl + 'salesman/encouragements', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('encouragements', err);
+        })
+    },
+
+    shifts: function(){
+        return axios.post(serverUrl + 'salesman/shifts', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('shifts', err);
+        })
+    },
+
+    addShiftsConstraints: function(){
+        return axios.post(serverUrl + 'salesman/addShiftsConstraints', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('addShiftsConstraints', err);
+        })
+    },
+
+    salesHistory: function(){
+        return axios.post(serverUrl + 'salesman/salesHistory', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('salesHistory', err);
+        })
+    },
+
+    getBroadcastMessages: function(){
+        return axios.post(serverUrl + 'salesman/getBroadcastMessages', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('getBroadcastMessages', err);
+        })
+    },
+
+    shiftRegister: function(){
+        return axios.post(serverUrl + 'salesman/shiftRegister', {
+            sessionId:sessionId
+        }).then(function (info) {
+            return returnVal(info);
+        }).catch(function (err) {
+            errorMessage('shiftRegister', err);
+        })
+    }
+};
+
 module.exports = managerRequests;
 module.exports = managementRequests;
 module.exports = userRequests;
+module.exports = salesmanRequests;

@@ -505,4 +505,4 @@ var salesmanRequests = {
 module.exports = managerRequests;
 module.exports = userRequests;
 module.exports = managementRequests;
-module.exports = salesmanRequests;
+//module.exports = salesmanRequests;

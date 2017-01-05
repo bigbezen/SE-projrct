@@ -2,8 +2,8 @@
  * Created by lihiverchik on 13/12/2016.
  */
 var React = require('react');
-var Login = require('../components/Login');
 var userServices = require('../communication/userServices');
+var constantsStrings = require('../utils/ConstantStrings');
 
 var LoginContainer = React.createClass({
     contextTypes: {
@@ -17,14 +17,12 @@ var LoginContainer = React.createClass({
     },
     handleSubmitUser: function (e) {
         e.preventDefault();
-
-        var username = this.state.username;
-        var password = this.state.password;
+        var password = this.refs.passwordTextBox.value;
+        var username = this.refs.usernameTextBox.value;
         this.setState({
             username: '',
             password: ''
         });
-        console.log(this.context);
         var context = this.context;
         userServices.login(username, password).then(function (n) {
             if(n){
@@ -37,25 +35,34 @@ var LoginContainer = React.createClass({
             }
         })
     },
-    handleUpdateUsername: function (event) {
-        console.log("handleUpdateUsername");
-        this.setState({
-            username: event.target.value
-        });
-    },
-    handleUpdatePassword: function (event) {
-        console.log("handleUpdatePassword");
-        this.setState({
-            password: event.target.value
-        });
-    },
     render: function () {
         return (
-            <Login onSubmitUser={this.handleSubmitUser}
-                   onUpdateUsername={this.handleUpdateUsername}
-                   onUpdatePassword={this.handleUpdatePassword}
-                   username={this.state.username}
-                   password={this.state.password}/>
+            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center" >
+                <h1>{constantsStrings.welcome_string}</h1>
+                <form onSubmit={this.handleSubmitUser} className="form-horizontal">
+                    <div className="form-group ">
+                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.username_string}</label>
+                        <input type="text"
+                               className="col-sm-4"
+                               ref="usernameTextBox"
+                               value={this.username} />
+                    </div>
+                    <div className="form-group">
+                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.password_string}</label>
+                        <input type="password"
+                               className="col-sm-4"
+                               ref="passwordTextBox"
+                               value={this.password}/>
+                    </div>
+                    <div className="form-group">
+                        <button
+                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-5"
+                            type="submit">
+                            {constantsStrings.login_string}
+                        </button>
+                    </div>
+                </form>
+            </div>
         )
     }
 });

@@ -1,7 +1,7 @@
 /**
  * Created by lihiverchik on 17/12/2016.
  */
-
+/*
 //var connection = require('../communication/connectionHandler')
 var connection = require('../communication/connectionHandlerStub')
 
@@ -62,4 +62,5 @@ var helpers = {
     }
 };
 
-module.exports = helpers;
+
+module.exports = helpers;*/

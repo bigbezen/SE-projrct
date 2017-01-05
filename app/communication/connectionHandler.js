@@ -394,4 +394,4 @@ var salesmanRequests = {
 module.exports = managerRequests;
 module.exports = managementRequests;
 module.exports = userRequests;
-module.exports = salesmanRequests;
+//module.exports = salesmanRequests;

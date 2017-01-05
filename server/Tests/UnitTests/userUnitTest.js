@@ -64,7 +64,7 @@ describe('user unit test', function () {
                 "zip": "11111"
             },
             "phone": "054-9999999",
-            "email": "shahafstein@gmail.com"
+            "email": "w@gmail.com"
         };
         user.jobDetails = {
             "userType": "manager",

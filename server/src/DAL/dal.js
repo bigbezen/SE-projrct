@@ -5,7 +5,7 @@ var encouragementModel  = require('../Models/encouragement');
 var shiftModel          = require('../Models/shift');
 var storeModel          = require('../Models/store');
 var userModel           = require('../Models/user');
-var inboxModel          = require('../Models/message');
+var messageModel        = require('../Models/message');
 
 module.exports = {
     addUser: async function (user) {
@@ -104,23 +104,20 @@ module.exports = {
     },
 
     sendBroadcast: async function(msg){
-        userMode.update({'jobDetails.userType': 'salesman'}, {$push: {inbox: msg._id}}, {multi: true});
-        return msg.save();
+        var save = await msg.save();
+        var update = await userModel.update({'jobDetails.userType': 'salesman'}, {$push: {inbox: msg._id}}, {multi: true});
+        return update;
     },
 
-    createInbox: async function(userObjectId){
-        newInbox = new inboxModel();
-        newInbox.reciever = userObjectId;
-        newInbox.save();
-    },
-
-    getInbox: async function(userId){
-        return inboxModel.findOne({$and: [{'reciever': userId}, {'messages.read': false}]});
-    },
 
     markMessagesAsRead: async function(userId){
-        return inboxMode.update({'reciever': userId}, {'messages.read': true});
+        return userModel.update({'_id': userId}, {$set: {inbox: []}});
     },
+
+    getMessages: async function(messagesIds){
+        return messageModel.find({'_id': {$in: messagesIds}});
+    },
+
 
     cleanDb: async function () {
         var products = await productModel.find({});
@@ -133,6 +130,8 @@ module.exports = {
         stores.map(x => x.remove());
         var users = await userModel.find({});
         users.map(x => x.remove());
+        var messages = await messageModel.find({});
+        messages.map(x => x.remove());
     }
 
 };

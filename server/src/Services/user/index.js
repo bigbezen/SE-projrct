@@ -67,8 +67,10 @@ var addUser = async function(sessionId, userDetails) {
     newUser.inbox = [];
     var res = await dal.addUser(newUser);
     if(res != null){
-        dal.createInbox(newUser._id);
         newUser = newUser.toObject();
+        var content = 'ברוכים הבאים\nהנה פרטי ההתחברות שלך לאפליקציה\n\nשם משתמש: ' + newUser.username;
+        content += '\n\n' + 'סיסמא: ' + cypher.decrypt(newUser.password);
+        mailer.sendMail([newUser.contact.email], 'Welcome To IBBLS', content);
         delete newUser.password;
         return {'code': 200, 'user': newUser};
     }

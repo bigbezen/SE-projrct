@@ -13,7 +13,6 @@ var mongoose = require('mongoose');
 _connectToTestDb();
 
 
-
 function _connectToTestDb(){
     mongoose.Promise = global.Promise;
     mongoose.connect('mongodb://localhost/UnitTestDb');

@@ -94,6 +94,10 @@ module.exports = {
 
     deleteEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encuragementId'], ['string', 'string']);
+    },
+
+    sendBroadcastMessage: function(params){
+        return checkParams(params, ['sessionId', 'content', 'date'], ['string', 'string', 'string'])
     }
 
 

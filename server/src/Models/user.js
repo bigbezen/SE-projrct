@@ -32,10 +32,8 @@ var userSchema = new Schema({
             {type: mongoose.Schema.Types.ObjectId, ref: 'encouragements'}
         ]
     },
-    'inbox': [
-        {type: mongoose.Schema.Types.ObjectId, ref: 'messages'}
-    ]
-// {
+    'inbox': [{type: mongoose.Schema.Types.ObjectId, ref: 'messages'}]
+    // {
 //     'type': String,
 //     'sender': String,
 //     'content': String,

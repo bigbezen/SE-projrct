@@ -17,27 +17,27 @@ var addShifts = async function(sessionId, shiftArr){
     var uniqueIds = [];
 
     //remove duplicates in storeIds
-    for(id in storeIds)
-        if(id == storeIds.indexOf(storeIds[id]))
-            uniqueIds.push(storeIds[id]);
+    for(id of storeIds)
+        if(uniqueIds.indexOf(id) == -1)
+            uniqueIds.push(id);
     var stores = await dal.getStoresByIds(uniqueIds);
     if(stores.length != uniqueIds.length)
         return {'code': 409, 'err': 'One or more of the stores does not exist'};
 
     //check validity of shifts dates
     for(shift of shiftArr) {
-        if ((new Date(shift.startDate)).getTime() > (new Date(shift.endDate)).getTime() ||
-            (new Date(shift.startDate)).getTime() < Date.now()){
+        if ((new Date(shift.startTime)).getTime() > (new Date(shift.endTime)).getTime() ||
+              (new Date(shift.startTime)).getTime() < new Date ()){
             return {'code': 409, 'err': 'shifts dates are before current time'};
         }
     }
 
     var newSalesReport = await _createNewSalesReport();
 
-    var resultAddShift;
+    var resultAddShift = [];
 
     //create model for each shift
-    shiftArr.map(function(shift){
+   for(shift of shiftArr){
         var newShift = new shiftModel();
         newShift.storeId = shift.storeId;
         newShift.startTime = shift.startTime;
@@ -47,19 +47,12 @@ var addShifts = async function(sessionId, shiftArr){
         newShift.sales = [];
         newShift.constraints = [];
         newShift.shiftComments = [];
-        return newShift;
-    });
-
-    //save each shift
-    for(shift of shiftArr){
-        resultAddShift = await dal.addShift(shift);
+       resultAddShift.push(await dal.addShift(newShift));
     }
 
-    shiftArr.map(x => x.toObject());
+    resultAddShift.map(x => x.toObject());
 
-    return {'code': 200, 'shiftArr': shiftArr};
-
-
+    return {'code': 200, 'shiftArr': resultAddShift};
 };
 
 var publishShifts = async function(sessionId, shiftArr){
@@ -290,8 +283,6 @@ var _createNewSalesReport = async function(){
 
 module.exports.addShifts = addShifts;
 module.exports.publishShifts = publishShifts;
-module.exports.addOneShift = addOneShift;
-module.exports.getAllPublishedShifts = getAllPublishedShifts;
 module.exports.getSalesmanCurrentShift = getSalesmanCurrentShift;
 module.exports.startShift = startShift;
 module.exports.reportSale = reportSale;

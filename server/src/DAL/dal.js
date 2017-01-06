@@ -59,7 +59,7 @@ module.exports = {
 
     getStoresByIds: async function(ids){
         ids = ids.map(x => mongoose.Types.ObjectId(x));
-        storeModel.find({'_id': {$in: ids}});
+        return storeModel.find({'_id': {$in: ids}});
     },
 
     getStoreByNameAndArea: async function (name, area) {
@@ -178,6 +178,8 @@ module.exports = {
         users.map(x => x.remove());
         var messages = await messageModel.find({});
         messages.map(x => x.remove());
+        var shift = await shiftModel.find({});
+        shift.map(x => x.remove());
     }
 };
 

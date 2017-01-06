@@ -180,7 +180,7 @@ var getAllUsers = async function(sessionId){
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var users = await dal.getAllUses();
+    var users = await dal.getAllUsers();
     if(users != null) {
     var usersAsObjects = [];
         for(var user of users){

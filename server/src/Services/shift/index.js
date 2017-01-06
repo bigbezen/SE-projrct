@@ -47,7 +47,7 @@ var addShifts = async function(sessionId, shiftArr){
         newShift.sales = [];
         newShift.constraints = [];
         newShift.shiftComments = [];
-       resultAddShift.push(await dal.addShift(newShift));
+        resultAddShift.push(await dal.addShift(newShift));
     }
 
     resultAddShift.map(x => x.toObject());
@@ -62,21 +62,29 @@ var publishShifts = async function(sessionId, shiftArr){
         return {'code': 401, 'err': 'user not authorized'};
 
     //get a list of shift Ids and user Ids from shiftArr @param
-    var shiftIds = shiftArr.map(x => x._ids);
+    var shiftIds = shiftArr.map(x => x._id);
     var uniqueUserIds = [];
     var userIds = shiftArr.map(x => x.salesmanId);
-    for(index in userIds)
-        if(index == userIds.indexOf(userIds[index]))
+    for(index in userIds) {
+        //redundant check - needs to be checked in the validator level
+        if(typeof(userIds[index]) != 'string')
+            return {'code': 409, 'err': 'all shifts must be attached with a user id'};
+        if (index == userIds.indexOf(userIds[index]))
             uniqueUserIds.push(userIds[index]);
+    }
 
     //get a list of shifts and users from db according to the ids lists
     //check that all id that we got as a parameter is a valid object in the db
     var dbShifts = await dal.getShiftsByIds(shiftIds);
-    var dbUsers = await dal.getAllUsers(uniqueUserIds);
+    var dbUsers = await dal.getUsersByIds(uniqueUserIds);
     if(shiftIds.length != dbShifts.length)
         return {'code': 409, 'err': 'some shift ids are not in the database'};
-    if(userIds.length != dbUsers.length)
+    if(uniqueUserIds.length != dbUsers.length)
         return {'code': 409, 'err': 'some user ids are not in the database'};
+    for(user of dbUsers)
+        if(user.jobDetails.userType != 'salesman')
+            return {'code': 409, 'err': 'one or more of the users is not a salesman'};
+
 
     //check that all given shifts are on status 'CREATED'
     //change shifts' status to "PUBLISED"

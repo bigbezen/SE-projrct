@@ -26,7 +26,7 @@ module.exports = {
     },
 
     updateUser: async function(user){
-        return userModel.findOneAndUpdate(user._id, user, {upsert: false});
+        return userModel.update(user._id, user, {upsert: false});
     },
 
     getUserBySessionId: async function(sessionId){
@@ -41,8 +41,12 @@ module.exports = {
         return userModel.findOne({'personal.id': Id});
     },
 
-    getAllUses: async function(){
+    getAllUsers: async function(){
         return userModel.find({});
+    },
+
+    getUsersByIds: async function(ids){
+        return userModel.find({'_id': {$in: ids}});
     },
 
     editStore: async function (storeDetails) {
@@ -121,7 +125,7 @@ module.exports = {
         //     product.productId = mongoose.Types.ObjectId(product.productId);
         //     return product;
         // });
-        return shiftModel.findOneAndUpdate(mongoose.Types.ObjectId(shift._id), shift, {upsert: false});
+        return shiftModel.update(mongoose.Types.ObjectId(shift._id), shift, {upsert: false});
     },
 
 
@@ -130,7 +134,7 @@ module.exports = {
         results = [];
         var result;
         for(shift of shiftArr){
-            result = await shiftModel.findOneAndUpdate({'_id': shift._id}, {'salesmanId': shift.salesmanId, 'status': shift.status});
+            result = await shiftModel.update({'_id': shift._id}, {'salesmanId': shift.salesmanId, 'status': shift.status});
             if(result.ok != 1)
                 results.push(shift._id);
         }
@@ -141,7 +145,7 @@ module.exports = {
         var today = moment().startOf('day');
         var tomorrow = moment(today).add(1, 'days');
 
-        return shiftModel.findOne({$and: [{'salesmanId': mongoose.Types.objectId(salesmanId)},
+        return shiftModel.findOne({$and: [{'salesmanId': salesmanId},
             {'status': 'PUBLISHED'}, {'startTime': {$gte: today.toDate(), $lt: tomorrow.toDate()}}]});
     },
 

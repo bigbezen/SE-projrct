@@ -120,7 +120,7 @@ var getSalesmanCurrentShift = async function(sessionId){
 var startShift = async function(sessionId, shift){
     logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
 
-    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift', null);
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift');
     if(salesman == null || salesman._id != shift.salesmanId)
         return {'code': 401, 'err': 'user not authorized'};
 
@@ -139,7 +139,7 @@ var startShift = async function(sessionId, shift){
 var reportSale = async function(sessionId, shiftId, productId, quantity){
     logger.info('Services.shift.index.reportSale', {'session-id': sessionId});
 
-    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportSale', null);
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportSale');
     var shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if(salesman == null || shift == null || salesman._id != shift.salesmanId)
@@ -171,7 +171,7 @@ var reportSale = async function(sessionId, shiftId, productId, quantity){
 var reportOpened = async function(sessionId, shiftId, productId, quantity){
     logger.info('Services.shift.index.reportOpened', {'session-id': sessionId});
 
-    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportOpened', null);
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportOpened');
     var shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if(salesman == null || shift == null || salesman._id != shift.salesmanId)
@@ -191,14 +191,14 @@ var reportOpened = async function(sessionId, shiftId, productId, quantity){
 var addShiftComment = async function(sessionId, shiftId, content){
     logger.info('Services.shift.index.addShiftComment', {'session-id': sessionId});
 
-    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'addShiftComment', null);
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'addShiftComment');
     var shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
-    if(salesman == null || shift == null || salesman._id != shift.salesmanId)
+    if(salesman == null || shift == null || salesman._id.toString() != shift.salesmanId.toString())
         return {'code': 401, 'err': 'user not authorized'};
 
-    shift.shiftComments.push(comment);
-    var result = await dal.updateShift(shift);
+    shift.shiftComments.push(content);
+    var result = await dal.addShiftComment(shift._id.toString(), shift.shiftComments);
     if(result.ok != 1)
         return {'code': '500', 'err': 'unexpected error'};
     else

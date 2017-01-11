@@ -128,7 +128,9 @@ module.exports = {
         return shiftModel.update(mongoose.Types.ObjectId(shift._id), shift, {upsert: false});
     },
 
-
+    addShiftComment: async function(shiftId, comments){
+        return shiftModel.update(mongoose.Types.ObjectId(shiftId), {'shiftComments':comments }, {upsert: false});
+    },
 
     publishShifts: async function(shiftArr){
         results = [];

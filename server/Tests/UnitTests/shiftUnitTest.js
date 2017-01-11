@@ -147,6 +147,49 @@ describe('shift unit test', function () {
         });
     });
 
+    describe('test add shift comment', function () {
+        it('add shift comment not by salesman', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            res = await shiftService.addShiftComment(manager.sessionId, shifts[0]._id, "not user");
+            expect(res).to.have.property('code', 401);
+            expect(res).to.have.property('err', 'user not authorized');
+        });
+
+        it('add shift comment not exist shift id', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            res = await shiftService.addShiftComment(salesman.sessionId, mongoose.Types.ObjectId("notexisting1"), "new comment");
+            expect(res).to.have.property('code', 401);
+            expect(res).to.have.property('err', 'user not authorized');
+        });
+
+        it('add shift comment salesman not an owner', async function () {
+            let salesmanNotOwner = new userModel();
+            salesmanNotOwner.username = 'aviram';
+            salesmanNotOwner.sessionId = '1234567';
+            salesmanNotOwner.jobDetails.userType = 'salesman';
+            let res = await dal.addUser(salesmanNotOwner);
+
+            res = await shiftService.addShifts(manager.sessionId, shifts);
+            res = await shiftService.addShiftComment(salesmanNotOwner.sessionId, shifts[0]._id, "new comment");
+            expect(res).to.have.property('code', 401);
+            expect(res).to.have.property('err', 'user not authorized');
+        });
+
+        it('add shift comment by salesman', async function () {
+            shifts[0].salesmanId = salesman._id;
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+            shifts[0]._id = shifts[0]._id.toString();
+            shifts[1]._id = shifts[1]._id.toString();
+
+            let res = await shiftService.addShiftComment(salesman.sessionId, shifts[0]._id, "new comment");
+            expect(res).to.have.property('code', 200);
+            expect(res).to.have.property('err', null);
+        });
+    });
+
     describe('test publish shifts', function(){
         it('publish shifts valid', async function(){
             shifts[0].status = "CREATED";
@@ -317,8 +360,6 @@ describe('shift unit test', function () {
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shift');
             expect(result.shift.status).to.be.equal('PUBLISHED');
-
-
         });
     });
 

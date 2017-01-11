@@ -20,6 +20,7 @@ describe('shift unit test', function () {
 
     let manager;
     let salesman;
+    let salesman2;
     let shift1;
     let shift2;
     let shifts = [];
@@ -49,13 +50,19 @@ describe('shift unit test', function () {
         manager.username = 'shahaf';
         manager.sessionId = '123456';
         manager.jobDetails.userType = 'manager';
-        let res = await dal.addUser(manager);
+        manager = await dal.addUser(manager);
 
         salesman = new userModel();
         salesman.username = 'matan';
         salesman.sessionId = '12123434';
         salesman.jobDetails.userType = 'salesman';
-        res = await dal.addUser(salesman);
+        salesman = await dal.addUser(salesman);
+
+        salesman2 = new userModel();
+        salesman2.username = 'bigbezen';
+        salesman2.sessionId = '1212343456';
+        salesman2.jobDetails.userType = 'salesman';
+        salesman2 = await dal.addUser(salesman2);
 
         store = new storeModel();
         store.name = 'bana';
@@ -65,9 +72,9 @@ describe('shift unit test', function () {
         store.address = 'rager12';
         store.area = 'south';
         store.channel = 'hot';
-        res = await dal.addStore(store);
+        let res = await dal.addStore(store);
 
-        let product1 = new productModel();
+        product1 = new productModel();
         product1.name = 'absulut';
         product1.retailPrice = 122;
         product1.salePrice = 133;
@@ -76,7 +83,7 @@ describe('shift unit test', function () {
         product1.minRequiredAmount = 111;
         product1.notifyManager = false;
 
-        let product2 = new productModel();
+        product2 = new productModel();
         product2.name = 'jhony walker';
         product2.retailPrice = 2222;
         product2.salePrice = 555;
@@ -85,8 +92,8 @@ describe('shift unit test', function () {
         product2.minRequiredAmount = 12;
         product2.notifyManager = true;
 
-        res = await dal.addProduct(product1);
-        res = await dal.addProduct(product2);
+        product1 = await dal.addProduct(product1);
+        product2 = await dal.addProduct(product2);
 
         let end = new Date();
         end.setDate(end.getDate() + 1);
@@ -186,7 +193,122 @@ describe('shift unit test', function () {
 
             let res = await shiftService.addShiftComment(salesman.sessionId, shifts[0]._id, "new comment");
             expect(res).to.have.property('code', 200);
-            expect(res).to.have.property('err', null);
+            res = await dal.getShiftsByIds([shifts[0]._id]);
+            res = res[0];
+            assert.equal(res.shiftComments[0], 'new comment');
+        });
+    });
+
+
+    describe('test start shift', function(){
+        it('start shift not by salesman', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[1].status = "CREATED";
+
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+
+            let result = await shiftService.startShift(manager.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('start shift not by salesman owner', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[1].status = "CREATED";
+
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+
+            let result = await shiftService.startShift(salesman2.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('start shift not exist shift', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            shifts[1].status = "PUBLISHED";
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+            shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[1].salesmanId = salesman._id.toString();
+
+            let result = await shiftService.startShift(salesman.sessionId, shifts[1]);
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', 'shift not found');
+        });
+
+        it('start shift not published', async function(){
+            shifts[0].status = "NOT-PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.startShift(salesman.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 403);
+            expect(result).to.have.property('err', 'shift not published');
+        });
+
+        it('start shift valid', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0].salesReport = [];
+            shifts[0].salesReport.push({'productId': product1._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product2._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                shifts[0].salesReport[i].stockStartShift =  2;
+                shifts[0].salesReport[i].opened =  1;
+                shifts[0].salesReport[i].stockEndShift =  1;
+            }
+
+            let result = await shiftService.startShift(salesman.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 200);
+
+            result = await dal.getShiftsByIds([shifts[0]._id]);
+            expect(result[0]).to.have.property('status', 'STARTED');
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                assert.equal(shifts[0].salesReport[i].stockStartShift, 2);
+                assert.equal(shifts[0].salesReport[i].opened, 1);
+                assert.equal(shifts[0].salesReport[i].stockEndShift, 1);
+            }
         });
     });
 
@@ -362,6 +484,4 @@ describe('shift unit test', function () {
             expect(result.shift.status).to.be.equal('PUBLISHED');
         });
     });
-
-
 });

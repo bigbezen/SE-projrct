@@ -210,37 +210,37 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addStore', async function (req, res) {
+        if (!validator.addStore(req.body))
+            res.status(404).send('invalid parameters');
         var result = await storeService.addStore(req.body.sessionId, req.body.storeDetails);
-        if (result.err != null)
-        {
+        if (result.err != null) {
             res.status(result.code).send(result.err);
         }
-        else
-        {
+        else {
             res.status(result.code).send(result.store);
         }
     });
 
     app.post('/management/editStore', async function (req, res) {
+        if (!validator.editStore(req.body))
+            res.status(404).send('invalid parameters');
         var result = await storeService.editStore(req.body.sessionId, req.body.storeDetails);
-        if (result.err != null)
-        {
+        if (result.err != null) {
             res.status(result.code).send(result.err);
         }
-        else
-        {
+        else {
             res.status(result.code).send(result.store);
         }
     });
 
     app.post('/management/deleteStore', async function (req, res) {
+        if (!validator.deleteStore(req.body))
+            res.status(404).send('invalid parameters');
         var result = await storeService.deleteStroe(req.body.sessionId, req.body.storeDetails);
-        if (result.err != null)
-        {
+        if (result.err != null) {
             res.status(result.code).send(result.err);
         }
-        else
-        {
+        else {
             res.status(result.code).send(result.store);
         }
     });
@@ -256,6 +256,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addProduct', async function (req, res) {
+        if (!validator.addProduct(req.body))
+            res.status(404).send('invalid parameters');
         var result = await productService.addProduct(req.body.sessionId, req.body.productDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -266,6 +268,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editProduct', async function (req, res) {
+        if (!validator.editProduct(req.body))
+            res.status(404).send('invalid parameters');
         var result = await productService.editProduct(req.body.sessionId, req.body.productDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -276,6 +280,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteProduct', async function (req, res) {
+        if (!validator.deleteProduct(req.body))
+            res.status(404).send('invalid parameters');
         var result = await productService.deleteProduct(req.body.sessionId, req.body.productDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -297,7 +303,9 @@ function _setapApiEndpoints() {
 
 
     app.post('/management/addEncouragement', async function (req, res) {
-        var result = await encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+        if (!validator.addEncouragement(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await encouragementService.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -307,7 +315,9 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editEncouragement', async function (req, res) {
-        var result = await encouragementServices.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        if (!validator.editEncouragement(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await encouragementService.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -317,7 +327,9 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteEncouragement', async function (req, res) {
-        var result = await encouragementServices.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        if (!validator.deleteEncouragement(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await encouragementService.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -327,7 +339,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllEncouragements', async function (req, res) {
-        var result = await encouragementServices.getAllEncouragements(req.headers.sessionid);
+        var result = await encouragementService.getAllEncouragements(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }

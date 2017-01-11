@@ -68,6 +68,14 @@ module.exports = {
                 ['string', 'string', 'string', 'string', 'string', 'string', 'string']);
     },
 
+    editStore: function(params){
+        return checkParams(params, ['sessionId', 'storeDetails'],
+                ['string', 'object']) &&
+            checkParams(params.storeDetails, ['name', 'managerName', 'phone', 'city', 'address', 'area', 'channel'],
+                ['string', 'string', 'string', 'string', 'string', 'string', 'string']);
+    },
+
+
     deleteStore: function(params){
         return checkParams(params, ['sessionId', 'storeId'],
             ['string', 'string']);
@@ -78,6 +86,13 @@ module.exports = {
                 ['string', 'object']) &&
                 checkParams(params.productDetails, ['name', 'retailPrice', 'salePrice', 'category', 'subCategory', 'minRequiredAmount', 'notifyManager'],
                     ['string', 'Number', 'Number', 'string', 'string', 'Number', 'boolean']);
+    },
+
+    editProduct: function(params) {
+        return checkParams(params, ['sessionId', 'productDetails'],
+                ['string', 'object']) &&
+            checkParams(params.productDetails, ['name', 'retailPrice', 'salePrice', 'category', 'subCategory', 'minRequiredAmount', 'notifyManager'],
+                ['string', 'Number', 'Number', 'string', 'string', 'Number', 'boolean']);
     },
 
     deleteProduct: function(params){
@@ -91,6 +106,14 @@ module.exports = {
             checkParams(params.encouragementDetails, ['active', 'numOfProducts', 'rate', 'products'],
                 ['boolean', 'Number', 'Number', 'object']);
     },
+
+    editEncouragement: function(params){
+        return checkParams(params, ['sessionId', 'encouragementDetails'],
+                ['string', 'object']) &&
+            checkParams(params.encouragementDetails, ['active', 'numOfProducts', 'rate', 'products'],
+                ['boolean', 'Number', 'Number', 'object']);
+    },
+
 
     deleteEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encuragementId'], ['string', 'string']);

@@ -121,15 +121,7 @@ module.exports = {
     },
 
     updateShift: async function(shift){
-        // shift.salesReport = shift.salesReport.map(function(product){
-        //     product.productId = mongoose.Types.ObjectId(product.productId);
-        //     return product;
-        // });
-        return shiftModel.update(mongoose.Types.ObjectId(shift._id), shift, {upsert: false});
-    },
-
-    addShiftComment: async function(shiftId, comments){
-        return shiftModel.update(mongoose.Types.ObjectId(shiftId), {'shiftComments':comments }, {upsert: false});
+        return shiftModel.update({'_id':mongoose.Types.ObjectId(shift._id)}, shift, {upsert: false});
     },
 
     publishShifts: async function(shiftArr){

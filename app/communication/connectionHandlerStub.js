@@ -125,11 +125,13 @@ function createUsersCollection() {
     user1.password =  'pass1';
     user1.startDate = new Date('1/1/13');
     user1.endDate = null;
+    user1.personal = {};
     user1.personal.id = '302991468';
     user1.personal.firstName = 'אבירם';
     user1.personal.lastName = 'אדירי';
     user1.personal.sex = 'זכר';
     user1.contact = null;
+    user1.jobDetails = {};
     user1.jobDetails.userType = 'דייל';
     user1.inbox = [];
 
@@ -142,11 +144,13 @@ function createUsersCollection() {
     user2.password =  'pass2';
     user2.startDate = new Date('2/1/13');
     user2.endDate = null;
+    user2.personal = {};
     user2.personal.id = '78977897';
     user2.personal.firstName = 'גל';
     user2.personal.lastName = 'דר';
     user2.personal.sex = 'נקבה';
     user2.contact = null;
+    user2.jobDetails = {};
     user2.jobDetails.userType = 'דייל';
     user2.inbox = [];
 
@@ -159,11 +163,13 @@ function createUsersCollection() {
     user3.password =  'pass3';
     user3.startDate = new Date('4/10/15');
     user3.endDate = null;
+    user3.personal = {};
     user3.personal.id = '65346546';
     user3.personal.firstName = 'ליהיא';
     user3.personal.lastName = 'וורצ\'יק';
     user3.personal.sex = 'נקבה';
     user3.contact = null;
+    user3.jobDetails = {};
     user3.jobDetails.userType = 'דייל';
     user3.inbox = [];
 
@@ -176,11 +182,13 @@ function createUsersCollection() {
     user4.password =  'pass4';
     user4.startDate = new Date('12/12/16');
     user4.endDate = null;
+    user4.personal = {};
     user4.personal.id = '543564365';
     user4.personal.firstName = 'shahaf';
     user4.personal.lastName = 'stein';
     user4.personal.sex = 'זכר';
     user4.contact = null;
+    user4.jobDetails = {};
     user4.jobDetails.userType = 'סוכן שטח';
     user4.inbox = [];
 
@@ -193,16 +201,20 @@ function createUsersCollection() {
     user5.password =  'pass5';
     user5.startDate = new Date('5/6/14');
     user5.endDate = null;
+    user5.personal = {};
     user5.personal.id = '123456789';
     user5.personal.firstName = 'מתן';
     user5.personal.lastName = 'בזן';
     user5.personal.sex = 'זכר';
     user5.contact = null;
+    user5.jobDetails = {};
     user5.jobDetails.userType = 'מנהל';
     user5.inbox = [];
 
     users.push(user5);
 
+    console.log('DONE!');
+    console.log(users);
     return users;
 }
 

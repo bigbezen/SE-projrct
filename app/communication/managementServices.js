@@ -20,6 +20,12 @@ var helpers = {
         return connection.managementRequests.deleteUser(user);
     },
 
+
+    getAllUsers: function(){
+        console.log('managementervices- getAllUsers');
+        return connection.managementRequests.getAllUsers();
+    },
+
     addStore: function(store){
         console.log('managementervices- addStore');
         return connection.managementRequests.addStore(store);

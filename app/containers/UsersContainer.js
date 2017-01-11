@@ -5,10 +5,23 @@ var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
 var helpers = require('../utils/Helpers');
 var managementServices = require('../communication/managementServices');
+var flatten = require('flat');
 
 function dateFormatter(cell, row) {
     return `${('0' + cell.getDate()).slice(-2)}/${('0' + (cell.getMonth() + 1)).slice(-2)}/${cell.getFullYear()}`;
 }
+
+function flatList(users) {
+    console.log('BEFORE:');
+    console.log(users);
+    var output = [];
+    for(var i = 0; i < users.length; i++)
+        output.push(flatten(users[i]));
+    console.log('AFTER:');
+    console.log(output);
+    return output;
+}
+
 
 var UsersContainer = React.createClass({
     contextTypes: {
@@ -23,9 +36,9 @@ var UsersContainer = React.createClass({
         this.updateUsers();
     },
     updateUsers() {
-        /*this.setState({
-            users: managementServices.getAllUsers()
-        }); */
+        this.setState({
+            users: flatList(managementServices.getAllUsers())
+        });
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('User #', rowIndex);
@@ -72,7 +85,7 @@ var UsersContainer = React.createClass({
                 <button className="w3-btn-floating" onClick={this.onClickAddButton}> + </button>
                 <BootstrapTable data={this.state.users} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
-                        dataField = 'id'
+                        dataField = 'personal.id'
                         dataAlign = 'right'
                         dataSort = {true}
                         filter = { {type: 'TextFilter', placeholder:constantStrings.enterID_string} }
@@ -80,27 +93,27 @@ var UsersContainer = React.createClass({
                         {constantStrings.userID_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField = 'firstName'
+                        dataField = 'personal.firstName'
                         dataAlign = 'right'
                         dataSort = {true}
                         filter={ { type: 'TextFilter', placeholder:constantStrings.enterFirstName_string} }>
                         {constantStrings.firstName_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField = 'lastName'
+                        dataField = 'personal.lastName'
                         dataAlign = 'right'
                         filter = { { type: 'TextFilter', placeholder:constantStrings.enterLastName_string} }>
                         {constantStrings.lastName_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField = 'sex'
+                        dataField = 'personal.sex'
                         dataAlign = 'right'
                         filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.user_gender }
                         filter={ { type: 'SelectFilter', placeholder:constantStrings.selectGender_string, options: constantStrings.user_gender } }>
                     {constantStrings.gender_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField = 'userType'
+                        dataField = 'jobDetails.userType'
                         dataAlign = 'right'
                         filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.user_role }
                         filter={ { type: 'SelectFilter', placeholder:constantStrings.selectRole_string, options: constantStrings.user_role } }>

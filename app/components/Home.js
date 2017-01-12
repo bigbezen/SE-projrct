@@ -12,17 +12,17 @@ var Home = function (props) {
 
                 <div className="form-group col-sm-4 col-sm-offset-4">
                     <div>
-                        <button type='button' className="btn btn-block btn-success" onClick={props.onSelectUsers}>
+                        <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={props.onSelectUsers}>
                             {constantsStrings.manageUsers_string}
                         </button>
                     </div>
                     <div>
-                        <button type='button' className="btn btn-block btn-success" onClick={props.onSelectProducts}>
+                        <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={props.onSelectProducts}>
                             {constantsStrings.manageProducts_string}
                         </button>
                     </div>
                     <div>
-                        <button type='button' className="btn btn-block btn-success" onClick={props.onSelectProducts}>
+                        <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={props.onSelectStores}>
                             {constantsStrings.manageStores_string}
                         </button>
                     </div>

@@ -5,6 +5,8 @@ var React = require('react');
 var userServices = require('../communication/userServices');
 var constantsStrings = require('../utils/ConstantStrings');
 
+var userType = 'salesman';
+
 var LoginContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -26,9 +28,19 @@ var LoginContainer = React.createClass({
         var context = this.context;
         userServices.login(username, password).then(function (n) {
             if(n){
-                context.router.push({
-                    pathname: '/LoggedIn/Home'
-                })
+                console.log(userType);
+                if(userType == 'salesman')
+                {
+                    console.log("go to saleman home!!!");
+                    context.router.push({
+                        pathname: '/salesman/Home'
+                    })
+                } else{
+                    console.log("go to home :(");
+                    context.router.push({
+                        pathname: '/LoggedIn/Home'
+                    })
+                }
             }
             else{
                 console.log("error");

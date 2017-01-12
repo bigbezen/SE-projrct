@@ -22,6 +22,9 @@ function flatList(users) {
     return output;
 }
 
+var options = {
+    noDataText: constantStrings.NoDataText_string
+};
 
 var UsersContainer = React.createClass({
     contextTypes: {
@@ -82,8 +85,8 @@ var UsersContainer = React.createClass({
     renderTable: function () {
         return (
             <div className="col-sm-offset-1 col-sm-10">
-                <button className="w3-btn-floating" onClick={this.onClickAddButton}> + </button>
-                <BootstrapTable data={this.state.users} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
+                <BootstrapTable data={this.state.users} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'personal.id'
                         dataAlign = 'right'

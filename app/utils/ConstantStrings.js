@@ -17,8 +17,8 @@ class ConstantStrings extends React.Component {
     static search_string = 'חיפוש';
     static add_string = 'הוספה';
     static logout_string = 'התנתק';
-
-
+    static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
+    static save_string = 'שמירה';
     //products
     static id_string = 'מס׳ סידורי';
     static productName_string = 'שם מוצר';
@@ -30,10 +30,12 @@ class ConstantStrings extends React.Component {
     static notifyManager_string = 'התראת מנהל';
 
     //filter strings
-    static enterProductName_string = 'הכנס שם מוצר..'
-    static enterPrice_string = 'הכנס מחיר..'
-    static selectCategory_string = 'בחר קטגוריה..'
-    static selectSubCategory_string = 'בחר תת קטגוריה..'
+    static enterProductName_string = 'הכנס שם מוצר..';
+    static enterPrice_string = 'הכנס מחיר..';
+    static selectCategory_string = 'בחר קטגוריה..';
+    static selectSubCategory_string = 'בחר תת קטגוריה..';
+    static enterQuantity_string = 'הכנס כמות';
+
 
     //users
     static userID_string ='ת״ז';
@@ -48,12 +50,12 @@ class ConstantStrings extends React.Component {
     static zip_string = 'מיקוד';
 
     //filter strings
-    static enterID_string = 'הכנס ת״ז..'
-    static enterFirstName_string = 'הכנס שם פרטי..'
-    static enterLastName_string = 'בחר שם משפחה..'
-    static selectGender_string = 'בחר מין..'
-    static selectRole_string = 'בחר תפקיד..'
-    static selectStartDate_string = 'בחר תאריך התחלה..'
+    static enterID_string = 'הכנס ת״ז..';
+    static enterFirstName_string = 'הכנס שם פרטי..';
+    static enterLastName_string = 'בחר שם משפחה..';
+    static selectGender_string = 'בחר מין..';
+    static selectRole_string = 'בחר תפקיד..';
+    static selectStartDate_string = 'בחר תאריך התחלה..';
 
     //stores
     static storeName_string ='שם חנות';
@@ -65,13 +67,13 @@ class ConstantStrings extends React.Component {
     static channel_string = 'ערוץ';
 
     //filter strings
-    static enterStoreName_string = 'הכנס שם חנות..'
-    static enterManagerName_string = 'הכנס שם מנהל..'
-    static enterPhone_string = 'הכנס טלפון..'
-    static enterAddress_string = 'הכנס כתובת..'
-    static enterCity_string = 'הכנס עיר..'
-    static selectArea_string = 'בחר איזור..'
-    static selectChannel_string = 'בחר ערוץ..'
+    static enterStoreName_string = 'הכנס שם חנות..';
+    static enterManagerName_string = 'הכנס שם מנהל..';
+    static enterPhone_string = 'הכנס טלפון..';
+    static enterAddress_string = 'הכנס כתובת..';
+    static enterCity_string = 'הכנס עיר..';
+    static selectArea_string = 'בחר איזור..';
+    static selectChannel_string = 'בחר ערוץ..';
 
     static product_category =
     {
@@ -116,6 +118,9 @@ class ConstantStrings extends React.Component {
          'מסחרי': 'מסחרי',
          'קלאסי': 'קלאסי'
      };
+
+    //salesman
+    static startShift_string = 'התחל משמרת';
 }
 
 module.exports = ConstantStrings;

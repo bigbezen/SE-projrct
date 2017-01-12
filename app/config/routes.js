@@ -15,6 +15,9 @@ var Products = require('../containers/ProductsContainer');
 var Product = require('../containers/ProductDetails');
 var Store = require('../containers/StoreDetails');
 var User = require('../containers/UserDetails');
+var SalesmanBase = require('../salemanContainers/SalesmanBaseContainer');
+var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
+var StartShift = require('../salemanContainers/StartShiftContainer');
 
 var routes = (
     <Router history={hashHistory}>
@@ -27,7 +30,10 @@ var routes = (
             <Route path='Product' component={Product} />
             <Route path='Store' component={Store} />
             <Route path='User' component={User} />
-
+        </Route>
+        <Route path='/salesman/' component={SalesmanBase}>
+            <Route path='Home' component={SalesmanHome}/>
+            <Route path='StartShift' component={StartShift}/>
         </Route>
     </Router>
 );

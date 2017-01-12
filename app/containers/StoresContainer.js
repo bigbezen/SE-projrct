@@ -6,6 +6,10 @@ var constantStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
 var helpers = require('../utils/Helpers');
 
+var options = {
+    noDataText: constantStrings.NoDataText_string
+};
+
 var StoresContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -34,6 +38,8 @@ var StoresContainer = React.createClass({
     onClickDeleteButton: function(cell, row, rowIndex){
         console.log('Store #', rowIndex);
         console.log(row);
+        managementServices.deleteStore(row);
+        this.updateStores();
     },
     onClickAddButton: function(){
         this.context.router.push({
@@ -63,8 +69,8 @@ var StoresContainer = React.createClass({
     renderTable: function () {
         return (
             <div className="col-sm-offset-1 col-sm-10">
-                <button className="w3-btn-floating" onClick={this.onClickAddButton}> + </button>
-                <BootstrapTable data={this.state.stores} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
+                <BootstrapTable data={this.state.stores} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'name'
                         dataAlign = 'right'

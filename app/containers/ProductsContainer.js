@@ -9,6 +9,10 @@ var constantStrings = require('../utils/ConstantStrings');
 var helpers = require('../utils/Helpers');
 var managementServices = require('../communication/managementServices');
 
+var options = {
+    noDataText: constantStrings.NoDataText_string
+};
+
 var ProductsContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -68,8 +72,8 @@ var ProductsContainer = React.createClass({
     renderTable: function () {
         return (
             <div className="col-sm-offset-1 col-sm-10">
-                <button className="w3-btn-floating" onClick={this.onClickAddButton}> + </button>
-            <BootstrapTable data={this.state.products} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
+            <BootstrapTable data={this.state.products} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                 <TableHeaderColumn
                     dataField = 'name'
                     dataAlign = 'right'
@@ -83,7 +87,7 @@ var ProductsContainer = React.createClass({
                     dataAlign = 'right'
                     dataSort = {true}
                     filter={ {
-                    type: 'TextFilter',
+                    type: 'NumberFilter',
                     placeholder:constantStrings.enterPrice_string
                 } }>
                     {constantStrings.retailPrice_string}
@@ -91,7 +95,7 @@ var ProductsContainer = React.createClass({
                 <TableHeaderColumn
                     dataField = 'salePrice'
                     dataAlign = 'right'
-                    filter = { { type: 'TextFilter', placeholder:constantStrings.enterPrice_string} }>
+                    filter = { { type: 'NumberFilter', placeholder:constantStrings.enterPrice_string} }>
                     {constantStrings.salePrice_string}
                 </TableHeaderColumn>
                 <TableHeaderColumn
@@ -110,7 +114,8 @@ var ProductsContainer = React.createClass({
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField = 'minRequiredAmount'
-                    dataAlign = 'right'>
+                    dataAlign = 'right'
+                    filter = { { type: 'NumberFilter', placeholder:constantStrings.enterQuantity_string} }>
                     {constantStrings.minRequiredAmount_string}
                 </TableHeaderColumn>
                 <TableHeaderColumn

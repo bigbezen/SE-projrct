@@ -88,6 +88,9 @@ var userRequests = {
 
 var managementRequests = {
     addUser: function(user) {
+        console.log('addUser : http call');
+        console.log(sessionId);
+        console.log(user);
         return axios.post(serverUrl + 'management/addUser', {
             sessionId:sessionId,
             userDetails:user

@@ -98,18 +98,31 @@ var managementRequests = {
 };
 
 function createUser() {
+    // first user
     var user1 = new userObj();
     user1._id = '1';
     user1.username = 'aviramad';
     user1.password =  'pass1';
     user1.startDate = new Date('1/1/13');
-    user1.endDate = null;
+    user1.endDate = new Date('1/1/13');
+    user1.personal = {};
     user1.personal.id = '302991468';
     user1.personal.firstName = 'אבירם';
     user1.personal.lastName = 'אדירי';
     user1.personal.sex = 'זכר';
-    user1.contact = null;
+    user1.personal.birtday = '';
+    user1.contact = {};
+    user1.contact.address = {};
+    user1.contact.address.street = '';
+    user1.contact.address.number = '';
+    user1.contact.address.city = '';
+    user1.contact.address.zip = '';
+    user1.contact.phone = '';
+    user1.contact.email = 'aviramad@post.bgu.ac.il';
+    user1.jobDetails = {};
     user1.jobDetails.userType = 'דייל';
+    user1.jobDetails.area = 'דרום';
+    user1.jobDetails.channel = 'מסחרי';
     user1.inbox = [];
 
     return user1;
@@ -124,15 +137,25 @@ function createUsersCollection() {
     user1.username = 'aviramad';
     user1.password =  'pass1';
     user1.startDate = new Date('1/1/13');
-    user1.endDate = null;
+    user1.endDate = new Date('1/1/13');
     user1.personal = {};
     user1.personal.id = '302991468';
     user1.personal.firstName = 'אבירם';
     user1.personal.lastName = 'אדירי';
     user1.personal.sex = 'זכר';
-    user1.contact = null;
+    user1.personal.birtday = '';
+    user1.contact = {};
+    user1.contact.address = {};
+    user1.contact.address.street = '';
+    user1.contact.address.number = '';
+    user1.contact.address.city = '';
+    user1.contact.address.zip = '';
+    user1.contact.phone = '';
+    user1.contact.email = 'aviramad@post.bgu.ac.il';
     user1.jobDetails = {};
     user1.jobDetails.userType = 'דייל';
+    user1.jobDetails.area = 'דרום';
+    user1.jobDetails.channel = 'מסחרי';
     user1.inbox = [];
 
     users.push(user1);
@@ -149,9 +172,18 @@ function createUsersCollection() {
     user2.personal.firstName = 'גל';
     user2.personal.lastName = 'דר';
     user2.personal.sex = 'נקבה';
-    user2.contact = null;
+    user2.contact = {};
+    user2.contact.address = {};
+    user2.contact.address.street = '';
+    user2.contact.address.number = '';
+    user2.contact.address.city = '';
+    user2.contact.address.zip = '';
+    user2.contact.phone = '';
+    user2.contact.email = 'aviramad@post.bgu.ac.il';
     user2.jobDetails = {};
     user2.jobDetails.userType = 'דייל';
+    user2.jobDetails.area = 'דרום';
+    user2.jobDetails.channel = 'מסחרי';
     user2.inbox = [];
 
     users.push(user2);
@@ -168,9 +200,18 @@ function createUsersCollection() {
     user3.personal.firstName = 'ליהיא';
     user3.personal.lastName = 'וורצ\'יק';
     user3.personal.sex = 'נקבה';
-    user3.contact = null;
+    user3.contact = {};
+    user3.contact.address = {};
+    user3.contact.address.street = '';
+    user3.contact.address.number = '';
+    user3.contact.address.city = '';
+    user3.contact.address.zip = '';
+    user3.contact.phone = '';
+    user3.contact.email = 'aviramad@post.bgu.ac.il';
     user3.jobDetails = {};
     user3.jobDetails.userType = 'דייל';
+    user3.jobDetails.area = 'דרום';
+    user3.jobDetails.channel = 'מסחרי';
     user3.inbox = [];
 
     users.push(user3);
@@ -187,9 +228,18 @@ function createUsersCollection() {
     user4.personal.firstName = 'shahaf';
     user4.personal.lastName = 'stein';
     user4.personal.sex = 'זכר';
-    user4.contact = null;
+    user4.contact = {};
+    user4.contact.address = {};
+    user4.contact.address.street = '';
+    user4.contact.address.number = '';
+    user4.contact.address.city = '';
+    user4.contact.address.zip = '';
+    user4.contact.phone = '';
+    user4.contact.email = 'aviramad@post.bgu.ac.il';
     user4.jobDetails = {};
     user4.jobDetails.userType = 'סוכן שטח';
+    user4.jobDetails.area = 'דרום';
+    user4.jobDetails.channel = 'מסחרי';
     user4.inbox = [];
 
     users.push(user4);
@@ -206,15 +256,21 @@ function createUsersCollection() {
     user5.personal.firstName = 'מתן';
     user5.personal.lastName = 'בזן';
     user5.personal.sex = 'זכר';
-    user5.contact = null;
+    user5.contact = {};
+    user5.contact.address = {};
+    user5.contact.address.street = '';
+    user5.contact.address.number = '';
+    user5.contact.address.city = '';
+    user5.contact.address.zip = '';
+    user5.contact.phone = '';
+    user5.contact.email = 'aviramad@post.bgu.ac.il';
     user5.jobDetails = {};
     user5.jobDetails.userType = 'מנהל';
+    user5.jobDetails.area = 'דרום';
+    user5.jobDetails.channel = 'מסחרי';
     user5.inbox = [];
 
     users.push(user5);
-
-    console.log('DONE!');
-    console.log(users);
     return users;
 }
 

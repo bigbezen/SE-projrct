@@ -121,6 +121,22 @@ class ConstantStrings extends React.Component {
 
     //salesman
     static startShift_string = 'התחל משמרת';
+
+    static genderForDropdown = ["נקבה", "זכר"];
+
+    static channelForDropdown = ["מסחרי", "קלאסי"];
+
+    static areaForDropdown = ["צפון", "דרום", "מרכז"];
+
+    static categoryForDropdown = ["ספיריט", "יין"];
+
+    static subCategoryForDropdown = ["בלנד סקוטי", "סינגל מאלט סקוטי", "וויסקי אמריקאי/קנדי", "ארבעת הלבנים", "אפרטיף/דגסטיף", "תבור הר/פנינים", "תבור אדמה", "תבור אדמה 2", "L.E"];
+
+    static userRoleForDropDown = ["דייל", "סוכן שטח"];
+
+    static dropDownChooseString = 'בחר...';
+
+    static email_string = 'אימייל';
 }
 
 module.exports = ConstantStrings;

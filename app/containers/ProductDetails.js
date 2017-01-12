@@ -14,21 +14,23 @@ var ProductDetails = React.createClass({
     getInitialState: function () {
         return {
             editing: false,
+            category:'',
+            subCategory:''
         }
     },
 
     componentDidMount() {
         console.log('check props');
         var isEmptyVar = !(this.isEmpty(this.props.location.query));
-        console.log(!(this.isEmpty(this.props.location.query)));
-       // this.setState({
         this.state.editing = isEmptyVar;
-            //editing: {isEmptyVar}
-    //    });
         console.log(this.state.editing);
         if (this.state.editing) {
             this.setFields();
         }
+    },
+
+    checkDropDowns: function() {
+        return (this.state.subCategory!='' && this.state.category!='');
     },
 
     isEmpty: function(obj) {
@@ -36,15 +38,36 @@ var ProductDetails = React.createClass({
             return true;
     },
 
+    handleCategoryChange(event) {
+        this.setState({category: event.target.value});
+    },
+
+    handleSubCategoryChange(event) {
+        this.setState({subCategory: event.target.value});
+    },
+
+    getOptions: function(arrayOfObjects) {
+        var optionsForDropDown = [];
+        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        for (var i = 0; i < arrayOfObjects.length; i++) {
+            var currOption = arrayOfObjects[i];
+            optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
+        }
+        return optionsForDropDown;
+    },
+
     handleSubmitUser: function (e) {
         e.preventDefault();
-        console.log('we are here');
+        if (!this.checkDropDowns()) {
+            alert('Invalid values. please make sure that you filled all of the fields');
+            return;
+        }
         var newProduct = new productInfo();
         newProduct.name = this.refs.nameBox.value;
         newProduct.retailPrice = this.refs.retailBox.value;
         newProduct.salePrice = this.refs.saleBox.value;
-        newProduct.category = this.refs.categoryBox.value;
-        newProduct.subCategory = this.refs.subCategoryBox.value;
+        newProduct.category = this.state.category;
+        newProduct.subCategory = this.state.subCategory;
         newProduct.minRequiredAmount = this.refs.minAmountBox.value;
         newProduct.notifyManager = this.refs.notifyBox.checked;
         var context = this.context;
@@ -108,18 +131,16 @@ var ProductDetails = React.createClass({
 
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.category_string}</label>
-                        <input type="text"
-                               className="col-sm-4"
-                               ref="categoryBox"
-                        />
+                        <select className="col-sm-4" onChange={this.handleCategoryChange} ref="categoryBox" data="" >
+                            {this.getOptions(constantsStrings.categoryForDropdown)}
+                        </select>
                     </div>
 
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.subCategory_string}</label>
-                        <input type="text"
-                               className="col-sm-4"
-                               ref="subCategoryBox"
-                        />
+                        <select className="col-sm-4" onChange={this.handleSubCategoryChange} ref="subCategoryBox" data="" >
+                            {this.getOptions(constantsStrings.subCategoryForDropdown)}
+                        </select>
                     </div>
 
                     <div className="form-group ">
@@ -152,6 +173,8 @@ var ProductDetails = React.createClass({
 
     setFields: function () {
         this.currProduct = this.props.location.query;
+        this.state.category = this.currProduct.category;
+        this.state.subCategory = this.currProduct.subCategory;
         this.refs.nameBox.value = this.currProduct.name;
         this.refs.retailBox.value = this.currProduct.retailPrice;
         this.refs.saleBox.value = this.currProduct.salePrice;

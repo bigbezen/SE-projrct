@@ -14,21 +14,42 @@ var StoreDetails = React.createClass({
     getInitialState: function () {
         return {
             editing: false,
+            area:'',
+            channel:''
         }
+    },
+
+    handleAreaChange(event) {
+        this.setState({area: event.target.value});
+    },
+
+    handleChannelChange(event) {
+        this.setState({channel: event.target.value});
     },
 
     componentDidMount() {
         console.log('check props');
         var isEmptyVar = !(this.isEmpty(this.props.location.query));
         console.log(!(this.isEmpty(this.props.location.query)));
-        // this.setState({
         this.state.editing = isEmptyVar;
-        //editing: {isEmptyVar}
-        //    });
         console.log(this.state.editing);
         if (this.state.editing) {
             this.setFields();
         }
+    },
+
+    checkDropDowns: function() {
+        return (this.state.area!='' && this.state.channel!='');
+    },
+
+    getOptions: function(arrayOfObjects) {
+        var optionsForDropDown = [];
+        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        for (var i = 0; i < arrayOfObjects.length; i++) {
+            var currOption = arrayOfObjects[i];
+            optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
+        }
+        return optionsForDropDown;
     },
 
     isEmpty: function(obj) {
@@ -38,6 +59,10 @@ var StoreDetails = React.createClass({
 
     handleSubmitUser: function (e) {
         e.preventDefault();
+        if (!this.checkDropDowns()) {
+            alert('Invalid values. please make sure that you filled all of the fields');
+            return;
+        }
         console.log('we are here');
         var newStore = new storeInfo();
         newStore.name = this.refs.nameBox.value;
@@ -45,8 +70,8 @@ var StoreDetails = React.createClass({
         newStore.phone = this.refs.phoneBox.value;
         newStore.city = this.refs.cityBox.value;
         newStore.address = this.refs.addressBox.value;
-        newStore.area = this.refs.areaBox.value;
-        newStore.channel = this.refs.channelBox.checked;
+        newStore.area = this.state.area;
+        newStore.channel = this.state.channel;
         var context = this.context;
         if (this.state.editing) {
             newStore._id = this.props.location.query._id;
@@ -124,18 +149,16 @@ var StoreDetails = React.createClass({
 
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.area_string}</label>
-                        <input type="text" min={0}
-                               className="col-sm-4"
-                               ref="areaBox"
-                        />
+                        <select className="col-sm-4" onChange={this.handleAreaChange} ref="areaBox">
+                            {this.getOptions(constantsStrings.areaForDropdown)}
+                        </select>
                     </div>
 
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.channel_string}</label>
-                        <input type="text"
-                               className="col-sm-4"
-                               ref="channelBox"
-                        />
+                        <select className="col-sm-4" onChange={this.handleChannelChange} ref="channelBox">
+                            {this.getOptions(constantsStrings.channelForDropdown)}
+                        </select>
                     </div>
 
                     <div className="form-group">
@@ -152,6 +175,8 @@ var StoreDetails = React.createClass({
 
     setFields: function () {
         this.currSrure = this.props.location.query;
+        this.state.area =  this.currSrure.area;
+        this.state.channel = this.currSrure.channel;
         this.refs.nameBox.value = this.currSrure.name;
         this.refs.managerNameBox.value = this.currSrure.managerName;
         this.refs.phoneBox.value = this.currSrure.phone;

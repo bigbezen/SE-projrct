@@ -7,6 +7,7 @@ var connection = require('../communication/connectionHandlerStub')
 var helpers = {
     addUser: function(user){
         console.log('managementervices- addUser');
+        console.log(user);
         return connection.managementRequests.addUser(user);
     },
 

@@ -125,7 +125,7 @@ module.exports = {
         //     product.productId = mongoose.Types.ObjectId(product.productId);
         //     return product;
         // });
-        return shiftModel.update(mongoose.Types.ObjectId(shift._id), shift, {upsert: false});
+        return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },
 
 

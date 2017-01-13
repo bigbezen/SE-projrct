@@ -113,8 +113,10 @@ var getSalesmanCurrentShift = async function(sessionId){
     var currShift = await dal.getSalesmanCurrentShift(salesman._id);
     if(currShift == null)
         return {'code': 409, 'err': 'user does not have a shift today'};
-    else
-        return {'code': 200, 'shift': currShift.toObject()};
+
+    currShift = currShift.toObject();
+    currShift.store = (await dal.getStoresByIds([currShift.storeId]))[0];
+    return {'code': 200, 'shift': currShift};
 };
 
 var startShift = async function(sessionId, shift){
@@ -142,12 +144,15 @@ var reportSale = async function(sessionId, shiftId, productId, quantity){
     var salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportSale', null);
     var shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
-    if(salesman == null || shift == null || salesman._id != shift.salesmanId)
+    if (quantity <= 0 || shift == null)
+        return {'code': 409, 'err': 'problem with one or more of the parameters'};
+    if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
         return {'code': 401, 'err': 'user not authorized'};
+    }
 
     var productExist = false;
     for(product of shift.salesReport) {
-        if (product._id.toString() == productId) {
+        if (product.productId.toString() == productId) {
             product.sold += quantity;
             productExist = true;
         }
@@ -171,15 +176,24 @@ var reportSale = async function(sessionId, shiftId, productId, quantity){
 var reportOpened = async function(sessionId, shiftId, productId, quantity){
     logger.info('Services.shift.index.reportOpened', {'session-id': sessionId});
 
-    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportOpened', null);
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportSale', null);
     var shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
-    if(salesman == null || shift == null || salesman._id != shift.salesmanId)
+    if (quantity <= 0 || shift == null)
+        return {'code': 409, 'err': 'problem with one or more of the parameters'};
+    if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
         return {'code': 401, 'err': 'user not authorized'};
+    }
 
-    for(product of shift.salesReport)
-        if(product._id.toString() == productId)
+    var productExist = false;
+    for(product of shift.salesReport) {
+        if (product.productId.toString() == productId) {
             product.opened += quantity;
+            productExist = true;
+        }
+    }
+    if(!productExist)
+        return {'code': 409, 'err': 'product does not exist'};
 
     var result = await dal.updateShift(shift);
     if(result.ok != 1)
@@ -197,7 +211,7 @@ var addShiftComment = async function(sessionId, shiftId, content){
     if(salesman == null || shift == null || salesman._id != shift.salesmanId)
         return {'code': 401, 'err': 'user not authorized'};
 
-    shift.shiftComments.push(comment);
+    shift.shiftComments.push(content);
     var result = await dal.updateShift(shift);
     if(result.ok != 1)
         return {'code': '500', 'err': 'unexpected error'};
@@ -261,7 +275,7 @@ var getActiveShiftEncouragements = async function(sessionId, shiftId){
     if(shift == null)
         return {'code': 409, 'err': 'shift does not exist in the database'};
     shift = shift[0];
-    if(salesman == null || salesman._id != shift.salesmanId)
+    if(salesman == null || salesman._id.toString() != shift.salesmanId.toString())
         return {'code': 401, 'err': 'user not authorized'};
 
     var result = await encouragementServices.calculateEncouragements(shift.salesReport);
@@ -293,9 +307,11 @@ module.exports.addShifts = addShifts;
 module.exports.publishShifts = publishShifts;
 module.exports.getSalesmanCurrentShift = getSalesmanCurrentShift;
 module.exports.startShift = startShift;
+module.exports.endShift = endShift;
 module.exports.reportSale = reportSale;
 module.exports.reportOpened = reportOpened;
 module.exports.addShiftComment = addShiftComment;
+module.exports.getActiveShiftEncouragements = getActiveShiftEncouragements;
 
 
 

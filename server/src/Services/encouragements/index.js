@@ -3,6 +3,8 @@ var encouragementModel      = require('../../Models/encouragement');
 var dal                     = require('../../DAL/dal');
 var permissions             = require('../permissions/index');
 
+var underscore              = require('underscore');
+
 var addEncouragement = async function(sessionId, encouragementDetails) {
     logger.info('Services.Encouragement.index.addEncouragement', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'addEncouragement');
@@ -72,11 +74,51 @@ var getAllEncouragements = async function (sessionId) {
         return {'encouragements': encouragements, 'code': 200, 'err': null};
     }
     else {
-        return {'encouragements': null, 'code': 401, 'err': 'permission denied'};;
+        return {'encouragements': null, 'code': 401, 'err': 'permission denied'};
     }
 };
 
 var calculateEncouragements = async function(saleReport){
+    logger.info('Services.Encouragement.index.calculateEncouragements');
+
+    var encouragements = await dal.getAllEncouragements();
+    if(encouragements.length == 0 || saleReport.length == 0)
+        return [];
+
+    encouragements = encouragements.map(function(x){
+        x = x.toObject();
+        x.products = x.products.map(y => y.toString());
+        return x;
+    });
+    encouragements = encouragements.sort(function(a, b){
+        return b.numOfProducts - a.numOfProducts;
+    });
+
+    var earnedEncs = [];
+
+    var soldProductsIds = saleReport.filter(x => x.sold > 0).map(x => x.productId.toString());
+    for(enc of encouragements){
+        // check for encouragements "baskets"
+        if(enc.products.length > 1 && enc.products.length <= soldProductsIds.length){
+            if(underscore.intersection(enc.products, soldProductsIds).length == enc.products.length)
+                earnedEncs.push([enc, 1]);
+        }
+        // check for other encouragements
+        else if(enc.products.length == 1){
+            for(product of saleReport){
+                if(product.productId.toString() == enc.products[0]){
+                    // mul is the number of times the salesman has gained the current encouragement
+                    var mul = product.sold / enc.numOfProducts;
+                    product.sold -= (mul * enc.numOfProducts);
+                    // will not add encouragement if mul == 0
+                    if(mul > 0)
+                        earnedEncs.push([enc, mul]);
+                }
+            }
+        }
+    }
+
+    return earnedEncs;
 
 };
 
@@ -85,3 +127,13 @@ module.exports.editEncouragement = editEncouragement;
 module.exports.deleteEncouragement = deleteEncouragement;
 module.exports.getAllEncouragements = getAllEncouragements;
 module.exports.calculateEncouragements = calculateEncouragements;
+
+
+
+
+
+
+
+
+
+

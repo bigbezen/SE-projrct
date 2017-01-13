@@ -61,7 +61,7 @@ module.exports = {
             ['string', 'string']);
     },
 
-    addStore: function(params){
+    addOrEditOrDeleteStore: function(params){
         return checkParams(params, ['sessionId', 'storeDetails'],
             ['string', 'object']) &&
             checkParams(params.storeDetails, ['name', 'managerName', 'phone', 'city', 'address', 'area', 'channel'],
@@ -73,7 +73,7 @@ module.exports = {
             ['string', 'string']);
     },
 
-    addProduct: function(params){
+    addOrEditProduct: function(params){
         return checkParams(params, ['sessionId', 'productDetails'],
                 ['string', 'object']) &&
                 checkParams(params.productDetails, ['name', 'retailPrice', 'salePrice', 'category', 'subCategory', 'minRequiredAmount', 'notifyManager'],
@@ -85,7 +85,7 @@ module.exports = {
             ['string', 'string']);
     },
 
-    addEncouragement: function(params){
+    addOrEditEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encouragementDetails'],
                 ['string', 'object']) &&
             checkParams(params.encouragementDetails, ['active', 'numOfProducts', 'rate', 'products'],
@@ -100,13 +100,21 @@ module.exports = {
         return checkParams(params, ['sessionId', 'content', 'date'], ['string', 'string', 'string'])
     },
 
-    addShifts: function(params){
+    addOrPublishShifts: function(params){
         var res = checkParams(params, ['sessionId', 'shiftsArr'], ['string', 'object']);
         for(shift of params.shiftsArr){
             if(res)
                 res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], ['string', 'string', 'string', 'string'])
         }
         return res;
+    },
+
+    startOrEndShift: function(params){
+
+    },
+
+    reportSaleOrOpened: function(params){
+
     }
 
 

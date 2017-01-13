@@ -46,7 +46,7 @@ var deleteStroe = async function (sessionId, storeId) {
     logger.info('Services.store.index.deleteStore', {'session-id': sessionId});
     var user = await permissions.validatePermissionForSessionId(sessionId, 'deleteStore');
     if(user != null){
-        var store =  await dal.deleteStore(storeId)
+        var store =  await dal.deleteStore(storeId);
         return {'store': store, 'code': 200, 'err': null};
     }else{
         return {'store': null, 'code': 401, 'err': 'permission denied'}

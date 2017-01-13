@@ -37,7 +37,7 @@ var funcNameToPermission = {
     'reportSale': ['salesman'],
     'endShift': ['salesman'],
     'getActiveShift': ['salesman'],
-    'getActiveShiftEncouragements': ['manager']
+    'getActiveShiftEncouragements': ['manager', 'salesman']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

@@ -1,0 +1,86 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "IBBLS"
+host: localhost:3000
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /salesman/startShift:
+    post:
+      summary: salesman starts a shift
+      parameters:
+        - name: sessionId
+          in: query
+          description: salesman sessionid
+          type: string
+      responses:
+        "200":
+          description: shift has started successfully
+  /user/login:
+    post:
+      summary: user login
+      parameters:
+        - name: username
+          in: query
+          description: user's username
+          type: string
+        - name: password
+          in: query
+          description: user's password
+          type: string
+      responses:
+        "200":
+          description: retValues - sessionId, userType
+        "401":
+          description: user not found
+  
+  /user/logout:
+    post:
+      summary: user logout
+      parameters:
+        - name: sessionId
+          in: query
+          type: string
+      responses:
+        "200":
+          description: logout successfully
+        "401": 
+          description: sessionId not found
+  /user/retrievePassword:
+    post:
+      summary: retrieve user's password back to email
+      parameters:
+        - name: sessionId
+          in: query
+          type: string
+      responses:
+        "200":
+          description: retrieved password - password sent to email
+        "401": 
+          description: sessionId not found
+  /user/changePassword:
+    post:
+      summary: retrieve user's password back to email
+      parameters:
+        - name: sessionId
+          in: query
+          type: string
+        - name: oldPass
+          in: query
+          type: string
+        - name: newPass
+          in: query
+          type: string
+      responses:
+        "200":
+          description: changed password
+        "401": 
+          description: sessionId not found  
+        
+        

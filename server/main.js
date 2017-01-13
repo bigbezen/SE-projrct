@@ -22,6 +22,8 @@ app.listen(port);
 app.locals.baseurl = "http://localhost:" + port;
 app.locals.mongourl = 'mongodb://localhost/IBBLS';
 
+
+
 _connectToDb();
 _setapApiEndpoints();
 
@@ -103,24 +105,64 @@ function _setapApiEndpoints() {
     });
 
 //Salesman Services
-    app.post('/salesman/startShift', function (req, res) {
-        res.status(200).send('enter shift');
+    app.post('/salesman/startShift', async function (req, res) {
+        if(!validator.startOrEndShift(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.startShift(req.body.sessionID, req.body.shift);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
-    app.post('/salesman/finishShift', function (req, res) {
-        res.status(200).send('exit shift');
+    app.post('/salesman/finishShift', async function (req, res) {
+        if(!validator.startOrEndShift(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.endShift(req.body.sessionID, req.body.shift);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
-    app.post('/salesman/reportSale', function (req, res) {
-        res.status(200).send('add new sale');
+    app.post('/salesman/reportSale', async function (req, res) {
+        if(!validator.reportSaleOrOpened(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.reportSale(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
-    app.post('/salesman/reportOpened', function (req, res) {
-        res.status(200).send('add new sale');
+    app.post('/salesman/reportOpened', async function (req, res) {
+        if(!validator.reportSaleOrOpened(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.reportOpened(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
-    app.post('/salesman/addShiftComment', function (req, res) {
-        res.status(200).send('add shift note');
+    app.post('/salesman/addShiftComment', async function (req, res) {
+        if(!validator.addShiftComment(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.addShiftComment(req.body.sessionID, req.body.shiftId, req.body.content);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.get('/salesman/:shiftId/activeShiftEncouragements', async function (req, res) {
+        if(!('sessionid' in req.headers))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.getActiveShiftEncouragements(req.body.sessionID, req.params.shiftId);
+        if(result.code == 200)
+            res.status(200).send(result.encouragements);
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.get('/salesman/encouragements', function (req, res) {
@@ -131,8 +173,14 @@ function _setapApiEndpoints() {
         res.status(200).send('get shifts list');
     });
 
-    app.get('/salesman/getCurrentShift', function (req, res) {
-        res.status(200).send('get shifts list');
+    app.get('/salesman/getCurrentShift', async function (req, res) {
+        if(!('sessionid' in req.headers))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.getSalesmanCurrentShift(req.body.sessionID);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.post('/salesman/addShiftsConstraints', function (req, res) {
@@ -210,6 +258,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addStore', async function (req, res) {
+        if (!validator.addOrEditOrDeleteStore(req.body))
+            res.status(404).send('invalid parameters');
         var result = await storeService.addStore(req.body.sessionId, req.body.storeDetails);
         if (result.err != null)
         {
@@ -222,6 +272,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editStore', async function (req, res) {
+        if (!validator.addOrEditOrDeleteStore(req.body))
+            res.status(404).send('invalid parameters');
         var result = await storeService.editStore(req.body.sessionId, req.body.storeDetails);
         if (result.err != null)
         {
@@ -234,7 +286,9 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteStore', async function (req, res) {
-        var result = await storeService.deleteStroe(req.body.sessionId, req.body.storeDetails);
+        if (!validator.deleteStore(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await storeService.deleteStroe(req.body.sessionId, req.body.storeId);
         if (result.err != null)
         {
             res.status(result.code).send(result.err);
@@ -246,6 +300,8 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllStores', async function (req, res) {
+        if(!('sessionid' in req.header))
+            res.status(404).send('invalid parameters');
         var result = await storeService.getAllStores(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -256,6 +312,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addProduct', async function (req, res) {
+        if (!validator.addOrEditProduct(req.body))
+            res.status(404).send('invalid parameters');
         var result = await productService.addProduct(req.body.sessionId, req.body.productDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -266,6 +324,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editProduct', async function (req, res) {
+        if (!validator.addOrEditProduct(req.body))
+            res.status(404).send('invalid parameters');
         var result = await productService.editProduct(req.body.sessionId, req.body.productDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -276,7 +336,9 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteProduct', async function (req, res) {
-        var result = await productService.deleteProduct(req.body.sessionId, req.body.productDetails);
+        if (!validator.deleteProduct(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await productService.deleteProduct(req.body.sessionId, req.body.productId);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -286,6 +348,8 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllProducts', async function (req, res) {
+        if(!('sessionid' in req.header))
+            res.status(404).send('invalid parameters');
         var result = await productService.getAllProducts(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -297,6 +361,8 @@ function _setapApiEndpoints() {
 
 
     app.post('/management/addEncouragement', async function (req, res) {
+        if (!validator.addOrEditEncouragement(req.body))
+            res.status(404).send('invalid parameters');
         var result = await encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -307,6 +373,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editEncouragement', async function (req, res) {
+        if (!validator.addOrEditEncouragement(req.body))
+            res.status(404).send('invalid parameters');
         var result = await encouragementServices.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -317,6 +385,8 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteEncouragement', async function (req, res) {
+        if (!validator.deleteEncouragement(req.body))
+            res.status(404).send('invalid parameters');
         var result = await encouragementServices.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -327,6 +397,8 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllEncouragements', async function (req, res) {
+        if(!('sessionid' in req.header))
+            res.status(404).send('invalid parameters');
         var result = await encouragementServices.getAllEncouragements(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
@@ -337,7 +409,17 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addShifts', async function (req, res) {
-        if (!validator.addShifts(req.body))
+        if (!validator.addOrPublishShifts(req.body))
+            res.status(404).send('invalid parameters');
+        var result = await shiftSerice.addShifts(req.body.sessionId, req.body.shiftArr);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/management/publishShifts', async function (req, res) {
+        if (!validator.addOrPublishShifts(req.body))
             res.status(404).send('invalid parameters');
         var result = await shiftSerice.addShifts(req.body.sessionId, req.body.shiftArr);
         if(result.code == 200)

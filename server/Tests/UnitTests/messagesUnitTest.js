@@ -118,12 +118,12 @@ describe('messages unit test', function () {
             expect(result2.inbox.length).to.be.equal(3);
 
             //check the content of the messages
-            for(message of result1.inbox){
+            for(var message of result1.inbox){
                 expect(message).to.include.keys('sender', 'content', 'date', 'type');
                 expect(message.sender).to.be.equal('manager');
                 expect(message.type).to.be.equal('broadcast');
             }
-            for(message of result2.inbox){
+            for(var message of result2.inbox){
                 expect(message).to.include.keys('sender', 'content', 'date', 'type');
                 expect(message.sender).to.be.equal('manager');
                 expect(message.type).to.be.equal('broadcast');

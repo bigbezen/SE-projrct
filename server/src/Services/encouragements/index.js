@@ -40,7 +40,7 @@ var editEncouragement = async function (sessionId, encouragementDetails) {
     var user = await permissions.validatePermissionForSessionId(sessionId, 'editEncouragement');
 
     //check if all the products id belongs to products
-    for (i = 0; i < encouragementDetails.products.length; i++) {
+    for (var i = 0; i < encouragementDetails.products.length; i++) {
         var exist = await dal.getProductById(encouragementDetails.products[i]);
         if(exist == null){
             return {'encouragement': null, 'code': 404, 'err': 'product not found'};
@@ -105,7 +105,7 @@ var calculateEncouragements = async function(saleReport){
         }
         // check for other encouragements
         else if(enc.products.length == 1){
-            for(product of saleReport){
+            for(var product of saleReport){
                 if(product.productId.toString() == enc.products[0]){
                     // mul is the number of times the salesman has gained the current encouragement
                     var mul = product.sold / enc.numOfProducts;

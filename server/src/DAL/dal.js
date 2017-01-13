@@ -131,9 +131,9 @@ module.exports = {
 
 
     publishShifts: async function(shiftArr){
-        results = [];
+        var results = [];
         var result;
-        for(shift of shiftArr){
+        for(var shift of shiftArr){
             result = await shiftModel.update({'_id': shift._id}, {'salesmanId': shift.salesmanId, 'status': shift.status});
             if(result.ok != 1)
                 results.push(shift._id);

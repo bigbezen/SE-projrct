@@ -16,7 +16,7 @@ var addEncouragement = async function(sessionId, encouragementDetails) {
         encouragement.rate = encouragementDetails.rate;
 
         //check if all the products id belongs to products
-        for (i = 0; i < encouragementDetails.products.length; i++) {
+        for (var i = 0; i < encouragementDetails.products.length; i++) {
            var exist = await dal.getProductById(encouragementDetails.products[i]);
            if(exist == null){
                return {'encouragement': null, 'code': 404, 'err': 'product not found'};

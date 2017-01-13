@@ -17,7 +17,7 @@ var addShifts = async function(sessionId, shiftArr){
     var uniqueIds = [];
 
     //remove duplicates in storeIds
-    for(id of storeIds)
+    for(var id of storeIds)
         if(uniqueIds.indexOf(id) == -1)
             uniqueIds.push(id);
     var stores = await dal.getStoresByIds(uniqueIds);
@@ -25,7 +25,7 @@ var addShifts = async function(sessionId, shiftArr){
         return {'code': 409, 'err': 'One or more of the stores does not exist'};
 
     //check validity of shifts dates
-    for(shift of shiftArr) {
+    for(var shift of shiftArr) {
         if ((new Date(shift.startTime)).getTime() > (new Date(shift.endTime)).getTime() ||
               (new Date(shift.startTime)).getTime() < new Date ()){
             return {'code': 409, 'err': 'shifts dates are before current time'};
@@ -37,7 +37,7 @@ var addShifts = async function(sessionId, shiftArr){
     var resultAddShift = [];
 
     //create model for each shift
-   for(shift of shiftArr){
+   for(var shift of shiftArr){
         var newShift = new shiftModel();
         newShift.storeId = shift.storeId;
         newShift.startTime = shift.startTime;
@@ -65,7 +65,7 @@ var publishShifts = async function(sessionId, shiftArr){
     var shiftIds = shiftArr.map(x => x._id);
     var uniqueUserIds = [];
     var userIds = shiftArr.map(x => x.salesmanId);
-    for(index in userIds) {
+    for(var index in userIds) {
         //redundant check - needs to be checked in the validator level
         if(typeof(userIds[index]) != 'string')
             return {'code': 409, 'err': 'all shifts must be attached with a user id'};
@@ -81,18 +81,18 @@ var publishShifts = async function(sessionId, shiftArr){
         return {'code': 409, 'err': 'some shift ids are not in the database'};
     if(uniqueUserIds.length != dbUsers.length)
         return {'code': 409, 'err': 'some user ids are not in the database'};
-    for(user of dbUsers)
+    for(var user of dbUsers)
         if(user.jobDetails.userType != 'salesman')
             return {'code': 409, 'err': 'one or more of the users is not a salesman'};
 
 
     //check that all given shifts are on status 'CREATED'
     //change shifts' status to "PUBLISED"
-    for(shift of dbShifts)
+    for(var shift of dbShifts)
         if(shift.status != 'CREATED')
             return {'code': 409, 'err': 'trying to publish a shift that is already published'};
 
-    for(shift of shiftArr)
+    for(var shift of shiftArr)
         shift.status = 'PUBLISHED';
     var nonSavedShifts = await dal.publishShifts(shiftArr);
 
@@ -151,7 +151,7 @@ var reportSale = async function(sessionId, shiftId, productId, quantity){
     }
 
     var productExist = false;
-    for(product of shift.salesReport) {
+    for(var product of shift.salesReport) {
         if (product.productId.toString() == productId) {
             product.sold += quantity;
             productExist = true;
@@ -186,7 +186,7 @@ var reportOpened = async function(sessionId, shiftId, productId, quantity){
     }
 
     var productExist = false;
-    for(product of shift.salesReport) {
+    for(var product of shift.salesReport) {
         if (product.productId.toString() == productId) {
             product.opened += quantity;
             productExist = true;
@@ -243,7 +243,7 @@ var endShift = async function(sessionId, shift){
     if(encouragements == null)
         return {'code': 500, 'err': 'unexpected error'};
 
-    for(enc of encouragements)
+    for(var enc of encouragements)
         salesman.encouragements.push(enc._id);
 
     result = await dal.updateUser(salesman);
@@ -290,7 +290,7 @@ var _createNewSalesReport = async function(){
     var productsIds = await dal.getAllProducts();
     productsIds = productsIds.map(x => x._id);
 
-    for(productId of productsIds){
+    for(var productId of productsIds){
         report.push({
             'productId': productId,
             'stockStartShift': 0,

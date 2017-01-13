@@ -9,16 +9,6 @@
     <extra-mocha-options />
     <test-kind>TEST_FILE</test-kind>
     <test-file>$PROJECT_DIR$/build/Tests/UnitTests/UnitTestController.js</test-file>
-    <method>
-      <option name="NpmBeforeRunTask" enabled="true">
-        <package-json value="$PROJECT_DIR$/package.json" />
-        <command value="run" />
-        <scripts>
-          <script value="compile" />
-        </scripts>
-        <node-interpreter value="project" />
-        <envs />
-      </option>
-    </method>
+    <method />
   </configuration>
 </component>

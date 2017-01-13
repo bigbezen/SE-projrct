@@ -97,7 +97,7 @@ var calculateEncouragements = async function(saleReport){
     var earnedEncs = [];
 
     var soldProductsIds = saleReport.filter(x => x.sold > 0).map(x => x.productId.toString());
-    for(enc of encouragements){
+    for(var enc of encouragements){
         // check for encouragements "baskets"
         if(enc.products.length > 1 && enc.products.length <= soldProductsIds.length){
             if(underscore.intersection(enc.products, soldProductsIds).length == enc.products.length)

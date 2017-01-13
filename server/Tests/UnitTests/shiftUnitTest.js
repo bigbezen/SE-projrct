@@ -50,7 +50,7 @@ describe('shift unit test', function () {
         let productsIds = await dal.getAllProducts();
         productsIds = productsIds.map(x => x._id);
 
-        for(productId of productsIds){
+        for(let productId of productsIds){
             report.push({
                 'productId': productId,
                 'stockStartShift': 0,
@@ -176,6 +176,7 @@ describe('shift unit test', function () {
             shifts[0].storeId = mongoose.Types.ObjectId("notexisting1");
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
+            expect(res).to.have.property('err', 'One or more of the stores does not exist');
             expect(res).to.have.property('err', 'One or more of the stores does not exist');
         });
 

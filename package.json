@@ -11,6 +11,7 @@
     "chai-datetime": "^1.4.1",
     "ejs": "^2.5.2",
     "express": "^4.14.0",
+    "flat": "^2.0.1",
     "generator": "^1.0.1",
     "hash": "^0.2.0",
     "hash-generator": "^0.1.0",
@@ -19,6 +20,8 @@
     "mongoose": "^4.7.2",
     "nodemailer": "^2.7.0",
     "react": "^15.4.1",
+    "react-bootstrap": "^0.30.7",
+    "react-bootstrap-table": "^2.9.0",
     "react-dom": "^15.4.1",
     "react-router": "^3.0.0",
     "react-uniform": "^1.2.1",
@@ -45,11 +48,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-watch src/main.js",
     "clean": "rimraf build/*",
-    "compile": "babel server/ -d build/",
-    "production": "webpack -p",
-    "watch": "babel -w server/ -d build/ --source-maps"
+    "compile": "babel server/ -d build/ --source-maps",
+    "production": "webpack -p --devtool source-map",
+    "watch": "babel -w server/ -d build/ --source-maps",
+    "swagger": "swagger project edit"
   },
   "author": "",
   "license": "ISC"

@@ -1,22 +1,24 @@
-var express         = require('express');
-var bodyparser      = require('body-parser');
-var path            = require('path');
-var mongoose        = require('mongoose');
+"use strict";
 
-var logger          = require('./src/Utils/Logger/logger');
-var validator       = require('./src/Utils/Validators/index');
+let express         = require('express');
+let bodyparser      = require('body-parser');
+let path            = require('path');
+let mongoose        = require('mongoose');
 
-var storeService            = require('./src/Services/store/index');
-var userService             = require('./src/Services/user/index');
-var productService          = require('./src/Services/product/index');
-var encouragementService    = require('./src/Services/encouragements/index');
-var messageService          = require('./src/Services/messages/index');
-var shiftSerice             = require('./src/Services/shift/index');
+let logger          = require('./src/Utils/Logger/logger');
+let validator       = require('./src/Utils/Validators/index');
 
-var app = express();
+let storeService            = require('./src/Services/store/index');
+let userService             = require('./src/Services/user/index');
+let productService          = require('./src/Services/product/index');
+let encouragementService    = require('./src/Services/encouragements/index');
+let messageService          = require('./src/Services/messages/index');
+let shiftSerice             = require('./src/Services/shift/index');
+
+let app = express();
 
 app.set('view engine', 'ejs');
-var port = 3000;
+let port = 3000;
 app.use(bodyparser.json());
 app.listen(port);
 app.locals.baseurl = "http://localhost:" + port;
@@ -33,7 +35,7 @@ logger.info('server is now running on port: ', {'port': port});
 function _connectToDb(){
     mongoose.Promise = global.Promise;
     mongoose.connect(app.locals.mongourl);
-    var db = mongoose.connection;
+    let db = mongoose.connection;
     db.on('error', function(){
         console.error.bind(console, 'connection error:');
         throw 'Cant connect to DB...';
@@ -53,9 +55,11 @@ function _setapApiEndpoints() {
 
 //User Services
     app.post('/user/login', async function (req, res) {
-        if (!validator.login(req.body))
+        if (!validator.login(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await userService.login(req.body.username, req.body.password);
+            return;
+        }
+        let result = await userService.login(req.body.username, req.body.password);
         if(result.sessionId != null){
             res.status(200).send(result);
         }
@@ -65,9 +69,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/user/logout', async function (req, res) {
-        if (!validator.sessionId(req.body))
+        if (!validator.sessionId(req.body)){
             res.status(404).send('invalid parameters');
-        var result = await userService.logout(req.body.sessionId);
+            return;
+        }
+        let result = await userService.logout(req.body.sessionId);
         if(result.code == 200)
             res.status(200).send('logout succeeded');
         else
@@ -75,9 +81,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/user/retrievePassword', async function (req, res) {
-        if (!validator.sessionId(req.body))
+        if (!validator.sessionId(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await userService.retrievePassword(req.body.sessionId);
+            return;
+        }
+        let result = await userService.retrievePassword(req.body.sessionId);
         if(result.code == 200)
             res.status(200).send('retrieved password successfully');
         else
@@ -85,9 +93,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/user/changePassword', async function (req, res) {
-        if (!validator.changePassword(req.body))
+        if (!validator.changePassword(req.body)){
             res.status(404).send('invalid parameters');
-        var result = await userService.changePassword(req.body.sessionId, req.body.oldPass, req.body.newPass);
+            return;
+        }
+        let result = await userService.changePassword(req.body.sessionId, req.body.oldPass, req.body.newPass);
         if(result.code == 200)
             res.status(200).send('changed password succeeded');
         else
@@ -95,9 +105,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/user/getProfile', async function (req, res) {
-        if(!('sessionid' in req.headers))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await userService.getProfile(req.headers.sessionid);
+            return;
+        }
+        let result = await userService.getProfile(req.headers.sessionid);
         if(result.code == 200)
             res.status(200).send(result.user);
         else
@@ -106,9 +118,11 @@ function _setapApiEndpoints() {
 
 //Salesman Services
     app.post('/salesman/startShift', async function (req, res) {
-        if(!validator.startOrEndShift(req.body))
+        if(!validator.startOrEndShift(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.startShift(req.body.sessionID, req.body.shift);
+            return;
+        }
+        let result = await shiftSerice.startShift(req.body.sessionID, req.body.shift);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -116,9 +130,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/salesman/finishShift', async function (req, res) {
-        if(!validator.startOrEndShift(req.body))
+        if(!validator.startOrEndShift(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.endShift(req.body.sessionID, req.body.shift);
+            return;
+        }
+        let result = await shiftSerice.endShift(req.body.sessionID, req.body.shift);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -126,9 +142,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/salesman/reportSale', async function (req, res) {
-        if(!validator.reportSaleOrOpened(req.body))
+        if(!validator.reportSaleOrOpened(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.reportSale(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
+            return;
+        }
+        let result = await shiftSerice.reportSale(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -136,9 +154,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/salesman/reportOpened', async function (req, res) {
-        if(!validator.reportSaleOrOpened(req.body))
+        if(!validator.reportSaleOrOpened(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.reportOpened(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
+            return;
+        }
+        let result = await shiftSerice.reportOpened(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -146,9 +166,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/salesman/addShiftComment', async function (req, res) {
-        if(!validator.addShiftComment(req.body))
+        if(!validator.addShiftComment(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.addShiftComment(req.body.sessionID, req.body.shiftId, req.body.content);
+            return;
+        }
+        let result = await shiftSerice.addShiftComment(req.body.sessionID, req.body.shiftId, req.body.content);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -156,9 +178,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/salesman/:shiftId/activeShiftEncouragements', async function (req, res) {
-        if(!('sessionid' in req.headers))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.getActiveShiftEncouragements(req.body.sessionID, req.params.shiftId);
+            return;
+        }
+        let result = await shiftSerice.getActiveShiftEncouragements(req.body.sessionID, req.params.shiftId);
         if(result.code == 200)
             res.status(200).send(result.encouragements);
         else
@@ -174,9 +198,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/salesman/getCurrentShift', async function (req, res) {
-        if(!('sessionid' in req.headers))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.getSalesmanCurrentShift(req.body.sessionID);
+            return;
+        }
+        let result = await shiftSerice.getSalesmanCurrentShift(req.body.sessionID);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else
@@ -192,15 +218,18 @@ function _setapApiEndpoints() {
     });
 
     app.get('/salesman/getBroadcastMessages', async function (req, res) {
-        if(!('sessionid' in req.headers))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var sessionId = req.headers.sessionid;
-        var result = await messageService.getInbox(sessionId);
+            return;
+        }
+        let sessionId = req.headers.sessionid;
+        let result = await messageService.getInbox(sessionId);
         if(result.code == 200)
             res.status(200).send(result.inbox);
-        else
+        else {
             res.status(result.code).send(result.err);
-        messageService.markAsRead(sessionId);
+            messageService.markAsRead(sessionId);
+        }
     });
 
     app.post('/salesman/shiftRegister', function (req, res) {
@@ -210,9 +239,11 @@ function _setapApiEndpoints() {
 //Management Services
 
     app.post('/management/addUser', async function (req, res) {
-        if (!validator.addUser(req.body))
+        if (!validator.addUser(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await userService.addUser(req.body.sessionId, req.body.userDetails);
+            return;
+        }
+        let result = await userService.addUser(req.body.sessionId, req.body.userDetails);
         if(result.code == 200){
             res.status(200).send(result.user);
         }
@@ -222,9 +253,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editUser', async function (req, res) {
-        if (!validator.editUser(req.body))
+        if (!validator.editUser(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await userService.editUser(req.body.sessionId, req.body.username, req.body.userDetails);
+            return;
+        }
+        let result = await userService.editUser(req.body.sessionId, req.body.username, req.body.userDetails);
         if(result.code == 200){
             res.status(200).send();
         }
@@ -234,9 +267,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteUser', async function (req, res) {
-        if (!validator.deleteUser(req.body))
+        if (!validator.deleteUser(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await userService.deleteUser(req.body.sessionId, req.body.username);
+            return;
+        }
+        let result = await userService.deleteUser(req.body.sessionId, req.body.username);
         if(result.code == 200){
             res.status(200).send();
         }
@@ -246,9 +281,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllUsers', async function(req, res){
-        if(!('sessionid' in req.header))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await userService.getAllUsers(req.header.sessionid);
+            return;
+        }
+        let result = await userService.getAllUsers(req.headers.sessionid);
         if(result.code == 200){
             res.status(200).send(result.users);
         }
@@ -258,9 +295,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addStore', async function (req, res) {
-        if (!validator.addOrEditOrDeleteStore(req.body))
+        if (!validator.addOrEditOrDeleteStore(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await storeService.addStore(req.body.sessionId, req.body.storeDetails);
+            return;
+        }
+        let result = await storeService.addStore(req.body.sessionId, req.body.storeDetails);
         if (result.err != null)
         {
             res.status(result.code).send(result.err);
@@ -272,9 +311,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editStore', async function (req, res) {
-        if (!validator.addOrEditOrDeleteStore(req.body))
+        if (!validator.addOrEditOrDeleteStore(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await storeService.editStore(req.body.sessionId, req.body.storeDetails);
+            return;
+        }
+        let result = await storeService.editStore(req.body.sessionId, req.body.storeDetails);
         if (result.err != null)
         {
             res.status(result.code).send(result.err);
@@ -286,9 +327,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteStore', async function (req, res) {
-        if (!validator.deleteStore(req.body))
+        if (!validator.deleteStore(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await storeService.deleteStroe(req.body.sessionId, req.body.storeId);
+            return;
+        }
+        let result = await storeService.deleteStroe(req.body.sessionId, req.body.storeId);
         if (result.err != null)
         {
             res.status(result.code).send(result.err);
@@ -300,9 +343,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllStores', async function (req, res) {
-        if(!('sessionid' in req.header))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await storeService.getAllStores(req.headers.sessionid);
+            return;
+        }
+        let result = await storeService.getAllStores(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -311,10 +356,26 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/management/addProduct', async function (req, res) {
-        if (!validator.addOrEditProduct(req.body))
+    app.get('/management/:storeId/getStore', async function (req, res) {
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await productService.addProduct(req.body.sessionId, req.body.productDetails);
+            return;
+        }
+        let result = await storeService.getStore(req.headers.sessionid, req.params.storeId);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.store);
+        }
+    });
+
+    app.post('/management/addProduct', async function (req, res) {
+        if (!validator.addOrEditProduct(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await productService.addProduct(req.body.sessionId, req.body.productDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -324,9 +385,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editProduct', async function (req, res) {
-        if (!validator.addOrEditProduct(req.body))
+        if (!validator.addOrEditProduct(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await productService.editProduct(req.body.sessionId, req.body.productDetails);
+            return;
+        }
+        let result = await productService.editProduct(req.body.sessionId, req.body.productDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -336,9 +399,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteProduct', async function (req, res) {
-        if (!validator.deleteProduct(req.body))
+        if (!validator.deleteProduct(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await productService.deleteProduct(req.body.sessionId, req.body.productId);
+            return;
+        }
+        let result = await productService.deleteProduct(req.body.sessionId, req.body.productId);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -348,9 +413,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllProducts', async function (req, res) {
-        if(!('sessionid' in req.header))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await productService.getAllProducts(req.headers.sessionid);
+            return;
+        }
+        let result = await productService.getAllProducts(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -359,11 +426,27 @@ function _setapApiEndpoints() {
         }
     });
 
+    app.get('/management/:productId/getProduct', async function (req, res) {
+        if(!('sessionid' in req.headers)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await productService.getProduct(req.headers.sessionid, req.params.productId);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.product);
+        }
+    });
+
 
     app.post('/management/addEncouragement', async function (req, res) {
-        if (!validator.addOrEditEncouragement(req.body))
+        if (!validator.addOrEditEncouragement(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+            return;
+        }
+        let result = await encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -373,9 +456,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/editEncouragement', async function (req, res) {
-        if (!validator.addOrEditEncouragement(req.body))
+        if (!validator.addOrEditEncouragement(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await encouragementServices.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+            return;
+        }
+        let result = await encouragementServices.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -385,9 +470,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/deleteEncouragement', async function (req, res) {
-        if (!validator.deleteEncouragement(req.body))
+        if (!validator.deleteEncouragement(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await encouragementServices.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+            return;
+        }
+        let result = await encouragementServices.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -397,9 +484,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getAllEncouragements', async function (req, res) {
-        if(!('sessionid' in req.header))
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await encouragementServices.getAllEncouragements(req.headers.sessionid);
+            return;
+        }
+        let result = await encouragementServices.getAllEncouragements(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -408,20 +497,38 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/management/addShifts', async function (req, res) {
-        if (!validator.addOrPublishShifts(req.body))
+    app.get('/management/:encouragementId/getAllEncouragements', async function (req, res) {
+        if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.addShifts(req.body.sessionId, req.body.shiftArr);
+            return;
+        }
+        let result = await encouragementServices.getEncouragement(req.headers.sessionid, req.params.encouragementId);
+        if (result.err != null) {
+            res.status(result.code).send(result.err);
+        }
+        else {
+            res.status(result.code).send(result.encouragement);
+        }
+    });
+
+    app.post('/management/addShifts', async function (req, res) {
+        if (!validator.addOrPublishShifts(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftSerice.addShifts(req.body.sessionId, req.body.shiftArr);
         if(result.code == 200)
-            res.status(200).send();
+            res.status(200).send(result.shiftArr);
         else
             res.status(result.code).send(result.err);
     });
 
     app.post('/management/publishShifts', async function (req, res) {
-        if (!validator.addOrPublishShifts(req.body))
+        if (!validator.addOrPublishShifts(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await shiftSerice.addShifts(req.body.sessionId, req.body.shiftArr);
+            return;
+        }
+        let result = await shiftSerice.publishShifts(req.body.sessionId, req.body.shiftArr);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -451,9 +558,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/manager/sendBroadcastMessage', async function (req, res) {
-        if (!validator.sendBroadcastMessage(req.body))
+        if (!validator.sendBroadcastMessage(req.body)) {
             res.status(404).send('invalid parameters');
-        var result = await messageService.sendBroadcast(req.body.sessionId, req.body.content, req.body.date);
+            return;
+        }
+        let result = await messageService.sendBroadcast(req.body.sessionId, req.body.content, req.body.date);
         if(result.code == 200)
             res.status(200).send();
         else

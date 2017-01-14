@@ -106,6 +106,10 @@ module.exports = {
         return encouragementModel.find({});
     },
 
+    getEncouragement: async function(id){
+        return encouragementModel.find({'_id': id});
+    },
+
     getProductById: async function (productId){
         return productModel.findOne({'_id': productId});
     },

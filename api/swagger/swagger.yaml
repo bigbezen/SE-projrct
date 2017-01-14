@@ -107,6 +107,8 @@ paths:
           schema:
             type: object
             properties:
+              _id:
+                type: string
               username: 
                 type: string
               startDate:
@@ -278,6 +280,8 @@ paths:
           schema:
             type: object
             properties:
+              _id:
+                type: string
               startTime:
                 type: string
               endTime:
@@ -294,6 +298,8 @@ paths:
                   type: object
                   properties:
                     productId:
+                      type: string
+                    name:
                       type: string
                     stockStartShift:
                       type: number
@@ -410,7 +416,7 @@ paths:
           description: user added successfully to the system
           schema:
             type: object
-            description: the entered user's details
+            description: the entered user's details including _id field
         "401":
           description: authorization problem
         "409":
@@ -479,7 +485,7 @@ paths:
                         type: string
                       channel:
                         type: string
-                    description: area and channel are only recommended for salesman and agents
+                    description: area and channel are only mendatory for salesman and agents
       responses:
         "200":
           description: user was edited successfully to the system
@@ -488,7 +494,7 @@ paths:
         "409":
           description: one or more of the entered details are problematic
           
-  /salesman/deleteUser:
+  /management/deleteUser:
     post:
       summary: delete a user from the system
       parameters:
@@ -507,12 +513,734 @@ paths:
         "401":
           description: authorization problem
           
+  /management/getAllUsers:
+    get:
+      summary: get an array of all users in the system
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+      responses:
+        "200":
+          description: got an array of user details
+          schema: 
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                username:
+                  type: string
+                startDate:
+                  type: string
+                personal:
+                    type: object
+                    properties:
+                      id: 
+                        type: string
+                      firstName: 
+                        type: string
+                      lastName:
+                        type: string
+                      sex:
+                        type: string
+                      birthday:
+                        type: string
+                contact:
+                    type: object
+                    properties:
+                      address:
+                        type: object
+                        properties:
+                          street:
+                            type: string
+                          number:
+                            type: string
+                          city:
+                            type: string
+                          zip:
+                            type: string
+                      phone:
+                        type: string
+                      email:
+                        type: string
+                jobDetails:
+                    type: object
+                    properties:
+                      userType: 
+                        type: string
+                      area:
+                        type: string
+                      channel:
+                        type: string
+                    description: area and channel are only mendatory for salesman and agents
+                  
+        "401":
+          description: authorization problem
           
+  /management/addStore:
+    post:
+      summary: add a new user to the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              storeDetails:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                  managerName:
+                    type: string
+                  phone:
+                    type: string
+                  city:
+                    type: string
+                  address:
+                    type: string
+                  area:
+                    type: string
+                  channel:
+                    type: string
+      responses:
+        "200":
+          description: user added successfully to the system
+          schema:
+            type: object
+            properties:
+              _id:
+                type: string
+              name: 
+                type: string
+              managerName:
+                type: string
+              phone:
+                type: string
+              city:
+                type: string
+              address:
+                type: string
+              area:
+                type: string
+              channel:
+                type: string
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
           
+  /management/editStore:
+    post:
+      summary: edit details of an existing store in the system
+      description: there are no mendatory store details here - the details that will be given are the ones that will be updated
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              storeDetails:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name: 
+                    type: string
+                  managerName:
+                    type: string
+                  phone:
+                    type: string
+                  city:
+                    type: string
+                  address:
+                    type: string
+                  area:
+                    type: string
+                  channel:
+                    type: string
+      responses:
+        "200":
+          description: store was edited successfully to the system
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
           
+  /management/deleteStore:
+    post:
+      summary: delete a store from the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              storeId:
+                type: string
+      responses:
+        "200":
+          description: store was deleted successfuly
+        "401":
+          description: authorization problem
           
+  /management/getAllStores:
+    get:
+      summary: get an array of all stores in the system
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+      responses:
+        "200":
+          description: got an array of store details
+          schema: 
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                name: 
+                  type: string
+                managerName:
+                  type: string
+                phone:
+                  type: string
+                city:
+                  type: string
+                address:
+                  type: string
+                area:
+                  type: string
+                channel:
+                  type: string
+                  
+        "401":
+          description: authorization problem
           
+  /management/:storeId/getStore/:
+    get:
+      summary: get one store by its id
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+        - name: storeId
+          in: query
+          type: string
+      responses:
+        "200":
+          description: got the store details
+          schema: 
+            type: object
+            properties:
+              _id:
+                type: string
+              name: 
+                type: string
+              managerName:
+                type: string
+              phone:
+                type: string
+              city:
+                type: string
+              address:
+                type: string
+              area:
+                type: string
+              channel:
+                type: string
+                  
+        "401":
+          description: authorization problem
+        "409":
+          description: id doesnt exist
           
+  /management/addProduct:
+    post:
+      summary: add a new product to the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              storeDetails:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                  retailPrice:
+                    type: number
+                  salePrice:
+                    type: number
+                  category:
+                    type: string
+                  subCategory:
+                    type: string
+                  minRequiredAmount:
+                    type: number
+                  notifyManager:
+                    type: boolean
+      responses:
+        "200":
+          description: product added successfully to the system
+          schema:
+            type: object
+            properties:
+              _id:
+                  type: string
+              name: 
+                type: string
+              retailPrice:
+                type: number
+              salePrice:
+                type: number
+              category:
+                type: string
+              subCategory:
+                type: string
+              minRequiredAmount:
+                type: number
+              notifyManager:
+                type: boolean
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
+          
+  /management/editProduct:
+    post:
+      summary: edit details of an existing product in the system
+      description: there are no mendatory product details here - the details that will be given are the ones that will be updated
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              productDetails:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name: 
+                    type: string
+                  retailPrice:
+                    type: number
+                  salePrice:
+                    type: number
+                  category:
+                    type: string
+                  subCategory:
+                    type: string
+                  minRequiredAmount:
+                    type: number
+                  notifyManager:
+                    type: boolean
+      responses:
+        "200":
+          description: product was edited successfully to the system
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
+          
+  /management/deleteProduct:
+    post:
+      summary: delete a store from the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              productId:
+                type: string
+      responses:
+        "200":
+          description: product was deleted successfuly
+        "401":
+          description: authorization problem
+          
+  /management/getAllProducts:
+    get:
+      summary: get an array of all stores in the system
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+      responses:
+        "200":
+          description: got an array of product details
+          schema: 
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                name: 
+                  type: string
+                retailPrice:
+                  type: number
+                salePrice:
+                  type: number
+                category:
+                  type: string
+                subCategory:
+                  type: string
+                minRequiredAmount:
+                  type: number
+                notifyManager:
+                  type: boolean
+                  
+        "401":
+          description: authorization problem     
+          
+  /management/:productId/getProduct:
+    get:
+      summary: get a specific store from the system
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+        - name: productId
+          in: query
+          type: string
+      responses:
+        "200":
+          description: got a store's details
+          schema: 
+            type: object
+            properties:
+              _id:
+                type: string
+              name: 
+                type: string
+              retailPrice:
+                type: number
+              salePrice:
+                type: number
+              category:
+                type: string
+              subCategory:
+                type: string
+              minRequiredAmount:
+                type: number
+              notifyManager:
+                type: boolean
+                  
+        "401":
+          description: authorization problem   
+        "409":
+          description: id doesnt exist
+          
+  /management/addEncouragement:
+    post:
+      summary: add a new encouragement to the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              encouragementDetails:
+                type: object
+                properties:
+                  products: 
+                    type: array
+                    items:
+                      type: string
+                      description: array of productId that take place in the encouragement
+                  numOfProducts:
+                    type: number
+                    description: if the encouragement is not a basket type then this states the number of bottles
+                  rate:
+                    type: number
+                  active:
+                    type: boolean
+      responses:
+        "200":
+          description: encouragement added successfully to the system
+          schema:
+            type: object
+            properties:
+              _id:
+                  type: string
+              products: 
+                type: array
+                items:
+                  type: string
+                  description: array of productId that take place in the encouragement
+              numOfProducts:
+                type: number
+                description: if the encouragement is not a basket type then this states the number of bottles
+              rate:
+                type: number
+              active:
+                type: boolean
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
+          
+  /management/editEncouragement:
+    post:
+      summary: edit details of an existing encouragement in the system
+      description: there are no mendatory encouragement details here - the details that will be given are the ones that will be updated
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              encouragementDetails:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  products: 
+                    type: array
+                    items:
+                      type: string
+                      description: array of productId that take place in the encouragement
+                  numOfProducts:
+                    type: number
+                    description: if the encouragement is not a basket type then this states the number of bottles
+                  rate:
+                    type: number
+                  active:
+                    type: boolean
+      responses:
+        "200":
+          description: encouragement was edited successfully to the system
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
+          
+  /management/deleteEncouragement:
+    post:
+      summary: delete an encouragement from the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              encouragementId:
+                type: string
+      responses:
+        "200":
+          description: product was deleted successfuly
+        "401":
+          description: authorization problem
+          
+  /management/getAllEncouragements:
+    get:
+      summary: get an array of all stores in the system
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+      responses:
+        "200":
+          description: got an array of product details
+          schema: 
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                products: 
+                  type: array
+                  items:
+                    type: string
+                    description: array of productId that take place in the encouragement
+                numOfProducts:
+                  type: number
+                  description: if the encouragement is not a basket type then this states the number of bottles
+                rate:
+                  type: number
+                active:
+                  type: boolean
+                  
+        "401":
+          description: authorization problem 
+          
+  /management/:encouragementId/getEncouragement:
+    get:
+      summary: geta specific encouragement
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+        - name: encouragementId
+          in: query
+          type: string
+      responses:
+        "200":
+          description: got an encourgement's details
+          schema: 
+            type: object
+            properties:
+              _id:
+                type: string
+              products: 
+                type: array
+                items:
+                  type: string
+                  description: array of productId that take place in the encouragement
+              numOfProducts:
+                type: number
+                description: if the encouragement is not a basket type then this states the number of bottles
+              rate:
+                type: number
+              active:
+                type: boolean
+                  
+        "401":
+          description: authorization problem 
+        "409":
+          description: id doesnt exist
+          
+  /management/addShifts:
+    post:
+      summary: add several new shifts to the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              shiftsArr:
+                type: array
+                description: an array of shift objects
+                items:
+                  type: object
+                  properties:
+                    storeId:
+                      type: string
+                    startTime:
+                      type: string
+                    endTime: 
+                      type: string
+                    type:
+                      type: string
+      responses:
+        "200":
+          description: shifts were added successfuly
+          schema: 
+            type: array
+            description: an array of shift objects
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                storeId:
+                  type: string
+                startTime:
+                  type: string
+                endTime: 
+                  type: string
+                type:
+                  type: string
+                status:
+                  type: string
+        "401":
+          description: authorization problem      
+        "409":
+          description: problem with one or more of the parameters
+          
+  /management/publishShifts:
+    post:
+      summary: publish several shifts that are already saved in the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              shiftsArr:
+                type: array
+                description: an array of shift objects that are needed to be published - all shifts status should be  CREATED
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    storeId:
+                      type: string
+                    salesmanId:
+                      type: string
+                    startTime:
+                      type: string
+                    endTime: 
+                      type: string
+                    type:
+                      type: string
+      responses:
+        "200":
+          description: shifts were published successfuly
+        "401":
+          description: authorization problem      
+        "409":
+          description: problem with one or more of the parameters
+          
+  /management/sendBroadcastMessage:
+    post:
+      summary: send a broadcast message to all salesmen
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              content:
+                type: string
+              date:
+                type: string
+      responses:
+        "200":
+          description: message was sent successfully
+        "401":
+          description: authorization problem
           
           
           

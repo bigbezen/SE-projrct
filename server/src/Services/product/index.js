@@ -1,17 +1,19 @@
-var logger          = require('../../Utils/Logger/logger');
-var productModel    = require('../../Models/product')
-var dal             = require('../../DAL/dal');
-var permissions     = require('../permissions/index');
+"use strict"
+
+let logger          = require('../../Utils/Logger/logger');
+let productModel    = require('../../Models/product');
+let dal             = require('../../DAL/dal');
+let permissions     = require('../permissions/index');
 
 
-var addProduct = async function(sessionId, productDetails) {
+let addProduct = async function(sessionId, productDetails) {
     logger.info('Services.product.index.addProduct', {'session-id': sessionId});
-    var user = await permissions.validatePermissionForSessionId(sessionId, 'addProduct');
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'addProduct');
     if(user != null){
-        var product = await dal.getProductByNameAndCatagory(productDetails.name, productDetails.category);
+        let product = await dal.getProductByNameAndCatagory(productDetails.name, productDetails.category);
         //check if the store existing
         if(product == null){
-            var product = new productModel();
+            let product = new productModel();
             product.name = productDetails.name;
             product.retailPrice = productDetails.retailPrice;
             product.salePrice = productDetails.salePrice;
@@ -19,7 +21,7 @@ var addProduct = async function(sessionId, productDetails) {
             product.subCategory = productDetails.subCategory;
             product.minRequiredAmount = productDetails.minRequiredAmount;
             product.notifyManager = productDetails.notifyManager;
-            var res = await dal.addProduct(product);
+            let res = await dal.addProduct(product);
             return {'product': product, 'code': 200, 'err': null};
         }
         else{
@@ -31,11 +33,11 @@ var addProduct = async function(sessionId, productDetails) {
     }
 };
 
-var editProduct = async function (sessionId, productDetails) {
+let editProduct = async function (sessionId, productDetails) {
     logger.info('Services.product.index.editProduct', {'session-id': sessionId});
-    var user = await permissions.validatePermissionForSessionId(sessionId, 'editProduct');
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'editProduct');
     if(user != null){
-        var product = await dal.editProduct(productDetails);
+        let product = await dal.editProduct(productDetails);
         return {'product': product, 'code':200, 'err': null};
     }
     else{
@@ -43,11 +45,11 @@ var editProduct = async function (sessionId, productDetails) {
     }
 };
 
-var deleteProduct = async function(sessionId, ProductId){
+let deleteProduct = async function(sessionId, ProductId){
     logger.info('Services.product.index.deleteProduct', {'session-id': sessionId});
-    var user = await permissions.validatePermissionForSessionId(sessionId, 'deleteProduct');
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'deleteProduct');
     if(user != null){
-        var product = await dal.deleteProduct(ProductId);
+        let product = await dal.deleteProduct(ProductId);
         return {'product': product, 'code':200, 'err': null};
     }
     else {
@@ -55,11 +57,11 @@ var deleteProduct = async function(sessionId, ProductId){
     }
 };
 
-var getAllProducts = async function(sessionId){
+let getAllProducts = async function(sessionId){
     logger.info('Services.product.index.getAllProduct', {'session-id': sessionId});
-    var user = await permissions.validatePermissionForSessionId(sessionId, 'getAllProducts');
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getAllProducts');
     if(user != null) {
-        var products =  await dal.getAllProducts();
+        let products =  await dal.getAllProducts();
         return {'products': products, 'code': 200, 'err': null};
     }
     else {
@@ -67,9 +69,21 @@ var getAllProducts = async function(sessionId){
     }
 };
 
+let getProduct = async function(sessionId, productId){
+    logger.info('Services.Encouragement.index.getEncouragement', {'session-id': sessionId});
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getProduct');
+    if(user == null)
+        return {'code': 401, 'err': 'permission denied'};
+    let product = await dal.getProductById(productId);
+    if(product == null)
+        return {'code': 409, 'err': 'no such encouragement'};
+    return {'code': 200, 'product': product.toObject()};
+};
+
 module.exports.addProduct = addProduct;
 module.exports.editProduct = editProduct;
 module.exports.deleteProduct = deleteProduct;
 module.exports.getAllProducts = getAllProducts;
+module.exports.getProduct = getProduct;
 
 

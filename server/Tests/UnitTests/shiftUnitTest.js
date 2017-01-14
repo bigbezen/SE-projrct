@@ -29,6 +29,10 @@ describe('shift unit test', function () {
     let product1;
     let product2;
     let product3;
+    let enc1;
+    let enc2;
+    let enc3;
+    let enc4;
 
     let shift_object_to_model = function(shiftObj){
         let shift = new shiftModel();
@@ -118,25 +122,25 @@ describe('shift unit test', function () {
         res = await dal.addProduct(product2);
         res = await dal.addProduct(product3);
 
-        let enc1 = new encouragementModel();
+        enc1 = new encouragementModel();
         enc1.active = true;
         enc1.numOfProducts = 3;
         enc1.products = [product1._id];
         enc1.rate = 100;
 
-        let enc2 = new encouragementModel();
+        enc2 = new encouragementModel();
         enc2.active = true;
         enc2.numOfProducts = 2;
         enc2.products = [product1._id, product2._id];
         enc2.rate = 200;
 
-        let enc3 = new encouragementModel();
+        enc3 = new encouragementModel();
         enc3.active = true;
         enc3.numOfProducts = 3;
         enc3.products = [product1._id, product2._id, product3._id];
         enc3.rate = 350;
 
-        let enc4 = new encouragementModel();
+        enc4 = new encouragementModel();
         enc4.active = true;
         enc4.numOfProducts = 5;
         enc4.products = [product3._id];
@@ -371,6 +375,9 @@ describe('shift unit test', function () {
             shifts[0].salesmanId = user1._id.toString();
             shifts[1].salesmanId = user1._id.toString();
 
+            shifts[0].salesReport = await createNewSalesReport();
+            shifts[1].salesReport = await createNewSalesReport();
+
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
             shifts[1] = (await dal.addShift(shifts[1])).toObject();
 
@@ -378,6 +385,9 @@ describe('shift unit test', function () {
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shift');
             expect(result.shift.status).to.be.equal('PUBLISHED');
+            expect(result.shift).to.include.all.keys('store', 'salesReport');
+            let productNames = result.shift.salesReport.map(x => x.name);
+            expect(productNames).to.include(product1.name, product2.name, product3.name);
 
             //make sure the database shifts remains untouched
             let shift0 = (await dal.getShiftsByIds([shifts[0]._id]))[0];
@@ -722,9 +732,15 @@ describe('shift unit test', function () {
             shift.status = "STARTED";
 
             shift.salesReport = await createNewSalesReport();
-            shift.salesReport[0].sold = 9;
-            shift.salesReport[1].sold = 9;
-            shift.salesReport[2].sold = 15;
+            for(let product of shift.salesReport)
+            {
+                if(product.productId.toString() == product1._id.toString())
+                    product.sold = 9;
+                if(product.productId.toString() == product2._id.toString())
+                    product.sold = 9;
+                if(product.productId.toString() == product3._id.toString())
+                    product.sold = 15;
+            }
 
             shift = shift_object_to_model(shift);
 
@@ -736,8 +752,75 @@ describe('shift unit test', function () {
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('encouragements');
 
+            for(let earnedEnc of result.encouragements){
+                if(earnedEnc.enc._id.toString() == enc1._id.toString())
+                    expect(earnedEnc.num).to.be.equal(3);
+                if(earnedEnc.enc._id.toString() == enc2._id.toString())
+                    expect(earnedEnc.num).to.be.equal(1);
+                if(earnedEnc.enc._id.toString() == enc3._id.toString())
+                    expect(earnedEnc.num).to.be.equal(1);
+                if(earnedEnc.enc._id.toString() == enc4._id.toString())
+                    expect(earnedEnc.num).to.be.equal(3);
+            }
+        });
+
+        it('get active shift encouragements invalid sessionId', async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.salesReport = await createNewSalesReport();
+            for(let product of shift.salesReport)
+            {
+                if(product.productId.toString() == product1._id.toString())
+                    product.sold = 9;
+                if(product.productId.toString() == product2._id.toString())
+                    product.sold = 9;
+                if(product.productId.toString() == product3._id.toString())
+                    product.sold = 15;
+            }
+
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id;
+            shift = (await dal.addShift(shift)).toObject();
+
+            let result = await shiftService.getActiveShiftEncouragements('invalid sessionId', shift._id);
+            expect(result).to.have.property('code', 401);
+
+        });
+
+        it('get active shift encouragements invalid shiftId', async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.salesReport = await createNewSalesReport();
+            for(let product of shift.salesReport)
+            {
+                if(product.productId.toString() == product1._id.toString())
+                    product.sold = 9;
+                if(product.productId.toString() == product2._id.toString())
+                    product.sold = 9;
+                if(product.productId.toString() == product3._id.toString())
+                    product.sold = 15;
+            }
+
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id;
+            shift = (await dal.addShift(shift)).toObject();
+
+            let result = await shiftService.getActiveShiftEncouragements(user1.sessionId, 'invalid8shif');
+            expect(result).to.have.property('code', 409);
+
         });
     });
 
+    describe('test end shift', function(){
+        it('end shift valid', async function(){
+
+        });
+    });
 
 });

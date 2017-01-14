@@ -18,6 +18,8 @@ var User = require('../containers/UserDetails');
 var SalesmanBase = require('../salemanContainers/SalesmanBaseContainer');
 var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
 var StartShift = require('../salemanContainers/StartShiftContainer');
+var Shift = require('../salemanContainers/ShiftContainer');
+var EndShift = require('../salemanContainers/EndShiftContainer');
 
 var routes = (
     <Router history={hashHistory}>
@@ -34,6 +36,8 @@ var routes = (
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='Home' component={SalesmanHome}/>
             <Route path='StartShift' component={StartShift}/>
+            <Route path='Shift' component={Shift}/>
+            <Route path='EndShift' component={EndShift}/>
         </Route>
     </Router>
 );

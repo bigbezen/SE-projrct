@@ -3,7 +3,7 @@
  */
 
 var React = require('react');
-var managerServices = require('../communication/managementServices');
+var managementServices = require('../communication/managementServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var userInfo = require('../models/user');
 var flatten = require('flat');
@@ -111,34 +111,41 @@ var UserDetails = React.createClass({
         newUser.jobDetails.area = this.state.area;
         newUser.jobDetails.channel = this.state.channel;
 
-        console.log('new user');
-        console.log(newUser);
-        console.log('new usere end');
         var context = this.context;
         if (this.state.editing) {
             newUser._id = this.props.location.query._id;
-            managerServices.editUser(newUser).then(function (n) {
+            managementServices.editUser(newUser).then(function (n) {
                 if(n){
-                    alert('edit succeed');
-                    context.router.push({
-                        pathname: '/LoggedIn/Home'
-                    })
+                    var val = n;
+                    if (val.success) {
+                        alert('edit succeed');
+                        context.router.push({
+                            pathname: '/LoggedIn/Home'
+                        })
+                    } else {
+                        alert('edit failed. please check your parameters');
+                    }
                 }
                 else{
-                    alert('edit failed');
+                    alert('edit failed. please check your parameters');
                     console.log("error");
                 }
             })
         }else {
-            managerServices.addUser(newUser).then(function (n) {
+            managementServices.addUser(newUser).then(function (n) {
                 if(n){
-                    alert('add succeed');
-                    context.router.push({
-                        pathname: '/LoggedIn/Home'
-                    })
+                    var val = n;
+                    if (val.success) {
+                        alert('add succeed');
+                        context.router.push({
+                            pathname: '/LoggedIn/Home'
+                        })
+                    } else {
+                        alert('add failed. please check your parameters');
+                    }
                 }
                 else{
-                    alert('add failed');
+                    alert('add failed. please check your parameters');
                     console.log("error");
                 }
             })

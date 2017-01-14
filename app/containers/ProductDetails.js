@@ -3,7 +3,7 @@
  */
 
 var React = require('react');
-var managerServices = require('../communication/managementServices');
+var managementServices = require('../communication/managementServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var productInfo = require('../models/product');
 
@@ -62,39 +62,50 @@ var ProductDetails = React.createClass({
             alert('Invalid values. please make sure that you filled all of the fields');
             return;
         }
+        //                        parseInt("the string you want to parse to int")
         var newProduct = new productInfo();
         newProduct.name = this.refs.nameBox.value;
-        newProduct.retailPrice = this.refs.retailBox.value;
-        newProduct.salePrice = this.refs.saleBox.value;
+        newProduct.retailPrice =  parseInt(this.refs.retailBox.value);
+        newProduct.salePrice =  parseInt(this.refs.saleBox.value);
         newProduct.category = this.state.category;
         newProduct.subCategory = this.state.subCategory;
-        newProduct.minRequiredAmount = this.refs.minAmountBox.value;
+        newProduct.minRequiredAmount =  parseInt(this.refs.minAmountBox.value);
         newProduct.notifyManager = this.refs.notifyBox.checked;
         var context = this.context;
         if (this.state.editing) {
             newProduct._id = this.props.location.query._id;
-            managerServices.editProduct(newProduct).then(function (n) {
+            managementServices.editProduct(newProduct).then(function (n) {
                 if(n){
-                    alert('edit succeed');
-                    context.router.push({
-                        pathname: '/LoggedIn/Home'
-                    })
+                        var val = n;
+                        if (val.success) {
+                            alert('edit succeed');
+                            context.router.push({
+                                pathname: '/LoggedIn/Home'
+                            })
+                        } else {
+                            alert('edit failed. please check your parameters');
+                        }
                 }
                 else{
-                    alert('edit failed');
+                    alert('edit failed. please check your parameters');
                     console.log("error");
                 }
             })
         }else {
-            managerServices.addProduct(newProduct).then(function (n) {
+            managementServices.addProduct(newProduct).then(function (n) {
                 if(n){
-                    alert('add succeed');
-                    context.router.push({
-                        pathname: '/LoggedIn/Home'
-                    })
+                        var val = n;
+                        if (val.success) {
+                            alert('add succeed');
+                            context.router.push({
+                                pathname: '/LoggedIn/Home'
+                            })
+                        } else {
+                            alert('add failed. please check your parameters');
+                        }
                 }
                 else{
-                    alert('add failed');
+                    alert('add failed. please check your parameters');
                     console.log("error");
                 }
             })

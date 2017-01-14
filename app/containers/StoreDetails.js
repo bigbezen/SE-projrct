@@ -77,26 +77,36 @@ var StoreDetails = React.createClass({
             newStore._id = this.props.location.query._id;
             managerServices.editStore(newStore).then(function (n) {
                 if(n){
-                    alert('edit succeed');
-                    context.router.push({
-                        pathname: '/LoggedIn/Home'
-                    })
+                    var val = n;
+                    if (val.success) {
+                        alert('edit succeed');
+                        context.router.push({
+                            pathname: '/LoggedIn/Home'
+                        })
+                    } else {
+                        alert('edit failed. please check your parameters');
+                    }
                 }
                 else{
-                    alert('edit failed');
+                    alert('edit failed. please check your parameters');
                     console.log("error");
                 }
             })
         }else {
             managerServices.addStore(newStore).then(function (n) {
                 if(n){
-                    alert('add succeed');
-                    context.router.push({
-                        pathname: '/LoggedIn/Home'
-                    })
+                    var val = n;
+                    if (val.success) {
+                        alert('add succeed');
+                        context.router.push({
+                            pathname: '/LoggedIn/Home'
+                        })
+                    } else {
+                        alert('add failed. please check your parameters');
+                    }
                 }
                 else{
-                    alert('add failed');
+                    alert('add failed. please check your parameters');
                     console.log("error");
                 }
             })

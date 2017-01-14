@@ -102,8 +102,9 @@ class ConstantStrings extends React.Component {
 
     static user_role =
     {
-        'דייל': 'דייל',
-        'סוכן שטח': 'סוכן שטח'
+        'salesman': 'דייל',
+        'agent': 'סוכן שטח',
+        'manager': 'מנהל'
      };
 
     static store_area =
@@ -132,7 +133,15 @@ class ConstantStrings extends React.Component {
 
     static subCategoryForDropdown = ["בלנד סקוטי", "סינגל מאלט סקוטי", "וויסקי אמריקאי/קנדי", "ארבעת הלבנים", "אפרטיף/דגסטיף", "תבור הר/פנינים", "תבור אדמה", "תבור אדמה 2", "L.E"];
 
-    static userRoleForDropDown = ["דייל", "סוכן שטח"];
+    static userRoleForDropDown =
+        [
+            ['salesman', 'דייל'],
+            ['agent', 'סוכן שטח'],
+            ['manager', 'מנהל']
+        ];
+
+
+  //  static userRoleForDropDown = ["דייל", "סוכן שטח"];
 
     static dropDownChooseString = 'בחר...';
 

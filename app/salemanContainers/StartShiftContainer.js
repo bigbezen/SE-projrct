@@ -5,6 +5,7 @@
 var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
+var paths = require('../utils/Paths');
 
 var StartShiftContainer = React.createClass({
     contextTypes: {
@@ -20,7 +21,7 @@ var StartShiftContainer = React.createClass({
         console.log(shift);
         var context = this.context;
         context.router.push({
-            pathname: '/salesman/Shift',
+            pathname: paths.salesman_shift_path,
             state: {newShift: shift}
         })
         /*managementServices.editShift(shift).then(function (n) { //TODO: fix this!!!!!!

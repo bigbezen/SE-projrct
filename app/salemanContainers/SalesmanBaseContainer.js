@@ -5,6 +5,7 @@
 var React = require('react');
 var userServices = require('../communication/userServices');
 var constantsStrings = require('../utils/ConstantStrings');
+var paths = require('../utils/Paths');
 
 var SalesmanBaseContainer = React.createClass({
     contextTypes: {
@@ -17,7 +18,7 @@ var SalesmanBaseContainer = React.createClass({
         userServices.logout().then(function (n) {
             if(n){
                 context.router.push({
-                    pathname: '/'
+                    pathname: paths.login_path
                 })
             }
             else{

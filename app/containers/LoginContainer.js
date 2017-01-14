@@ -4,6 +4,7 @@
 var React = require('react');
 var userServices = require('../communication/userServices');
 var constantsStrings = require('../utils/ConstantStrings');
+var paths = require('../utils/Paths');
 
 var LoginContainer = React.createClass({
     contextTypes: {
@@ -32,11 +33,11 @@ var LoginContainer = React.createClass({
                     if(userType == 'manager')
                     {
                         context.router.push({
-                            pathname: '/LoggedIn/Home'
+                            pathname: paths.manager_home_path
                         })
                     } else{ //TODO: add all types of users
                         context.router.push({
-                            pathname: '/salesman/Home'
+                            pathname: paths.salesman_home_path
                         })
                     }
                 }else {
@@ -52,7 +53,7 @@ var LoginContainer = React.createClass({
     render: function () {
         return (
             <div className="jumbotron col-sm-offset-3 col-sm-6 text-center" >
-                <h1>{constantsStrings.welcome_string}</h1>
+                <h1>{constantsStrings.welcome_string} </h1>
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.username_string}</label>

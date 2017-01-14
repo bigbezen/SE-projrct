@@ -8,6 +8,7 @@ var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
 var helpers = require('../utils/Helpers');
 var managementServices = require('../communication/managementServices');
+var paths = require('../utils/Paths');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -48,7 +49,7 @@ var ProductsContainer = React.createClass({
         console.log('Product #', rowIndex);
         console.log(row);
         this.context.router.push({
-            pathname: '/LoggedIn/Product',
+            pathname: paths.manager_productDetails_path,
             query: row
         })
     },
@@ -74,7 +75,7 @@ var ProductsContainer = React.createClass({
     },
     onClickAddButton: function(){
         this.context.router.push({
-            pathname: '/LoggedIn/Product'
+            pathname: paths.manager_productDetails_path
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {

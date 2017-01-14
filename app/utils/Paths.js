@@ -5,17 +5,18 @@
 var React = require('react');
 
 class Paths extends React.Component {
-    static manager_home = '/manager/home';
-    static manager_users = '/manager/users';
-    static manager_stores = '/manager/stores';
-    static manager_products = '/manager/products';
-    static manager_productDetails= '/manager/product';
-    static manager_storeDetails = '/manager/store';
-    static manager_userDetails = '/manager/user';
-    static salesman_home = '/salesman/home';
-    static salesman_startShift = '/salesman/startShift';
-    static salesman_shift = '/salesman/shift';
-    static salesman_endShift = '/salesman/endShift';
+    static login_path = '/';
+    static manager_home_path = '/manager/home';
+    static manager_users_path = '/manager/users';
+    static manager_stores_path = '/manager/stores';
+    static manager_products_path = '/manager/products';
+    static manager_productDetails_path = '/manager/product';
+    static manager_storeDetails_path = '/manager/store';
+    static manager_userDetails_path = '/manager/user';
+    static salesman_home_path = '/salesman/home';
+    static salesman_startShift_path = '/salesman/startShift';
+    static salesman_shift_path = '/salesman/shift';
+    static salesman_endShift_path = '/salesman/endShift';
 }
 
 module.exports = Paths;

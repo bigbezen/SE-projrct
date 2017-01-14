@@ -9,6 +9,7 @@ var userInfo = require('../models/user');
 var flatten = require('flat');
 var ReactBootstrap = require("react-bootstrap");
 var moment = require('moment');
+var paths = require('../utils/Paths');
 
 var DropDownInput = ReactBootstrap.DropdownButton;
 
@@ -131,7 +132,7 @@ var UserDetails = React.createClass({
                     if (val.success) {
                         alert('edit succeed');
                         context.router.push({
-                            pathname: '/LoggedIn/Home'
+                            pathname: paths.manager_users_path
                         })
                     } else {
                         alert('edit failed. please check your parameters');
@@ -149,7 +150,7 @@ var UserDetails = React.createClass({
                     if (val.success) {
                         alert('add succeed');
                         context.router.push({
-                            pathname: '/LoggedIn/Home'
+                            pathname: paths.manager_users_path
                         })
                     } else {
                         alert('add failed. please check your parameters');

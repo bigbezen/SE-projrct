@@ -23,9 +23,23 @@ var StoresContainer = React.createClass({
         this.updateStores();
     },
     updateStores() {
-        this.setState({
-            stores: managementServices.getAllStores()
-        });
+        var self = this;
+        managementServices.getAllStores().then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    self.setState({
+                        stores: result.info
+                    });
+                    console.log("works!!");
+                } else {
+                    console.log("error in getAllStores: " + result.info);
+                    alert("Error while retrieving all stores from the server: "+ result.info);
+                }
+            } else {
+                console.log("error in storesContainers: " + n);
+            }
+        })
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('Store #', rowIndex);
@@ -36,10 +50,24 @@ var StoresContainer = React.createClass({
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
-        console.log('Store #', rowIndex);
-        console.log(row);
-        managementServices.deleteStore(row);
-        this.updateStores();
+        this.setState({
+            products: null
+        });
+        var self = this;
+        managementServices.deleteStore(row).then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    self.updateStores();
+                    console.log("works!!");
+                } else {
+                    console.log("error in deleteStore: " + result.info);
+                    alert("Error while deleting store from the server: "+ result.info);
+                }
+            } else {
+                console.log("error in deleteStore: " + n);
+            }
+        })
     },
     onClickAddButton: function(){
         this.context.router.push({

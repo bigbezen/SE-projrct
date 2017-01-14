@@ -6,19 +6,16 @@ var constantStrings = require('../utils/ConstantStrings');
 var helpers = require('../utils/Helpers');
 var managementServices = require('../communication/managementServices');
 var flatten = require('flat');
+var moment = require('moment');
 
 function dateFormatter(cell, row) {
-    return `${('0' + cell.getDate()).slice(-2)}/${('0' + (cell.getMonth() + 1)).slice(-2)}/${cell.getFullYear()}`;
+    return moment(cell).format('YYYY-MM-DD');
 }
 
 function flatList(users) {
-    console.log('BEFORE:');
-    console.log(users);
     var output = [];
     for(var i = 0; i < users.length; i++)
         output.push(flatten(users[i]));
-    console.log('AFTER:');
-    console.log(output);
     return output;
 }
 
@@ -39,9 +36,24 @@ var UsersContainer = React.createClass({
         this.updateUsers();
     },
     updateUsers() {
-        this.setState({
-            users: flatList(managementServices.getAllUsers())
-        });
+        var self = this;
+        managementServices.getAllUsers().then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    var flatUsers = flatList(result.info);
+                    self.setState({
+                        users: flatUsers
+                    });
+                    console.log("works!!");
+                } else {
+                    console.log("error in getAllUsers: " + result.info);
+                    alert("Error while retrieving all users from the server: "+ result.info);
+                }
+            } else {
+                console.log("error in userContainers: " + n);
+            }
+        })
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('User #', rowIndex);
@@ -52,11 +64,26 @@ var UsersContainer = React.createClass({
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
-        console.log('User #', rowIndex);
-        console.log(row);
-        managementServices.deleteUser(row);
-        this.updateUsers();
+        this.setState({
+            users: null
+        });
+        var self = this;
+        managementServices.deleteUser(row).then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    self.updateUsers();
+                    console.log("works!!");
+                } else {
+                    console.log("error in deleteUser: " + result.info);
+                    alert("Error while deleting user from the server: "+ result.info);
+                }
+            } else {
+                console.log("error in deleteUser: " + n);
+            }
+        })
     },
+
     onClickAddButton: function(){
         this.context.router.push({
             pathname: '/LoggedIn/User'
@@ -122,6 +149,8 @@ var UsersContainer = React.createClass({
                         filter={ { type: 'SelectFilter', placeholder:constantStrings.selectRole_string, options: constantStrings.user_role } }>
                         {constantStrings.role_string}
                     </TableHeaderColumn>
+
+
                     <TableHeaderColumn
                         dataField = 'startDate'
                         dataAlign = 'right'
@@ -129,6 +158,9 @@ var UsersContainer = React.createClass({
                         filter={ { type: 'DateFilter' ,placeholder:constantStrings.selectStartDate_string} }>
                         {constantStrings.startDate_string}
                     </TableHeaderColumn>
+
+
+
                     <TableHeaderColumn
                         dataAlign = 'right'
                         dataField = 'button'
@@ -143,6 +175,16 @@ var UsersContainer = React.createClass({
             </div>
         )
     },
+    /*
+     <TableHeaderColumn
+     dataField = 'startDate'
+     dataAlign = 'right'
+     dataFormat={ dateFormatter }
+     filter={ { type: 'DateFilter' ,placeholder:constantStrings.selectStartDate_string} }>
+     {constantStrings.startDate_string}
+     </TableHeaderColumn>
+   * */
+
     renderLoading:function () {
         return(
             <div>

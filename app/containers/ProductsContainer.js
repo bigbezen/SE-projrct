@@ -26,9 +26,23 @@ var ProductsContainer = React.createClass({
         this.updateProducts();
     },
     updateProducts() {
-        this.setState({
-            products: managementServices.getAllProducts()
-        });
+        var self = this;
+        managementServices.getAllProducts().then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    self.setState({
+                        products: result.info
+                    });
+                    console.log("works!!");
+                } else {
+                    console.log("error in getAllProducts: " + result.info);
+                    alert("Error while retrieving all products from the server: "+ result.info);
+                }
+            } else {
+                console.log("error in storesContainers: " + n);
+            }
+        })
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('Product #', rowIndex);
@@ -39,10 +53,24 @@ var ProductsContainer = React.createClass({
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
-        console.log('Product #', rowIndex);
-        console.log(row);
-        managementServices.deleteProduct(row);
-        this.updateProducts();
+        this.setState({
+            products: null
+        });
+        var self = this;
+        managementServices.deleteProduct(row).then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    self.updateProducts();
+                    console.log("works!!");
+                } else {
+                    console.log("error in deleteProduct: " + result.info);
+                    alert("Error while deleting product from the server: "+ result.info);
+                }
+            } else {
+                console.log("error in deleteProduct: " + n);
+            }
+        })
     },
     onClickAddButton: function(){
         this.context.router.push({

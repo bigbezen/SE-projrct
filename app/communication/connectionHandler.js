@@ -6,18 +6,17 @@ var serverUrl = 'http://localhost:3000/';
 var sessionId = null;
 var name = null;
 var userType = null;
-var sendCompleteResponse = true; //Change to 'false' to get only the body of the response
-
 
 function errorMessage(funcName, mess) {
     console.warn('Error in function:' + funcName + ': ' + mess);
 }
 
-function returnVal(info) {
-    if (sendCompleteResponse) {
-        return info;
-    }
-    return info.data;
+function returnVal(isOk, info) {
+    var retVal = {
+        'success': isOk,
+        'info': info
+    };
+    return retVal;
 }
 
 var userRequests = {
@@ -29,10 +28,11 @@ var userRequests = {
             sessionId = info.data.sessionId;
             name = username;
             userType = info.data.userType;
-            console.log('the user ' + username + ' Was logged in. sessionId: ' + sessionId);
-            return returnVal(info);
+            console.log('the user ' + username + ' Was logged in. user type: ' + info.data.userType);
+            return returnVal(true ,info.data.userType);
         }).catch(function (err) {
-            errorMessage('login', err);
+            errorMessage('Error in login', err);
+            return returnVal(false, err);
         })
     },
 
@@ -40,24 +40,24 @@ var userRequests = {
         return axios.post(serverUrl + 'user/logout', {
             sessionId:sessionId
         }).then(function (info) {
-            console.log('the user ' + name + ' Was logged out. sessionId: ' + sessionId);
+            console.log('the user ' + name + ' Was logged out');
             sessionId = null;
             name = null;
             userType = null;
-            return returnVal(info);
+            return returnVal(true, '');
         }).catch(function (err) {
-            errorMessage('logout', err);
+            return returnVal(false, err);
         })
     },
 
-    retrievePassword: function(){
+    retrievePassword: function(){ //TODO: doesn't
         return axios.post(serverUrl + 'user/retrievePassword', {
             sessionId:sessionId
         }).then(function (info) {
-            console.log('the user ' + name + ' retrievePassword. sessionId: ' + sessionId);
-            return returnVal(info);
+            console.log('the user ' + name + ' retrievePassword.');
+            return returnVal(true, info);
         }).catch(function (err) {
-            errorMessage('retrievePassword', err);
+            return returnVal(false, err);
         })
     },
 
@@ -67,10 +67,10 @@ var userRequests = {
             oldPass:oldPass,
             newPass:newPass
         }).then(function (info) {
-            console.log('the user ' + name + ' changePassword. sessionId: ' + sessionId);
-            return returnVal(info);
+            console.log('the user ' + name + ' changePassword.');
+            return returnVal(true, info);
         }).catch(function (err) {
-            errorMessage('changePassword', err);
+            return returnVal(false, err);
         })
     },
 
@@ -78,50 +78,58 @@ var userRequests = {
         return axios.get(serverUrl + 'user/getProfile', {
             sessionId:sessionId
         }).then(function (info) {
-            console.log('the user ' + name + ' getProfile. sessionId: ' + sessionId);
-            return returnVal(info);
+            console.log('the user ' + name + ' getProfile.');
+            return returnVal(true, info);
         }).catch(function (err) {
-            errorMessage('getProfile', err);
+            return returnVal(false, err);
         })
     }
 };
 
 var managementRequests = {
     addUser: function(user) {
-        console.log('addUser : http call');
-        console.log(sessionId);
-        console.log(user);
         return axios.post(serverUrl + 'management/addUser', {
             sessionId:sessionId,
             userDetails:user
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('addUser', err);
+            return returnVal(false, err);
         })
     },
 
-    //TODO: param
     editUser: function(user) {
         return axios.post(serverUrl + 'management/editUser', {
             sessionId:sessionId,
             userDetails:user
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('editUser', err);
+            return returnVal(false, err);
         })
     },
 
-    //TODO: param
     deleteUser: function(user) {
         return axios.post(serverUrl + 'management/deleteUser', {
             sessionId:sessionId,
-            userDetails:user
+            username:user.username
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('deleteUser', err);
+            return returnVal(false, err);
+        })
+    },
+
+    getAllUsers: function() {
+        return axios.get(serverUrl + 'management/getAllUsers', {
+            headers:{
+                sessionId:sessionId
+            }
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            console.log(err);
+            return returnVal(false, err);
         })
     },
 
@@ -130,9 +138,9 @@ var managementRequests = {
             sessionId:sessionId,
             storeDetails:store
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('addStore', err);
+            return returnVal(false, err);
         })
     },
 
@@ -141,30 +149,33 @@ var managementRequests = {
             sessionId:sessionId,
             storeDetails:store
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('editStore', err);
+            return returnVal(false, err);
         })
     },
 
     deleteStore: function(store) {
         return axios.post(serverUrl + 'management/deleteStore', {
             sessionId:sessionId,
-            storeDetails:store
+            storeId:store._id
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('deleteStore', err);
+            return returnVal(false, err);
         })
     },
 
     getAllStores: function() {
         return axios.get(serverUrl + 'management/getAllStores', {
-            sessionId:sessionId
+            headers:{
+                sessionId:sessionId
+            }
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('getAllStores', err);
+            console.log(err);
+            return returnVal(false, err);
         })
     },
 
@@ -174,9 +185,9 @@ var managementRequests = {
             sessionId:sessionId,
             productDetails:product
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('addProduct', err);
+            return returnVal(false, err);
         })
     },
 
@@ -186,30 +197,33 @@ var managementRequests = {
             sessionId:sessionId,
             productDetails:product
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('editProduct', err);
+            return returnVal(false, err);
         })
     },
 
     deleteProduct: function(product) {
         return axios.post(serverUrl + 'management/deleteProduct', {
             sessionId:sessionId,
-            productDetails:product
+            productId:product._id
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('deleteProduct', err);
+            return returnVal(false, err);
         })
     },
 
     getAllProducts: function() {
         return axios.get(serverUrl + 'management/getAllProducts', {
-            sessionId:sessionId
+            headers:{
+                sessionId:sessionId
+            }
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('getAllProducts', err);
+            console.log(err);
+            return returnVal(false, err);
         })
     },
 

@@ -77,7 +77,7 @@ module.exports = {
         return checkParams(params, ['sessionId', 'productDetails'],
                 ['string', 'object']) &&
                 checkParams(params.productDetails, ['name', 'retailPrice', 'salePrice', 'category', 'subCategory', 'minRequiredAmount', 'notifyManager'],
-                    ['string', 'Number', 'Number', 'string', 'string', 'Number', 'boolean']);
+                    ['string', 'number', 'number', 'string', 'string', 'number', 'boolean']);
     },
 
     deleteProduct: function(params){
@@ -89,7 +89,7 @@ module.exports = {
         return checkParams(params, ['sessionId', 'encouragementDetails'],
                 ['string', 'object']) &&
             checkParams(params.encouragementDetails, ['active', 'numOfProducts', 'rate', 'products'],
-                ['boolean', 'Number', 'Number', 'object']);
+                ['boolean', 'number', 'number', 'object']);
     },
 
     deleteEncouragement: function(params){

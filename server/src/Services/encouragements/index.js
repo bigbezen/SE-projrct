@@ -101,7 +101,7 @@ var calculateEncouragements = async function(saleReport){
         // check for encouragements "baskets"
         if(enc.products.length > 1 && enc.products.length <= soldProductsIds.length){
             if(underscore.intersection(enc.products, soldProductsIds).length == enc.products.length)
-                earnedEncs.push([enc, 1]);
+                earnedEncs.push({'enc': enc, 'num': 1});
         }
         // check for other encouragements
         else if(enc.products.length == 1){
@@ -112,7 +112,7 @@ var calculateEncouragements = async function(saleReport){
                     product.sold -= (mul * enc.numOfProducts);
                     // will not add encouragement if mul == 0
                     if(mul > 0)
-                        earnedEncs.push([enc, mul]);
+                        earnedEncs.push({'enc': enc, 'num': mul});
                 }
             }
         }

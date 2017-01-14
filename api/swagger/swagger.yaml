@@ -11,76 +11,517 @@ consumes:
 produces:
   - application/json
 paths:
-  /salesman/startShift:
-    post:
-      summary: salesman starts a shift
-      parameters:
-        - name: sessionId
-          in: query
-          description: salesman sessionid
-          type: string
-      responses:
-        "200":
-          description: shift has started successfully
   /user/login:
     post:
       summary: user login
       parameters:
-        - name: username
-          in: query
+        - name: body
+          in: body
           description: user's username
-          type: string
-        - name: password
-          in: query
-          description: user's password
-          type: string
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+              password:
+                type: string
       responses:
         "200":
           description: retValues - sessionId, userType
+          schema:
+            type: object
+            properties:
+              sessionId: 
+                type: string
+              userType:
+                type: string
         "401":
-          description: user not found
+          description: authorization problem
   
   /user/logout:
     post:
       summary: user logout
       parameters:
-        - name: sessionId
-          in: query
-          type: string
+        - name: body
+          in: body
+          description: req.body
+          schema:
+            type: object
+            properties:
+              sessionId: 
+                type: string
       responses:
         "200":
           description: logout successfully
-        "401": 
-          description: sessionId not found
+        "401":
+          description: authorization problem
+          
   /user/retrievePassword:
     post:
       summary: retrieve user's password back to email
       parameters:
-        - name: sessionId
-          in: query
-          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              sessionId:
+                type: string
       responses:
         "200":
           description: retrieved password - password sent to email
         "401": 
-          description: sessionId not found
+          description: authorization problem
+          
   /user/changePassword:
     post:
-      summary: retrieve user's password back to email
+      summary: change user's password
       parameters:
-        - name: sessionId
-          in: query
-          type: string
-        - name: oldPass
-          in: query
-          type: string
-        - name: newPass
-          in: query
-          type: string
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId: 
+                type: string
+              oldPass:
+                type: string
+              newPass:
+                type: string
       responses:
         "200":
           description: changed password
         "401": 
-          description: sessionId not found  
+          description: authorization problem
+    
+  /user/getProfile:
+    get:
+      summary: get user's profile
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+      responses:
+        "200":
+          description: got user profile - result is a user object
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+              startDate:
+                type: string
+              endDate:
+                type: string
+              personal:
+                type: object
+              contact:
+                type: object
+              jobDetails:
+                type: object
+              inbox:
+                type: array
+                description: message Ids
+                items:
+                  type:
+                    string
+        "401":
+          description: authorization problem
+          
+  /salesman/startShift:
+    post:
+      summary: set's a salesman shift as STARTED in the server and set the initial store's storage
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              shift:
+                type: object
+      responses:
+        "200":
+          description: started shift
+        "401":
+          description: authorization problem
+          
+  /salesman/finishShift:
+    post:
+      summary: set's a salesman shift as FINISHED in the server and set the final store's storage. in addition the method calculates the salesman' encouragements and saves attaches them to the salesman
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              shift:
+                type: object
+      responses:
+        "200":
+          description: started shift
+        "401":
+          description: authorization problem
+          
+  /salesman/reportSale:
+    post:
+      summary: report a sale during a salesman's shift
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              shiftId:
+                type: string
+              productId:
+                type: string
+              quantity:
+                type: number
+      responses:
+        "200":
+          description: sale reported successfully
+        "401":
+          description: authorization problem
+        "409":
+          description: problem with one or more of the parameters
+          
+  /salesman/reportOpened:
+    post:
+      summary: report an opening of a product during a salesman's shift
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              shiftId:
+                type: string
+              productId:
+                type: string
+              quantity:
+                type: number
+      responses:
+        "200":
+          description: opened product reported successfully
+        "401":
+          description: authorization problem
+        "409":
+          description: problem with one or more of the parameters
+          
+  /salesman/addShiftComment:
+    post:
+      summary: add a comment to the shift during a salesman's shift
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              shiftId:
+                type: string
+              content:
+                type: string
+                description: the content of the comment
+      responses:
+        "200":
+          description: comment was added successfully
+        "401":
+          description: authorization problem
+
+  /salesman/:shiftId/activeShiftEncouragements:
+    get:
+      summary: get encouragements achieved so far during an active shift
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+        - name: shiftId
+          in: query
+          type: string
+      responses:
+        "200":
+          description: started shift
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                enc: 
+                  type: string
+                num:
+                  type: number
+        "401":
+          description: authorization problem
+        "409":
+          description: problem with one or more of the parameters
+          
+  /salesman/getCurrentShift:
+    get:
+      summary: get the available shift for a salesman date-wise (the shift should be starting any moment)
+      parameters:
+        - name: body
+          in: header
+          type: string
+      responses:
+        "200":
+          description: got current shift of a salesman
+          schema:
+            type: object
+            properties:
+              startTime:
+                type: string
+              endTime:
+                type: string
+              status:
+                type: string
+              type:
+                type: string
+              salesmanId:
+                type: string
+              salesReport:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    productId:
+                      type: string
+                    stockStartShift:
+                      type: number
+                    stockEndShift:
+                      type: number
+                    sold:
+                      type: number
+                    opened:
+                      type: number
+              store:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                  managerName:
+                    type: string
+                  phone:
+                    type: string
+                  city:
+                    type: string
+                  address:
+                    type: string
+                  area:
+                    type: string
+                  channel:
+                    type: string
+          
+        "401":
+          description: authorization problem
+        "409":
+          description: problem with one or more of the parameters or user does not have a shift in this day
+          
+  /salesman/getBroadcastMessage:
+    get:
+      summary: get broadcast messages not yet read
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+      responses:
+        "200":
+          description: got a list of messages
+          schema:
+            type: array
+            description: message Ids
+            items:
+              type:
+                string
+        "401":
+          description: authorization problem
+      
+  /management/addUser:
+    post:
+      summary: add a new user to the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              userDetails:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  startDate:
+                    type: string
+                  personal:
+                    type: object
+                    properties:
+                      id: 
+                        type: string
+                      firstName: 
+                        type: string
+                      lastName:
+                        type: string
+                      sex:
+                        type: string
+                      birthday:
+                        type: string
+                  contact:
+                    type: object
+                    properties:
+                      address:
+                        type: object
+                        properties:
+                          street:
+                            type: string
+                          number:
+                            type: string
+                          city:
+                            type: string
+                          zip:
+                            type: string
+                      phone:
+                        type: string
+                      email:
+                        type: string
+                  jobDetails:
+                    type: object
+                    properties:
+                      userType: 
+                        type: string
+                      area:
+                        type: string
+                      channel:
+                        type: string
+                    description: area and channel are only mendatory for salesman and agents
+      responses:
+        "200":
+          description: user added successfully to the system
+          schema:
+            type: object
+            description: the entered user's details
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
+          
+  /management/editUser:
+    post:
+      summary: edit details of an existing user in the system
+      description: there are no mendatory user details here - the details that will be given are the ones that will be updated
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+                description: has to be a manager's sessionId
+              username:
+                type: string
+                description: username of the user we want to edit
+              userDetails:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  startDate:
+                    type: string
+                  personal:
+                    type: object
+                    properties:
+                      id: 
+                        type: string
+                      firstName: 
+                        type: string
+                      lastName:
+                        type: string
+                      sex:
+                        type: string
+                      birthday:
+                        type: string
+                  contact:
+                    type: object
+                    properties:
+                      address:
+                        type: object
+                        properties:
+                          street:
+                            type: string
+                          number:
+                            type: string
+                          city:
+                            type: string
+                          zip:
+                            type: string
+                      phone:
+                        type: string
+                      email:
+                        type: string
+                  jobDetails:
+                    type: object
+                    properties:
+                      userType: 
+                        type: string
+                      area:
+                        type: string
+                      channel:
+                        type: string
+                    description: area and channel are only recommended for salesman and agents
+      responses:
+        "200":
+          description: user was edited successfully to the system
+        "401":
+          description: authorization problem
+        "409":
+          description: one or more of the entered details are problematic
+          
+  /salesman/deleteUser:
+    post:
+      summary: delete a user from the system
+      parameters:
+        - name: body
+          in: body
+          schema: 
+            type: object
+            properties:
+              sessionId:
+                type: string
+              username:
+                type: string
+      responses:
+        "200":
+          description: user was deleted successfuly
+        "401":
+          description: authorization problem
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
         
         

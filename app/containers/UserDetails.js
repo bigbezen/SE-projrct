@@ -57,6 +57,17 @@ var UserDetails = React.createClass({
         }
     },
 
+    getOptionsForRole: function() {
+        var arrayOfObjects = constantsStrings.userRoleForDropDown;
+        var optionsForDropDown = [];
+        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        for (var i = 0; i < arrayOfObjects.length; i++) {
+            var currOption = arrayOfObjects[i];
+            optionsForDropDown.push(<option value={currOption[0]}>{currOption[1]}</option>);
+        }
+        return optionsForDropDown;
+    },
+
     getOptions: function(arrayOfObjects) {
         var optionsForDropDown = [];
         optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
@@ -169,7 +180,7 @@ var UserDetails = React.createClass({
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.role_string}</label>
                         <select className="col-sm-4" onChange={this.handleUserTypeChange} ref="userTypeBox">
-                            {this.getOptions(constantsStrings.userRoleForDropDown)}
+                            {this.getOptionsForRole()}
                         </select>
 
                     </div>

@@ -101,6 +101,7 @@ var managementRequests = {
     editUser: function(user) {
         return axios.post(serverUrl + 'management/editUser', {
             sessionId:sessionId,
+            username:user.username,
             userDetails:user
         }).then(function (info) {
             return returnVal(true, info.data);

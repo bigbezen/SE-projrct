@@ -82,19 +82,19 @@ var helpers = {
         return connection.managementRequests.deleteEncouragement();
     },
 
-    addShift: function(){
+    addShift: function(shift){
         console.log('managementervices- addShift');
-        return connection.managementRequests.addShift();
+        return connection.managementRequests.addShift(shift);
     },
 
-    editShift: function(){
+    editShift: function(shift){
         console.log('managementervices- editShift');
-        return connection.managementRequests.editShift();
+        return connection.managementRequests.editShift(shift);
     },
 
-    deleteShift: function(){
+    deleteShift: function(shift){
         console.log('managementervices- deleteShift');
-        return connection.managementRequests.deleteShift();
+        return connection.managementRequests.deleteShift(shift);
     }
 };
 

@@ -20,7 +20,7 @@ class ConstantStrings extends React.Component {
     static logout_string = 'התנתק';
     static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
     static save_string = 'שמירה';
-
+    static storeStatus_string = 'מצב המלאי בחנות:';
     //products
     static id_string = 'מס׳ סידורי';
     static productName_string = 'שם מוצר';
@@ -129,6 +129,7 @@ class ConstantStrings extends React.Component {
 
     //salesman
     static startShift_string = 'התחל משמרת';
+    static endShift_string = 'סיים משמרת';
 
     static genderForDropdown = ["נקבה", "זכר"];
 

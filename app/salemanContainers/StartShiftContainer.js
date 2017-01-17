@@ -6,7 +6,6 @@ var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
 var paths = require('../utils/Paths');
-
 var StartShiftContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -39,22 +38,45 @@ var StartShiftContainer = React.createClass({
     },
     renderEachProduct: function(text, i){
         return (
-            <div className="w3-theme-l5 col-sm-10 col-sm-offset-1 w3-section form-group" key={i}>
-                <label className="w3-section col-sm-4"> {text.productName} </label>
-                <input ref={i} className="w3-section col-sm-offset-4" type="number" value="0" min={0} />
+            <div key={i}>
+                <div className="w3-row" key={i}>
+                    <div className="w3-col s3">
+                    </div>
+                    <div className="w3-col s9 w3-container">
+                        <h3>{text.productName}</h3>
+                        <input ref={i} className="" type="number" value="0" min={0} />
+                    </div>
+                </div>
+                <hr/>
             </div>
+
+
         );
     },
     render: function () {
-        return (
-            <div className='main-container'>
-                <form onSubmit={this.handleSubmitReport} className="form-horizontal">
-                    {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
-                    <button className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-5"
-                            type="submit"> </button>
-                </form>
-            </div>
 
+        return (
+
+            <div>
+                <div className="w3-container w3-theme-d4">
+                    <h1>{constantsStrings.storeStatus_string}</h1>
+                </div>
+
+                <div className="w3-container w3-theme-l5">
+                     <form onSubmit={this.handleSubmitReport} className="">
+
+                         {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
+
+                        <button className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-4"
+                        type="submit"> {constantsStrings.startShift_string}
+                        </button>
+                     </form>
+                </div>
+                <div className="w3-container w3-theme-d4">
+                    <h3>Footer</h3>
+                </div>
+
+           </div>
         )
     }
 });

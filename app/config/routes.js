@@ -15,12 +15,14 @@ var Products = require('../containers/ProductsContainer');
 var Product = require('../containers/ProductDetails');
 var Store = require('../containers/StoreDetails');
 var User = require('../containers/UserDetails');
+var Shifts = require('../containers/ShiftsContainer');
+//var Shift = require('../containers/ShiftDetails'); TODO: uncomment
 var SalesmanBase = require('../salemanContainers/SalesmanBaseContainer');
 var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
-var StartShift = require('../salemanContainers/StartShiftContainer');
-var Shift = require('../salemanContainers/ShiftContainer');
-var EndShift = require('../salemanContainers/EndShiftContainer');
-
+var SalesmanStartShift = require('../salemanContainers/StartShiftContainer');
+var SalesmanShift = require('../salemanContainers/ShiftContainer');
+var SalesmanEndShift = require('../salemanContainers/EndShiftContainer');
+//            <Route path='shift' component={Shift}/> TODO: add this to Route manager
 var routes = (
     <Router history={hashHistory}>
         <Route path='/' component={Login}/>
@@ -29,15 +31,16 @@ var routes = (
             <Route path='users' component={Users} />
             <Route path='stores' component={Stores} />
             <Route path='products' component={Products} />
+            <Route path='shifts' component={Shifts} />
             <Route path='product' component={Product} />
             <Route path='store' component={Store} />
             <Route path='user' component={User} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='home' component={SalesmanHome}/>
-            <Route path='startShift' component={StartShift}/>
-            <Route path='shift' component={Shift}/>
-            <Route path='endShift' component={EndShift}/>
+            <Route path='startShift' component={SalesmanStartShift}/>
+            <Route path='shift' component={SalesmanShift}/>
+            <Route path='endShift' component={SalesmanEndShift}/>
         </Route>
     </Router>
 );

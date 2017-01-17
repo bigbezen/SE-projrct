@@ -26,6 +26,11 @@ var Home = function (props) {
                             {constantsStrings.manageStores_string}
                         </button>
                     </div>
+                    <div>
+                        <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={props.onSelectShifts}>
+                            {constantsStrings.manageShifts_string}
+                        </button>
+                    </div>
                 </div>
 
             </div>

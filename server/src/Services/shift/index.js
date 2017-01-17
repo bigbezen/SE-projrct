@@ -13,6 +13,9 @@ let addShifts = async function(sessionId, shiftArr){
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
+    if(shiftArr.length == 0)
+        return {'code': 200, 'shiftArr': []};
+
     let storeIds = shiftArr.map(x => x.storeId);
     let uniqueIds = [];
 
@@ -24,6 +27,10 @@ let addShifts = async function(sessionId, shiftArr){
     if(stores.length != uniqueIds.length)
         return {'code': 409, 'err': 'One or more of the stores does not exist'};
 
+    let storeDict = {};
+    for(let store of stores)
+        storeDict[store._id] = store.toObject();
+
     //check validity of shifts dates
     for(let shift of shiftArr) {
         if ((new Date(shift.startTime)).getTime() > (new Date(shift.endTime)).getTime() ||
@@ -32,7 +39,7 @@ let addShifts = async function(sessionId, shiftArr){
         }
     }
 
-    let newSalesReport = await _createNewSalesReport();
+    let newSalesReportSchema = await _createNewSalesReport();
 
     let resultAddShift = [];
 
@@ -40,20 +47,68 @@ let addShifts = async function(sessionId, shiftArr){
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
+        newShift.storeId = shift.storeId;
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.status = "CREATED";
         newShift.type = shift.type;
-        newShift.salesReport = newSalesReport;
+        newShift.salesReport = newSalesReportSchema;
         newShift.sales = [];
         newShift.constraints = [];
         newShift.shiftComments = [];
         resultAddShift.push(await dal.addShift(newShift));
     }
 
-    resultAddShift.map(x => x.toObject());
+    resultAddShift = resultAddShift.map(function(shift){
+        shift = shift.toObject();
+        shift.store = storeDict[shift.storeId];
+        return shift;
+    });
 
     return {'code': 200, 'shiftArr': resultAddShift};
+};
+
+
+let automateGenerateShifts = async function (sessionId, startTime, endTime){
+    logger.info('Services.shift.index.automateGenerateShifts', {'session-id': sessionId});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'automateGenerateShifts', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    if ((new Date(startTime)).getTime() > (new Date(endTime)).getTime() ||
+        (new Date(startTime)).getTime() < new Date ()) {
+        return {'code': 409, 'err': 'shifts dates are before current time'};
+    }
+
+    let allStores = await dal.getAllStores();
+    let storeDict = {};
+    for(store of allStores)
+        storeDict[store._id] = store.toObject();
+
+    let newSaleReportSchema = await _createNewSalesReport();
+    let resultAddShifts = [];
+
+    for(let store of allStores){
+        let newShift = new shiftModel();
+        newShift.storeId = store._id;
+        newShift.startTime = startTime;
+        newShift.endTime = endTime;
+        newShift.status = "CREATED";
+        newShift.salesReport = newSaleReportSchema;
+        newShift.sales = [];
+        newShift.constraints = [];
+        newShift.shiftComments = [];
+        resultAddShifts.push(await dal.addShift(newShift));
+    }
+
+    resultAddShifts = resultAddShifts.map(function(shift){
+        shift = shift.toObject();
+        shift.store = storeDict[shift.storeId];
+        return shift;
+    });
+
+    return {'code': 200, 'shiftArr': resultAddShifts};
+
 };
 
 let publishShifts = async function(sessionId, shiftArr){
@@ -321,6 +376,7 @@ module.exports.reportSale = reportSale;
 module.exports.reportOpened = reportOpened;
 module.exports.addShiftComment = addShiftComment;
 module.exports.getActiveShiftEncouragements = getActiveShiftEncouragements;
+module.exports.automateGenerateShifts = automateGenerateShifts;
 
 
 

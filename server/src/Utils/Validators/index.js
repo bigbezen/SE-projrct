@@ -29,8 +29,8 @@ module.exports = {
     addUser: function(params){
         return checkParams(params, ['sessionId', 'userDetails'],
                     ['string', 'object']) &&
-                checkParams(params.userDetails, ['username', 'password', 'startDate', 'personal', 'contact', 'jobDetails'],
-                    ['string', 'string', 'string', 'object', 'object', 'object',]) &&
+                checkParams(params.userDetails, ['username', 'startDate', 'personal', 'contact', 'jobDetails'],
+                    ['string', 'string', 'object', 'object', 'object',]) &&
                 checkParams(params.userDetails.personal, ['id', 'firstName', 'lastName', 'sex', 'birthday'],
                     ['string', 'string', 'string', 'string', 'string']) &&
                 checkParams(params.userDetails.contact, ['address', 'phone', 'email'],

@@ -4,6 +4,7 @@ let express         = require('express');
 let bodyparser      = require('body-parser');
 let path            = require('path');
 let mongoose        = require('mongoose');
+let fs              = require('fs');
 
 let logger          = require('./src/Utils/Logger/logger');
 let validator       = require('./src/Utils/Validators/index');
@@ -13,12 +14,13 @@ let userService             = require('./src/Services/user/index');
 let productService          = require('./src/Services/product/index');
 let encouragementService    = require('./src/Services/encouragements/index');
 let messageService          = require('./src/Services/messages/index');
+let reportsService          = require('./src/Services/reports/index');
 let shiftSerice             = require('./src/Services/shift/index');
 
 let app = express();
 
 app.set('view engine', 'ejs');
-let port = 3000;
+let port = 4000;
 app.use(bodyparser.json());
 app.listen(port);
 app.locals.baseurl = "http://localhost:" + port;
@@ -593,7 +595,12 @@ function _setapApiEndpoints() {
         res.status(200).send('publish shifts');
     });
 
-    app.get('/manager/getReports', function (req, res) {
-        res.status(200).send('get reports of some kind');
+    app.get('/manager/getSaleReportXl', async function (req, res) {
+        var result = await reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
+        if(result.code == 200){
+            let file = res.download(result.path);
+        }
+        else
+            res.status(result.code).send(result.err);
     });
 }

@@ -6,6 +6,7 @@ var React = require('react');
 var managerServices = require('../communication/managementServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var storeInfo = require('../models/store');
+var paths = require('../utils/Paths');
 
 var StoreDetails = React.createClass({
     contextTypes: {
@@ -81,7 +82,7 @@ var StoreDetails = React.createClass({
                     if (val.success) {
                         alert('edit succeed');
                         context.router.push({
-                            pathname: '/LoggedIn/Home'
+                            pathname: paths.manager_stores_path
                         })
                     } else {
                         alert('edit failed. please check your parameters');
@@ -99,7 +100,7 @@ var StoreDetails = React.createClass({
                     if (val.success) {
                         alert('add succeed');
                         context.router.push({
-                            pathname: '/LoggedIn/Home'
+                            pathname: paths.manager_stores_path
                         })
                     } else {
                         alert('add failed. please check your parameters');

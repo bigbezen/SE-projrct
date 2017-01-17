@@ -4,6 +4,7 @@
 
 var React = require('react');
 var Home = require('../components/Home');
+var paths = require('../utils/Paths');
 
 var HomeContainer = React.createClass({
     contextTypes: {
@@ -11,19 +12,19 @@ var HomeContainer = React.createClass({
     },
     handleSelectUsers: function () {
         this.context.router.push({
-           pathname: '/LoggedIn/Users'
+           pathname: paths.manager_users_path
         })
     },
 
     handleSelectStores: function () {
         this.context.router.push({
-            pathname: '/LoggedIn/Stores'
+            pathname: paths.manager_stores_path
         })
     },
 
     handleSelectProducts: function () {
         this.context.router.push({
-            pathname: '/LoggedIn/Products'
+            pathname: paths.manager_products_path
         })
     },
 

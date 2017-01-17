@@ -5,6 +5,7 @@
 var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
+var paths = require('../utils/Paths');
 
 var EndShiftContainer = React.createClass({
     contextTypes: {
@@ -76,7 +77,7 @@ var EndShiftContainer = React.createClass({
             if (n) {
                 alert('edit succeed');
                 context.router.push({
-                    pathname: '/salesman/Home'
+                    pathname: paths.salesman_home_path
                 })
             }
             else {

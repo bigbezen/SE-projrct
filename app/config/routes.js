@@ -24,20 +24,20 @@ var EndShift = require('../salemanContainers/EndShiftContainer');
 var routes = (
     <Router history={hashHistory}>
         <Route path='/' component={Login}/>
-        <Route path='/LoggedIn/' component={Base}>
-            <Route path='Home' component={Home} />
-            <Route path='Users' component={Users} />
-            <Route path='Stores' component={Stores} />
-            <Route path='Products' component={Products} />
-            <Route path='Product' component={Product} />
-            <Route path='Store' component={Store} />
-            <Route path='User' component={User} />
+        <Route path='/manager/' component={Base}>
+            <Route path='home' component={Home} />
+            <Route path='users' component={Users} />
+            <Route path='stores' component={Stores} />
+            <Route path='products' component={Products} />
+            <Route path='product' component={Product} />
+            <Route path='store' component={Store} />
+            <Route path='user' component={User} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
-            <Route path='Home' component={SalesmanHome}/>
-            <Route path='StartShift' component={StartShift}/>
-            <Route path='Shift' component={Shift}/>
-            <Route path='EndShift' component={EndShift}/>
+            <Route path='home' component={SalesmanHome}/>
+            <Route path='startShift' component={StartShift}/>
+            <Route path='shift' component={Shift}/>
+            <Route path='endShift' component={EndShift}/>
         </Route>
     </Router>
 );

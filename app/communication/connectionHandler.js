@@ -101,6 +101,7 @@ var managementRequests = {
     editUser: function(user) {
         return axios.post(serverUrl + 'management/editUser', {
             sessionId:sessionId,
+            username:user.username,
             userDetails:user
         }).then(function (info) {
             return returnVal(true, info.data);
@@ -239,16 +240,52 @@ var managementRequests = {
         errorMessage('deleteEncouragement', 'Not implemented yet');
     },
 
-    addShift: function() {
-        errorMessage('addShift', 'Not implemented yet');
+    addShift: function(shift) {
+        console.log('add shift');
+        return axios.post(serverUrl + 'management/addShifts', {
+            sessionId:sessionId,
+            shiftsArr:shift
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
     },
 
-    editShift: function() {
-        errorMessage('editShift', 'Not implemented yet');
+    editShift: function(shift) {
+        console.log('add shift');
+        return axios.post(serverUrl + 'management/editShifts', {
+            sessionId:sessionId,
+            shiftsArr:shift
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
     },
 
-    deleteShift: function() {
-        errorMessage('deleteShift', 'Not implemented yet');
+    deleteShift: function(shift) {
+        console.log('add shift');
+        return axios.post(serverUrl + 'management/deleteShifts', {
+            sessionId:sessionId,
+            shiftsArr:shift
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
+    },
+
+    AddAllShifts: function(startTime, endTime) {
+        return axios.post(serverUrl + 'management/automateGenerateShifts', {
+            sessionId:sessionId,
+            startTime:startTime,
+            endTime:endTime
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
     }
 };
 

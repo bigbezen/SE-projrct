@@ -4,6 +4,7 @@
 
 var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
+var paths = require('../utils/Paths');
 
 var shift = {
     storeId: '1',
@@ -66,7 +67,7 @@ var SalesmanHomeContainer = React.createClass({
     },
     handleStartShift: function () {
         this.context.router.push({
-            pathname: '/salesman/StartShift',
+            pathname: paths.salesman_startShift_path,
             state: {newShift: this.state.shift}
         })
     },

@@ -5,6 +5,7 @@ var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
 var helpers = require('../utils/Helpers');
+var paths = require('../utils/Paths');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -45,7 +46,7 @@ var StoresContainer = React.createClass({
         console.log('Store #', rowIndex);
         console.log(row);
         this.context.router.push({
-            pathname: '/LoggedIn/Store',
+            pathname: paths.manager_storeDetails_path,
             query: row
         })
     },
@@ -71,7 +72,7 @@ var StoresContainer = React.createClass({
     },
     onClickAddButton: function(){
         this.context.router.push({
-            pathname: '/LoggedIn/Store'
+            pathname: paths.manager_storeDetails_path
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {

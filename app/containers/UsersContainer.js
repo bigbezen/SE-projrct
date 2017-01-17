@@ -7,6 +7,8 @@ var helpers = require('../utils/Helpers');
 var managementServices = require('../communication/managementServices');
 var flatten = require('flat');
 var moment = require('moment');
+var paths = require('../utils/Paths');
+
 
 function dateFormatter(cell, row) {
     return moment(cell).format('YYYY-MM-DD');
@@ -59,7 +61,7 @@ var UsersContainer = React.createClass({
         console.log('User #', rowIndex);
         console.log(row);
         this.context.router.push({
-            pathname: '/LoggedIn/User',
+            pathname: paths.manager_userDetails_path,
             query: row
         })
     },
@@ -86,7 +88,7 @@ var UsersContainer = React.createClass({
 
     onClickAddButton: function(){
         this.context.router.push({
-            pathname: '/LoggedIn/User'
+            pathname: paths.manager_userDetails_path
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {

@@ -6,6 +6,7 @@
 var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
+var paths = require('../utils/Paths');
 
 var ShiftContainer = React.createClass({
     contextTypes: {
@@ -14,7 +15,7 @@ var ShiftContainer = React.createClass({
     handleFinishShift: function (e) {
         e.preventDefault();
         this.context.router.push({
-            pathname: '/salesman/EndShift'
+            pathname: paths.salesman_endShift_path
         })
     },
     renderEachProduct: function(text, i){

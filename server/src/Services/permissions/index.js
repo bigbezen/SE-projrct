@@ -32,6 +32,7 @@ var funcNameToPermission = {
     'sendBroadcast': ['manager', 'agent'],
     'getInbox': ['salesman'],
     'addShifts': ['manager'],
+    'automateGenerateShifts': ['manager'],
     'publishShifts': ['manager'],
     'startShift': ['salesman'],
     'addShiftComment': ['salesman'],

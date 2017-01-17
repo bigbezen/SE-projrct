@@ -12,7 +12,7 @@ var userSchema = new Schema({
         'firstName': String,
         'lastName': String,
         'sex': String,
-        'birtday': Date
+        'birthday': Date
     },
     'contact': {
         'address': {

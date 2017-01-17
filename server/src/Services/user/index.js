@@ -88,13 +88,20 @@ var editUser = async function(sessionId, username, userDetails){
 
     var user = await dal.getUserByUsername(username);
     if(user == null)
-        return {'code': 409, 'err': 'problem occurred with one of the parameters'};
-
-    var isExistUsername = await dal.getUserByUsername(userDetails.username);
-    var isExistId = await dal.getUserById(userDetails.personal.id);
-    if(isExistUsername != null || isExistId != null){
-        return {'code': 409, 'err': 'Username or Id already exists'}
+        return {'code': 409, 'err': 'edited user does not exist'};
+    if(userDetails.username != user.username) {
+        var isExistUsername = await dal.getUserByUsername(userDetails.username);
+        if (isExistUsername != null) {
+            return {'code': 409, 'err': 'Username already exists'}
+        }
     }
+    if(userDetails.id != user.id){
+        var isExistId = await dal.getUserById(userDetails.personal.id);
+        if(isExistId != null){
+            return {'code': 409, 'err': 'Id already exists'}
+        }
+    }
+
 
     user.username = userDetails.username;
     user.startDate = new Date(userDetails.startDate);

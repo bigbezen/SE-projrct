@@ -16,13 +16,14 @@ var Product = require('../containers/ProductDetails');
 var Store = require('../containers/StoreDetails');
 var User = require('../containers/UserDetails');
 var Shifts = require('../containers/ShiftsContainer');
-//var Shift = require('../containers/ShiftDetails'); TODO: uncomment
+var Shift = require('../containers/ShiftDetails');
+var CreateShifts = require('../containers/ShiftsGenerator');
 var SalesmanBase = require('../salemanContainers/SalesmanBaseContainer');
 var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
 var SalesmanStartShift = require('../salemanContainers/StartShiftContainer');
 var SalesmanShift = require('../salemanContainers/ShiftContainer');
 var SalesmanEndShift = require('../salemanContainers/EndShiftContainer');
-//            <Route path='shift' component={Shift}/> TODO: add this to Route manager
+
 var routes = (
     <Router history={hashHistory}>
         <Route path='/' component={Login}/>
@@ -35,6 +36,8 @@ var routes = (
             <Route path='product' component={Product} />
             <Route path='store' component={Store} />
             <Route path='user' component={User} />
+            <Route path='shift' component={Shift}/>
+            <Route path='CreateShifts' component={CreateShifts}/>
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='home' component={SalesmanHome}/>

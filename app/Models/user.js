@@ -10,7 +10,7 @@ var userModel= {
         'firstName': String,
         'lastName': String,
         'sex': String,
-        'birtday': Date
+        'birthday': Date
     },
     'contact': {
         'address': {

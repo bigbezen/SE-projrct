@@ -28,7 +28,7 @@ let addShifts = async function(sessionId, shiftArr){
         return {'code': 409, 'err': 'One or more of the stores does not exist'};
 
     let storeDict = {};
-    for(store of stores)
+    for(let store of stores)
         storeDict[store._id] = store.toObject();
 
     //check validity of shifts dates

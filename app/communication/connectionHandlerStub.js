@@ -110,7 +110,7 @@ function createUser() {
     user1.personal.firstName = 'אבירם';
     user1.personal.lastName = 'אדירי';
     user1.personal.sex = 'זכר';
-    user1.personal.birtday = '';
+    user1.personal.birthday = '';
     user1.contact = {};
     user1.contact.address = {};
     user1.contact.address.street = '';
@@ -143,7 +143,7 @@ function createUsersCollection() {
     user1.personal.firstName = 'אבירם';
     user1.personal.lastName = 'אדירי';
     user1.personal.sex = 'זכר';
-    user1.personal.birtday = '';
+    user1.personal.birthday = '';
     user1.contact = {};
     user1.contact.address = {};
     user1.contact.address.street = '';

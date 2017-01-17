@@ -12,6 +12,7 @@ class ConstantStrings extends React.Component {
     static manageUsers_string = 'ניהול משתמשים';
     static manageStores_string = 'ניהול חנויות';
     static manageProducts_string = 'ניהול מוצרים';
+    static manageShifts_string = 'ניהול משמרות';
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';
@@ -19,6 +20,7 @@ class ConstantStrings extends React.Component {
     static logout_string = 'התנתק';
     static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
     static save_string = 'שמירה';
+    static storeStatus_string = 'מצב המלאי בחנות:';
     //products
     static id_string = 'מס׳ סידורי';
     static productName_string = 'שם מוצר';
@@ -75,6 +77,11 @@ class ConstantStrings extends React.Component {
     static selectArea_string = 'בחר איזור..';
     static selectChannel_string = 'בחר ערוץ..';
 
+    //shifts
+    static status_string = 'מצב';
+    static type_string = 'סוג';
+    static salesman_string = 'דייל';
+
     static product_category =
     {
         'ספיריט': 'ספיריט',
@@ -122,6 +129,7 @@ class ConstantStrings extends React.Component {
 
     //salesman
     static startShift_string = 'התחל משמרת';
+    static endShift_string = 'סיים משמרת';
 
     static genderForDropdown = ["נקבה", "זכר"];
 

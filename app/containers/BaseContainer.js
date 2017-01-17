@@ -48,6 +48,7 @@ var BaseContainer = React.createClass({
                     <li className="w3-hide-small w3-right"><a href={'/#'+paths.manager_products_path}>{constantsStrings.manageProducts_string}</a></li>
                     <li className="w3-hide-small w3-right"><a href={'/#'+paths.manager_stores_path}>{constantsStrings.manageStores_string}</a></li>
                     <li className="w3-hide-small w3-right"><a href={'/#'+paths.manager_users_path}>{constantsStrings.manageUsers_string}</a></li>
+                    <li className="w3-hide-small w3-right"><a href={'/#'+paths.manager_shifts_path}>{constantsStrings.manageShifts_string}</a></li>
                     <li className="w3-hide-small w3-left"><a href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a></li>
                 </ul>
 
@@ -56,6 +57,7 @@ var BaseContainer = React.createClass({
                         <li><a href={'/#'+paths.manager_products_path}>{constantsStrings.manageProducts_string}</a></li>
                         <li><a href={'/#'+paths.manager_stores_path}>{constantsStrings.manageStores_string}</a></li>
                         <li><a href={'/#'+paths.manager_users_path}>{constantsStrings.manageUsers_string}</a></li>
+                        <li><a href={'/#'+paths.manager_shifts_path}>{constantsStrings.manageShifts_string}</a></li>
                         <li><a href="javascript:void(0);" onClick={this.handleLogoutUser}>התנתק</a></li>
                     </ul>
                 </div>

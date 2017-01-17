@@ -103,7 +103,7 @@ var UserDetails = React.createClass({
         newUser.personal.firstName = this.refs.firstNameBox.value;
         newUser.personal.lastName = this.refs.lastNameBox.value;
         newUser.personal.sex = this.state.gender;
-        newUser.personal.birtday = this.refs.birtdayBox.value;
+        newUser.personal.birthday = this.refs.birthdayBox.value;
 
         //contact
             //address
@@ -253,7 +253,7 @@ var UserDetails = React.createClass({
                             <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.birthDate_string}</label>
                             <input type="date"
                                    className="col-sm-4"
-                                   ref="birtdayBox"
+                                   ref="birthdayBox"
                             />
                         </div>
 
@@ -336,7 +336,7 @@ var UserDetails = React.createClass({
         this.refs.firstNameBox.value = this.currProduct.personal.firstName;
         this.refs.lastNameBox.value = this.currProduct.personal.lastName;
         this.refs.sexBox.value = this.currProduct.personal.sex;
-        this.refs.birtdayBox.value = moment(this.currProduct.personal.birtday).format('YYYY-MM-DD');
+        this.refs.birthdayBox.value = moment(this.currProduct.personal.birthday).format('YYYY-MM-DD');
         //contact
         //address
         this.refs.streetBox.value = this.currProduct.contact.address.street;

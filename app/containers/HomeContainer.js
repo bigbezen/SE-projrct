@@ -28,11 +28,17 @@ var HomeContainer = React.createClass({
         })
     },
 
+    handleSelectShifts: function () {
+        this.context.router.push({
+            pathname: paths.manager_shifts_path
+        })
+    },
     render: function () {
         console.log("home container render");
         return ( <Home onSelectUsers={this.handleSelectUsers}
                        onSelectProducts={this.handleSelectProducts}
-                       onSelectStores={this.handleSelectStores}/>
+                       onSelectStores={this.handleSelectStores}
+                       onSelectShifts={this.handleSelectShifts}/>
         )
     }
 });

@@ -29,11 +29,10 @@ var SalesmanBaseContainer = React.createClass({
     render: function () {
         return (
             <div className='main-container'>
-                <button className="w3-btn w3-theme-d5 w3-round-xxlarge col-sm-2 col-sm-offset-9" onClick={this.handleLogoutUser}>
+                <button className="w3-btn w3-theme-d5 col-sm-2 col-sm-offset-10" onClick={this.handleLogoutUser}>
                     {constantsStrings.logout_string}
                 </button>
-                {this.props.children}
-
+                    {this.props.children}
             </div>
 
         )

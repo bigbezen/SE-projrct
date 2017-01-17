@@ -52,7 +52,7 @@ var LoginContainer = React.createClass({
     },
     render: function () {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center" >
+            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center w3-theme-l5" >
                 <h1>{constantsStrings.welcome_string} </h1>
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                     <div className="form-group ">

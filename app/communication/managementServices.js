@@ -95,6 +95,11 @@ var helpers = {
     deleteShift: function(shift){
         console.log('managementervices- deleteShift');
         return connection.managementRequests.deleteShift(shift);
+    },
+
+    AddAllShifts: function(startTime, endTime) {
+        console.log('managementervices- AddAllShifts');
+        return connection.managementRequests.AddAllShifts(startTime, endTime);
     }
 };
 

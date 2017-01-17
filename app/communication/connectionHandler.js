@@ -274,6 +274,18 @@ var managementRequests = {
         }).catch(function (err) {
             return returnVal(false, err);
         })
+    },
+
+    AddAllShifts: function(startTime, endTime) {
+        return axios.post(serverUrl + 'management/automateGenerateShifts', {
+            sessionId:sessionId,
+            startTime:startTime,
+            endTime:endTime
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
     }
 };
 

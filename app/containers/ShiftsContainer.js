@@ -109,6 +109,11 @@ var ShiftsContainer = React.createClass({
             pathname: paths.manager_shiftDetails_path
         })
     },
+    onClickAddShiftsButton: function(){
+        this.context.router.push({
+            pathname: paths.manager_createShifts_path
+        })
+    },
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
@@ -133,6 +138,7 @@ var ShiftsContainer = React.createClass({
         return (
             <div className="col-sm-offset-1 col-sm-10">
                 <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
+                <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddShiftsButton}> +++ </button>
                 <BootstrapTable data={this.state.shifts} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'storeId'

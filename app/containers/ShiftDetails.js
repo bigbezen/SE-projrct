@@ -67,6 +67,10 @@ var ShiftDetails = React.createClass({
                         optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
                     }
                     self.setState({storesForDropDown: optionsForDropDown});
+                    if (self.state.editing) {
+                        self.refs.storeBox.value = self.state.storeId;
+                        self.refs.userBox.value = self.state.salesmanId;
+                    }
                 } else {
                     alert('cannot load the list of stores. please try again later');
                 }

@@ -128,8 +128,8 @@ module.exports = {
     },
 
     addOrPublishShifts: function(params){
-        var res = checkParams(params, ['sessionId', 'shiftsArr'], [stringT, objectT]);
-        for(shift of params.shiftsArr){
+        var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
+        for(let shift of params.shiftArr){
             if(res)
                 res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], [stringT, stringT, stringT, stringT])
         }

@@ -47,6 +47,8 @@ let addShifts = async function(sessionId, shiftArr){
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
+        if('salesmanId' in shift)
+            newShift.salesmanId = shift.salesmanId;
         newShift.storeId = shift.storeId;
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
@@ -81,7 +83,7 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
 
     let allStores = await dal.getAllStores();
     let storeDict = {};
-    for(store of allStores)
+    for(let store of allStores)
         storeDict[store._id] = store.toObject();
 
     let newSaleReportSchema = await _createNewSalesReport();
@@ -204,16 +206,15 @@ let getShiftsFromDate = async function(sessionId, fromDate){
         return {'code': 401, 'err': 'user not authorized'};
 
     let allShifts = await dal.getShiftsFromDate(fromDate);
-    allShifts = allShifts.map(async function(shift){
+    for(let shift of allShifts){
         shift = shift.toObject();
-        shift = _fillUserDetails(shift);
-        shift = _fillStoreDetails(shift);
-        return shift;
-    });
+        shift = await _fillUserDetails(shift);
+        shift = await _fillStoreDetails(shift);
+    }
     if(allShifts == null)
         return {'code': 500, 'err': 'something went wrong'};
     else
-        return {'code': 200, 'shiftsArr': allShifts};
+        return {'code': 200, 'shiftArr': allShifts};
 };
 
 let startShift = async function(sessionId, shift){
@@ -397,13 +398,15 @@ let _createNewSalesReport = async function(){
 
 let _fillUserDetails = async function(shift){
     let user = await dal.getUserById(shift.salesmanId);
-    user = user.toObject();
-    let userDetails = {};
-    userDetails.username = user.username;
-    userDetails.personal = user.personal;
-    userDetails._id = user._id;
-    shift.salesman = userDetails;
-    delete shift.salesmanId;
+    if(user != null) {
+        user = user.toObject();
+        let userDetails = {};
+        userDetails.username = user.username;
+        userDetails.personal = user.personal;
+        userDetails._id = user._id;
+        shift.salesman = userDetails;
+        delete shift.salesmanId;
+    }
     return shift;
 };
 

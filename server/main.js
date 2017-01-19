@@ -550,15 +550,15 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getShiftsFromDate', async function(req, res){
-        if(!('sessionid' in req.headers) || req.query.get('fromDate') == null) {
+        if(!('sessionid' in req.headers) || (!('fromDate' in req.query))) {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.get('fromDate'));
+        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.fromDate);
         if(result.code == 200)
-            return {'code': 200, 'shiftsArr': result.shiftsArr};
+            res.status(200).send(result.shiftArr);
         else
-            return {'code': result.code, 'err': result.err};
+            res.status(result.code).send(result.err);
     });
 
     app.post('/management/editShifts', function (req, res) {
@@ -621,10 +621,6 @@ function _setapApiEndpoints() {
 
     app.get('/manager/getSaleReportXl', async function (req, res) {
         var result = await reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
-        if(result.code == 200){
-            let file = res.download(result.path);
-        }
-        else
-            res.status(result.code).send(result.err);
+        res.status(result.code).send(result.err);
     });
 }

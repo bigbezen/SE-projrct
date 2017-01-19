@@ -1166,7 +1166,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context28.next = 5;
-                            return encouragementService.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+                            return encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
 
                         case 5:
                             result = _context28.sent;
@@ -1207,7 +1207,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context29.next = 5;
-                            return encouragementService.editEncouragement(req.body.sessionId, req.body.encouragementDetails);
+                            return encouragementServices.editEncouragement(req.body.sessionId, req.body.encouragementDetails);
 
                         case 5:
                             result = _context29.sent;
@@ -1248,7 +1248,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context30.next = 5;
-                            return encouragementService.deleteEncouragement(req.body.sessionId, req.body.encouragementDetails);
+                            return encouragementServices.deleteEncouragement(req.body.sessionId, req.body.encouragementDetails);
 
                         case 5:
                             result = _context30.sent;
@@ -1289,7 +1289,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context31.next = 5;
-                            return encouragementService.getAllEncouragements(req.headers.sessionid);
+                            return encouragementServices.getAllEncouragements(req.headers.sessionid);
 
                         case 5:
                             result = _context31.sent;
@@ -1330,7 +1330,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context32.next = 5;
-                            return encouragementService.getEncouragement(req.headers.sessionid, req.params.encouragementId);
+                            return encouragementServices.getEncouragement(req.headers.sessionid, req.params.encouragementId);
 
                         case 5:
                             result = _context32.sent;
@@ -1472,7 +1472,7 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context36.prev = _context36.next) {
                         case 0:
-                            if (!(!('sessionid' in req.headers) || req.query.get('fromDate') == null)) {
+                            if (!(!('sessionid' in req.headers) || !('fromDate' in req.query))) {
                                 _context36.next = 3;
                                 break;
                             }
@@ -1482,22 +1482,14 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context36.next = 5;
-                            return shiftService.getShiftsFromDate(req.headers.sessionid, req.query.get('fromDate'));
+                            return shiftService.getShiftsFromDate(req.headers.sessionid, req.query.fromDate);
 
                         case 5:
                             result = _context36.sent;
 
-                            if (!(result.code == 200)) {
-                                _context36.next = 10;
-                                break;
-                            }
+                            if (result.code == 200) res.status(200).send(result.shiftArr);else res.status(result.code).send(result.err);
 
-                            return _context36.abrupt('return', { 'code': 200, 'shiftsArr': result.shiftsArr });
-
-                        case 10:
-                            return _context36.abrupt('return', { 'code': result.code, 'err': result.err });
-
-                        case 11:
+                        case 7:
                         case 'end':
                             return _context36.stop();
                     }
@@ -1595,7 +1587,7 @@ function _setapApiEndpoints() {
 
     app.get('/manager/getSaleReportXl', function () {
         var _ref38 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee38(req, res) {
-            var result, file;
+            var result;
             return _regenerator2.default.wrap(function _callee38$(_context38) {
                 while (1) {
                     switch (_context38.prev = _context38.next) {
@@ -1606,9 +1598,7 @@ function _setapApiEndpoints() {
                         case 2:
                             result = _context38.sent;
 
-                            if (result.code == 200) {
-                                file = res.download(result.path);
-                            } else res.status(result.code).send(result.err);
+                            res.status(result.code).send(result.err);
 
                         case 4:
                         case 'end':

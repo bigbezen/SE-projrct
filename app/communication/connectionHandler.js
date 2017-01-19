@@ -294,9 +294,11 @@ var managementRequests = {
 
     publishShifts: function(shift){
         console.log('publish shift');
+        var shiftArr = [];
+        shiftArr.push(shift);
         return axios.post(serverUrl + 'management/publishShifts', {
             sessionId:sessionId,
-            shiftArr:shift
+            shiftArr:shiftArr
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

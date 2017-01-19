@@ -6,6 +6,7 @@ var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
 var paths = require('../utils/Paths');
+var startShiftStyles = require('../styles/startShiftStyles');
 
 var EndShiftContainer = React.createClass({
     contextTypes: {
@@ -66,41 +67,39 @@ var EndShiftContainer = React.createClass({
     },
     handleSubmitReport: function (e) {
         e.preventDefault();
-        var shift = this.state.shift;
+     /*  var shift = this.state.shift;
         for(var i=0; i<shift.salesReport.length; i++){
             shift.salesReport[i].stockEndShift = parseInt(this.refs[i].value);
         }
         console.log("after loop:");
         console.log(shift);
         var context = this.context;
-        managementServices.editShift(shift).then(function (n) { //TODO: fix this!!!!!!
+        managementServices.editShift(shift).then(function (n) { TODO: fix this!!!!!!
             if (n) {
-                alert('edit succeed');
+                alert('edit succeed');*/
                 context.router.push({
                     pathname: paths.salesman_home_path
                 })
-            }
+        /*    }
             else {
                 alert('edit failed');
                 console.log("error");
             }
-        })
+        })*/
     },
     renderEachProduct: function(text, i){
         return (
-            <div key={i}>
-                <div className="w3-row" >
-                    <div className="w3-col s3">
-                    </div>
-                    <div className="w3-col s9 w3-container">
-                        <h3>{text.productName}</h3>
-                        <input ref={i} className="" type="number" value="0" min={0} />
-                    </div>
+            <div style={startShiftStyles.product} key={i} height={'100%'}>
+                <div style={startShiftStyles.product__detail}>
+                    <input type="checkbox" style={startShiftStyles.product__selector} value=""/>
                 </div>
-                <hr/>
+                <div style={startShiftStyles.product__detail}>
+                    <h1> {text.productName} </h1>
+                </div>
+                <div style={startShiftStyles.product__detail}>
+                    <h1> picture</h1>
+                </div>
             </div>
-
-
         );
     },
     render: function () {
@@ -108,22 +107,18 @@ var EndShiftContainer = React.createClass({
         return (
 
             <div>
-                <div className="w3-container w3-theme-d5">
+                <div className="w3-theme-d5">
                     <h1>{constantsStrings.storeStatus_string}</h1>
                 </div>
 
-                <div className="w3-container w3-theme-l5">
-                    <form onSubmit={this.handleSubmitReport} className="">
-
-                        {this.state.shift.salesReport.map(this.renderEachProduct)}
-
-                        <button className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-4"
-                                type="submit"> {constantsStrings.endShift_string}
-                        </button>
-                    </form>
+                <div className="w3-theme-l5">
+                    {this.state.shift.salesReport.map(this.renderEachProduct)}
                 </div>
-                <div className="w3-container w3-theme-d4">
-                    <h3>Footer</h3>
+
+                <div className="">
+                    <button className="w3-theme-d5"
+                            onClick={this.handleSubmitReport} type="submit"> {constantsStrings.endShift_string}
+                    </button>
                 </div>
 
             </div>

@@ -5,6 +5,7 @@
 var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
+var salesmanServices = require('../communication/salesmanServices');
 
 var shift = {
     storeId: '1',
@@ -61,9 +62,25 @@ var SalesmanHomeContainer = React.createClass({
         })
     },
     componentWillMount() {
-        this.setState({
-            shift: shift //TODO: change shift to be from server - getCurrentShift
-        });
+        this.updateShifts();
+    },
+    updateShifts() {
+        var self = this;
+        salesmanServices.getCurrentShift().then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    self.setState({
+                        shift: result.info
+                    });
+                    console.log("works!!");
+                } else {
+                    alert("Error while retrieving all stores from the server: "+ result.info);
+                }
+            } else {
+                console.log("error in storesContainers: " + n);
+            }
+        })
     },
     handleStartShift: function () {
         this.context.router.push({
@@ -71,7 +88,7 @@ var SalesmanHomeContainer = React.createClass({
             state: {newShift: this.state.shift}
         })
     },
-    render: function () {
+    renderShift: function () {
         //TODO: present to user details about the shift or some other message if he has no shift
         return (
             <div className='main-container'>
@@ -79,6 +96,23 @@ var SalesmanHomeContainer = React.createClass({
             </div>
 
         )
+    },
+    renderLoading:function () {
+        return(
+            <div>
+                <h1>loading...</h1>
+            </div>
+        )
+    },
+    render: function () {
+        if(this.state.shift != null)
+        {
+            return this.renderShift();
+        }
+        else
+        {
+            return this.renderLoading();
+        }
     }
 });
 

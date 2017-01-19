@@ -65,14 +65,14 @@ let getAllStores = async function (sessionId) {
     }
 };
 
-let getStore = async function(sessionId, productId){
+let getStore = async function(sessionId, storeId){
     logger.info('Services.Encouragement.index.getEncouragement', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getStore');
     if(user == null)
         return {'code': 401, 'err': 'permission denied'};
-    let stores = await dal.getStoresByIds([productId]);
-    if(stores.length > 0)
-        return {'code': 409, 'err': 'no such encouragement'};
+    let stores = await dal.getStoresByIds([storeId]);
+    if(stores.length <= 0)
+        return {'code': 409, 'err': 'no such store'};
     return {'code': 200, 'store': stores[0].toObject()};
 };
 

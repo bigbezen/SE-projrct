@@ -327,17 +327,18 @@ let addShiftComment = async function(sessionId, shiftId, content){
 let endShift = async function(sessionId, shift){
     logger.info('Services.shift.index.endShift', {'session-id': sessionId});
 
-    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'endShift', null);
-    if(salesman == null || salesman._id != shift.salesmanId)
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'endShift');
+    if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
-
-
     let shiftDb = await dal.getShiftsByIds([shift._id]);
-    if(shiftDb == null)
-        return {'code': 409, 'err': 'shift does not exist in the database'};
-
     shiftDb = shiftDb[0];
+    if(shiftDb == null)
+        return {'code': 404, 'err': 'shift not found'};
+
+    if(shiftDb.status != 'STARTED')
+        return {'code': 403, 'err': 'shift not started'};
+
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'FINISHED';
     let result = await dal.updateShift(shiftDb);

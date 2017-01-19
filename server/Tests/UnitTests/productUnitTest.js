@@ -281,4 +281,39 @@ describe('product unit test', function () {
             assert.equal(result.products.length, 2);
         });
     });
+
+
+    describe('test get product', function () {
+        it('get product not by permission user', async function () {
+            let result = await productServices.addProduct(manager.sessionId, newProduct);
+            result =  await productServices.getProduct('notuser', newProduct._id);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.product, null, 'product return null');
+        });
+
+        it('get product by manager', async function () {
+            let result = await productServices.addProduct(manager.sessionId, newProduct);
+            result =  await productServices.getProduct(manager.sessionId, result.product._id);
+            assert.equal(result.err,null);
+            assert.equal(result.code, 200, 'code 200');
+
+            assert.equal(result.product.name, newProduct.name);
+        });
+
+        it('get product by salesman', async function () {
+            let result = await productServices.addProduct(manager.sessionId, newProduct);
+            result =  await productServices.getProduct(notManager.sessionId, result.product._id);
+            assert.equal(result.err,null);
+            assert.equal(result.code, 200, 'code 200');
+
+            assert.equal(result.product.name, newProduct.name);
+        });
+
+        it('get product not exist', async function () {
+            let result = await productServices.getProduct(notManager.sessionId, "notexisting1");
+            assert.equal(result.err,'no such product');
+            assert.equal(result.code, 409, 'code 409');
+        });
+    });
 });

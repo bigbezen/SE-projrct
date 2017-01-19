@@ -448,7 +448,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+        let result = await encouragementService.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -462,7 +462,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        let result = await encouragementService.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -476,7 +476,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        let result = await encouragementService.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -490,7 +490,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.getAllEncouragements(req.headers.sessionid);
+        let result = await encouragementService.getAllEncouragements(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -504,7 +504,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.getEncouragement(req.headers.sessionid, req.params.encouragementId);
+        let result = await encouragementService.getEncouragement(req.headers.sessionid, req.params.encouragementId);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -621,10 +621,6 @@ function _setapApiEndpoints() {
 
     app.get('/manager/getSaleReportXl', async function (req, res) {
         var result = await reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
-        if(result.code == 200){
-            let file = res.download(result.path);
-        }
-        else
-            res.status(result.code).send(result.err);
+        res.status(result.code).send(result.err);
     });
 }

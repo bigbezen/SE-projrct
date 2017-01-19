@@ -76,7 +76,7 @@ let getProduct = async function(sessionId, productId){
         return {'code': 401, 'err': 'permission denied'};
     let product = await dal.getProductById(productId);
     if(product == null)
-        return {'code': 409, 'err': 'no such encouragement'};
+        return {'code': 409, 'err': 'no such product'};
     return {'code': 200, 'product': product.toObject()};
 };
 

@@ -999,6 +999,9 @@ describe('shift unit test', function () {
             let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shiftArr');
+            // for(let shift of result.shiftArr){
+            //     if(shift._id == )
+            // }
         });
     });
 

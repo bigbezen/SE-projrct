@@ -47,6 +47,8 @@ let addShifts = async function(sessionId, shiftArr){
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
+        if('salesmanId' in shift)
+            newShift.salesmanId = shift.salesmanId;
         newShift.storeId = shift.storeId;
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
@@ -395,13 +397,15 @@ let _createNewSalesReport = async function(){
 
 let _fillUserDetails = async function(shift){
     let user = await dal.getUserById(shift.salesmanId);
-    user = user.toObject();
-    let userDetails = {};
-    userDetails.username = user.username;
-    userDetails.personal = user.personal;
-    userDetails._id = user._id;
-    shift.salesman = userDetails;
-    delete shift.salesmanId;
+    if(user != null) {
+        user = user.toObject();
+        let userDetails = {};
+        userDetails.username = user.username;
+        userDetails.personal = user.personal;
+        userDetails._id = user._id;
+        shift.salesman = userDetails;
+        delete shift.salesmanId;
+    }
     return shift;
 };
 

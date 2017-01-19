@@ -15,7 +15,7 @@ let productService          = require('./src/Services/product/index');
 let encouragementService    = require('./src/Services/encouragements/index');
 let messageService          = require('./src/Services/messages/index');
 let reportsService          = require('./src/Services/reports/index');
-let shiftSerice             = require('./src/Services/shift/index');
+let shiftService             = require('./src/Services/shift/index');
 
 let app = express();
 
@@ -554,9 +554,9 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.get('fromDate'));
+        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.fromDate);
         if(result.code == 200)
-            res.status(200).send(result.shiftsArr);
+            res.status(200).send(result.shiftArr);
         else
             res.status(result.code).send(result.err);
     });

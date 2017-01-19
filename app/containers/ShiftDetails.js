@@ -4,7 +4,6 @@
 
 var React = require('react');
 var managementServices = require('../communication/managementServices');
-var managerServices = require('../communication/managerServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var shiftInfo = require('../models/shift');
 var flatten = require('flat');
@@ -127,7 +126,7 @@ var ShiftDetails = React.createClass({
 
         var newShift = new shiftInfo();
         newShift.storeId = this.state.storeId;
-        newShift.type = this.state.type;
+        newShift.type = this.state.shiftType;
         newShift.salesmanId = this.state.salesmanId;
         newShift.startTime = this.refs.startTimeBox.value;
         newShift.endTime = this.refs.endTimeBox.value;
@@ -139,7 +138,7 @@ var ShiftDetails = React.createClass({
                 if(n){
                     var val1 = n;
                     if (val1.success) {
-                        managerServices.publishShifts(newShift).then(function (n) {
+                        managementServices.publishShifts(newShift).then(function (n) {
                             if (n) {
                                 var val2 = n;
                                 if (val2.success) {
@@ -166,7 +165,7 @@ var ShiftDetails = React.createClass({
                 if(n){
                     var val1 = n;
                     if (val1.success) {
-                        managerServices.publishShifts(newShift).then(function (n) {
+                        managementServices.publishShifts(newShift).then(function (n) {
                             if (n) {
                                 var val2 = n;
                                 if (val2.success) {
@@ -263,8 +262,12 @@ var ShiftDetails = React.createClass({
         this.refs.endTimeBox.value = moment(this.currShift.endTime).format('YYYY-MM-DD hh:mm');
     },
     render: function () {
-        this.getOptionsForStores();
-        this.getOptionsForSalesmen();
+        if (this.state.storesForDropDown.length == 0) {
+            this.getOptionsForStores();
+        }
+        if (this.state.salesmenForDropDown.length == 0) {
+            this.getOptionsForSalesmen();
+        }
         return this.addNewShift();
     }
 });

@@ -102,6 +102,11 @@ var helpers = {
         return connection.managementRequests.AddAllShifts(startTime, endTime);
     },
 
+    publishShifts: function(shift){
+        console.log('managementServices- publishShifts');
+        return connection.managementRequests.publishShifts(shift);
+    },
+
     getShiftsFromDate:function(fromDate) {
         console.log('managementervices- getShiftsFromDate');
         return connection.managementRequests.getShiftsFromDate(fromDate);

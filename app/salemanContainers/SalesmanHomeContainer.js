@@ -5,7 +5,7 @@
 var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
-var salesmanServices = require('../communication/salesmanServices');
+var salesmanService = require('../communication/salesmanServices');
 
 var shift = {
     storeId: '1',
@@ -66,7 +66,7 @@ var SalesmanHomeContainer = React.createClass({
     },
     updateShifts() {
         var self = this;
-        salesmanServices.getCurrentShift().then(function (n) {
+        salesmanService.getCurrentShift().then(function (n) {
             if (n) {
                 var result = n;
                 if (result.success) {

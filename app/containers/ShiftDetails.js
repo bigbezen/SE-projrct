@@ -9,6 +9,7 @@ var shiftInfo = require('../models/shift');
 var flatten = require('flat');
 var ReactBootstrap = require("react-bootstrap");
 var moment = require('moment');
+//var momentTz = require('moment-timezone');
 var paths = require('../utils/Paths');
 
 var DropDownInput = ReactBootstrap.DropdownButton;
@@ -132,8 +133,10 @@ var ShiftDetails = React.createClass({
         newShift.storeId = this.state.storeId;
         newShift.type = this.state.shiftType;
         newShift.salesmanId = this.state.salesmanId;
-        newShift.startTime = this.refs.startTimeBox.value;
-        newShift.endTime = this.refs.endTimeBox.value;
+        var startT = moment(this.refs.startTimeBox.value).format('YYYY-MM-DD hh:mm');
+        var endT = moment(this.refs.endTimeBox.value).format('YYYY-MM-DD hh:mm');
+        newShift.startTime = this.refs.startTimeBox.value + '+02:00';
+        newShift.endTime = this.refs.endTimeBox.value + '+02:00';
 
         var context = this.context;
         if (this.state.editing) {
@@ -142,6 +145,7 @@ var ShiftDetails = React.createClass({
                 if(n){
                     var val1 = n;
                     if (val1.success) {
+                        newShift._id = val1.info[0]._id;
                         managementServices.publishShifts(newShift).then(function (n) {
                             if (n) {
                                 var val2 = n;
@@ -169,6 +173,7 @@ var ShiftDetails = React.createClass({
                 if(n){
                     var val1 = n;
                     if (val1.success) {
+                        newShift._id = val1.info[0]._id;
                         managementServices.publishShifts(newShift).then(function (n) {
                             if (n) {
                                 var val2 = n;

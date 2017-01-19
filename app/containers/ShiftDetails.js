@@ -259,8 +259,8 @@ var ShiftDetails = React.createClass({
         this.refs.startTimeBox.type = "datetime";
         this.refs.endTimeBox.type = "datetime";
 
-        this.refs.storeBox.value = this.currShift.store.name; //TODO- fix this
-        this.refs.userBox.value = this.currShift.salesman.username;  //TODO- fix this
+        this.refs.storeBox.value = this.currShift.store._id; //TODO- fix this
+        this.refs.userBox.value = this.currShift.salesman._id;  //TODO- fix this
         this.refs.shiftTypeBox.value =  this.currShift.type;
         this.refs.startTimeBox.value = moment(this.currShift.startTime).format('YYYY-MM-DD hh:mm');
         this.refs.endTimeBox.value = moment(this.currShift.endTime).format('YYYY-MM-DD hh:mm');

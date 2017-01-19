@@ -53,16 +53,29 @@ describe('manager acceptance test', function(){
         let res = await dal.cleanDb();
     });
 
-    describe('test add user', function(){
-        it('add user valid', async function(){
-            axios.post(serverUrl + 'management/addUser', {
+    describe('test add user', function() {
+        it('add user valid', async function () {
+            let res = await axios.post(serverUrl + 'management/addUser', {
                 sessionId: manager.sessionId,
                 userDetails: salesman
-            }).then(function(info){
-                expect(info).to.have.property('status', 200);
-            }).catch(function (err){
-                expect(2).to.be.equal(1);
             });
+            expect(info).to.have.property('status', 200);
+            expect(info).to.have.property('user'.username, salesman.username);
+        });
+
+        it('add user valid', async function () {
+            let res = await axios.post(serverUrl + 'management/addUser', {
+                sessionId: manager.sessionId,
+                userDetails: salesman
+            });
+
+            let res = await axios.post(serverUrl + 'management/addUser', {
+                sessionId: manager.sessionId,
+                userDetails: salesman
+            });
+
+            expect(info).to.have.property('status', 409);
+            expect(info).to.have.property('err', '');
         });
     });
 });

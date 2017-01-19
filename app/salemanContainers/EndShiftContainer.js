@@ -108,7 +108,7 @@ var EndShiftContainer = React.createClass({
         return (
 
             <div>
-                <div className="w3-container w3-theme-d4">
+                <div className="w3-container w3-theme-d5">
                     <h1>{constantsStrings.storeStatus_string}</h1>
                 </div>
 

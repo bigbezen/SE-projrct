@@ -340,8 +340,16 @@ var managerRequests = {
         errorMessage('getShortages', 'Not implemented yet');
     },
 
-    publishShifts: function(){
-        errorMessage('publishShifts', 'Not implemented yet');
+    publishShifts: function(shift){
+        console.log('publish shift');
+        return axios.post(serverUrl + 'manager/publishShift', {
+            sessionId:sessionId,
+            shiftsArr:shift
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
     },
 
     getReports: function(){
@@ -390,6 +398,20 @@ var salesmanRequests = {
     //TODO:
     reportSale: function(shiftId, productId, quantity){
         return axios.post(serverUrl + 'salesman/reportSale', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            productId:productId,
+            quantity:quantity
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
+    },
+
+    //TODO:
+    reportOpen: function(shiftId, productId, quantity){
+        return axios.post(serverUrl + 'salesman/reportOpen', {
             sessionId:sessionId,
             shiftId:shiftId,
             productId:productId,

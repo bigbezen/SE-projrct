@@ -40,12 +40,13 @@ var StartShiftContainer = React.createClass({
         return (
             <div key={i}>
                 <div className="w3-row" key={i}>
-                    <div className="w3-col s3">
-                    </div>
-                    <div className="w3-col s9 w3-container">
-                        <h3>{text.productName}</h3>
+                    <div className="w3-col s6 w3-container ">
                         <input ref={i} className="" type="number" value="0" min={0} />
                     </div>
+                    <div className="w3-col s8 w3-container ">
+                        <h1>{text.productName}</h1>
+                    </div>
+
                 </div>
                 <hr/>
             </div>
@@ -58,22 +59,17 @@ var StartShiftContainer = React.createClass({
         return (
 
             <div>
-                <div className="w3-container w3-theme-d4">
+                <div className="w3-container w3-theme-d5">
                     <h1>{constantsStrings.storeStatus_string}</h1>
                 </div>
 
                 <div className="w3-container w3-theme-l5">
-                     <form onSubmit={this.handleSubmitReport} className="">
-
-                         {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
-
-                        <button className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-4"
-                        type="submit"> {constantsStrings.startShift_string}
-                        </button>
-                     </form>
+                    {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
                 </div>
-                <div className="w3-container w3-theme-d4">
-                    <h3>Footer</h3>
+                <div className="w3-container w3-theme-d5">
+                    <button className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-4"
+                            onClick={this.handleSubmitReport} type="submit"> {constantsStrings.startShift_string}
+                    </button>
                 </div>
 
            </div>

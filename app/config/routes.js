@@ -37,7 +37,7 @@ var routes = (
             <Route path='store' component={Store} />
             <Route path='user' component={User} />
             <Route path='shift' component={Shift}/>
-            <Route path='CreateShifts' component={CreateShifts}/>
+            <Route path='createShifts' component={CreateShifts}/>
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='home' component={SalesmanHome}/>

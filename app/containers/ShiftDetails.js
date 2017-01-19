@@ -4,7 +4,6 @@
 
 var React = require('react');
 var managementServices = require('../communication/managementServices');
-var managerServices = require('../communication/managerServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var shiftInfo = require('../models/shift');
 var flatten = require('flat');
@@ -23,7 +22,9 @@ var ShiftDetails = React.createClass({
             editing: false,
             storeId: '',
             salesmanId: '',
-            shiftType:''
+            shiftType:'',
+            storesForDropDown:[] ,
+            salesmenForDropDown:[]
         }
     },
 
@@ -54,6 +55,7 @@ var ShiftDetails = React.createClass({
 
     getOptionsForStores: function() {
         var optionsForDropDown = [];
+        var self = this;
         managementServices.getAllStores().then(function (n) {
             if (n) {
                 var val = n;
@@ -64,7 +66,11 @@ var ShiftDetails = React.createClass({
                         var currOption = arrayOfObjects[i];
                         optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
                     }
-                      return optionsForDropDown;
+                    self.setState({storesForDropDown: optionsForDropDown});
+                    if (self.state.editing) {
+                        self.refs.storeBox.value = self.state.storeId;
+                        self.refs.userBox.value = self.state.salesmanId;
+                    }
                 } else {
                     alert('cannot load the list of stores. please try again later');
                 }
@@ -77,6 +83,7 @@ var ShiftDetails = React.createClass({
 
     getOptionsForSalesmen: function() {
         var optionsForDropDown = [];
+        var self = this;
         managementServices.getAllUsers().then(function (n) {
             if (n) {
                 var val = n;
@@ -87,7 +94,7 @@ var ShiftDetails = React.createClass({
                         var currOption = arrayOfObjects[i];
                         optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
                     }
-                    return optionsForDropDown;
+                    self.setState({salesmenForDropDown: optionsForDropDown});
                 } else {
                     alert('cannot load the list of stores. please try again later');
                 }
@@ -123,7 +130,7 @@ var ShiftDetails = React.createClass({
 
         var newShift = new shiftInfo();
         newShift.storeId = this.state.storeId;
-        newShift.type = this.state.type;
+        newShift.type = this.state.shiftType;
         newShift.salesmanId = this.state.salesmanId;
         newShift.startTime = this.refs.startTimeBox.value;
         newShift.endTime = this.refs.endTimeBox.value;
@@ -135,7 +142,7 @@ var ShiftDetails = React.createClass({
                 if(n){
                     var val1 = n;
                     if (val1.success) {
-                        managerServices.publishShifts(newShift).then(function (n) {
+                        managementServices.publishShifts(newShift).then(function (n) {
                             if (n) {
                                 var val2 = n;
                                 if (val2.success) {
@@ -162,7 +169,7 @@ var ShiftDetails = React.createClass({
                 if(n){
                     var val1 = n;
                     if (val1.success) {
-                        managerServices.publishShifts(newShift).then(function (n) {
+                        managementServices.publishShifts(newShift).then(function (n) {
                             if (n) {
                                 var val2 = n;
                                 if (val2.success) {
@@ -196,14 +203,14 @@ var ShiftDetails = React.createClass({
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.storeName_string}</label>
                         <select className="col-sm-4" onChange={this.handleStoreIdChange} ref="storeBox" >
-                            {this.getOptionsForStores()}
+                            {this.state.storesForDropDown}
                         </select>
                     </div>
 
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.username_string}</label>
                         <select className="col-sm-4" onChange={this.handleSalesmanIdChange} ref="userBox" >
-                            {this.getOptionsForSalesmen()}
+                            {this.state.salesmenForDropDown}
                         </select>
                     </div>
 
@@ -245,6 +252,10 @@ var ShiftDetails = React.createClass({
     setFields: function () {
         this.currShift = flatten.unflatten(this.props.location.query);
 
+        console.log('11111111111');
+        console.log(this.currShift);
+        console.log('22222222222');
+
         this.state.shishiftType =  this.currShift.type;
         this.state.storeId = this.currShift.store._id;
         this.state.salesmanId = this.currShift.salesman._id;
@@ -252,13 +263,19 @@ var ShiftDetails = React.createClass({
         this.refs.startTimeBox.type = "datetime";
         this.refs.endTimeBox.type = "datetime";
 
-        this.refs.storeBox.value = this.currShift.store.name; //TODO- fix this
-        this.refs.userBox.value = this.currShift.salesman.username;  //TODO- fix this
+        this.refs.storeBox.value = this.currShift.store._id; //TODO- fix this
+        this.refs.userBox.value = this.currShift.salesman._id;  //TODO- fix this
         this.refs.shiftTypeBox.value =  this.currShift.type;
         this.refs.startTimeBox.value = moment(this.currShift.startTime).format('YYYY-MM-DD hh:mm');
         this.refs.endTimeBox.value = moment(this.currShift.endTime).format('YYYY-MM-DD hh:mm');
     },
     render: function () {
+        if (this.state.storesForDropDown.length == 0) {
+            this.getOptionsForStores();
+        }
+        if (this.state.salesmenForDropDown.length == 0) {
+            this.getOptionsForSalesmen();
+        }
         return this.addNewShift();
     }
 });

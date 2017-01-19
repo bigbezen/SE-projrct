@@ -7,42 +7,26 @@ var BootstrapTable = ReactBsTable.BootstrapTable;
 var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
+var managerServices = require('../communication/managerServices');
 var helpers = require('../utils/Helpers');
 var paths = require('../utils/Paths');
 var moment = require('moment');
+var flatten = require('flat');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
 };
 
-function dateFormatter(cell, row) {
-    return moment(cell).format('YYYY-MM-DD HH:MM');
+function flatList(shifts) {
+    var output = [];
+    for(var i = 0; i < shifts.length; i++)
+        output.push(flatten(shifts[i]));
+    return output;
 }
 
-var shifts = [
-    {
-        'storeId': '1',
-        'startTime': new Date("2015-03-25 12:00"),
-        'endTime': new Date("2015-03-25 13:00"),
-        'status': 'not started',
-        'type': 'store',
-        'salesmanId': '1',
-        'constraints': [],
-        'salesReport': [],
-        'sales': []
-    },
-    {
-        'storeId': '2',
-        'startTime': new Date("2015-04-25T12:00:00-06:30"),
-        'endTime': new Date("2015-04-25T12:00:00-06:30"),
-        'status': 'not started',
-        'type': 'store',
-        'salesmanId': '2',
-        'constraints': [],
-        'salesReport': [],
-        'sales': []
-    }
-];
+function dateFormatter(cell, row) {
+    return moment(cell).format('YYYY-MM-DD hh:mm');
+}
 
 var ShiftsContainer = React.createClass({
     contextTypes: {
@@ -50,21 +34,23 @@ var ShiftsContainer = React.createClass({
     },
     getInitialState() {
         return{
-            shifts: shifts
-
-    }
+            shifts: null
+        }
     },
     componentWillMount() {
         this.updateShifts();
     },
     updateShifts() {
-        /*var self = this;
-        managementServices.getAllShifts().then(function (n) {
+        var self = this;
+        var currentDate = new Date();
+        currentDate.setDate(currentDate.getDate()-30);
+        managementServices.getShiftsFromDate(currentDate).then(function (n) {
             if (n) {
                 var result = n;
                 if (result.success) {
+                    var flatShifts = flatList(result.info);
                     self.setState({
-                        shifts: result.info
+                        shifts: flatShifts
                     });
                     console.log("works!!");
                 } else {
@@ -74,7 +60,7 @@ var ShiftsContainer = React.createClass({
             } else {
                 console.log("error in shiftsContainer: " + n);
             }
-        })*/
+        })
     },
     onClickEditButton: function(cell, row, rowIndex){
         console.log('Shift #', rowIndex);
@@ -82,6 +68,20 @@ var ShiftsContainer = React.createClass({
         this.context.router.push({
             pathname: paths.manager_shiftDetails_path,
             query: row
+        })
+    },
+    onClickGetReportButton: function(cell, row, rowIndex){
+        managerServices.getSaleReportXl(row).then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    console.log("works!!");
+                } else {
+                    alert("Error while creating excel file: "+ result.info);
+                }
+            } else {
+                console.log("error in getSaleReportXl: " + n);
+            }
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
@@ -109,30 +109,47 @@ var ShiftsContainer = React.createClass({
             pathname: paths.manager_shiftDetails_path
         })
     },
+
     onClickAddShiftsButton: function(){
         this.context.router.push({
             pathname: paths.manager_createShifts_path
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {
-        return (
-            <button
-                type="button"
-                onClick={() =>
-                    this.onClickEditButton(cell, row, rowIndex)}>
-                {constantStrings.edit_string}
-            </button>
-        )
+        var isFinished = (row.status == 'FINISHED'); //TODO: is this ok?
+        if (isFinished) {
+            return (
+                <button
+                    type="button"
+                    onClick={() =>
+                        this.onClickGetReportButton(cell, row, rowIndex)}>
+                    {constantStrings.getReport_string}
+                </button>
+            )
+        } else {
+            return (
+                <button
+                    type="button"
+                    onClick={() =>
+                        this.onClickEditButton(cell, row, rowIndex)}>
+                    {constantStrings.edit_string}
+                </button>
+            )
+        }
     },
     deleteButton: function(cell, row, enumObject, rowIndex) {
-        return (
-            <button
-                type="button"
-                onClick={() =>
-                    this.onClickDeleteButton(cell, row, rowIndex)}>
-                {constantStrings.delete_string}
-            </button>
-        )
+        var isFinished = (row.status == 'FINISHED'); //TODO: is this ok?
+        if (!isFinished) {
+            return (
+                <button
+                    type="button"
+                    disabled= {isFinished}
+                    onClick={() =>
+                        this.onClickDeleteButton(cell, row, rowIndex)}>
+                    {constantStrings.delete_string}
+                </button>
+            )
+        }
     },
     renderTable: function () {
         return (
@@ -141,7 +158,7 @@ var ShiftsContainer = React.createClass({
                 <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddShiftsButton}> +++ </button>
                 <BootstrapTable data={this.state.shifts} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
-                        dataField = 'storeId'
+                        dataField = 'store.name'
                         dataAlign = 'right'
                         dataSort = {true}
                         filter = { {type: 'TextFilter', placeholder:constantStrings.enterStoreName_string} }
@@ -176,7 +193,7 @@ var ShiftsContainer = React.createClass({
                         {constantStrings.type_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField = 'salesmanId'
+                        dataField = 'salesman.username'
                         dataAlign = 'right'
                         filter = { { type: 'TextFilter', placeholder:constantStrings.enterCity_string} }>
                         {constantStrings.salesman_string}

@@ -26,7 +26,7 @@ module.exports = {
     },
 
     updateUser: async function(user){
-        return userModel.update(user._id, user, {upsert: false});
+        return userModel.update({'_id': user._id}, user, {upsert: false});
     },
 
     getUserBySessionId: async function(sessionId){

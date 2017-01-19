@@ -1,7 +1,7 @@
 var crypto = require('crypto');
 
 var algorithm = 'aes-256-ctr';
-var key = 'd6F3Efee';
+var key = "d6F3Efee";
 
 var encrypt = function(text) {
     var cipher = crypto.createCipher(algorithm, key);

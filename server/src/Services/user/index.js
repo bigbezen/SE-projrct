@@ -45,7 +45,7 @@ var logout = async function(sessionId) {
 
 var addUser = async function(sessionId, userDetails) {
     logger.info('Services.user.index.addUser', {'session-id': sessionId});
-    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser', null);
+    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser');
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
@@ -87,15 +87,17 @@ var editUser = async function(sessionId, username, userDetails){
         return {'code': 401, 'err': 'user not authorized'};
 
     var user = await dal.getUserByUsername(username);
-    if(user == null)
+    if(user == null) {
         return {'code': 409, 'err': 'edited user does not exist'};
+    }
+    user = user.toObject();
     if(userDetails.username != user.username) {
         var isExistUsername = await dal.getUserByUsername(userDetails.username);
         if (isExistUsername != null) {
             return {'code': 409, 'err': 'Username already exists'}
         }
     }
-    if(userDetails.id != user.id){
+    if(userDetails.personal.id != user.personal.id){
         var isExistId = await dal.getUserById(userDetails.personal.id);
         if(isExistId != null){
             return {'code': 409, 'err': 'Id already exists'}
@@ -110,8 +112,8 @@ var editUser = async function(sessionId, username, userDetails){
     user.contact = userDetails.contact;
     user.jobDetails = userDetails.jobDetails;
 
-    var res = await dal.editUser(user);
-    if(res != null){
+    var res = await dal.updateUser(user);
+    if(res.ok == 1){
         return {'code': 200};
     }
     else{

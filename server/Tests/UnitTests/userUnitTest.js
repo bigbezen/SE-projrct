@@ -1,12 +1,12 @@
-var assert              = require('chai').assert;
-var expect              = require('chai').expect;
-var dal                 = require('../../src/DAL/dal');
-var userServices        = require('../../src/Services/user/index');
-var userModel           = require('../../src/Models/user');
-var cypher              = require('../../src/Utils/Cypher/index');
+let assert              = require('chai').assert;
+let expect              = require('chai').expect;
+let dal                 = require('../../src/DAL/dal');
+let userServices        = require('../../src/Services/user/index');
+let userModel           = require('../../src/Models/user');
+let cypher              = require('../../src/Utils/Cypher/index');
 
-var getUserDetails = function(){
-    var userDetails = new Object();
+let getUserDetails = function(){
+    let userDetails = new Object();
     userDetails =
         {
             "username": "new user",
@@ -44,7 +44,7 @@ describe('user unit test', function () {
 
 
     beforeEach(async function () {
-        var user = new userModel();
+        let user = new userModel();
         user.username = 'shahaf';
         user.password = cypher.encrypt("123456");
         user.startDate = "09-16-2016";
@@ -73,7 +73,7 @@ describe('user unit test', function () {
             "encouragements": []
         };
 
-        var managerUser = new userModel();
+        let managerUser = new userModel();
         managerUser.username = 'manager';
         managerUser.password = cypher.encrypt("123456");
         managerUser.sessionId = "sessionId";
@@ -89,12 +89,12 @@ describe('user unit test', function () {
     });
 
     afterEach(async function () {
-        var res = await dal.cleanDb();
+        let res = await dal.cleanDb();
     });
 
     describe('TestLogin', function () {
         it('LoginValid', async function () {
-            var result = await userServices.login('shahaf', '123456');
+            let result = await userServices.login('shahaf', '123456');
             expect(result).to.have.all.keys('sessionId', 'userType');
             expect(result.sessionId).to.be.a('string');
             expect(result.userType).to.be.a('string');
@@ -105,13 +105,13 @@ describe('user unit test', function () {
         });
 
         it('TestLoginInvalidUserName', async function(){
-            var result = await userServices.login('non existing username', '123456');
+            let result = await userServices.login('non existing username', '123456');
             expect(result).to.have.all.keys('code', 'err');
             expect(result.code).to.equal(409);
         });
 
         it('TestLoginInvalidPassword', async function(){
-            var result = await userServices.login('shahaf', 'non valid password');
+            let result = await userServices.login('shahaf', 'non valid password');
             expect(result).to.have.all.keys('code', 'err');
             expect(result.code).to.equal(409);
         });
@@ -119,10 +119,10 @@ describe('user unit test', function () {
 
     describe('TestLogout', function () {
         it('LogoutValid', async function () {
-            var sessionId = "sessionId";
-            var user = await dal.getUserByUsername('shahaf');
+            let sessionId = "sessionId";
+            let user = await dal.getUserByUsername('shahaf');
             user.sessionId = sessionId;
-            var res = await dal.editUser(user);
+            let res = await dal.editUser(user);
 
             res = await userServices.logout(sessionId);
             expect(res).to.have.property('code', 200);
@@ -132,7 +132,7 @@ describe('user unit test', function () {
         });
 
         it('LogoutUserNotLoggedIn', async function(){
-            var res = await userServices.logout('non existing sessionId');
+            let res = await userServices.logout('non existing sessionId');
             expect(res).to.have.property('code', 401);
 
             res = await userServices.logout("");
@@ -142,12 +142,12 @@ describe('user unit test', function () {
 
     describe('TestAddUser', function(){
         it('AddUserValid', async function(){
-            var result = await userServices.addUser('sessionId', getUserDetails());
-            var addedUserFromDb = await dal.getUserByUsername('new user');
+            let result = await userServices.addUser('sessionId', getUserDetails());
+            let addedUserFromDb = await dal.getUserByUsername('new user');
             addedUserFromDb = addedUserFromDb.toObject();
 
             expect(result).to.have.all.keys('code', 'user');
-            var resultUser = result.user;
+            let resultUser = result.user;
             expect(resultUser).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
             expect(resultUser).to.not.all.keys('password', 'sessionId');
 
@@ -156,31 +156,31 @@ describe('user unit test', function () {
         });
 
         it('AddUserExistingUsername', async function(){
-            var userDetails = getUserDetails();
+            let userDetails = getUserDetails();
             userDetails.username = "shahaf";
 
-            var res = await userServices.addUser("sessionId", userDetails);
+            let res = await userServices.addUser("sessionId", userDetails);
             expect(res).to.have.property('code', 409);
             expect(res).to.have.property('err');
         });
 
         it('AddUserExistingId', async function(){
-            var userDetails = getUserDetails();
+            let userDetails = getUserDetails();
             userDetails.personal.id = "0987654321";
 
-            var res = await userServices.addUser("sessionId", userDetails);
+            let res = await userServices.addUser("sessionId", userDetails);
             expect(res).to.have.property('code', 409);
             expect(res).to.have.property('err');
         });
 
         it('NoPermissionToAddUser', async function(){
-            var userDetails = getUserDetails();
+            let userDetails = getUserDetails();
             //change userType to salesman
-            var managerUser = await dal.getUserByUsername('manager');
+            let managerUser = await dal.getUserByUsername('manager');
             managerUser.jobDetails.userType = "salesman";
             await managerUser.save();
 
-            var res = await userServices.addUser("sessionId", userDetails);
+            let res = await userServices.addUser("sessionId", userDetails);
             expect(res).to.have.property('code', 401);
             expect(res).to.have.property('err');
 
@@ -188,14 +188,14 @@ describe('user unit test', function () {
             managerUser.jobDetails.userType = "other user types";
             await managerUser.save();
 
-            var res = await userServices.addUser("sessionId", userDetails);
+            await userServices.addUser("sessionId", userDetails);
             expect(res).to.have.property('code', 401);
             expect(res).to.have.property('err');
         });
 
         it('InvalidSessionId', async function(){
-            var userDetails = getUserDetails();
-            var result = await userServices.addUser('invalid session id', userDetails);
+            let userDetails = getUserDetails();
+            let result = await userServices.addUser('invalid session id', userDetails);
             expect(result).to.have.property('code', 401);
             expect(result).to.have.property('err');
         });
@@ -205,57 +205,66 @@ describe('user unit test', function () {
 
     describe('TestEditUser', function(){
         it('EditUserValid', async function(){
-            var userDetails = getUserDetails();
-            userDetails.username = "new user";
-            var res = await userServices.editUser('sessionId', 'shahaf', userDetails);
+            let userDetails = getUserDetails();
+            userDetails.username = 'shahaf';
+            userDetails.personal.id = '0987654321';
+
+            let res = await userServices.editUser('sessionId', 'shahaf', userDetails);
+
             expect(res).to.have.property('code', 200);
-
             res = await dal.getUserByUsername('shahaf');
-            expect(res).to.be.null;
 
-            res = await dal.getUserByUsername('new user');
             expect(res).to.not.be.null;
+            expect(res.jobDetails).to.have.property('userType', 'salesman');
+            userDetails.username = 'edited username';
+
+            res = await userServices.editUser('sessionId', 'shahaf', userDetails);
+            expect(res).to.have.property('code', 200);
+            res = await dal.getUserByUsername('edited username');
+            expect(res).to.not.be.null;
+            res = res.toObject();
+            expect(res).to.have.property('username', 'edited username');
 
         });
 
         it('InvalidSessionId', async function(){
-            var userDetails = getUserDetails();
-            var result = await userServices.editUser('invalid session id', 'shahaf', userDetails);
+            let userDetails = getUserDetails();
+            let result = await userServices.editUser('invalid session id', 'shahaf', userDetails);
             expect(result).to.have.property('code', 401);
             expect(result).to.have.property('err');
         });
 
         it('EditUserExistingUsername', async function(){
-            var userDetails = getUserDetails();
+            let userDetails = getUserDetails();
             userDetails.username = 'manager';
-            var res = await userServices.editUser('sessionId', 'shahaf', userDetails);
+            let res = await userServices.editUser('sessionId', 'shahaf', userDetails);
 
             expect(res).to.have.property('code', 409)
         });
 
         it('EditUserExistingId', async function(){
-            var userDetails = getUserDetails();
+            let userDetails = getUserDetails();
             userDetails.personal.id = '12345';
-            var res = await userServices.editUser('sessionId', 'shahaf', userDetails);
+            let res = await userServices.editUser('sessionId', 'shahaf', userDetails);
 
             expect(res).to.have.property('code', 409)
         });
 
         it('EditUserNonExistingId', async function(){
-            var userDetails = getUserDetails();
-            var res = await userServices.editUser('sessionId', 'non existing user', userDetails);
+            let userDetails = getUserDetails();
+            let res = await userServices.editUser('sessionId', 'non existing user', userDetails);
 
             expect(res).to.have.property('code', 409)
         });
 
         it('NoPermissionToEditUser', async function(){
-            var userDetails = getUserDetails();
+            let userDetails = getUserDetails();
             //change userType to salesman
-            var managerUser = await dal.getUserByUsername('manager');
+            let managerUser = await dal.getUserByUsername('manager');
             managerUser.jobDetails.userType = "salesman";
             await managerUser.save();
 
-            var res = await userServices.editUser("sessionId", "shahaf", userDetails);
+            let res = await userServices.editUser("sessionId", "shahaf", userDetails);
             expect(res).to.have.property('code', 401);
             expect(res).to.have.property('err');
 
@@ -263,7 +272,7 @@ describe('user unit test', function () {
             managerUser.jobDetails.userType = "other user types";
             await managerUser.save();
 
-            var res = await userServices.editUser("sessionId", "shahaf", userDetails);
+            await userServices.editUser("sessionId", "shahaf", userDetails);
             expect(res).to.have.property('code', 401);
             expect(res).to.have.property('err');
         });
@@ -271,33 +280,33 @@ describe('user unit test', function () {
 
     describe('TestChangePassword', function(){
         it('ChangePasswordValid', async function(){
-            var result = await userServices.changePassword('sessionId', '123456', 'new pass');
+            let result = await userServices.changePassword('sessionId', '123456', 'new pass');
 
             expect(result).to.have.property('code', 200);
 
-            var user = await dal.getUserByUsername('manager');
+            let user = await dal.getUserByUsername('manager');
             user = user.toObject();
             assert.equal(cypher.decrypt(user.password), 'new pass');
         });
 
         it('InvalidSessionId', async function(){
-           var result = await userServices.changePassword('non existing session id', '123456', 'new pass');
+           let result = await userServices.changePassword('non existing session id', '123456', 'new pass');
 
            expect(result).to.have.property('code', 401);
            expect(result).to.have.property('err');
 
-            var user = await dal.getUserByUsername('manager');
+            let user = await dal.getUserByUsername('manager');
             user = user.toObject();
             assert.equal(cypher.decrypt(user.password), '123456');
         });
 
         it('WrongCurrentPassword', async function(){
-            var result = await userServices.changePassword('sessionId', 'wrong password', 'new pass');
+            let result = await userServices.changePassword('sessionId', 'wrong password', 'new pass');
 
             expect(result).to.have.property('code', 409);
             expect(result).to.have.property('err');
 
-            var user = await dal.getUserByUsername('manager');
+            let user = await dal.getUserByUsername('manager');
             user = user.toObject();
             assert.equal(cypher.decrypt(user.password), '123456');
         });
@@ -305,17 +314,17 @@ describe('user unit test', function () {
 
     describe('TestRetrievePassword', function(){
         it('RetrievePasswordValid', async function(){
-            var result = await userServices.retrievePassword('sessionId');
+            let result = await userServices.retrievePassword('sessionId');
 
             expect(result).to.have.property('code', 200);
 
             //check that it did not change the old password
-            var user = await dal.getUserBySessionId('sessionId');
+            let user = await dal.getUserBySessionId('sessionId');
             expect(user.password).to.equal(cypher.encrypt('123456'));
         });
 
         it('InvalidSessionId', async function(){
-            var result = await userServices.retrievePassword('non existing session id');
+            let result = await userServices.retrievePassword('non existing session id');
 
             expect(result).to.have.property('code', 401);
             expect(result).to.have.property('err');
@@ -324,11 +333,11 @@ describe('user unit test', function () {
 
     describe('TestGetProfile', function(){
         it('GetProfileValid', async function(){
-            var newUser = await dal.getUserByUsername('shahaf');
+            let newUser = await dal.getUserByUsername('shahaf');
             newUser.sessionId = 'session';
             await dal.editUser(newUser);
 
-            var result = await userServices.getProfile('session');
+            let result = await userServices.getProfile('session');
 
             expect(result).to.have.all.keys('code', 'user');
             expect(result.user).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
@@ -336,7 +345,7 @@ describe('user unit test', function () {
         }) ;
 
         it('InvalidSessionId', async function(){
-            var result = await userServices.getProfile('invalid session id');
+            let result = await userServices.getProfile('invalid session id');
             expect(result).to.have.property('code', 401);
             expect(result).to.have.property('err');
         });
@@ -344,29 +353,29 @@ describe('user unit test', function () {
 
     describe('TestGetAllUsers', function(){
         it('GetAllUsersValid', async function(){
-            var result = await userServices.getAllUsers('sessionId');
+            let result = await userServices.getAllUsers('sessionId');
             expect(result).to.contain.all.keys('code', 'users');
             expect(result).to.have.property('code', 200);
             expect(result.users.length).to.be.equal(2);
-            for(var user of result.users){
+            for(let user of result.users){
                 expect(user).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
                 expect(user).to.not.have.all.keys('sessionId', 'password');
             }
         }) ;
 
         it('InvalidSessionId', async function(){
-            var result = await userServices.getAllUsers('invalid session id');
+            let result = await userServices.getAllUsers('invalid session id');
             expect(result).to.have.property('code', 401);
             expect(result).to.have.property('err');
         });
 
         it('NoPermissionToGetAllUsers', async function(){
             //change userType to salesman
-            var managerUser = await dal.getUserByUsername('manager');
+            let managerUser = await dal.getUserByUsername('manager');
             managerUser.jobDetails.userType = "salesman";
             await managerUser.save();
 
-            var res = await userServices.getAllUsers("sessionId");
+            let res = await userServices.getAllUsers("sessionId");
             expect(res).to.have.property('code', 401);
             expect(res).to.have.property('err');
 

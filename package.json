@@ -10,6 +10,7 @@
     "chai": "^3.5.0",
     "chai-datetime": "^1.4.1",
     "ejs": "^2.5.2",
+    "exceljs": "^0.2.39",
     "express": "^4.14.0",
     "flat": "^2.0.1",
     "generator": "^1.0.1",

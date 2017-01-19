@@ -1,5 +1,4 @@
 var assert                     = require('chai').assert;
-var assert                     = require('chai').assert;
 var dal                        = require('../../src/DAL/dal');
 var encouragementServices      = require('../../src/Services/encouragements/index');
 var productServices            = require('../../src/Services/product/index');

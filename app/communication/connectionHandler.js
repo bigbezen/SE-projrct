@@ -242,9 +242,11 @@ var managementRequests = {
 
     addShift: function(shift) {
         console.log('add shift');
+        var shiftArr = [];
+        shiftArr.push(shift);
         return axios.post(serverUrl + 'management/addShifts', {
             sessionId:sessionId,
-            shiftsArr:shift
+            shiftArr:shiftArr
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
@@ -268,7 +270,7 @@ var managementRequests = {
         console.log('add shift');
         return axios.post(serverUrl + 'management/deleteShifts', {
             sessionId:sessionId,
-            shiftsArr:shift
+            shiftArr:shift
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
@@ -278,11 +280,25 @@ var managementRequests = {
 
     //TODO:
     getShiftsFromDate: function(firstDate) {
-        console.log('add shift');
+        console.log('get shifts from dates');
         return axios.get(serverUrl + 'management/getShiftsFromDate?fromDate=' + firstDate, {
             headers:{
                 sessionId:sessionId
             }
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
+    },
+
+    publishShifts: function(shift){
+        console.log('publish shift');
+        var shiftArr = [];
+        shiftArr.push(shift);
+        return axios.post(serverUrl + 'management/publishShifts', {
+            sessionId:sessionId,
+            shiftArr:shiftArr
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
@@ -340,20 +356,17 @@ var managerRequests = {
         errorMessage('getShortages', 'Not implemented yet');
     },
 
-    publishShifts: function(shift){
-        console.log('publish shift');
-        return axios.post(serverUrl + 'manager/publishShift', {
-            sessionId:sessionId,
-            shiftsArr:shift
+    getSaleReportXl: function(shift){
+        return axios.get(serverUrl + 'manager/getSaleReportXl', {
+            headers:{
+                sessionId:sessionId,
+                shiftId:shift._id
+            }
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
             return returnVal(false, err);
         })
-    },
-
-    getReports: function(){
-        errorMessage('getReports', 'Not implemented yet');
     }
 };
 

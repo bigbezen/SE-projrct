@@ -22,6 +22,7 @@ describe('shift unit test', function () {
 
     let manager;
     let salesman;
+    let salesman2;
     let shift1;
     let shift2;
     let shifts = [];
@@ -41,11 +42,16 @@ describe('shift unit test', function () {
         shift.endTime = shiftObj.endTime;
         shift.status = shiftObj.status;
         shift.type = shiftObj.type;
-        shift.salesmanId = shiftObj.salesmanId;
-        shift.constraints = shiftObj.constraint;
-        shift.salesReport = shiftObj.salesReport;
-        shift.sales = shiftObj.sales;
-        shift.shiftComments = shiftObj.shiftComments;
+        if('salesmanId' in shiftObj)
+            shift.salesmanId = shiftObj.salesmanId;
+        if('constraints' in shiftObj)
+            shift.constraints = shiftObj.constraint;
+        if('salesReport' in shiftObj)
+            shift.salesReport = shiftObj.salesReport;
+        if('sales' in shiftObj)
+            shift.sales = shiftObj.sales;
+        if('shiftComments' in shiftObj)
+            shift.shiftComments = shiftObj.shiftComments;
         return shift;
     };
 
@@ -73,13 +79,19 @@ describe('shift unit test', function () {
         manager.username = 'shahaf';
         manager.sessionId = '123456';
         manager.jobDetails.userType = 'manager';
-        let res = await dal.addUser(manager);
+        manager = await dal.addUser(manager);
 
         salesman = new userModel();
         salesman.username = 'matan';
         salesman.sessionId = '12123434';
         salesman.jobDetails.userType = 'salesman';
-        res = await dal.addUser(salesman);
+        salesman = await dal.addUser(salesman);
+
+        salesman2 = new userModel();
+        salesman2.username = 'bigbezen';
+        salesman2.sessionId = '1212343456';
+        salesman2.jobDetails.userType = 'salesman';
+        salesman2 = await dal.addUser(salesman2);
 
         store = new storeModel();
         store.name = 'bana';
@@ -89,7 +101,7 @@ describe('shift unit test', function () {
         store.address = 'rager12';
         store.area = 'south';
         store.channel = 'hot';
-        res = await dal.addStore(store);
+        let res = await dal.addStore(store);
 
         product1 = new productModel();
         product1.name = 'absulut';
@@ -151,6 +163,8 @@ describe('shift unit test', function () {
         res = await dal.addEncouragement(enc3);
         res = await dal.addEncouragement(enc4);
 
+        product1 = await dal.addProduct(product1);
+        product2 = await dal.addProduct(product2);
 
         let end = new Date();
         end.setDate(end.getDate() + 1);
@@ -158,8 +172,8 @@ describe('shift unit test', function () {
         let start = new Date();
         start.setDate(start.getDate() + 1);
 
-        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman'};
-        shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman'};
+        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED'};
+        shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED'};
         shifts.push(shift1);
         shifts.push(shift2);
     });
@@ -208,6 +222,164 @@ describe('shift unit test', function () {
             for(let shift of dbShifts){
                 shift = shift.toObject();
                 expect(shift).to.have.property('status', 'CREATED');
+            }
+        });
+    });
+
+    describe('test add shift comment', function () {
+        it('add shift comment not by salesman', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            res = await shiftService.addShiftComment(manager.sessionId, shifts[0]._id, "not user");
+            expect(res).to.have.property('code', 401);
+            expect(res).to.have.property('err', 'user not authorized');
+        });
+
+        it('add shift comment not exist shift id', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            res = await shiftService.addShiftComment(salesman.sessionId, mongoose.Types.ObjectId("notexisting1"), "new comment");
+            expect(res).to.have.property('code', 401);
+            expect(res).to.have.property('err', 'user not authorized');
+        });
+
+        it('add shift comment salesman not an owner', async function () {
+            let salesmanNotOwner = new userModel();
+            salesmanNotOwner.username = 'aviram';
+            salesmanNotOwner.sessionId = '1234567';
+            salesmanNotOwner.jobDetails.userType = 'salesman';
+            let res = await dal.addUser(salesmanNotOwner);
+
+            res = await shiftService.addShifts(manager.sessionId, shifts);
+            res = await shiftService.addShiftComment(salesmanNotOwner.sessionId, shifts[0]._id, "new comment");
+            expect(res).to.have.property('code', 401);
+            expect(res).to.have.property('err', 'user not authorized');
+        });
+
+        it('add shift comment by salesman', async function () {
+            shifts[0].salesmanId = salesman._id;
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+            shifts[0]._id = shifts[0]._id.toString();
+            shifts[1]._id = shifts[1]._id.toString();
+
+            let res = await shiftService.addShiftComment(salesman.sessionId, shifts[0]._id, "new comment");
+            expect(res).to.have.property('code', 200);
+            res = await dal.getShiftsByIds([shifts[0]._id]);
+            res = res[0];
+            assert.equal(res.shiftComments[0], 'new comment');
+        });
+    });
+
+
+    describe('test start shift', function(){
+        it('start shift not by salesman', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[1].status = "CREATED";
+
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+
+            let result = await shiftService.startShift(manager.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('start shift not by salesman owner', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[1].status = "CREATED";
+
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+
+            let result = await shiftService.startShift(salesman2.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('start shift not exist shift', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            shifts[1].status = "PUBLISHED";
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+            shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[1].salesmanId = salesman._id.toString();
+
+            let result = await shiftService.startShift(salesman.sessionId, shifts[1]);
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', 'shift not found');
+        });
+
+        it('start shift not published', async function(){
+            shifts[0].status = "NOT-PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.startShift(salesman.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 403);
+            expect(result).to.have.property('err', 'shift not published');
+        });
+
+        it('start shift valid', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0].salesReport = [];
+            shifts[0].salesReport.push({'productId': product1._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product2._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                shifts[0].salesReport[i].stockStartShift =  2;
+                shifts[0].salesReport[i].opened =  1;
+                shifts[0].salesReport[i].stockEndShift =  1;
+            }
+
+            let result = await shiftService.startShift(salesman.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 200);
+
+            result = await dal.getShiftsByIds([shifts[0]._id]);
+            expect(result[0]).to.have.property('status', 'STARTED');
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                assert.equal(shifts[0].salesReport[i].stockStartShift, 2);
+                assert.equal(shifts[0].salesReport[i].opened, 1);
+                assert.equal(shifts[0].salesReport[i].stockEndShift, 1);
             }
         });
     });
@@ -814,6 +986,31 @@ describe('shift unit test', function () {
             let result = await shiftService.getActiveShiftEncouragements(user1.sessionId, 'invalid8shif');
             expect(result).to.have.property('code', 409);
 
+        });
+    });
+
+    describe('test get shifts from date', function(){
+        it('get shifts from date valid', async function(){
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+
+            let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date());
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shiftArr');
+            for(let shift of result.shiftArr){
+                let i;
+                if(shift._id == shifts[0]._id)
+                    i = 0;
+                else
+                    i = 1;
+                expect(shift).to.include.all.keys('store', 'startTime', 'endTime', 'status', 'salesman');
+                expect(new Date(shift.startTime)).to.equalDate(new Date(shifts[0].startTime));
+                expect(new Date(shift.endTime)).to.equalDate(new Date(shifts[0].endTime));
+
+            }
         });
     });
 

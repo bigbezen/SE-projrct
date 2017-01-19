@@ -47,6 +47,8 @@ let addShifts = async function(sessionId, shiftArr){
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
+        if('salesmanId' in shift)
+            newShift.salesmanId = shift.salesmanId;
         newShift.storeId = shift.storeId;
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
@@ -81,7 +83,7 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
 
     let allStores = await dal.getAllStores();
     let storeDict = {};
-    for(store of allStores)
+    for(let store of allStores)
         storeDict[store._id] = store.toObject();
 
     let newSaleReportSchema = await _createNewSalesReport();
@@ -204,27 +206,33 @@ let getShiftsFromDate = async function(sessionId, fromDate){
         return {'code': 401, 'err': 'user not authorized'};
 
     let allShifts = await dal.getShiftsFromDate(fromDate);
-    allShifts = allShifts.map(async function(shift){
-        shift = shift.toObject();
-        shift = _fillUserDetails(shift);
-        shift = _fillStoreDetails(shift);
-        return shift;
-    });
+    allShifts = allShifts.map(x => x.toObject());
+    for(let shift of allShifts){
+        shift = await _fillUserDetails(shift);
+        shift = await _fillStoreDetails(shift);
+    }
+    console.log('bla');
     if(allShifts == null)
         return {'code': 500, 'err': 'something went wrong'};
     else
-        return {'code': 200, 'shiftsArr': allShifts};
+        return {'code': 200, 'shiftArr': allShifts};
 };
 
 let startShift = async function(sessionId, shift){
     logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
 
-    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift', null);
-    if(salesman == null || salesman._id != shift.salesmanId)
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift');
+    if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
     let shiftDb = await dal.getShiftsByIds([shift._id]);
     shiftDb = shiftDb[0];
+    if(shiftDb == null)
+        return {'code': 404, 'err': 'shift not found'};
+
+    if(shiftDb.status != 'PUBLISHED')
+        return {'code': 403, 'err': 'shift not published'};
+
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'STARTED';
     let result = await dal.updateShift(shiftDb);
@@ -305,7 +313,7 @@ let addShiftComment = async function(sessionId, shiftId, content){
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'addShiftComment', null);
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
-    if(salesman == null || shift == null || salesman._id != shift.salesmanId)
+    if(salesman == null || shift == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
     shift.shiftComments.push(content);
@@ -389,14 +397,16 @@ let _createNewSalesReport = async function(){
 };
 
 let _fillUserDetails = async function(shift){
-    let user = await dal.getUserById(shift.salesmanId);
-    user = user.toObject();
-    let userDetails = {};
-    userDetails.username = user.username;
-    userDetails.personal = user.personal;
-    userDetails._id = user._id;
-    shift.salesman = userDetails;
-    delete shift.salesmanId;
+    let user = await dal.getUsersByIds([shift.salesmanId]);
+    if(user.length != 0) {
+        user = user[0].toObject();
+        let userDetails = {};
+        userDetails.username = user.username;
+        userDetails.personal = user.personal;
+        userDetails._id = user._id;
+        shift.salesman = userDetails;
+        delete shift.salesmanId;
+    }
     return shift;
 };
 

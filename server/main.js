@@ -4,6 +4,7 @@ let express         = require('express');
 let bodyparser      = require('body-parser');
 let path            = require('path');
 let mongoose        = require('mongoose');
+let fs              = require('fs');
 
 let logger          = require('./src/Utils/Logger/logger');
 let validator       = require('./src/Utils/Validators/index');
@@ -13,6 +14,7 @@ let userService             = require('./src/Services/user/index');
 let productService          = require('./src/Services/product/index');
 let encouragementService    = require('./src/Services/encouragements/index');
 let messageService          = require('./src/Services/messages/index');
+let reportsService          = require('./src/Services/reports/index');
 let shiftService             = require('./src/Services/shift/index');
 
 let app = express();
@@ -548,15 +550,15 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getShiftsFromDate', async function(req, res){
-        if(!('sessionid' in req.headers) || req.query.get('fromDate') == null) {
+        if(!('sessionid' in req.headers) || (!('fromDate' in req.query))) {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.get('fromDate'));
+        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.fromDate);
         if(result.code == 200)
-            return {'code': 200, 'shiftsArr': result.shiftsArr};
+            res.status(200).send(result.shiftArr);
         else
-            return {'code': result.code, 'err': result.err};
+            res.status(result.code).send(result.err);
     });
 
     app.post('/management/editShifts', function (req, res) {
@@ -617,7 +619,12 @@ function _setapApiEndpoints() {
         res.status(200).send('publish shifts');
     });
 
-    app.get('/manager/getReports', function (req, res) {
-        res.status(200).send('get reports of some kind');
+    app.get('/manager/getSaleReportXl', async function (req, res) {
+        var result = await reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
+        if(result.code == 200){
+            let file = res.download(result.path);
+        }
+        else
+            res.status(result.code).send(result.err);
     });
 }

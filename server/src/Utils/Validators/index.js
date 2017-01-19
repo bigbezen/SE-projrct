@@ -8,7 +8,7 @@ var checkParams = function(params, param_arr, type_arr){
     return true;
 };
 
-let stringT = typeof(stringT);
+let stringT = typeof('string');
 let numberT = typeof(1);
 let objectT = typeof({'key': 'value'});
 let boolT = typeof(true);
@@ -72,6 +72,14 @@ module.exports = {
                 [stringT, stringT, stringT, stringT, stringT, stringT, stringT]);
     },
 
+    editStore: function(params){
+        return checkParams(params, ['sessionId', 'storeDetails'],
+                ['string', 'object']) &&
+            checkParams(params.storeDetails, ['name', 'managerName', 'phone', 'city', 'address', 'area', 'channel'],
+                ['string', 'string', 'string', 'string', 'string', 'string', 'string']);
+    },
+
+
     deleteStore: function(params){
         return checkParams(params, ['sessionId', 'storeId'],
             [stringT, stringT]);
@@ -82,6 +90,13 @@ module.exports = {
                 [stringT, objectT]) &&
                 checkParams(params.productDetails, ['name', 'retailPrice', 'salePrice', 'category', 'subCategory', 'minRequiredAmount', 'notifyManager'],
                     [stringT, numberT, numberT, stringT, stringT, numberT, boolT]);
+    },
+
+    editProduct: function(params) {
+        return checkParams(params, ['sessionId', 'productDetails'],
+                ['string', 'object']) &&
+            checkParams(params.productDetails, ['name', 'retailPrice', 'salePrice', 'category', 'subCategory', 'minRequiredAmount', 'notifyManager'],
+                ['string', 'Number', 'Number', 'string', 'string', 'Number', 'boolean']);
     },
 
     deleteProduct: function(params){
@@ -96,6 +111,14 @@ module.exports = {
                 [boolT, numberT, numberT, objectT]);
     },
 
+    editEncouragement: function(params){
+        return checkParams(params, ['sessionId', 'encouragementDetails'],
+                ['string', 'object']) &&
+            checkParams(params.encouragementDetails, ['active', 'numOfProducts', 'rate', 'products'],
+                ['boolean', 'Number', 'Number', 'object']);
+    },
+
+
     deleteEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encuragementId'], [stringT, stringT]);
     },
@@ -105,8 +128,8 @@ module.exports = {
     },
 
     addOrPublishShifts: function(params){
-        var res = checkParams(params, ['sessionId', 'shiftsArr'], [stringT, objectT]);
-        for(shift of params.shiftsArr){
+        var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
+        for(let shift of params.shiftArr){
             if(res)
                 res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], [stringT, stringT, stringT, stringT])
         }

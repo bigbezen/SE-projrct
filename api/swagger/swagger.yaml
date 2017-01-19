@@ -1146,7 +1146,7 @@ paths:
             properties:
               sessionId:
                 type: string
-              shiftsArr:
+              shiftArr:
                 type: array
                 description: an array of shift objects
                 items:

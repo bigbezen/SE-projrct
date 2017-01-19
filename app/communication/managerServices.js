@@ -49,14 +49,9 @@ var helpers = {
         return connection.managerRequests.getShortages();
     },
 
-    publishShifts: function(shift){
-        console.log('managerServices- publishShifts');
-        return connection.managerRequests.publishShifts(shift);
-    },
-
-    getReports: function(){
+    getSaleReportXl: function(shift){
         console.log('managerServices- getReports');
-        return connection.managerRequests.getReports();
+        return connection.managerRequests.getSaleReportXl(shift);
     }
 };
 

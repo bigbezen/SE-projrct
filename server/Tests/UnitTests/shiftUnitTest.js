@@ -1012,6 +1012,8 @@ describe('shift unit test', function () {
 
             }
         });
+
+        it('test get shifts from date ')
     });
 
     describe('test end shift', function(){

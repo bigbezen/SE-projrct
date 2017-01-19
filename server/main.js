@@ -24,7 +24,10 @@ let port = 3000;
 app.use(bodyparser.json());
 app.listen(port);
 app.locals.baseurl = "http://localhost:" + port;
-app.locals.mongourl = 'mongodb://localhost/IBBLS';
+let db = 'IBBLS';
+if('DB' in process.env)
+    db = process.env['DB'];
+app.locals.mongourl = 'mongodb://localhost/' + db;
 
 
 

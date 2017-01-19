@@ -1,15 +1,18 @@
 var assert              = require('chai').assert;
 var expect              = require('chai').expect;
-var main                = require('../../main');
 var axios               = require('axios');
-
 let dal                 = require('../../src/DAL/dal');
+
 let userModel           = require('../../src/Models/user');
+
+process.env['DB'] = 'AcceptenceTestDb';
+
+var main                = require('../../main');
 
 var serverUrl = 'http://localhost:3000/';
 
 
-describe('manager acceptance test', function(){
+describe('salesman acceptance test', function(){
 
     let manager;
     let salesman;
@@ -55,14 +58,11 @@ describe('manager acceptance test', function(){
 
     describe('test add user', function(){
         it('add user valid', async function(){
-            axios.post(serverUrl + 'management/addUser', {
+            let result = await axios.post(serverUrl + 'management/addUser', {
                 sessionId: manager.sessionId,
                 userDetails: salesman
-            }).then(function(info){
-                expect(info).to.have.property('status', 200);
-            }).catch(function (err){
-                expect(2).to.be.equal(1);
             });
+            console.log(result);
         });
     });
 });

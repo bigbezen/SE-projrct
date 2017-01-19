@@ -73,6 +73,8 @@ describe('user unit test', function () {
             "encouragements": []
         };
 
+        let res = await dal.addUser(user);
+
         let managerUser = new userModel();
         managerUser.username = 'manager';
         managerUser.password = cypher.encrypt("123456");
@@ -81,10 +83,11 @@ describe('user unit test', function () {
         managerUser.personal.id = "12345";
         managerUser.contact = "";
         managerUser.startDate = "";
-        managerUser.endDate = "";
 
-        dal.addUser(user);
-        dal.addUser(managerUser);
+        managerUser.endDate = "";
+        let pass = user.password;
+        console.log(pass);
+        res = await dal.addUser(managerUser);
 
     });
 

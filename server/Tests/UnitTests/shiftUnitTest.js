@@ -172,7 +172,7 @@ describe('shift unit test', function () {
         let start = new Date();
         start.setDate(start.getDate() + 1);
 
-        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED'};
+        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'salesmanId': salesman._id};
         shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED'};
         shifts.push(shift1);
         shifts.push(shift2);

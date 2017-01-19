@@ -218,9 +218,12 @@ describe('user unit test', function () {
             expect(res.jobDetails).to.have.property('userType', 'salesman');
             userDetails.username = 'edited username';
 
-            await userServices.editUser('sessionId', 'shahaf', userDetails);
+            res = await userServices.editUser('sessionId', 'shahaf', userDetails);
+            expect(res).to.have.property('code', 200);
+            res = await dal.getUserByUsername('edited username');
             expect(res).to.not.be.null;
-            expect(rest).to.have.property('username', 'edited username');
+            res = res.toObject();
+            expect(res).to.have.property('username', 'edited username');
 
         });
 

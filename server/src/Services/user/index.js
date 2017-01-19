@@ -113,7 +113,6 @@ var editUser = async function(sessionId, username, userDetails){
     user.jobDetails = userDetails.jobDetails;
 
     var res = await dal.updateUser(user);
-    console.log('a');
     if(res.ok == 1){
         return {'code': 200};
     }

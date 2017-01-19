@@ -7,6 +7,7 @@ var BootstrapTable = ReactBsTable.BootstrapTable;
 var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
+var managerServices = require('../communication/managerServices');
 var helpers = require('../utils/Helpers');
 var paths = require('../utils/Paths');
 var moment = require('moment');
@@ -94,6 +95,20 @@ var ShiftsContainer = React.createClass({
             query: row
         })
     },
+    onClickGetReportButton: function(cell, row, rowIndex){
+        managerServices.getSaleReportXl(row).then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    console.log("works!!");
+                } else {
+                    alert("Error while creating excel file: "+ result.info);
+                }
+            } else {
+                console.log("error in getSaleReportXl: " + n);
+            }
+        })
+    },
     onClickDeleteButton: function(cell, row, rowIndex){
         this.setState({
             shifts: null
@@ -126,24 +141,38 @@ var ShiftsContainer = React.createClass({
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {
-        return (
-            <button
-                type="button"
-                onClick={() =>
-                    this.onClickEditButton(cell, row, rowIndex)}>
-                {constantStrings.edit_string}
-            </button>
-        )
+        var isFinished = (row.status == 'FINISHED'); //TODO: is this ok?
+        if (isFinished) {
+            return (
+                <button
+                    type="button"
+                    onClick={() =>
+                        this.onClickGetReportButton(cell, row, rowIndex)}>
+                    {constantStrings.getReport_string}
+                </button>
+            )
+        } else {
+            return (
+                <button
+                    type="button"
+                    onClick={() =>
+                        this.onClickEditButton(cell, row, rowIndex)}>
+                    {constantStrings.edit_string}
+                </button>
+            )
+        }
     },
     deleteButton: function(cell, row, enumObject, rowIndex) {
-        return (
-            <button
-                type="button"
-                onClick={() =>
-                    this.onClickDeleteButton(cell, row, rowIndex)}>
-                {constantStrings.delete_string}
-            </button>
-        )
+        var isFinished = (row.status == 'FINISHED'); //TODO: is this ok?
+         return (
+             <button
+                 type="button"
+                 disabled= {isFinished}
+                 onClick={() =>
+                     this.onClickDeleteButton(cell, row, rowIndex)}>
+                 {constantStrings.delete_string}
+             </button>
+         )
     },
     renderTable: function () {
         return (

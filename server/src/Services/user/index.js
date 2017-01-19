@@ -87,8 +87,10 @@ var editUser = async function(sessionId, username, userDetails){
         return {'code': 401, 'err': 'user not authorized'};
 
     var user = await dal.getUserByUsername(username);
-    if(user == null)
+    if(user == null) {
         return {'code': 409, 'err': 'edited user does not exist'};
+    }
+    user = user.toObject();
     if(userDetails.username != user.username) {
         var isExistUsername = await dal.getUserByUsername(userDetails.username);
         if (isExistUsername != null) {
@@ -110,8 +112,9 @@ var editUser = async function(sessionId, username, userDetails){
     user.contact = userDetails.contact;
     user.jobDetails = userDetails.jobDetails;
 
-    var res = await dal.editUser(user);
-    if(res != null){
+    var res = await dal.updateUser(user);
+    console.log('a');
+    if(res.ok == 1){
         return {'code': 200};
     }
     else{

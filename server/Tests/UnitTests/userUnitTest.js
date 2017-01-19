@@ -188,7 +188,7 @@ describe('user unit test', function () {
             managerUser.jobDetails.userType = "other user types";
             await managerUser.save();
 
-            let res = await userServices.addUser("sessionId", userDetails);
+            await userServices.addUser("sessionId", userDetails);
             expect(res).to.have.property('code', 401);
             expect(res).to.have.property('err');
         });
@@ -218,7 +218,7 @@ describe('user unit test', function () {
             expect(res.jobDetails).to.have.property('userType', 'salesman');
             userDetails.username = 'edited username';
 
-            let res = await userServices.editUser('sessionId', 'shahaf', userDetails);
+            await userServices.editUser('sessionId', 'shahaf', userDetails);
             expect(res).to.not.be.null;
             expect(rest).to.have.property('username', 'edited username');
 
@@ -269,7 +269,7 @@ describe('user unit test', function () {
             managerUser.jobDetails.userType = "other user types";
             await managerUser.save();
 
-            let res = await userServices.editUser("sessionId", "shahaf", userDetails);
+            await userServices.editUser("sessionId", "shahaf", userDetails);
             expect(res).to.have.property('code', 401);
             expect(res).to.have.property('err');
         });

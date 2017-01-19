@@ -993,15 +993,24 @@ describe('shift unit test', function () {
         it('get shifts from date valid', async function(){
             for(let shift of shifts){
                 shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
                 let res = await dal.addShift(shift);
             }
 
             let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shiftArr');
-            // for(let shift of result.shiftArr){
-            //     if(shift._id == )
-            // }
+            for(let shift of result.shiftArr){
+                let i;
+                if(shift._id == shifts[0]._id)
+                    i = 0;
+                else
+                    i = 1;
+                expect(shift).to.include.all.keys('store', 'startTime', 'endTime', 'status', 'salesman');
+                expect(new Date(shift.startTime)).to.equalDate(new Date(shifts[0].startTime));
+                expect(new Date(shift.endTime)).to.equalDate(new Date(shifts[0].endTime));
+
+            }
         });
     });
 

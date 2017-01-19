@@ -206,11 +206,12 @@ let getShiftsFromDate = async function(sessionId, fromDate){
         return {'code': 401, 'err': 'user not authorized'};
 
     let allShifts = await dal.getShiftsFromDate(fromDate);
+    allShifts = allShifts.map(x => x.toObject());
     for(let shift of allShifts){
-        shift = shift.toObject();
         shift = await _fillUserDetails(shift);
         shift = await _fillStoreDetails(shift);
     }
+    console.log('bla');
     if(allShifts == null)
         return {'code': 500, 'err': 'something went wrong'};
     else
@@ -396,9 +397,9 @@ let _createNewSalesReport = async function(){
 };
 
 let _fillUserDetails = async function(shift){
-    let user = await dal.getUserById(shift.salesmanId);
-    if(user != null) {
-        user = user.toObject();
+    let user = await dal.getUsersByIds([shift.salesmanId]);
+    if(user.length != 0) {
+        user = user[0].toObject();
         let userDetails = {};
         userDetails.username = user.username;
         userDetails.personal = user.personal;

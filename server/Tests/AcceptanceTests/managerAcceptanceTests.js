@@ -8,20 +8,6 @@ let userModel           = require('../../src/Models/user');
 
 var serverUrl = 'http://localhost:3000/';
 
-/*
-return axios.post(serverUrl + 'user/login', {
-    username:username,
-    password:password
-}).then(function (info) {
-    sessionId = info.data.sessionId;
-    name = username;
-    userType = info.data.userType;
-    console.log('the user ' + username + ' Was logged in. user type: ' + info.data.userType);
-    return returnVal(true ,info.data.userType);
-}).catch(function (err) {
-    errorMessage('Error in login', err);
-    return returnVal(false, err);
-})*/
 
 describe('manager acceptance test', function(){
 
@@ -29,6 +15,8 @@ describe('manager acceptance test', function(){
     let salesman;
 
     beforeEach(async function(){
+        let res = await dal.cleanDb();
+
         manager = new userModel();
         manager.username = 'shahaf';
         manager.sessionId = '123456';
@@ -37,9 +25,24 @@ describe('manager acceptance test', function(){
 
         salesman = {};
         salesman.username = 'matan';
-        salesman.personal = {};
-        salesman.personal.id = '1234';
+        salesman.personal = {
+            id: '12345',
+            firstName: 'israel',
+            lastName: 'israeli',
+            sex: 'male',
+            birthday: new Date()
+        };
         salesman.startDate = new Date();
+        salesman.contact = {
+            address: {
+                street: 'blabla street',
+                number: '2',
+                city: 'rishon',
+                zip: '2134'
+            },
+            phone: '12345',
+            email: 'steins@post.bgu.ac.il'
+        };
         salesman.jobDetails = {
             userType: 'salesman'
         };
@@ -47,7 +50,7 @@ describe('manager acceptance test', function(){
     });
 
     afterEach(async function(){
-        await dal.cleanDb();
+        let res = await dal.cleanDb();
     });
 
     describe('test add user', function(){
@@ -56,7 +59,7 @@ describe('manager acceptance test', function(){
                 sessionId: manager.sessionId,
                 userDetails: salesman
             }).then(function(info){
-                expect(2).to.be.equal(2);
+                expect(info).to.have.property('status', 200);
             }).catch(function (err){
                 expect(2).to.be.equal(1);
             });

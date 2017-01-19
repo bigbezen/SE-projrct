@@ -1,6 +1,6 @@
 
 
-var shift = {
+var shiftModel = {
     'storeId': String,
     'startTime': Date,
     'endTime': Date,
@@ -32,5 +32,7 @@ var shift = {
     ]
 };
 
+
+function shift(){};
 
 module.exports = shift;

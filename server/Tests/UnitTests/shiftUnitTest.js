@@ -42,11 +42,16 @@ describe('shift unit test', function () {
         shift.endTime = shiftObj.endTime;
         shift.status = shiftObj.status;
         shift.type = shiftObj.type;
-        shift.salesmanId = shiftObj.salesmanId;
-        shift.constraints = shiftObj.constraint;
-        shift.salesReport = shiftObj.salesReport;
-        shift.sales = shiftObj.sales;
-        shift.shiftComments = shiftObj.shiftComments;
+        if('salesmanId' in shiftObj)
+            shift.salesmanId = shiftObj.salesmanId;
+        if('constraints' in shiftObj)
+            shift.constraints = shiftObj.constraint;
+        if('salesReport' in shiftObj)
+            shift.salesReport = shiftObj.salesReport;
+        if('sales' in shiftObj)
+            shift.sales = shiftObj.sales;
+        if('shiftComments' in shiftObj)
+            shift.shiftComments = shiftObj.shiftComments;
         return shift;
     };
 
@@ -167,8 +172,8 @@ describe('shift unit test', function () {
         let start = new Date();
         start.setDate(start.getDate() + 1);
 
-        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman'};
-        shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman'};
+        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED'};
+        shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED'};
         shifts.push(shift1);
         shifts.push(shift2);
     });
@@ -981,6 +986,19 @@ describe('shift unit test', function () {
             let result = await shiftService.getActiveShiftEncouragements(user1.sessionId, 'invalid8shif');
             expect(result).to.have.property('code', 409);
 
+        });
+    });
+
+    describe('test get shifts from date', function(){
+        it('get shifts from date valid', async function(){
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                let res = await dal.addShift(shift);
+            }
+
+            let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date());
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shiftArr');
         });
     });
 

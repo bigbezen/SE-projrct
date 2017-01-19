@@ -4,6 +4,7 @@
 
 var React = require('react');
 var managementServices = require('../communication/managementServices');
+var managerServices = require('../communication/managerServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var shiftInfo = require('../models/shift');
 var flatten = require('flat');
@@ -129,14 +130,23 @@ var ShiftDetails = React.createClass({
 
         var context = this.context;
         if (this.state.editing) {
-            newUser._id = this.props.location.query._id;
+            newShift._id = this.props.location.query._id;
             managementServices.editShift(newShift).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        alert('edit succeed');
-                        context.router.push({
-                            pathname: paths.manager_home_path
+                    var val1 = n;
+                    if (val1.success) {
+                        managerServices.publishShifts(newShift).then(function (n) {
+                            if (n) {
+                                var val2 = n;
+                                if (val2.success) {
+                                    alert('publish succeed');
+                                    context.router.push({
+                                        pathname: paths.manager_home_path
+                                    })
+                                }
+                            } else {
+                                alert('edit failed. please check your parameters');
+                            }
                         })
                     } else {
                         alert('edit failed. please check your parameters');
@@ -150,11 +160,20 @@ var ShiftDetails = React.createClass({
         }else {
             managementServices.addShift(newShift).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        alert('add succeed');
-                        context.router.push({
-                            pathname: paths.manager_home_path
+                    var val1 = n;
+                    if (val1.success) {
+                        managerServices.publishShifts(newShift).then(function (n) {
+                            if (n) {
+                                var val2 = n;
+                                if (val2.success) {
+                                    alert('publish succeed');
+                                    context.router.push({
+                                        pathname: paths.manager_home_path
+                                    })
+                                }
+                            } else {
+                                alert('add failed. please check your parameters');
+                            }
                         })
                     } else {
                         alert('add failed. please check your parameters');
@@ -224,17 +243,20 @@ var ShiftDetails = React.createClass({
     },
 
     setFields: function () {
-        this.currProduct = flatten.unflatten(this.props.location.query);
+        this.currShift = flatten.unflatten(this.props.location.query);
 
-        this.state.shishiftType =  this.currProduct.type;
-        this.state.storeId = this.currProduct.storeId;
-        this.state.salesmanId = this.currProduct.salesmanId;
+        this.state.shishiftType =  this.currShift.type;
+        this.state.storeId = this.currShift.store._id;
+        this.state.salesmanId = this.currShift.salesman._id;
 
-        this.refs.storeBox.value = this.currProduct.storeId;
-        this.refs.userBox.value = this.currProduct.salesmanId;
-        this.refs.shiftTypeBox.value =  this.currProduct.type;
-        this.refs.startTimeBox.value = moment(this.currProduct.startTime).format('hh:mm YYYY-MM-DD'); //TODO: change it to time with hour
-        this.refs.endTimeox.value = moment(this.currProduct.endTime).format('hh:mm YYYY-MM-DD'); //TODO: change it to time with hour
+        this.refs.startTimeBox.type = "datetime";
+        this.refs.endTimeBox.type = "datetime";
+
+        this.refs.storeBox.value = this.currShift.store.name; //TODO- fix this
+        this.refs.userBox.value = this.currShift.salesman.username;  //TODO- fix this
+        this.refs.shiftTypeBox.value =  this.currShift.type;
+        this.refs.startTimeBox.value = moment(this.currShift.startTime).format('YYYY-MM-DD hh:mm');
+        this.refs.endTimeBox.value = moment(this.currShift.endTime).format('YYYY-MM-DD hh:mm');
     },
     render: function () {
         return this.addNewShift();

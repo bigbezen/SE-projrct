@@ -248,6 +248,10 @@ var ShiftDetails = React.createClass({
     setFields: function () {
         this.currShift = flatten.unflatten(this.props.location.query);
 
+        console.log('11111111111');
+        console.log(this.currShift);
+        console.log('22222222222');
+
         this.state.shishiftType =  this.currShift.type;
         this.state.storeId = this.currShift.store._id;
         this.state.salesmanId = this.currShift.salesman._id;

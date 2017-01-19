@@ -23,7 +23,9 @@ var ShiftDetails = React.createClass({
             editing: false,
             storeId: '',
             salesmanId: '',
-            shiftType:''
+            shiftType:'',
+            storesForDropDown:[] ,
+            salesmenForDropDown:[]
         }
     },
 
@@ -54,6 +56,7 @@ var ShiftDetails = React.createClass({
 
     getOptionsForStores: function() {
         var optionsForDropDown = [];
+        var self = this;
         managementServices.getAllStores().then(function (n) {
             if (n) {
                 var val = n;
@@ -64,7 +67,7 @@ var ShiftDetails = React.createClass({
                         var currOption = arrayOfObjects[i];
                         optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
                     }
-                      return optionsForDropDown;
+                    self.setState({storesForDropDown: optionsForDropDown});
                 } else {
                     alert('cannot load the list of stores. please try again later');
                 }
@@ -77,6 +80,7 @@ var ShiftDetails = React.createClass({
 
     getOptionsForSalesmen: function() {
         var optionsForDropDown = [];
+        var self = this;
         managementServices.getAllUsers().then(function (n) {
             if (n) {
                 var val = n;
@@ -87,7 +91,7 @@ var ShiftDetails = React.createClass({
                         var currOption = arrayOfObjects[i];
                         optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
                     }
-                    return optionsForDropDown;
+                    self.setState({salesmenForDropDown: optionsForDropDown});
                 } else {
                     alert('cannot load the list of stores. please try again later');
                 }
@@ -196,14 +200,14 @@ var ShiftDetails = React.createClass({
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.storeName_string}</label>
                         <select className="col-sm-4" onChange={this.handleStoreIdChange} ref="storeBox" >
-                            {this.getOptionsForStores()}
+                            {this.state.storesForDropDown}
                         </select>
                     </div>
 
                     <div className="form-group ">
                         <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.username_string}</label>
                         <select className="col-sm-4" onChange={this.handleSalesmanIdChange} ref="userBox" >
-                            {this.getOptionsForSalesmen()}
+                            {this.state.salesmenForDropDown}
                         </select>
                     </div>
 
@@ -259,6 +263,8 @@ var ShiftDetails = React.createClass({
         this.refs.endTimeBox.value = moment(this.currShift.endTime).format('YYYY-MM-DD hh:mm');
     },
     render: function () {
+        this.getOptionsForStores();
+        this.getOptionsForSalesmen();
         return this.addNewShift();
     }
 });

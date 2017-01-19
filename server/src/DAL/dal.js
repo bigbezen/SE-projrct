@@ -107,7 +107,7 @@ module.exports = {
     },
 
     getEncouragement: async function(id){
-        return encouragementModel.find({'_id': id});
+        return encouragementModel.findOne({'_id': id});
     },
 
     getProductById: async function (productId){

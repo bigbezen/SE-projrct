@@ -985,9 +985,102 @@ describe('shift unit test', function () {
     });
 
     describe('test end shift', function(){
-        it('end shift valid', async function(){
+        it('end shift not by salesman', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
 
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.endShift(manager.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('end shift not by salesman owner', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.endShift(salesman2.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('end shift not exist shift', async function(){
+            shifts[0].status = "STARTED";
+            shifts[1].status = "STARTED";
+
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.endShift(salesman.sessionId, shifts[1]);
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', 'shift not found');
+        });
+
+        it('end shift not started', async function(){
+            shifts[0].status = "NOT-started";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.endShift(salesman.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 403);
+            expect(result).to.have.property('err', 'shift not started');
+        });
+
+        it('end shift valid', async function(){
+            shifts[0].status = "STARTED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0].salesReport = [];
+            shifts[0].salesReport.push({'productId': product1._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product2._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                shifts[0].salesReport[i].stockStartShift =  2;
+                shifts[0].salesReport[i].opened =  1;
+                shifts[0].salesReport[i].stockEndShift =  1;
+            }
+
+            let result = await shiftService.endShift(salesman.sessionId, shifts[0]);
+            expect(result).to.have.property('code', 200);
+
+            result = await dal.getShiftsByIds([shifts[0]._id]);
+            expect(result[0]).to.have.property('status', 'FINISHED');
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                assert.equal(shifts[0].salesReport[i].stockStartShift, 2);
+                assert.equal(shifts[0].salesReport[i].opened, 1);
+                assert.equal(shifts[0].salesReport[i].stockEndShift, 1);
+            }
         });
     });
-
 });

@@ -16,8 +16,15 @@ let getSaleReportXl =  async function(sessionId, shiftId){
 
     let store = await dal.getStoresByIds([shift.storeId]);
     store = store[0];
+    if(store == null)
+        return {'code': 404, 'err': 'store not exist'};
+
+    if(shift.status != 'FINISHED')
+        return {'code': 404, 'err': 'shift not finished status'};
+
     let salesman = await dal.getUsersByIds([shift.salesmanId]);
     salesman = salesman[0];
+
     let workbook = new Excel.Workbook();
 
     workbook.xlsx.readFile('saleReport.xlsx')

@@ -16,6 +16,7 @@ var funcNameToPermission = {
     'deleteUser': ['manager'],
     'getAllUsers': ['manager'],
     'addStore': ['manager'],
+    'getStore': ['manager','salesman'],
     'deleteStore': ['manager'],
     'editStore': ['manager'],
     'getAllStores': ['manager','salesman'],

@@ -251,4 +251,38 @@ describe('store unit test', function () {
             assert.equal(result.stores.length, 2, 'the db not contains any store');
         });
     });
+
+    describe('test get store', function () {
+        it('get store not by permission user', async function () {
+            let result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result =  await storeService.getStore('notuser',newStoreDetails._id);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'store return null');
+        });
+
+        it('get store by manager', async function () {
+            let result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await storeService.getStore(manager.sessionId, result.store._id.toString());
+            assert.equal(result.err,null);
+            assert.equal(result.code, 200, 'code 200');
+
+            assert.equal(result.store.name, newStoreDetails.name);
+        });
+
+        it('get store by salesman', async function () {
+            let result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await storeService.getStore(notManager.sessionId, result.store._id.toString());
+            assert.equal(result.err,null);
+            assert.equal(result.code, 200, 'code 200');
+
+            assert.equal(result.store.name, newStoreDetails.name);
+        });
+
+        it('get store not exist', async function () {
+            let result = await storeService.getStore(notManager.sessionId, "notexisting1");
+            assert.equal(result.err,'no such store');
+            assert.equal(result.code, 409, 'code 409');
+        });
+    });
 });

@@ -88,7 +88,7 @@ let getEncouragement = async function(sessionId, encouragementId){
     let encouragement = await dal.getEncouragement(encouragementId);
     if(encouragement == null)
         return {'code': 409, 'err': 'no such encouragement'};
-    return {'code': 200, 'encouragement': encouragement.toObject()};
+    return {'code': 200, 'encouragement': encouragement};
 };
 
 let calculateEncouragements = async function(saleReport){

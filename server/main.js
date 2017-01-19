@@ -15,7 +15,7 @@ let productService          = require('./src/Services/product/index');
 let encouragementService    = require('./src/Services/encouragements/index');
 let messageService          = require('./src/Services/messages/index');
 let reportsService          = require('./src/Services/reports/index');
-let shiftSerice             = require('./src/Services/shift/index');
+let shiftService             = require('./src/Services/shift/index');
 
 let app = express();
 
@@ -448,7 +448,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+        let result = await encouragementService.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -462,7 +462,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        let result = await encouragementService.editEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -476,7 +476,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        let result = await encouragementService.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -490,7 +490,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.getAllEncouragements(req.headers.sessionid);
+        let result = await encouragementService.getAllEncouragements(req.headers.sessionid);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -504,7 +504,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementServices.getEncouragement(req.headers.sessionid, req.params.encouragementId);
+        let result = await encouragementService.getEncouragement(req.headers.sessionid, req.params.encouragementId);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }

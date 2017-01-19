@@ -260,4 +260,37 @@ describe('encouragements unit test', function () {
         });
     });
 
+    describe('test get encouragement', function () {
+        it('get product not by permission user', async function () {
+            let result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            result =  await encouragementServices.getEncouragement('notuser', newEncouragement._id);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.encouragement, null, 'encouragement return null');
+        });
+
+        it('get encouragement by manager', async function () {
+            let result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            result =  await encouragementServices.getEncouragement(manager.sessionId, result.encouragement._id);
+            assert.equal(result.err,null);
+            assert.equal(result.code, 200, 'code 200');
+
+            assert.equal(result.encouragement.name, newEncouragement.name);
+        });
+
+        it('get encouragement by salesman', async function () {
+            let result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            result =  await encouragementServices.getEncouragement(notManager.sessionId, result.encouragement._id);
+            assert.equal(result.err,null);
+            assert.equal(result.code, 200, 'code 200');
+
+            assert.equal(result.encouragement.name, newEncouragement.name);
+        });
+
+        it('get encouragement not exist', async function () {
+            let result = await encouragementServices.getEncouragement(notManager.sessionId, "notexisting1");
+            assert.equal(result.code, 409, 'code 409');
+            assert.equal(result.err,'no such encouragement');
+        });
+    });
 });

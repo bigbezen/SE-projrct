@@ -124,6 +124,10 @@ module.exports = {
         return shiftModel.find({'_id': {$in: shiftIds}});
     },
 
+    getShiftsFromDate: async function(fromDate){
+        return shiftModel.find({'startTime': {$gte: fromDate}});
+    },
+
     updateShift: async function(shift){
         // shift.salesReport = shift.salesReport.map(function(product){
         //     product.productId = mongoose.Types.ObjectId(product.productId);

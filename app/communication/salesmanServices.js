@@ -6,61 +6,70 @@
 var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
-    enterShift: function(){
-        console.log('salemanServices- enterShift ');
-        return connection.salesmanRequests.enterShift();
+    getCurrentShift: function(){
+        console.log('salesmanServices- getCurrentShift ');
+        return connection.salesmanRequests.getCurrentShift();
     },
 
-    exitShift: function(){
-        console.log('salemanServices- exitShift ');
-        return connection.salesmanRequests.exitShift();
+    startShift: function(shift){
+        console.log('salesmanServices- enterShift ');
+        return connection.salesmanRequests.startShift(shift);
     },
 
-    addSale: function(){
-        console.log('salemanServices- addSale');
-        return connection.salesmanRequests.addSale();
+    finishShift: function(shift){
+        console.log('salesmanServices- finishShift ');
+        return connection.salesmanRequests.finishShift(shift);
     },
 
-    addShiftNote: function(){
-        console.log('salemanServices- addShiftNote');
-        return connection.salesmanRequests.addShiftNote();
+    reportSale: function(shiftId, productId, quantity){
+        console.log('salesmanServices- reportSale');
+        return connection.salesmanRequests.reportSale(shiftId, productId, quantity);
+    },
+
+    reportOpen: function(shiftId, productId, quantity){
+        console.log('salesmanServices- reportOpen');
+        return connection.salesmanRequests.reportOpen(shiftId, productId, quantity);
+    },
+
+    addShiftComment: function(shiftId, content){
+        console.log('salesmanServices- addShiftComment');
+        return connection.salesmanRequests.addShiftComment(shiftId, content);
     },
 
     getShiftNotes: function(){
-        console.log('salemanServices- getShiftNotes');
+        console.log('salesmanServices- getShiftNotes');
         return connection.salesmanRequests.getShiftNotesBySalesman();
     },
 
     encouragements: function(){
-        console.log('salemanServices- encouragements');
+        console.log('salesmanServices- encouragements');
         return connection.salesmanRequests.encouragements();
     },
 
     shifts: function(){
-        console.log('salemanServices- shifts');
+        console.log('salesmanServices- shifts');
         return connection.salesmanRequests.shifts();
     },
 
     addShiftsConstraints: function(){
-        console.log('salemanServices- addShiftsConstraints');
+        console.log('salesmanServices- addShiftsConstraints');
         return connection.salesmanRequests.addShiftsConstraints();
     },
 
     salesHistory: function(){
-        console.log('salemanServices- salesHistory');
+        console.log('salesmanServices- salesHistory');
         return connection.salesmanRequests.salesHistory();
     },
 
     getBroadcastMessages: function(){
-        console.log('salemanServices- getBroadcastMessages');
+        console.log('salesmanServices- getBroadcastMessages');
         return connection.salesmanRequests.getBroadcastMessages();
     },
 
     shiftRegister: function(){
-        console.log('salemanServices- shiftRegister');
+        console.log('salesmanServices- shiftRegister');
         return connection.salesmanRequests.shiftRegister();
     }
 };
-
 
 module.exports = helpers;

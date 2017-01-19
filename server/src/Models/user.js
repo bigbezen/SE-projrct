@@ -29,7 +29,10 @@ var userSchema = new Schema({
         'area': String,
         'channel': String,
         'encouragements': [
-            {type: mongoose.Schema.Types.ObjectId, ref: 'encouragements'}
+            {
+                'enc': {type: mongoose.Schema.Types.ObjectId, ref: 'encouragements'},
+                'date': Date
+            }
         ]
     },
     'inbox': [{type: mongoose.Schema.Types.ObjectId, ref: 'messages'}]

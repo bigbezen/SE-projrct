@@ -2,111 +2,119 @@ var checkParams = function(params, param_arr, type_arr){
     for(var i=0; i<param_arr.length; i++){
         if(!(param_arr[i] in params && typeof(params[param_arr[i]]) == type_arr[i]))
             return false;
-        if(type_arr[i] == 'string' && param_arr[i] == "")
+        if(type_arr[i] == stringT && param_arr[i] == "")
             return false;
     }
     return true;
 };
 
+let stringT = typeof(stringT);
+let numberT = typeof(1);
+let objectT = typeof({'key': 'value'});
+let boolT = typeof(true);
 
 module.exports = {
 
 
     login: function(params){
         return checkParams(params, ['username', 'password'],
-            ['string', 'string']);
+            [stringT, stringT]);
     },
 
     sessionId: function(params){
-        return checkParams(params, ['sessionId'], ['string']);
+        return checkParams(params, ['sessionId'], [stringT]);
     },
 
     changePassword: function(params){
         return checkParams(params, ['sessionId', 'newPass', 'oldPass'],
-            ['string', 'string', 'string']);
+            [stringT, stringT, stringT]);
     },
 
     addUser: function(params){
         return checkParams(params, ['sessionId', 'userDetails'],
-                    ['string', 'object']) &&
+                    [stringT, objectT]) &&
                 checkParams(params.userDetails, ['username', 'startDate', 'personal', 'contact', 'jobDetails'],
-                    ['string', 'string', 'object', 'object', 'object',]) &&
+                    [stringT, stringT, objectT, objectT, objectT,]) &&
                 checkParams(params.userDetails.personal, ['id', 'firstName', 'lastName', 'sex', 'birthday'],
-                    ['string', 'string', 'string', 'string', 'string']) &&
+                    [stringT, stringT, stringT, stringT, stringT]) &&
                 checkParams(params.userDetails.contact, ['address', 'phone', 'email'],
-                    ['object', 'string', 'string',]) &&
+                    [objectT, stringT, stringT,]) &&
                 checkParams(params.userDetails.contact.address, ['street', 'number', 'city', 'zip'],
-                    ['string', 'string', 'string', 'string',]) &&
+                    [stringT, stringT, stringT, stringT,]) &&
                 checkParams(params.userDetails.jobDetails, ['userType'],
-                    ['string']);
+                    [stringT]);
     },
 
     editUser: function(params){
         return checkParams(params, ['sessionId', 'username', 'userDetails'],
-                ['string', 'string', 'object']) &&
+                [stringT, stringT, objectT]) &&
             checkParams(params.userDetails, ['username', 'startDate', 'personal', 'contact', 'jobDetails'],
-                ['string', 'string', 'object', 'object', 'object',]) &&
+                [stringT, stringT, objectT, objectT, objectT,]) &&
             checkParams(params.userDetails.personal, ['id', 'firstName', 'lastName', 'sex', 'birthday'],
-                ['string', 'string', 'string', 'string', 'string']) &&
+                [stringT, stringT, stringT, stringT, stringT]) &&
             checkParams(params.userDetails.contact, ['address', 'phone', 'email'],
-                ['object', 'string', 'string',]) &&
+                [objectT, stringT, stringT,]) &&
             checkParams(params.userDetails.contact.address, ['street', 'number', 'city', 'zip'],
-                ['string', 'string', 'string', 'string',]) &&
+                [stringT, stringT, stringT, stringT,]) &&
             checkParams(params.userDetails.jobDetails, ['userType'],
-                ['string']);
+                [stringT]);
     },
 
     deleteUser: function(params){
         return checkParams(params, ['sessionId', 'username'],
-            ['string', 'string']);
+            [stringT, stringT]);
     },
 
     addOrEditOrDeleteStore: function(params){
         return checkParams(params, ['sessionId', 'storeDetails'],
-            ['string', 'object']) &&
+            [stringT, objectT]) &&
             checkParams(params.storeDetails, ['name', 'managerName', 'phone', 'city', 'address', 'area', 'channel'],
-                ['string', 'string', 'string', 'string', 'string', 'string', 'string']);
+                [stringT, stringT, stringT, stringT, stringT, stringT, stringT]);
     },
 
     deleteStore: function(params){
         return checkParams(params, ['sessionId', 'storeId'],
-            ['string', 'string']);
+            [stringT, stringT]);
     },
 
     addOrEditProduct: function(params){
         return checkParams(params, ['sessionId', 'productDetails'],
-                ['string', 'object']) &&
+                [stringT, objectT]) &&
                 checkParams(params.productDetails, ['name', 'retailPrice', 'salePrice', 'category', 'subCategory', 'minRequiredAmount', 'notifyManager'],
-                    ['string', 'number', 'number', 'string', 'string', 'number', 'boolean']);
+                    [stringT, numberT, numberT, stringT, stringT, numberT, boolT]);
     },
 
     deleteProduct: function(params){
         return checkParams(params, ['sessionId', 'productId'],
-            ['string', 'string']);
+            [stringT, stringT]);
     },
 
     addOrEditEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encouragementDetails'],
-                ['string', 'object']) &&
+                [stringT, objectT]) &&
             checkParams(params.encouragementDetails, ['active', 'numOfProducts', 'rate', 'products'],
-                ['boolean', 'number', 'number', 'object']);
+                [boolT, numberT, numberT, objectT]);
     },
 
     deleteEncouragement: function(params){
-        return checkParams(params, ['sessionId', 'encuragementId'], ['string', 'string']);
+        return checkParams(params, ['sessionId', 'encuragementId'], [stringT, stringT]);
     },
 
     sendBroadcastMessage: function(params){
-        return checkParams(params, ['sessionId', 'content', 'date'], ['string', 'string', 'string'])
+        return checkParams(params, ['sessionId', 'content', 'date'], [stringT, stringT, stringT])
     },
 
     addOrPublishShifts: function(params){
-        var res = checkParams(params, ['sessionId', 'shiftsArr'], ['string', 'object']);
+        var res = checkParams(params, ['sessionId', 'shiftsArr'], [stringT, objectT]);
         for(shift of params.shiftsArr){
             if(res)
-                res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], ['string', 'string', 'string', 'string'])
+                res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], [stringT, stringT, stringT, stringT])
         }
         return res;
+    },
+
+    generateShifts: function(params){
+        return checkParams(params, ['sessionId', 'startTime', 'endTime'], [stringT, stringT, stringT]);
     },
 
     startOrEndShift: function(params){

@@ -276,6 +276,20 @@ var managementRequests = {
         })
     },
 
+    //TODO:
+    getShiftsFromDate: function(firstDate) {
+        console.log('add shift');
+        return axios.get(serverUrl + 'management/getShiftsFromDate?fromDate=' + firstDate, {
+            headers:{
+                sessionId:sessionId
+            }
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
+    },
+
     AddAllShifts: function(startTime, endTime) {
         return axios.post(serverUrl + 'management/automateGenerateShifts', {
             sessionId:sessionId,
@@ -326,8 +340,16 @@ var managerRequests = {
         errorMessage('getShortages', 'Not implemented yet');
     },
 
-    publishShifts: function(){
-        errorMessage('publishShifts', 'Not implemented yet');
+    publishShifts: function(shift){
+        console.log('publish shift');
+        return axios.post(serverUrl + 'manager/publishShift', {
+            sessionId:sessionId,
+            shiftsArr:shift
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
     },
 
     getReports: function(){
@@ -336,43 +358,81 @@ var managerRequests = {
 };
 
 var salesmanRequests = {
-    enterShift: function() {
-        return axios.post(serverUrl + 'salesman/enterShift', {
+    //TODO:
+    getCurrentShift: function() {
+        return axios.get(serverUrl + 'salesman/getCurrentShift', {
+            headers:{
+                sessionId:sessionId
+            }
         }).then(function (info) {
-            sessionId = info.data.sessionId;
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('enterShift', err);
+            return returnVal(false, err);
         })
     },
 
-    exitShift: function() {
-        return axios.post(serverUrl + 'salesman/exitShift', {
-            sessionId:sessionId
+    //TODO:
+    startShift: function(shift) {
+        return axios.post(serverUrl + 'salesman/startShift', {
+            sessionId:sessionId,
+            shift:shift
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('exitShift', err);
+            return returnVal(false, err);
         })
     },
 
-    addSale: function(){
-        return axios.post(serverUrl + 'salesman/addSale', {
-            sessionId:sessionId
+    //TODO:
+    finishShift: function(shift) {
+        return axios.post(serverUrl + 'salesman/finishShift', {
+            sessionId:sessionId,
+            shift:shift
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('addSale', err);
+            return returnVal(false, err);
         })
     },
 
-    addShiftNote: function(){
-        return axios.post(serverUrl + 'salesman/addShiftNote', {
-            sessionId:sessionId
+    //TODO:
+    reportSale: function(shiftId, productId, quantity){
+        return axios.post(serverUrl + 'salesman/reportSale', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            productId:productId,
+            quantity:quantity
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
-            errorMessage('addShiftNote', err);
+            return returnVal(false, err);
+        })
+    },
+
+    //TODO:
+    reportOpen: function(shiftId, productId, quantity){
+        return axios.post(serverUrl + 'salesman/reportOpen', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            productId:productId,
+            quantity:quantity
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
+    },
+
+    //TODO
+    addShiftComment: function(shiftId, content){
+        return axios.post(serverUrl + 'salesman/addShiftComment', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            content:content
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
         })
     },
 

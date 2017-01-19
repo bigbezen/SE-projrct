@@ -524,6 +524,10 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/generateShifts', async function(req, res){
+        if (!validator.generateShifts(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
         let result = await shiftService.automateGenerateShifts(req.body.sessionId, req.body.starttime, req.body.endTime);
         if(result.code == 200)
             res.status(200).send(result.shifts);
@@ -541,6 +545,18 @@ function _setapApiEndpoints() {
             res.status(200).send();
         else
             res.status(result.code).send(result.err);
+    });
+
+    app.get('/management/getShiftsFromDate', async function(req, res){
+        if(!('sessionid' in req.headers) || req.query.get('fromDate') == null) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.get('fromDate'));
+        if(result.code == 200)
+            return {'code': 200, 'shiftsArr': result.shiftsArr};
+        else
+            return {'code': result.code, 'err': result.err};
     });
 
     app.post('/management/editShifts', function (req, res) {

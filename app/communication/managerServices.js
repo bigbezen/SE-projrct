@@ -49,9 +49,9 @@ var helpers = {
         return connection.managerRequests.getShortages();
     },
 
-    publishShifts: function(){
+    publishShifts: function(shift){
         console.log('managerServices- publishShifts');
-        return connection.managerRequests.publishShifts();
+        return connection.managerRequests.publishShifts(shift);
     },
 
     getReports: function(){

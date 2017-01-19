@@ -100,6 +100,11 @@ var helpers = {
     AddAllShifts: function(startTime, endTime) {
         console.log('managementervices- AddAllShifts');
         return connection.managementRequests.AddAllShifts(startTime, endTime);
+    },
+
+    getShiftsFromDate:function(fromDate) {
+        console.log('managementervices- getShiftsFromDate');
+        return connection.managementRequests.getShiftsFromDate(fromDate);
     }
 };
 

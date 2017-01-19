@@ -276,7 +276,7 @@ paths:
           type: string
       responses:
         "200":
-          description: got current shift of a salesman
+          description: got current shift of a salesman - the response object is a shift with a fresh new sales report for the salesman to fill
           schema:
             type: object
             properties:
@@ -312,6 +312,8 @@ paths:
               store:
                 type: object
                 properties:
+                  storeId:
+                    type: string
                   name: 
                     type: string
                   managerName:
@@ -1184,6 +1186,47 @@ paths:
         "409":
           description: problem with one or more of the parameters
           
+  /management/generateShifts:
+    post:
+      summary: autumatically generate shifts for all stores in a specific given date
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              sessionId:
+                type: string
+              startTime:
+                type: string
+              endTime: 
+                type: string
+      responses:
+        "200":
+          description: shifts were added successfuly
+          schema: 
+            type: array
+            description: an array of new shift objects
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                storeId:
+                  type: string
+                startTime:
+                  type: string
+                endTime: 
+                  type: string
+                type:
+                  type: string
+                status:
+                  type: string
+        "401":
+          description: authorization problem
+        "409":
+          description: problem with one or more of the parameters
+          
   /management/publishShifts:
     post:
       summary: publish several shifts that are already saved in the system
@@ -1220,6 +1263,80 @@ paths:
           description: authorization problem      
         "409":
           description: problem with one or more of the parameters
+          
+  /management/getShiftsFromDate:
+    get:
+      summary: get all shifts on a date later than the specified date
+      parameters:
+        - name: sessionId
+          in: header
+          type: string
+        - name: fromDate
+          in: query
+          type: string
+      responses:
+        "200":
+          description: got shifts successfully
+          schema: 
+            type: array
+            description: an array of shift objects
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                user:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    username:
+                      type: string
+                    personal:
+                      type: object
+                      properties:
+                        id: 
+                          type: string
+                        firstName: 
+                          type: string
+                        lastName:
+                          type: string
+                        sex:
+                          type: string
+                        birthday:
+                          type: string
+                store:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    name: 
+                      type: string
+                    managerName:
+                      type: string
+                    phone:
+                      type: string
+                    city:
+                      type: string
+                    address:
+                      type: string
+                    area:
+                      type: string
+                    channel:
+                      type: string
+                startTime:
+                  type: string
+                endTime: 
+                  type: string
+                type:
+                  type: string
+                status:
+                  type: string
+        "401":
+          description: no authorized user
+        "409":
+          description: problem with one or more of the parameters
+          
           
   /management/sendBroadcastMessage:
     post:

@@ -1007,13 +1007,30 @@ describe('shift unit test', function () {
                 else
                     i = 1;
                 expect(shift).to.include.all.keys('store', 'startTime', 'endTime', 'status', 'salesman');
-                expect(new Date(shift.startTime)).to.equalDate(new Date(shifts[0].startTime));
-                expect(new Date(shift.endTime)).to.equalDate(new Date(shifts[0].endTime));
+                expect((new Date(shifts[0].startTime)).getTime()).to.be.equal(shift.startTime.getTime());
+                expect((new Date(shifts[0].endTime)).getTime()).to.be.equal(shift.endTime.getTime());
+                expect(shift.store).to.be.a('object');
+                expect(shift.salesman).to.be.a('object');
 
             }
         });
 
-        it('test get shifts from date ')
+        it('test get shifts from date invalid user', async function(){
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+
+            let result = await shiftService.getShiftsFromDate("not valid sessionid", new Date());
+            expect(result).to.have.property('code', 401);
+        });
+
+        it('tst get shifts from date with 0 shifts in db', async function(){
+            let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date(0));
+            expect(result).to.have.property('code', 200);
+            expect(result.shiftArr).to.have.lengthOf(0);
+        })
     });
 
     describe('test end shift', function(){

@@ -219,12 +219,18 @@ let getShiftsFromDate = async function(sessionId, fromDate){
 let startShift = async function(sessionId, shift){
     logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
 
-    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift', null);
-    if(salesman == null || salesman._id != shift.salesmanId)
+    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift');
+    if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
     let shiftDb = await dal.getShiftsByIds([shift._id]);
     shiftDb = shiftDb[0];
+    if(shiftDb == null)
+        return {'code': 404, 'err': 'shift not found'};
+
+    if(shiftDb.status != 'PUBLISHED')
+        return {'code': 403, 'err': 'shift not published'};
+
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'STARTED';
     let result = await dal.updateShift(shiftDb);
@@ -305,7 +311,7 @@ let addShiftComment = async function(sessionId, shiftId, content){
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'addShiftComment', null);
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
-    if(salesman == null || shift == null || salesman._id != shift.salesmanId)
+    if(salesman == null || shift == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
     shift.shiftComments.push(content);

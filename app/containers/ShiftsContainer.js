@@ -25,33 +25,8 @@ function flatList(shifts) {
 }
 
 function dateFormatter(cell, row) {
-    return moment(cell).format('YYYY-MM-DD HH:MM');
+    return moment(cell).format('YYYY-MM-DD hh:mm');
 }
-
-var shifts = [
-    {
-        'storeId': '1',
-        'startTime': new Date("2015-03-25 12:00"),
-        'endTime': new Date("2015-03-25 13:00"),
-        'status': 'not started',
-        'type': 'store',
-        'salesmanId': '1',
-        'constraints': [],
-        'salesReport': [],
-        'sales': []
-    },
-    {
-        'storeId': '2',
-        'startTime': new Date("2015-04-25T12:00:00-06:30"),
-        'endTime': new Date("2015-04-25T12:00:00-06:30"),
-        'status': 'not started',
-        'type': 'store',
-        'salesmanId': '2',
-        'constraints': [],
-        'salesReport': [],
-        'sales': []
-    }
-];
 
 var ShiftsContainer = React.createClass({
     contextTypes: {
@@ -164,15 +139,17 @@ var ShiftsContainer = React.createClass({
     },
     deleteButton: function(cell, row, enumObject, rowIndex) {
         var isFinished = (row.status == 'FINISHED'); //TODO: is this ok?
-         return (
-             <button
-                 type="button"
-                 disabled= {isFinished}
-                 onClick={() =>
-                     this.onClickDeleteButton(cell, row, rowIndex)}>
-                 {constantStrings.delete_string}
-             </button>
-         )
+        if (!isFinished) {
+            return (
+                <button
+                    type="button"
+                    disabled= {isFinished}
+                    onClick={() =>
+                        this.onClickDeleteButton(cell, row, rowIndex)}>
+                    {constantStrings.delete_string}
+                </button>
+            )
+        }
     },
     renderTable: function () {
         return (

@@ -6,13 +6,21 @@ var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
 var paths = require('../utils/Paths');
+var startShiftStyles = require('../styles/startShiftStyles');
+
 var StartShiftContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    getInitialState()
+    {
+        return{
+            shift:this.props.location.state.newShift
+        }
+    },
     handleSubmitReport: function (e) {
         e.preventDefault();
-        var shift = this.props.location.state.newShift;
+        /*var shift = this.props.location.state.newShift;
         for(var i=0; i<shift.salesReport.length; i++){
             shift.salesReport[i].stockStartShift = parseInt(this.refs[i].value);
         }
@@ -23,13 +31,14 @@ var StartShiftContainer = React.createClass({
             pathname: paths.salesman_shift_path,
             state: {newShift: shift}
         })
-        /*managementServices.editShift(shift).then(function (n) { //TODO: fix this!!!!!!
+        managementServices.editShift(shift).then(function (n) { //TODO: fix this!!!!!!
             if (n) {
-                alert('edit succeed');
-                context.router.push({
-                    pathname: '/salesman/Shift'
+                alert('edit succeed');*/
+                this.context.router.push({
+                    pathname: '/salesman/Shift',
+                    state: {newShift: this.state.shift}
                 })
-            }
+          /*  }
             else {
                 alert('edit failed');
                 console.log("error");
@@ -38,20 +47,17 @@ var StartShiftContainer = React.createClass({
     },
     renderEachProduct: function(text, i){
         return (
-            <div key={i}>
-                <div className="w3-row" key={i}>
-                    <div className="w3-col s6 w3-container ">
-                        <input ref={i} className="" type="number" value="0" min={0} />
+                <div style={startShiftStyles.product} key={i} height={'100%'}>
+                    <div style={startShiftStyles.product__detail}>
+                        <input type="checkbox" style={startShiftStyles.product__selector} value=""/>
                     </div>
-                    <div className="w3-col s8 w3-container ">
-                        <h1>{text.productName}</h1>
+                    <div style={startShiftStyles.product__detail}>
+                        <h1> {text.productName} </h1>
                     </div>
-
+                    <div style={startShiftStyles.product__detail}>
+                        <h1> picture</h1>
+                    </div>
                 </div>
-                <hr/>
-            </div>
-
-
         );
     },
     render: function () {
@@ -59,15 +65,16 @@ var StartShiftContainer = React.createClass({
         return (
 
             <div>
-                <div className="w3-container w3-theme-d5">
+                <div className="w3-theme-d5">
                     <h1>{constantsStrings.storeStatus_string}</h1>
                 </div>
 
-                <div className="w3-container w3-theme-l5">
+                <div className="w3-theme-l5">
                     {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
                 </div>
-                <div className="w3-container w3-theme-d5">
-                    <button className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-4"
+
+                <div className="">
+                    <button className="w3-theme-d5"
                             onClick={this.handleSubmitReport} type="submit"> {constantsStrings.startShift_string}
                     </button>
                 </div>

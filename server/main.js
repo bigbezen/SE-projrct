@@ -621,10 +621,6 @@ function _setapApiEndpoints() {
 
     app.get('/manager/getSaleReportXl', async function (req, res) {
         var result = await reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
-        if(result.code == 200){
-            let file = res.download(result.path);
-        }
-        else
-            res.status(result.code).send(result.err);
+        res.status(result.code).send(result.err);
     });
 }

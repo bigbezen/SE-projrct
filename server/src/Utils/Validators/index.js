@@ -8,7 +8,7 @@ var checkParams = function(params, param_arr, type_arr){
     return true;
 };
 
-let stringT = typeof(stringT);
+let stringT = typeof('string');
 let numberT = typeof(1);
 let objectT = typeof({'key': 'value'});
 let boolT = typeof(true);

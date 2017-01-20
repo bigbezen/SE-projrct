@@ -16,12 +16,12 @@ var EndShiftContainer = React.createClass({
     {
         return{
             shift:null,
-            shiftId:this.props.location.state.newShiftId
+            ShiftId:this.props.location.state.newShift._id
         }
     },
     componentDidMount() {
         var self = this;
-        salesmanServices.getActiveShift(this.state.shift).then(function (n) {
+        salesmanServices.getActiveShift(this.state.ShiftId).then(function (n) {
             if (n) {
                 var val = n;
                 if (val.success) {
@@ -38,13 +38,13 @@ var EndShiftContainer = React.createClass({
     handleSubmitReport: function (e) {
         e.preventDefault();
         var self = this;
-        salesmanServices.endShift(this.state.shift).then(function (n) {
+        salesmanServices.finishShift(this.state.shift).then(function (n) {
             if (n) {
                 var val = n;
                 if (val.success) {
                     alert('edit succeed');
                     self.context.router.push({
-                        pathname: '/salesman/Shift',
+                        pathname: '/salesman/Home',
                         state: {newShift: self.state.shift}
                     })
                 }
@@ -74,7 +74,7 @@ var EndShiftContainer = React.createClass({
         return (
             <div style={startShiftStyles.product} key={i} height={'100%'}>
                 <div style={startShiftStyles.product__detail}>
-                    <input type="checkbox" onChange={this.onUpdateProduct} style={startShiftStyles.product__selector} selected={text.stockStartShift} value={text.productId}/>
+                    <input type="checkbox" onChange={this.onUpdateProduct} style={startShiftStyles.product__selector} checked={text.stockStartShift} value={text.productId}/>
                 </div>
                 <div style={startShiftStyles.product__detail}>
                     <h1> {text.name} </h1>
@@ -100,7 +100,7 @@ var EndShiftContainer = React.createClass({
 
                 <div className="">
                     <button className="w3-theme-d5"
-                            onClick={this.handleSubmitReport} type="submit"> {constantsStrings.startShift_string}
+                            onClick={this.handleSubmitReport} type="submit"> {constantsStrings.endShift_string}
                     </button>
                 </div>
 

@@ -410,7 +410,9 @@ var salesmanRequests = {
     //TODO:
     getActiveShift: function(shiftId) {
         return axios.get(serverUrl + 'salesman/getActiveShift?shiftId=' +shiftId , {
-            sessionId:sessionId
+            headers:{
+                sessionId:sessionId
+            }
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

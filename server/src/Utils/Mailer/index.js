@@ -7,7 +7,18 @@ var subjects = {
 };
 
 
-var sendMail = async function(recepientArr, subject, text , filePath) {
+var sendMail = async function(recepientArr, subject, text) {
+    var mailOptions = {
+        from: '"IBBLS 👥" <IBBLSServices@gmail.com>', // sender address
+        to: recepientArr.join(', '),
+        subject: subject,
+        text: text,
+    };
+    var result = await transporter.sendMail(mailOptions);
+    return result;
+};
+
+var sendMailWithFile = async function(recepientArr, subject, text , filePath) {
     var mailOptions = {
         from: '"IBBLS 👥" <IBBLSServices@gmail.com>', // sender address
         to: recepientArr.join(', '),
@@ -19,5 +30,8 @@ var sendMail = async function(recepientArr, subject, text , filePath) {
     return result;
 };
 
+
+
 module.exports.sendMail = sendMail;
+module.exports.sendMailWithFile = sendMailWithFile;
 module.exports.subjects = subjects;

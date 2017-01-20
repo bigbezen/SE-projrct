@@ -362,9 +362,11 @@ describe('shift unit test', function () {
             shifts[0].salesReport = [];
             shifts[0].salesReport.push({'productId': product1._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
             shifts[0].salesReport.push({'productId': product2._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product3._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
 
             for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                shifts[0].salesReport[i].productId = shifts[0].salesReport[i].productId.toString();
                 shifts[0].salesReport[i].stockStartShift =  2;
                 shifts[0].salesReport[i].opened =  1;
                 shifts[0].salesReport[i].stockEndShift =  1;
@@ -1109,11 +1111,13 @@ describe('shift unit test', function () {
             shifts[0] = shift_object_to_model(shifts[0]);
             shifts[0].salesmanId = salesman._id.toString();
             shifts[0].salesReport = [];
-            shifts[0].salesReport.push({'productId': product1._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
-            shifts[0].salesReport.push({'productId': product2._id , 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product1._id, 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product2._id, 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product3._id, 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
 
             for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                shifts[0].salesReport[i].productId = shifts[0].salesReport[i].productId.toString();
                 shifts[0].salesReport[i].stockStartShift =  2;
                 shifts[0].salesReport[i].opened =  1;
                 shifts[0].salesReport[i].stockEndShift =  1;

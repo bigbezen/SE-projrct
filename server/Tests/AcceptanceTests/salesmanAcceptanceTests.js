@@ -21,6 +21,9 @@ describe('salesman acceptance test', function(){
     let salesman;
     let shift;
     let store;
+    let product1;
+    let product2;
+    let product3;
 
 
     let createNewSalesReport = async function(){
@@ -68,16 +71,16 @@ describe('salesman acceptance test', function(){
                 zip: '2134'
             },
             phone: '12345',
-            email: 'steins@post.bgu.ac.il'
+            email: 's@post.bgu.ac.il'
         };
         salesman.jobDetails = {
             userType: 'salesman'
         };
         salesman = await dal.addUser(salesman);
 
-        let product1 = new productModel();
-        let product2 = new productModel();
-        let product3 = new productModel();
+        product1 = new productModel();
+        product2 = new productModel();
+        product3 = new productModel();
 
         product1.name = 'vodka1';
         product2.name = 'vodka2';
@@ -97,7 +100,7 @@ describe('salesman acceptance test', function(){
         shift.storeId = store._id;
         shift.salesmanId = salesman._id;
         shift.salesReport = await createNewSalesReport();
-        shift.sales = {};
+        shift.sales = [];
 
     });
 
@@ -146,10 +149,8 @@ describe('salesman acceptance test', function(){
             }
 
             let result = await axios.post(serverUrl + 'salesman/startShift', {
-                headers: {
                     sessionId: salesman.sessionId,
                     shift: shift
-                }
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -157,6 +158,218 @@ describe('salesman acceptance test', function(){
             });
 
             expect(result).to.have.property('status', 200);
+        });
+
+        it('test start shift without sales report', async function(){
+            shift = await dal.addShift(shift);
+            shift = shift.toObject();
+            shift.salesReport = {};
+
+            let result = await axios.post(serverUrl + 'salesman/startShift', {
+                sessionId: salesman.sessionId,
+                shift: shift
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
+        });
+    });
+
+    describe('test reportSale', function(){
+        it('test report sale valid', async function(){
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.post(serverUrl + 'salesman/reportSale', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product1._id,
+                quantity: 2
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result).to.have.property('status', 200);
+
+            result = await axios.post(serverUrl + 'salesman/reportSale', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product2._id,
+                quantity: 1
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result).to.have.property('status', 200);
+
+            let dbShift = await dal.getShiftsByIds([shift._id]);
+            dbShift = dbShift[0];
+            expect(dbShift.sales).to.have.lengthOf(2);
+        });
+
+        it('test report sale non-positive quantity', async function() {
+            for (let i = 0; i < shift.salesReport.length; i++) {
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.post(serverUrl + 'salesman/reportSale', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product1._id,
+                quantity: 0
+            }).then(async function (info) {
+                return info;
+            }).catch(async function (err) {
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
+
+            result = await axios.post(serverUrl + 'salesman/reportSale', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product2._id,
+                quantity: -1
+            }).then(async function (info) {
+                return info;
+            }).catch(async function (err) {
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
+            let dbShift = await dal.getShiftsByIds([shift._id]);
+            dbShift = dbShift[0];
+            expect(dbShift.sales).to.have.lengthOf(0);
+        });
+
+        it('test report sale with non-existing productId', async function(){
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.post(serverUrl + 'salesman/reportSale', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: "objectId",
+                quantity: 2
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
+
+            let dbShift = await dal.getShiftsByIds([shift._id]);
+            dbShift = dbShift[0];
+            expect(dbShift.sales).to.have.lengthOf(0);
+        });
+    });
+
+    describe('test reportOpened', function(){
+        it('test report opened valid', async function(){
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.post(serverUrl + 'salesman/reportOpened', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product1._id,
+                quantity: 2
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result).to.have.property('status', 200);
+
+            result = await axios.post(serverUrl + 'salesman/reportOpened', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product2._id,
+                quantity: 1
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result).to.have.property('status', 200);
+        });
+
+        it('test report opened non-positive quantity', async function() {
+            for (let i = 0; i < shift.salesReport.length; i++) {
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.post(serverUrl + 'salesman/reportOpened', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product1._id,
+                quantity: 0
+            }).then(async function (info) {
+                return info;
+            }).catch(async function (err) {
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
+
+            result = await axios.post(serverUrl + 'salesman/reportOpened', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: product2._id,
+                quantity: -1
+            }).then(async function (info) {
+                return info;
+            }).catch(async function (err) {
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
+
+        });
+
+        it('test report opened with non-existing productId', async function(){
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.post(serverUrl + 'salesman/reportOpened', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                productId: "objectId",
+                quantity: 2
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
+
         });
     });
 });

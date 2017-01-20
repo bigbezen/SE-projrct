@@ -1,3 +1,5 @@
+let us              = require('underscore');
+
 let logger          = require('../../Utils/Logger/logger');
 let dal             = require('../../DAL/dal');
 let permissions     = require('../permissions/index');
@@ -225,6 +227,8 @@ let startShift = async function(sessionId, shift){
     if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
+
+
     let shiftDb = await dal.getShiftsByIds([shift._id]);
     shiftDb = shiftDb[0];
     if(shiftDb == null)
@@ -232,6 +236,16 @@ let startShift = async function(sessionId, shift){
 
     if(shiftDb.status != 'PUBLISHED')
         return {'code': 403, 'err': 'shift not published'};
+
+    if(!(shift.salesReport instanceof  Array))
+        return {'code': 409, 'err': 'a sale report is required'};
+    let productsDb = await dal.getAllProducts();
+    productsDb = productsDb.map(x=>x._id.toString());
+    let productsParam = shift.salesReport.map(x=>x.productId);
+
+    if((us.difference(productsDb, productsParam).length != 0) || (us.difference(productsParam, productsDb).length != 0))
+        return {'code': 409, 'err': 'not a full sales report'};
+
 
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'STARTED';
@@ -331,6 +345,9 @@ let endShift = async function(sessionId, shift){
     if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
+
+
+
     let shiftDb = await dal.getShiftsByIds([shift._id]);
     shiftDb = shiftDb[0];
     if(shiftDb == null)
@@ -338,6 +355,17 @@ let endShift = async function(sessionId, shift){
 
     if(shiftDb.status != 'STARTED')
         return {'code': 403, 'err': 'shift not started'};
+
+    if(!(shift.salesReport instanceof  Array))
+        return {'code': 409, 'err': 'a sale report is required'};
+    let productsDb = await dal.getAllProducts();
+    productsDb = productsDb.map(x=>x._id.toString());
+    let productsParam = shift.salesReport.map(x=>x.productId);
+
+    if((us.difference(productsDb, productsParam).length != 0) || (us.difference(productsParam, productsDb).length != 0))
+        return {'code': 409, 'err': 'not a full sales report'};
+
+
 
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'FINISHED';

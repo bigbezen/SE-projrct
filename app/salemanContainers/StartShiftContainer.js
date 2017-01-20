@@ -4,7 +4,7 @@
 
 var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
-var managementServices = require('../communication/managementServices');
+var salesmanServices = require('../communication/salesmanServices');
 var paths = require('../utils/Paths');
 var startShiftStyles = require('../styles/startShiftStyles');
 
@@ -20,39 +20,47 @@ var StartShiftContainer = React.createClass({
     },
     handleSubmitReport: function (e) {
         e.preventDefault();
-        /*var shift = this.props.location.state.newShift;
-        for(var i=0; i<shift.salesReport.length; i++){
-            shift.salesReport[i].stockStartShift = parseInt(this.refs[i].value);
-        }
-        console.log("after loop:");
-        console.log(shift);
-        var context = this.context;
-        context.router.push({
-            pathname: paths.salesman_shift_path,
-            state: {newShift: shift}
-        })
-        managementServices.editShift(shift).then(function (n) { //TODO: fix this!!!!!!
+        var self = this;
+        salesmanServices.startShift(this.state.shift).then(function (n) {
             if (n) {
-                alert('edit succeed');*/
-                this.context.router.push({
-                    pathname: '/salesman/Shift',
-                    state: {newShift: this.state.shift}
-                })
-          /*  }
+                var val = n;
+                if (val.success) {
+                    alert('edit succeed');
+                    self.context.router.push({
+                        pathname: '/salesman/Shift',
+                        state: {newShift: self.state.shift}
+                    })
+                }
+                else {
+                    alert('edit failed');
+                }
+            }
             else {
                 alert('edit failed');
-                console.log("error");
             }
-        })*/
+        })
+    },
+    onUpdateProduct:function(event) {
+        var currProductId = event.target.value;
+        var isSelected = event.target.checked;
+        for (var product of this.state.shift.salesReport) {
+            if (currProductId == product.productId) {
+                if (isSelected) {
+                    product.stockStartShift = 1;
+                } else {
+                    product.stockStartShift = 0;
+                }
+            }
+        }
     },
     renderEachProduct: function(text, i){
         return (
                 <div style={startShiftStyles.product} key={i} height={'100%'}>
                     <div style={startShiftStyles.product__detail}>
-                        <input type="checkbox" style={startShiftStyles.product__selector} value=""/>
+                        <input type="checkbox" onChange={this.onUpdateProduct} style={startShiftStyles.product__selector} value={text.productId}/>
                     </div>
                     <div style={startShiftStyles.product__detail}>
-                        <h1> {text.productName} </h1>
+                        <h1> {text.name} </h1>
                     </div>
                     <div style={startShiftStyles.product__detail}>
                         <h1> picture</h1>
@@ -60,7 +68,7 @@ var StartShiftContainer = React.createClass({
                 </div>
         );
     },
-    render: function () {
+    renderStartShift: function () {
 
         return (
 
@@ -81,6 +89,24 @@ var StartShiftContainer = React.createClass({
 
            </div>
         )
+    },
+
+    renderLoading:function () {
+        return(
+            <div>
+                <h1>loading...</h1>
+            </div>
+        )
+    },
+    render: function () {
+        if(this.state.shift != null)
+        {
+            return this.renderStartShift();
+        }
+        else
+        {
+            return this.renderLoading();
+        }
     }
 });
 

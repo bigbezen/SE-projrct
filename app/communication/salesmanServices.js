@@ -12,8 +12,13 @@ var helpers = {
     },
 
     startShift: function(shift){
-        console.log('salesmanServices- enterShift ');
+        console.log('salesmanServices- startShift ');
         return connection.salesmanRequests.startShift(shift);
+    },
+
+    getActiveShift: function(shiftId) {
+        console.log('salesmanServices- getActiveShift ');
+        return connection.salesmanRequests.getActiveShift(shiftId);
     },
 
     finishShift: function(shift){

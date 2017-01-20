@@ -384,7 +384,6 @@ var salesmanRequests = {
         })
     },
 
-    //TODO:
     startShift: function(shift) {
         return axios.post(serverUrl + 'salesman/startShift', {
             sessionId:sessionId,
@@ -401,6 +400,17 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/finishShift', {
             sessionId:sessionId,
             shift:shift
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
+    },
+
+    //TODO:
+    getActiveShift: function(shiftId) {
+        return axios.get(serverUrl + 'salesman/getActiveShift?shiftId=' +shiftId , {
+            sessionId:sessionId
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

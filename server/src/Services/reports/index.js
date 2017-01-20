@@ -90,7 +90,7 @@ let getSaleReportXl =  async function(sessionId, shiftId){
         });
 
     let content = ' מצורף דוח טעימות של:' + salesman.username;
-    mailer.sendMail([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username, content, __dirname+'\\sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username, content, __dirname+'\\sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
     return {'code': 200};
 };
 

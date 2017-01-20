@@ -34,7 +34,9 @@ var port = 3000;
 app.use(bodyparser.json());
 app.listen(port);
 app.locals.baseurl = "http://localhost:" + port;
-app.locals.mongourl = 'mongodb://localhost/IBBLS';
+var db = 'IBBLS';
+if ('DB' in process.env) db = process.env['DB'];
+app.locals.mongourl = 'mongodb://localhost/' + db;
 
 _connectToDb();
 _setapApiEndpoints();
@@ -500,7 +502,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context12.next = 5;
-                            return shiftService.getSalesmanCurrentShift(req.body.sessionID);
+                            return shiftService.getSalesmanCurrentShift(req.headers.sessionid);
 
                         case 5:
                             result = _context12.sent;
@@ -1166,7 +1168,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context28.next = 5;
-                            return encouragementServices.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
+                            return encouragementService.addEncouragement(req.body.sessionId, req.body.encouragementDetails);
 
                         case 5:
                             result = _context28.sent;
@@ -1207,7 +1209,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context29.next = 5;
-                            return encouragementServices.editEncouragement(req.body.sessionId, req.body.encouragementDetails);
+                            return encouragementService.editEncouragement(req.body.sessionId, req.body.encouragementDetails);
 
                         case 5:
                             result = _context29.sent;
@@ -1248,7 +1250,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context30.next = 5;
-                            return encouragementServices.deleteEncouragement(req.body.sessionId, req.body.encouragementDetails);
+                            return encouragementService.deleteEncouragement(req.body.sessionId, req.body.encouragementDetails);
 
                         case 5:
                             result = _context30.sent;
@@ -1289,7 +1291,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context31.next = 5;
-                            return encouragementServices.getAllEncouragements(req.headers.sessionid);
+                            return encouragementService.getAllEncouragements(req.headers.sessionid);
 
                         case 5:
                             result = _context31.sent;
@@ -1330,7 +1332,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context32.next = 5;
-                            return encouragementServices.getEncouragement(req.headers.sessionid, req.params.encouragementId);
+                            return encouragementService.getEncouragement(req.headers.sessionid, req.params.encouragementId);
 
                         case 5:
                             result = _context32.sent;

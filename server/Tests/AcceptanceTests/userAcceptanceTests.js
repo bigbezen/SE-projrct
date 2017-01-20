@@ -57,8 +57,8 @@ describe('salesman acceptance test', function(){
     });
 
     describe('test add user', function(){
-        it('remove existing user', async function(){
-            let result = await axios.post(serverUrl + 'management/deleteUser', {
+        it('add user valid', async function(){
+            let result = await axios.post(serverUrl + 'management/addUser', {
                 sessionId: manager.sessionId,
                 userDetails: salesman
             });

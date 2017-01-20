@@ -83,6 +83,9 @@ class ConstantStrings extends React.Component {
     static salesman_string = 'דייל';
     static getReport_string = 'הורד דוח';
 
+    static reportSale_string = 'דווח מכירה';
+    static reportOpen_string = 'דווח פתיחה';
+
     static product_category =
     {
         'ספיריט': 'ספיריט',

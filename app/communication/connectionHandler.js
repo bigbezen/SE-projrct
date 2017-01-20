@@ -36,6 +36,14 @@ var userRequests = {
         })
     },
 
+    managerIsLoggedin: function() {
+        return ((sessionId != null) && (userType == "manager"));
+    },
+
+    salesmanIsLoggedin: function() {
+        return ((sessionId != null) && (userType == "salesman"));
+    },
+
     logout: function() {
         return axios.post(serverUrl + 'user/logout', {
             sessionId:sessionId

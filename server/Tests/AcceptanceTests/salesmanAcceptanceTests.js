@@ -89,7 +89,7 @@ describe('salesman acceptance test', function(){
 
         store = new storeModel();
         store.name = 'bana';
-        store = dal.addStore(store);
+        store = await dal.addStore(store);
 
         shift = new shiftModel();
         shift.status = 'PUBLISHED';
@@ -108,14 +108,18 @@ describe('salesman acceptance test', function(){
 
     describe('test getCurrentShift', function(){
         it('get current shift valid', async function(){
-            let result = await axios.post(serverUrl + '/salesman/getCurrentShift', {
-                sessionId: manager.sessionId
+            let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
+                headers: {
+                    sessionId: salesman.sessionId
+                }
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
                 return err;
             });
             expect(result).to.have.property('status', 200);
+
+            expect(result.data).to.include.all.keys('salesmanId', 'store', 'startTime', 'salesReport', 'status');
         });
     });
 });

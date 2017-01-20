@@ -192,10 +192,10 @@ let getActiveShift = async function(sessionId, shiftId){
     if(shift == null)
         return {'code': 409, 'err': 'shift does not exist in the database'};
     shift = shift[0];
-    if(salesman == null || salesman._id != shift.salesmanId || shift.status != 'STARTED')
+    if(salesman == null || !(salesman._id.equals(shift.salesmanId)) || shift.status != 'STARTED')
         return {'code': 401, 'err': 'user not authorized'};
 
-    return shift.toObject();
+    return {'code': 200, 'shift': shift.toObject()};
 };
 
 let getShiftsFromDate = async function(sessionId, fromDate){
@@ -219,7 +219,7 @@ let getShiftsFromDate = async function(sessionId, fromDate){
 };
 
 let startShift = async function(sessionId, shift){
-    logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
+    logger.info('Services.shift.index.startShift', {'session-id': sessionId});
 
     var salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift');
     if(salesman == null || !salesman._id.equals(shift.salesmanId))

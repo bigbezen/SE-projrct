@@ -37,7 +37,7 @@ var BaseContainer = React.createClass({
             x.className = x.className.replace(" w3-show", "");
         }
     },
-    showView: function () {
+    render: function () {
         return (
             <div className='main-container'>
                 <ul className="w3-navbar w3-large w3-theme-d4 w3-left-align">
@@ -65,14 +65,15 @@ var BaseContainer = React.createClass({
 
             </div>
         )
-    },
-    render: function () {
-        if (userServices.managerIsLoggedin()) {
-            this.showView();
-        } else {
-            alert('you must be logged in as Manager');
-        }
     }
+ //   render: function () {
+ //       this.showView();
+      //  if (userServices.managerIsLoggedin()) {
+
+    //    } else {
+     //       alert('you must be logged in as Manager');
+    //    }
+ //   }
 });
 
 module.exports = BaseContainer;

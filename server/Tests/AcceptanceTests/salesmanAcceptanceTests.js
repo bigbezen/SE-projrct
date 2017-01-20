@@ -98,7 +98,6 @@ describe('salesman acceptance test', function(){
         shift.salesmanId = salesman._id;
         shift.salesReport = await createNewSalesReport();
         shift.sales = {};
-        shift = await dal.addShift(shift);
 
     });
 
@@ -108,6 +107,9 @@ describe('salesman acceptance test', function(){
 
     describe('test getCurrentShift', function(){
         it('get current shift valid', async function(){
+            shift = await dal.addShift(shift);
+
+
             let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
                 headers: {
                     sessionId: salesman.sessionId
@@ -120,6 +122,41 @@ describe('salesman acceptance test', function(){
             expect(result).to.have.property('status', 200);
 
             expect(result.data).to.include.all.keys('salesmanId', 'store', 'startTime', 'salesReport', 'status');
+        });
+
+        it('get current shift 0 shifts in system', async function(){
+            let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
+                headers: {
+                    sessionId: salesman.sessionId
+                }
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+            expect(result.response).to.have.property('status', 409);
+        });
+    });
+
+    describe('test startShift', function(){
+        it('test start shift valid', async function(){
+            shift = await dal.addShift(shift);
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+
+            let result = await axios.post(serverUrl + 'salesman/startShift', {
+                headers: {
+                    sessionId: salesman.sessionId,
+                    shift: shift
+                }
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result).to.have.property('status', 200);
         });
     });
 });

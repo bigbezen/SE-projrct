@@ -15,6 +15,14 @@ var helpers = {
         return connection.userRequests.logout();
     },
 
+    managerIsLoggedin: function() {
+        return  connection.userRequests.managerIsLoggedin();
+    },
+
+    salesmanIsLoggedin: function() {
+        return  connection.userRequests.salesmanIsLoggedin();
+    },
+
     retrievePassword: function(){
         console.log('userServices- retrievePassword function');
         return connection.userRequests.retrievePassword();

@@ -73,12 +73,9 @@ var SalesmanHomeContainer = React.createClass({
                     self.setState({
                         shift: result.info
                     });
-                    console.log("works!!");
-                } else {
-                    alert("Error while retrieving all stores from the server: "+ result.info);
                 }
             } else {
-                console.log("error in storesContainers: " + n);
+                  alert("Error while retrieving shift from the server");
             }
         })
     },

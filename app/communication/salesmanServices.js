@@ -2,8 +2,8 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-//var connection = require('../communication/connectionHandler')
-var connection = require('../communication/connectionHandlerStub')
+var connection = require('../communication/connectionHandler')
+//var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
     getCurrentShift: function(){
@@ -12,8 +12,13 @@ var helpers = {
     },
 
     startShift: function(shift){
-        console.log('salesmanServices- enterShift ');
+        console.log('salesmanServices- startShift ');
         return connection.salesmanRequests.startShift(shift);
+    },
+
+    getActiveShift: function(shiftId) {
+        console.log('salesmanServices- getActiveShift ');
+        return connection.salesmanRequests.getActiveShift(shiftId);
     },
 
     finishShift: function(shift){

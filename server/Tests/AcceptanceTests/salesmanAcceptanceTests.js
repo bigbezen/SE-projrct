@@ -97,6 +97,7 @@ describe('salesman acceptance test', function(){
         shift = new shiftModel();
         shift.status = 'PUBLISHED';
         shift.startTime = new Date();
+        shift.endTime = new Date();
         shift.storeId = store._id;
         shift.salesmanId = salesman._id;
         shift.salesReport = await createNewSalesReport();
@@ -370,6 +371,49 @@ describe('salesman acceptance test', function(){
 
             expect(result.response).to.have.property('status', 409);
 
+        });
+    });
+
+    describe('test finishShift', function(){
+        it('test finish shift valid', async function(){
+            shift.status = "STARTED";
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift = await dal.addShift(shift);
+
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].sold = i;
+            }
+
+            let result = await axios.post(serverUrl + 'salesman/finishShift', {
+                sessionId: salesman.sessionId,
+                shift: shift
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result).to.have.property('status', 200);
+        });
+
+        it('test finish shift without sales report', async function(){
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+            shift = shift.toObject();
+            shift.salesReport = {};
+
+            let result = await axios.post(serverUrl + 'salesman/finishShift', {
+                sessionId: salesman.sessionId,
+                shift: shift
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 409);
         });
     });
 });

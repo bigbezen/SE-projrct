@@ -141,7 +141,9 @@ module.exports = {
     },
 
     startOrEndShift: function(params){
-        return true;
+        return checkParams(params, ['sessionId', 'shift'], [stringT, objectT]) &&
+            checkParams(params.shift, ['salesmanId', 'startTime', 'endTime', '_id', 'salesReport', 'storeId'],
+                [stringT, stringT, stringT, stringT, objectT, stringT]);
     },
 
     reportSaleOrOpened: function(params){

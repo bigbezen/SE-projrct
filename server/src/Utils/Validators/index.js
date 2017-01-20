@@ -141,11 +141,11 @@ module.exports = {
     },
 
     startOrEndShift: function(params){
-
+        return true;
     },
 
     reportSaleOrOpened: function(params){
-
+        return true;
     }
 
 

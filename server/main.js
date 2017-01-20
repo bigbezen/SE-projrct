@@ -127,7 +127,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.startShift(req.body.sessionID, req.body.shift);
+        let result = await shiftService.startShift(req.body.sessionId, req.body.shift);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -139,7 +139,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.endShift(req.body.sessionID, req.body.shift);
+        let result = await shiftService.endShift(req.body.sessionId, req.body.shift);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -151,7 +151,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.reportSale(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
+        let result = await shiftService.reportSale(req.body.sessionId, req.body.shiftId, req.body.productId, req.body.quantity);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -163,7 +163,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.reportOpened(req.body.sessionID, req.body.shiftId, req.body.productId, req.body.quantity);
+        let result = await shiftService.reportOpened(req.body.sessionId, req.body.shiftId, req.body.productId, req.body.quantity);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -175,7 +175,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.addShiftComment(req.body.sessionID, req.body.shiftId, req.body.content);
+        let result = await shiftService.addShiftComment(req.body.sessionId, req.body.shiftId, req.body.content);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -187,7 +187,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getActiveShiftEncouragements(req.body.sessionID, req.params.shiftId);
+        let result = await shiftService.getActiveShiftEncouragements(req.body.sessionId, req.params.shiftId);
         if(result.code == 200)
             res.status(200).send(result.encouragements);
         else
@@ -208,6 +208,19 @@ function _setapApiEndpoints() {
             return;
         }
         let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+
+    app.get('/salesman/getActiveShift', async function (req, res) {
+        if(!('sessionid' in req.headers) || (!('shiftId' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getActiveShift(req.headers.sessionid, req.params.shiftId);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else

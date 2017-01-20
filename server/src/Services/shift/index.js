@@ -429,5 +429,6 @@ module.exports.addShiftComment = addShiftComment;
 module.exports.getActiveShiftEncouragements = getActiveShiftEncouragements;
 module.exports.automateGenerateShifts = automateGenerateShifts;
 module.exports.getShiftsFromDate = getShiftsFromDate;
+module.exports.getActiveShift = getActiveShift;
 
 

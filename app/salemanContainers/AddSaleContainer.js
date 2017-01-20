@@ -10,6 +10,8 @@ var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var addSaleStyles = require('../styles/addSaleStyles');
 var salesmanServices = require('../communication/salesmanServices');
 var paths = require('../utils/Paths');
+
+
 var AddSaleContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -98,19 +100,20 @@ var AddSaleContainer = React.createClass({
         )
     },
     handleAddSale(){
+        var shiftId = this.state.shift._id;
         this.state.soldProducts.forEach(function(prod){
-            salesmanServices.reportSale(this.state.shift._id,prod.productId,prod.sold); //TODO: add wait
+            salesmanServices.reportSale(shiftId, prod.productId,prod.sold); //TODO: add wait
             }
         );
         this.setState({products: this.state.shift.salesReport, soldProducts: []})
     },
     handleOpenBottle(){
     },
-    handleFinishShift(){
+    handleFinishShift: function(){
         this.context.router.push({
             pathname: paths.salesman_endShift_path,
             state:{newShift:this.state.shift}
-        })
+        });
     },
     renderStartedSale(){
         var selectRowProp = {
@@ -129,7 +132,7 @@ var AddSaleContainer = React.createClass({
                     </div>
                         <BootstrapTable data={this.state.soldProducts} bordered={false}>
                         <TableHeaderColumn
-                            dataField = 'productName'
+                            dataField = 'name'
                             dataAlign = 'right'
                             isKey = {true}>
                         </TableHeaderColumn>
@@ -144,13 +147,13 @@ var AddSaleContainer = React.createClass({
                 <h1> select products: </h1>
                 <BootstrapTable data={this.state.products} options={selectRowProp} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
-                        dataField = 'productName'
+                        dataField = 'name'
                         dataAlign = 'right'
                         isKey = {true}>
                     </TableHeaderColumn>
 
                 </BootstrapTable>
-                <button onClick={this.handleEndShift}> {constantStrings.endShift_string} </button>
+                <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
             </div>
             )
 
@@ -164,7 +167,7 @@ var AddSaleContainer = React.createClass({
                 <h1> select product: </h1>
                 <BootstrapTable data={this.state.products} options={selectRowProp} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
-                        dataField = 'productName'
+                        dataField = 'name'
                         dataAlign = 'right'
                         isKey = {true}>
                     </TableHeaderColumn>
@@ -173,7 +176,7 @@ var AddSaleContainer = React.createClass({
                         dataField = 'button'
                         width = '50'/>
                 </BootstrapTable>
-                <button onClick={this.handleEndShift}> {constantStrings.endShift_string} </button>
+                <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
             </div>
             )
 

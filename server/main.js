@@ -69,7 +69,7 @@ function _setapApiEndpoints() {
             res.status(200).send(result);
         }
         else{
-            res.status(401).send();
+            res.status(result.code).send(result.err);
         }
     });
 
@@ -110,7 +110,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/user/getProfile', async function (req, res) {
-        if(!('sessionid' in req.headers)) {
+        if(!('sessionId' in req.headers)) {
             res.status(404).send('invalid parameters');
             return;
         }
@@ -214,7 +214,6 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-
     app.get('/salesman/getActiveShift', async function (req, res) {
         if(!('sessionid' in req.headers) || (!('shiftId' in req.query))) {
             res.status(404).send('invalid parameters');
@@ -255,7 +254,6 @@ function _setapApiEndpoints() {
     });
 
 //Management Services
-
     app.post('/management/addUser', async function (req, res) {
         if (!validator.addUser(req.body)) {
             res.status(404).send('invalid parameters');
@@ -458,7 +456,6 @@ function _setapApiEndpoints() {
         }
     });
 
-
     app.post('/management/addEncouragement', async function (req, res) {
         if (!validator.addOrEditEncouragement(req.body)) {
             res.status(404).send('invalid parameters');
@@ -492,7 +489,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await encouragementService.deleteEncouragement(req.body.sessionId ,req.body.encouragementDetails);
+        let result = await encouragementService.deleteEncouragement(req.body.sessionId ,req.body.encouragementId);
         if (result.err != null) {
             res.status(result.code).send(result.err);
         }
@@ -586,7 +583,6 @@ function _setapApiEndpoints() {
     });
 
 //Manager Services
-
     app.post('/manager/addNotificationRule', function (req, res) {
         res.status(200).send('add new notification rule');
     });

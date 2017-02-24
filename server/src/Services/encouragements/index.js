@@ -40,6 +40,8 @@ let addEncouragement = async function(sessionId, encouragementDetails) {
 let editEncouragement = async function (sessionId, encouragementDetails) {
     logger.info('Services.Encouragement.index.editEncouragement', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editEncouragement');
+    if(user == null)
+        return {'encouragement': null, 'code': 401, 'err': 'permission denied'};
 
     //check if all the products id belongs to products
     for (let i = 0; i < encouragementDetails.products.length; i++) {
@@ -49,12 +51,11 @@ let editEncouragement = async function (sessionId, encouragementDetails) {
         }
     }
 
-    if(user != null){
-        let encouragement =  await dal.editEncouragement(encouragementDetails);
-        return {'encouragement': encouragement, 'code': 200, 'err': null};
-    }else{
-        return {'encouragement': null, 'code': 401, 'err': 'permission denied'}
-    }
+    let res =  await dal.editEncouragement(encouragementDetails);
+    if (res.ok == 0 || res.nModified == 0)
+        return {'encouragement': res, 'code': 400, 'err': 'cannot edit this encouragement'};
+
+    return {'encouragement': res, 'code': 200, 'err': null};
 };
 
 let deleteEncouragement = async function (sessionId, encouragementId) {

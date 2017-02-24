@@ -36,13 +36,18 @@ let addProduct = async function(sessionId, productDetails) {
 let editProduct = async function (sessionId, productDetails) {
     logger.info('Services.product.index.editProduct', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editProduct');
-    if(user != null){
-        let product = await dal.editProduct(productDetails);
-        return {'product': product, 'code':200, 'err': null};
-    }
-    else{
+    if(user == null)
         return {'product': null, 'code': 401, 'err': 'permission denied'};
-    }
+
+    let product = await dal.getProductByNameAndCatagory(productDetails.name, productDetails.category);
+    if(product != null && !product._id.equals(productDetails._id))
+        return {'product': null, 'code': 409, 'err': 'product with the same name and category already exist'};
+
+    let res = await dal.editProduct(productDetails);
+    if(res.ok == 0 || res.nModified == 0)
+        return {'product': product, 'code':400, 'err': 'cannot edit this product'};
+
+    return {'product': product, 'code':200, 'err': null};
 };
 
 let deleteProduct = async function(sessionId, ProductId){

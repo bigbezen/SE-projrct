@@ -34,12 +34,18 @@ let addStore = async function(sessionId, storeDetails) {
 let editStore = async function (sessionId, storeDetails) {
     logger.info('Services.store.index.editStore', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editStore');
-    if(user != null){
-        let store =  await dal.editStore(storeDetails);
-        return {'store': store, 'code': 200, 'err': null};
-    }else{
+    if (user == null)
         return {'store': null, 'code': 401, 'err': 'permission denied'}
-    }
+
+    let store = await dal.getStoreByNameAndArea(storeDetails.name, storeDetails.area);
+    if (store != null && !store._id.equals(storeDetails._id))
+        return {'store': null, 'code': 409, 'err': 'store with the same name and area already exist'};
+
+    let res = await dal.editStore(storeDetails);
+    if (res.ok == 0 || res.nModified == 0)
+        return {'product': res, 'code': 400, 'err': 'cannot edit this store'};
+
+    return {'product': res, 'code': 200, 'err': null};
 };
 
 let deleteStroe = async function (sessionId, storeId) {

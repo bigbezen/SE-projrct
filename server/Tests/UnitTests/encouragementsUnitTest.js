@@ -1,35 +1,38 @@
-var assert                     = require('chai').assert;
-var dal                        = require('../../src/DAL/dal');
-var encouragementServices      = require('../../src/Services/encouragements/index');
-var productServices            = require('../../src/Services/product/index');
-var userModel                  = require('../../src/Models/user');
-var mongoose                   = require('mongoose');
+let assert                     = require('chai').assert;
+let dal                        = require('../../src/DAL/dal');
+let encouragementServices      = require('../../src/Services/encouragements/index');
+let productServices            = require('../../src/Services/product/index');
+let userModel                  = require('../../src/Models/user');
+let mongoose                   = require('mongoose');
 
 describe('encouragements unit test', function () {
 
-    var manager;
-    var notManager;
-    var newEncouragement;
-    var editEncouragement;
-    var product1 = { 'name': 'absulut', 'retailPrice': '122', 'salePrice': '133', 'category': 'vodka', 'subCategory': 'vodka', 'minRequiredAmount': '111', 'notifyManager': 'false'};
-    var product2 = { 'name': 'jhony walker', 'retailPrice': '2222', 'salePrice': '555', 'category': 'wiskey', 'subCategory': 'wiskey', 'minRequiredAmount': '12', 'notifyManager': 'true'};
+    let manager;
+    let notManager;
+    let newEncouragement;
+    let editEncouragement;
+    let product1;
+    let product2;
     beforeEach(async function () {
         manager = new userModel();
         manager.username = 'shahaf';
         manager.sessionId = '123456';
         manager.jobDetails.userType = 'manager';
-        var res = await dal.addUser(manager);
+        let res = await dal.addUser(manager);
 
         notManager = new userModel();
         notManager.username = 'matan';
         notManager.sessionId = '12123434';
         notManager.jobDetails.userType = 'salesman';
-        var res = await dal.addUser(notManager);
+        res = await dal.addUser(notManager);
 
-        var res = await productServices.addProduct(manager.sessionId,product1);
+        product1 = { 'name': 'absulut', 'retailPrice': '122', 'salePrice': '133', 'category': 'vodka', 'subCategory': 'vodka', 'minRequiredAmount': '111', 'notifyManager': 'false'};
+        product2 = { 'name': 'jhony walker', 'retailPrice': '2222', 'salePrice': '555', 'category': 'wiskey', 'subCategory': 'wiskey', 'minRequiredAmount': '12', 'notifyManager': 'true'};
+
+        res = await productServices.addProduct(manager.sessionId,product1);
         product1 = res.product;
 
-        var res = await productServices.addProduct(manager.sessionId,product2);
+        res = await productServices.addProduct(manager.sessionId,product2);
         product2 = res.product;
 
         newEncouragement = {'active': true, 'numOfProducts': '2', 'rate': '100', 'products': []};
@@ -40,12 +43,12 @@ describe('encouragements unit test', function () {
     });
 
     afterEach(async function () {
-        var res= await dal.cleanDb();
+        let res= await dal.cleanDb();
     });
 
     describe('test add encouragement', function (){
         it('add encouragement not by manager',async function () {
-            var result = await encouragementServices.addEncouragement(notManager.sessionId, newEncouragement);
+            let result = await encouragementServices.addEncouragement(notManager.sessionId, newEncouragement);
             assert.equal(result.err, 'permission denied');
             assert.equal(result.code, 401, 'code 401');
             assert.isNull(result.encouragement);
@@ -56,7 +59,7 @@ describe('encouragements unit test', function () {
         });
 
         it('add encouragement by manager', async function () {
-            var result = await dal.getAllEncouragements();
+            let result = await dal.getAllEncouragements();
             assert.equal(result.length, 0, 'the db clean');
 
             result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
@@ -71,7 +74,7 @@ describe('encouragements unit test', function () {
         });
 
         it('add encouragement not existing products', async function () {
-            var result = await dal.getAllEncouragements();
+            let result = await dal.getAllEncouragements();
             assert.equal(result.length, 0, 'the db clean');
             newEncouragement.products.push( mongoose.Types.ObjectId("notexisting1"));
 
@@ -88,9 +91,9 @@ describe('encouragements unit test', function () {
     describe('test edit encouragement', function () {
         it('edit encouragement not by manager', async function () {
             //add new encouragement
-            var product = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let product = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
 
-            var result = await encouragementServices.editEncouragement(notManager.sessionId, editEncouragement);
+            let result = await encouragementServices.editEncouragement(notManager.sessionId, editEncouragement);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.err, 'permission denied');
             assert.equal(result.encouragement, null, 'encouragement return null');
@@ -105,9 +108,9 @@ describe('encouragements unit test', function () {
 
         it('edit encouragement by manager', async function () {
             //add new encouragement
-            var encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             editEncouragement._id = encouragement.encouragement._id
-            var result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
+            let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 200, 'code 200');
             assert.isNull(result.err, 'permission denied');
 
@@ -119,11 +122,18 @@ describe('encouragements unit test', function () {
             assert.equal(result[0].rate, editEncouragement.rate, 'same rate like the newEncouragement');
         });
 
+        it('edit unexist encouragement', async function () {
+            editEncouragement._id = "notexisting1";
+            let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
+            assert.equal(result.code, 400);
+            assert.equal(result.err, 'cannot edit this encouragement');
+        });
+
         it('edit encouragement active', async function () {
             //add new encouragement
-            var encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             editEncouragement._id = encouragement.encouragement._id
-            var result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
+            let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 200, 'code 200');
             assert.isNull(result.err, 'permission denied');
 
@@ -135,9 +145,9 @@ describe('encouragements unit test', function () {
 
         it('edit encouragement numOfProducts', async function () {
             //add new encouragement
-            var encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             editEncouragement._id = encouragement.encouragement._id
-            var result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
+            let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 200, 'code 200');
             assert.isNull(result.err, 'permission denied');
 
@@ -149,9 +159,9 @@ describe('encouragements unit test', function () {
 
         it('edit encouragement rate', async function () {
             //add new encouragement
-            var encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             editEncouragement._id = encouragement.encouragement._id
-            var result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
+            let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 200, 'code 200');
             assert.isNull(result.err, 'permission denied');
 
@@ -163,9 +173,9 @@ describe('encouragements unit test', function () {
 
         it('edit encouragement by existing product', async function () {
             //add new encouragement
-            var encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             editEncouragement._id = encouragement.encouragement._id
-            var result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
+            let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 200, 'code 200');
             assert.isNull(result.err, 'permission denied');
 
@@ -177,10 +187,10 @@ describe('encouragements unit test', function () {
 
         it('edit encouragement by not existing product', async function () {
             //add new encouragement
-            var encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             editEncouragement._id = encouragement.encouragement._id
             editEncouragement.products.push( mongoose.Types.ObjectId("notexisting1"));
-            var result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
+            let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 404, 'code 404');
             assert.equal(result.err, 'product not found');
 
@@ -193,7 +203,7 @@ describe('encouragements unit test', function () {
 
     describe('test delete encouragement', function () {
         it('delete encouragement not by manager', async function() {
-            var result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             result = await encouragementServices.deleteEncouragement(notManager.sessionId, 'storeId');
             assert.equal(result.err, 'permission denied');
             assert.equal(result.code, 401, 'code 401');
@@ -205,7 +215,7 @@ describe('encouragements unit test', function () {
         });
 
         it('delete encouragement by manager', async function() {
-            var result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             result = await encouragementServices.deleteEncouragement(manager.sessionId, result.encouragement._id);
             assert.equal(result.err, null);
             assert.equal(result.code, 200, 'code 200');
@@ -216,7 +226,7 @@ describe('encouragements unit test', function () {
         });
 
         it('delete encouragement not existing encouragement', async function() {
-            var result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             result = await dal.getAllEncouragements();
             assert.equal(result.length,1, 'the db not contains encouragement');
             result = await encouragementServices.deleteEncouragement(manager.sessionId, editEncouragement._id);
@@ -229,32 +239,32 @@ describe('encouragements unit test', function () {
 
     describe('test getAllEncouragements', function () {
         it('getAllEncouragements not by permission user', async function () {
-            var result = await encouragementServices.getAllEncouragements('notuser');
+            let result = await encouragementServices.getAllEncouragements('notuser');
             assert.equal(result.err, 'permission denied');
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.encouragements, null, 'encouragements return null');
         });
 
         it('getAllEncouragements by manager', async function () {
-            var result = await  encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let result = await  encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             result = await encouragementServices.getAllEncouragements(manager.sessionId);
             assert.isNull(result.err);
             assert.equal(result.code, 200, 'code 200');
 
             assert.equal(result.encouragements.length, 1);
-            var result = await  encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
+            result = await  encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
             result = await encouragementServices.getAllEncouragements(manager.sessionId);
             assert.equal(result.encouragements.length, 2);
         });
 
         it('getAllEncouragements store by by selesman', async function () {
-            var result = await  encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let result = await  encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
             result = await encouragementServices.getAllEncouragements(notManager.sessionId);//salesman
             assert.isNull(result.err);
             assert.equal(result.code, 200, 'code 200');
 
             assert.equal(result.encouragements.length, 1);
-            var result = await  encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
+            result = await  encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
             result = await encouragementServices.getAllEncouragements(notManager.sessionId);//salesman
             assert.equal(result.encouragements.length, 2);
         });

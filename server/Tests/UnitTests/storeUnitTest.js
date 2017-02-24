@@ -1,36 +1,39 @@
-var assert            = require('chai').assert;
-var dal               = require('../../src/DAL/dal');
-var storeService      = require('../../src/Services/store/index');
-var userModel         = require('../../src/Models/user');
+let assert            = require('chai').assert;
+let dal               = require('../../src/DAL/dal');
+let storeService      = require('../../src/Services/store/index');
+let userModel         = require('../../src/Models/user');
 
 
 
 describe('store unit test', function () {
-    var manager;
-    var notManager;
-    var newStoreDetails = {'name': 'bana', 'managerName': 'shahaf', 'phone': '0542458658', 'city': 'beersheva', 'address': 'rager12', 'area': 'south', 'channel': 'hot'};
-    var editStoreDetails = {'name': 'bana-update', 'managerName': 'blabla', 'phone': '0542450958', 'city': 'rishon', 'address': 'rager142', 'area': 'center', 'channel': 'cold'};
+    let manager;
+    let notManager;
+    let newStoreDetails;
+    let editStoreDetails;
     beforeEach(async function () {
         manager = new userModel();
         manager.username = 'shahaf';
         manager.sessionId = '123456';
         manager.jobDetails.userType = 'manager';
-        var res = await dal.addUser(manager);
+        let res = await dal.addUser(manager);
 
         notManager = new userModel();
         notManager.username = 'matan';
         notManager.sessionId = '12123434';
         notManager.jobDetails.userType = 'salesman';
         res = await dal.addUser(notManager);
+
+        newStoreDetails = {'name': 'bana', 'managerName': 'shahaf', 'phone': '0542458658', 'city': 'beersheva', 'address': 'rager12', 'area': 'south', 'channel': 'hot'};
+        editStoreDetails = {'name': 'bana-update', 'managerName': 'blabla', 'phone': '0542450958', 'city': 'rishon', 'address': 'rager142', 'area': 'center', 'channel': 'cold'};
     });
 
     afterEach(async function () {
-        var res = await dal.cleanDb();
+        let res = await dal.cleanDb();
     });
 
     describe('test add store', function (){
         it('add store not by manager',async function () {
-            var result = await storeService.addStore(notManager.sessionId, newStoreDetails);
+            let result = await storeService.addStore(notManager.sessionId, newStoreDetails);
             assert.equal(result.err, 'permission denied');
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null,'store return null');
@@ -41,7 +44,7 @@ describe('store unit test', function () {
         });
 
         it('add store by manager', async function () {
-            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            let result = await storeService.addStore(manager.sessionId, newStoreDetails);
             assert.isNull(result.err);
             assert.equal(result.code, 200, 'code 200 ok');
             assert.equal(result.store.name, newStoreDetails.name, 'store return same');
@@ -53,7 +56,7 @@ describe('store unit test', function () {
         });
 
         it('add store with existing name same area', async function () {
-            var result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            let result = await storeService.addStore(manager.sessionId, newStoreDetails);
             assert.isNull(result.err);
             assert.equal(result.code, 200, 'code 200 ok');
             assert.equal(result.store.name, newStoreDetails.name, 'store return same');
@@ -99,6 +102,24 @@ describe('store unit test', function () {
             assert(result[0].name, editStoreDetails.name);
         });
 
+        it('edit store with existing name and area', async function () {
+            let result = await storeService.addStore(manager.sessionId, newStoreDetails);
+            result = await storeService.addStore(manager.sessionId, editStoreDetails);
+            editStoreDetails.name = newStoreDetails.name;
+            editStoreDetails.area = newStoreDetails.area;
+            editStoreDetails._id = result.store._id.toString();
+            result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.equal(result.code, 409);
+            assert.equal(result.err, 'store with the same name and area already exist');
+        });
+
+        it('edit unexist store', async function () {
+            editStoreDetails._id = "notexisting1";
+            let result = await storeService.editStore(manager.sessionId, editStoreDetails);
+            assert.equal(result.code, 400);
+            assert.equal(result.err, 'cannot edit this store');
+        });
+
         it('edit store name', async function () {
             var result = await storeService.addStore(manager.sessionId, newStoreDetails);
             result = await dal.getAllStores();
@@ -126,6 +147,7 @@ describe('store unit test', function () {
             assert.equal(result.length, 1, 'the db contains the edit store');
             assert(result[0].managerName, editStoreDetails.managerName);
         });
+
         it('edit store phone', async function () {
             var result = await storeService.addStore(manager.sessionId, newStoreDetails);
             result = await dal.getAllStores();
@@ -139,6 +161,7 @@ describe('store unit test', function () {
             assert.equal(result.length, 1, 'the db contains the edit store');
             assert(result[0].phone, editStoreDetails.phone);
         });
+
         it('edit store city', async function () {
             var result = await storeService.addStore(manager.sessionId, newStoreDetails);
             result = await dal.getAllStores();

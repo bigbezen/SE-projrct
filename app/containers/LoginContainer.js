@@ -5,6 +5,7 @@ var React = require('react');
 var userServices = require('../communication/userServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
+var styles = require('../styles/index.js');
 
 var LoginContainer = React.createClass({
     contextTypes: {
@@ -52,31 +53,37 @@ var LoginContainer = React.createClass({
     },
     render: function () {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center w3-theme-l5" >
-                <h1>{constantsStrings.welcome_string} </h1>
-                <form onSubmit={this.handleSubmitUser} className="form-horizontal">
-                    <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.username_string}</label>
-                        <input type="text"
-                               className="col-sm-4"
-                               ref="usernameTextBox"
-                               value={this.username} />
+            <div className="container">
+                <div className="container">
+                    <div className="row" style={styles.topBuffer}>
                     </div>
-                    <div className="form-group">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.password_string}</label>
-                        <input type="password"
-                               className="col-sm-4"
-                               ref="passwordTextBox"
-                               value={this.password}/>
-                    </div>
-                    <div className="form-group">
-                        <button
-                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-5"
-                            type="submit">
-                            {constantsStrings.login_string}
-                        </button>
-                    </div>
-                </form>
+                </div>
+                <div className="jumbotron w3-theme-l5 col-sm-offset-3 col-sm-6 text-center img-rounded" >
+                    <h1 className="h1">IBBLS</h1>
+                    <form onSubmit={this.handleSubmitUser} className="form-horizontal">
+                        <div className="form-group ">
+                            <input type="text"
+                                   className="col-sm-4 col-sm-offset-4"
+                                   ref="usernameTextBox"
+                                   placeholder="שם משתמש"
+                                   value={this.username} />
+                        </div>
+                        <div className="form-group">
+                            <input type="password"
+                                   className="col-sm-4 col-sm-offset-4"
+                                   ref="passwordTextBox"
+                                   placeholder="סיסמא"
+                                   value={this.password}/>
+                        </div>
+                        <div className="form-group">
+                            <button
+                                className="w3-btn btn w3-theme-d5 col-sm-4 col-sm-offset-4"
+                                type="submit">
+                                {constantsStrings.login_string}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         )
     }

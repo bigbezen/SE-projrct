@@ -5,6 +5,9 @@ var styles = {
     transparentBg: {
         background: 'transparent'
     },
+    topBuffer: {
+        marginTop: '200px'
+    }
 
 };
 

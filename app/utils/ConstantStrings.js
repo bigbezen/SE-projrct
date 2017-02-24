@@ -23,9 +23,9 @@ class ConstantStrings extends React.Component {
     static storeStatus_string = 'מצב המלאי בחנות:';
 
     //home page
-    static numberOfSalesmen = 'מספר הדיילים:';
-    static numberOfStores = 'מספר החנויות:';
-    static numberOfProducts = 'מספר המוצרים:';
+    static numberOfSalesmen = 'סך הדיילים בחברה';
+    static numberOfStores = 'סך החנויות בחברה';
+    static numberOfProducts = 'סך המוצרים בחברה';
 
 
     //products

@@ -5,6 +5,9 @@
 var styles = {
     navbarButtons: {
         borderLeft: '1px solid gray'
+    },
+    footerStyle: {
+        height: '50px'
     }
 
 };

@@ -67,7 +67,8 @@ var BaseContainer = React.createClass({
                     </ul>
                 </div>
                 {this.props.children}
-
+                <div className="footer navbar-fixed-bottom w3-theme-d4" style={styles.footerStyle}>
+                </div>
             </div>
         )
     }

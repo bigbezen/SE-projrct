@@ -3,8 +3,8 @@
  */
 
 var React = require('react');
-var Home = require('../components/Home');
 var paths = require('../utils/Paths');
+var constantStrings = require('../utils/ConstantStrings');
 
 var HomeContainer = React.createClass({
     contextTypes: {
@@ -34,11 +34,19 @@ var HomeContainer = React.createClass({
         })
     },
     render: function () {
-        console.log("home container render");
-        return ( <Home onSelectUsers={this.handleSelectUsers}
-                       onSelectProducts={this.handleSelectProducts}
-                       onSelectStores={this.handleSelectStores}
-                       onSelectShifts={this.handleSelectShifts}/>
+        return (
+            <div className="container w3-theme-l5">
+                <div className="w3-card-2 w3-theme-l4 col-sm-4">
+                    <h1> {constantStrings.numberOfSalesmen}</h1>
+                </div>
+                <div className="w3-card-2 w3-theme-l4 col-sm-4">
+                    <h1> {constantStrings.numberOfProducts}</h1>
+                </div>
+                <div className="w3-card-2 w3-theme-l4 col-sm-4">
+                    <h1> {constantStrings.numberOfStores}</h1>
+                </div>
+            </div>
+
         )
     }
 });

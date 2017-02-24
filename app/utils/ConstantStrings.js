@@ -9,10 +9,10 @@ class ConstantStrings extends React.Component {
     static welcome_string = 'ברוכים הבאים';
     static username_string = 'שם משתמש';
     static password_string = 'סיסמא';
-    static manageUsers_string = 'ניהול משתמשים';
-    static manageStores_string = 'ניהול חנויות';
-    static manageProducts_string = 'ניהול מוצרים';
-    static manageShifts_string = 'ניהול משמרות';
+    static users_string = 'משתמשים';
+    static stores_string = 'חנויות';
+    static products_string = 'מוצרים';
+    static shifts_string = ' משמרות';
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';
@@ -21,6 +21,13 @@ class ConstantStrings extends React.Component {
     static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
     static save_string = 'שמירה';
     static storeStatus_string = 'מצב המלאי בחנות:';
+
+    //home page
+    static numberOfSalesmen = 'מספר הדיילים:';
+    static numberOfStores = 'מספר החנויות:';
+    static numberOfProducts = 'מספר המוצרים:';
+
+
     //products
     static id_string = 'מס׳ סידורי';
     static productName_string = 'שם מוצר';

@@ -7,7 +7,7 @@ var styles = {
         borderLeft: '1px solid gray',
         li_hover:{"backgroundColor":"yellow"}
     },
-    footerStyle: {
+    space: {
         height: '50px'
     },
     hoverBackground: {

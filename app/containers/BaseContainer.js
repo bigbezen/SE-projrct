@@ -45,7 +45,7 @@ var BaseContainer = React.createClass({
     render: function () {
         return (
             <div className='main-container'>
-                <ul className="w3-navbar w3-large w3-theme-d4 w3-left-align">
+                <ul className="w3-navbar w3-top w3-large w3-theme-d4 w3-left-align">
                     <li className="w3-hide-medium w3-hide-large w3-theme-d4 w3-opennav w3-right">
                         <a href="javascript:void(0);" onClick={this.handleMenuBar}>☰</a>
                     </li>
@@ -58,7 +58,7 @@ var BaseContainer = React.createClass({
                 </ul>
 
                 <div ref="demo" value={this.props.children} className="w3-hide w3-hide-large w3-hide-medium">
-                    <ul className="w3-navbar w3-left-align w3-large w3-theme-d4">
+                    <ul className="w3-navbar w3-top w3-left-align w3-large w3-theme-d4">
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
@@ -66,8 +66,9 @@ var BaseContainer = React.createClass({
                         <li><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>התנתק</a></li>
                     </ul>
                 </div>
+                <div style={styles.space} className="w3-theme-l5" />
                 {this.props.children}
-                <div className="panel-footer w3" >
+                <div className="footer navbar-fixed-bottom w3-theme-d4" style={styles.space}>
 
                 </div>
             </div>

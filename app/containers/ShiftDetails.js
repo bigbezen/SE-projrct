@@ -201,50 +201,72 @@ var ShiftDetails = React.createClass({
 
     addNewShift: function() {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center">
-                <h1>משמרת</h1>
-                <form onSubmit={this.handleSubmitShift} className="form-horizontal">
+            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
+
+                <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
+                    <div className="form-group">
+                        <h1 className="col-sm-offset-1 col-sm-10">
+                            <b><u>{constantsStrings.addShift_string}</u></b>
+                        </h1>
+                    </div>
 
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.storeName_string}</label>
-                        <select className="col-sm-4" onChange={this.handleStoreIdChange} ref="storeBox" >
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.storeName_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2"
+                                onChange={this.handleStoreIdChange} ref="storeBox" >
                             {this.state.storesForDropDown}
                         </select>
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.username_string}</label>
-                        <select className="col-sm-4" onChange={this.handleSalesmanIdChange} ref="userBox" >
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.username_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2"
+                                onChange={this.handleSalesmanIdChange} ref="userBox" >
                             {this.state.salesmenForDropDown}
                         </select>
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">סוג משמרת</label>
-                        <select className="col-sm-4" onChange={this.handleShiftTypeChange} ref="shiftTypeBox">
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.shiftType_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2"
+                                onChange={this.handleShiftTypeChange} ref="shiftTypeBox">
                             {this.getOptionsForShiftType()}
                         </select>
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.startDate_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.startDate_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="datetime-local"
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="startTimeBox"
                         />
                     </div>
 
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.endDate_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.endDate_string}</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="datetime-local"
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="endTimeBox"
                         />
                     </div>
 
+
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-5"
+                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-2"
                             type="submit">
                             {constantsStrings.add_string}
                         </button>

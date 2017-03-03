@@ -315,7 +315,7 @@ var managementRequests = {
     },
 
     AddAllShifts: function(startTime, endTime) {
-        return axios.post(serverUrl + 'management/automateGenerateShifts', {
+        return axios.post(serverUrl + 'management/generateShifts', {
             sessionId:sessionId,
             startTime:startTime,
             endTime:endTime

@@ -115,66 +115,89 @@ var StoreDetails = React.createClass({
     },
     addNewStore: function() {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center">
-                <h1>חנות</h1>
-                <form onSubmit={this.handleSubmitUser} className="form-horizontal">
+            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
+                <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right">
+                    <div className="form-group">
+                        <h1 className="col-sm-offset-1 col-sm-9"><b><u>{constantsStrings.addStore_string}</u></b></h1>
+                    </div>
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.storeName_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.storeName_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="text"
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="nameBox"
                         />
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.managerName_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.managerName_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="text" min={0}
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="managerNameBox"
                         />
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.phone_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.phone_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="text" min={0}
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="phoneBox"
                         />
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.city_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.city_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="text"
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="cityBox"
                         />
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.address_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.address_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="text"
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="addressBox"
                         />
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.area_string}</label>
-                        <select className="col-sm-4" onChange={this.handleAreaChange} ref="areaBox">
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.area_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleAreaChange} ref="areaBox">
                             {this.getOptions(constantsStrings.areaForDropdown)}
                         </select>
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.channel_string}</label>
-                        <select className="col-sm-4" onChange={this.handleChannelChange} ref="channelBox">
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.channel_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleChannelChange} ref="channelBox">
                             {this.getOptions(constantsStrings.channelForDropdown)}
                         </select>
                     </div>
 
+
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-5"
+                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-2"
                             type="submit">
                             {constantsStrings.edit_string}
                         </button>

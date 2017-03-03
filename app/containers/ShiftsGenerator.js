@@ -52,12 +52,12 @@ var ShiftDetails = React.createClass({
 
     createAllShifts: function() {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center">
+            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4 text-center">
                 <h1>יצירת קבוצת משמרות</h1>
-                <form onSubmit={this.handleSubmitShift} className="form-horizontal">
+                <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
 
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.startDate_string}</label>
+                        <label className="col-sm-2 col-sm-offset-2">{constantsStrings.startDate_string}</label>
                         <input type="datetime-local"
                                className="col-sm-4"
                                ref="startTimeBox"
@@ -65,7 +65,7 @@ var ShiftDetails = React.createClass({
                     </div>
 
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.endDate_string}</label>
+                        <label className="col-sm-2 col-sm-offset-2">{constantsStrings.endDate_string}</label>
                         <input type="datetime-local"
                                className="col-sm-4"
                                ref="endTimeBox"
@@ -74,7 +74,7 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-5"
+                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-4"
                             type="submit">
                             {constantsStrings.add_string}
                         </button>

@@ -165,153 +165,207 @@ var UserDetails = React.createClass({
     },
     addNewUser: function() {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 text-center">
-                <h1>משתמש</h1>
-                <form onSubmit={this.handleSubmitUser} className="form-horizontal">
+            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
+                <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right">
+                    <div className="form-group">
+                        <h1 className="col-sm-offset-1 col-sm-9"><b><u>{constantsStrings.addUser_string}</u></b></h1>
+                    </div>
 
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.username_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.username_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="text"
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="usernameBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.role_string}</label>
-                        <select className="col-sm-4" onChange={this.handleUserTypeChange} ref="userTypeBox">
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.role_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleUserTypeChange} ref="userTypeBox">
                             {this.getOptionsForRole()}
                         </select>
-
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.area_string}</label>
-                        <select className="col-sm-4" onChange={this.handleAreaChange} ref="areaBox">
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.area_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleAreaChange} ref="areaBox">
                             {this.getOptions(constantsStrings.areaForDropdown)}
                         </select>
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.channel_string}</label>
-                        <select className="col-sm-4" onChange={this.handleChannelChange} ref="channelBox">
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.channel_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleChannelChange} ref="channelBox">
                             {this.getOptions(constantsStrings.channelForDropdown)}
                         </select>
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.startDate_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.startDate_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="date"
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="startDateBox"
                         />
                     </div>
 
+
                     <div className="form-group ">
-                        <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.endDate_string}</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.endDate_string}:</label>
+                    </div>
+                    <div className="form-group ">
                         <input type="date" min={0}
-                               className="col-sm-4"
+                               className="col-sm-4 col-sm-offset-2"
                                ref="endDateBox"
                         />
                     </div>
 
+
                     <div>
-                        <h7>פרטים אישיים</h7>
+                        <div className="form-group">
+                            <h4 className="col-sm-4 col-sm-offset-2"><b>פרטים אישיים</b></h4>
+                        </div>
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.userID_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.userID_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="idBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.firstName_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.firstName_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="firstNameBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.lastName_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.lastName_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="lastNameBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.gender_string}</label>
-                            <select className="col-sm-4"  onChange={this.handleGenderChange} ref="sexBox" data="" >
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.gender_string}:</label>
+                        </div>
+                        <div className="form-group ">
+                            <select className="col-sm-4 col-sm-offset-2"  onChange={this.handleGenderChange} ref="sexBox" data="" >
                                 {this.getOptions(constantsStrings.genderForDropdown)}
                             </select>
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.birthDate_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.birthDate_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="date"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="birthdayBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.phone_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.phone_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="phoneBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.email_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.email_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="email"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="emailBox"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <h7> כתובת</h7>
+                        <div className="form-group">
+                            <h4 className="col-sm-4 col-sm-offset-2"><b> כתובת</b></h4>
+                        </div>
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.address_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.address_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="streetBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2"> {constantsStrings.street_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2"> {constantsStrings.street_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="numberBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.city_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.city_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="cityBox"
                             />
                         </div>
 
+
                         <div className="form-group ">
-                            <label className="control-label col-sm-3 col-sm-offset-2">{constantsStrings.zip_string}</label>
+                            <label className="col-sm-4 col-sm-offset-2">{constantsStrings.zip_string}:</label>
+                        </div>
+                        <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-4"
+                                   className="col-sm-4 col-sm-offset-2"
                                    ref="zipBox"
                             />
                         </div>
+
                     </div>
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-5"
+                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-2"
                             type="submit">
                             {constantsStrings.add_string}
                         </button>

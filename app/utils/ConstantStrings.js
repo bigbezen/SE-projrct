@@ -30,6 +30,7 @@ class ConstantStrings extends React.Component {
 
     //products
     static id_string = 'מס׳ סידורי';
+    static addProduct_string = 'הוספת מוצר חדש';
     static productName_string = 'שם מוצר';
     static retailPrice_string = 'מחיר עלות';
     static salePrice_string = 'מחיר מכירות';
@@ -48,6 +49,7 @@ class ConstantStrings extends React.Component {
 
     //users
     static userID_string ='ת״ז';
+    static addUser_string = 'הוספת משתמש חדש';
     static firstName_string = 'שם פרטי';
     static lastName_string = 'שם משפחה';
     static gender_string = 'מין';
@@ -68,6 +70,7 @@ class ConstantStrings extends React.Component {
 
     //stores
     static storeName_string ='שם חנות';
+    static addStore_string = 'הוספת חנות חדשה';
     static managerName_string = 'מנהל';
     static phone_string = 'טלפון';
     static address_string = 'כתובת';
@@ -86,9 +89,11 @@ class ConstantStrings extends React.Component {
 
     //shifts
     static status_string = 'מצב';
+    static addShift_string = 'הוספת משמרת חדשה';
     static type_string = 'סוג';
     static salesman_string = 'דייל';
     static getReport_string = 'הורד דוח';
+    static shiftType_string = 'סוג משמרת';
 
     static reportSale_string = 'דווח מכירה';
     static reportOpen_string = 'דווח פתיחה';

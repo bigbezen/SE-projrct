@@ -3,8 +3,8 @@
  */
 
 var styles = {
-    navbarButtons: {
-        borderLeft: '1px solid gray'
+    cardsRow: {
+        margin: 'auto'
     }
 
 };

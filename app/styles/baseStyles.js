@@ -4,10 +4,14 @@
 
 var styles = {
     navbarButtons: {
-        borderLeft: '1px solid gray'
+        borderLeft: '1px solid gray',
+        li_hover:{"backgroundColor":"yellow"}
     },
-    footerStyle: {
+    space: {
         height: '50px'
+    },
+    hoverBackground: {
+        backgroundColor:'w3-theme-l5'
     }
 
 };

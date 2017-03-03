@@ -113,7 +113,7 @@ var UsersContainer = React.createClass({
     },
     renderTable: function () {
         return (
-            <div class="col-sm-offset-1 col-sm-10">
+            <div className="col-sm-offset-1 col-sm-10">
                 <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
                 <BootstrapTable data={this.state.users} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn

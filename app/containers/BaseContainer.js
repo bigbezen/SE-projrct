@@ -10,7 +10,7 @@ var Users = require('react-icons/lib/fa/user');
 var Products = require('react-icons/lib/fa/glass');
 var Stores = require('react-icons/lib/md/store');
 var Shifts = require('react-icons/lib/fa/calendar');
-var styles = require('../styles/baseStyles');
+var styles = require('../styles/managerStyles/baseStyles');
 
 var BaseContainer = React.createClass({
     contextTypes: {

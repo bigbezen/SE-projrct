@@ -7,7 +7,7 @@ var constantStrings = require('../utils/ConstantStrings');
 var ReactBsTable = require("react-bootstrap-table");
 var BootstrapTable = ReactBsTable.BootstrapTable;
 var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
-var addSaleStyles = require('../styles/addSaleStyles');
+var addSaleStyles = require('../styles/salesmanStyles/addSaleStyles');
 var salesmanServices = require('../communication/salesmanServices');
 var paths = require('../utils/Paths');
 

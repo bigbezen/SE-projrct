@@ -6,7 +6,7 @@ var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var salesmanServices = require('../communication/salesmanServices');
 var paths = require('../utils/Paths');
-var startShiftStyles = require('../styles/startShiftStyles');
+var startShiftStyles = require('../styles/salesmanStyles/startShiftStyles');
 
 var EndShiftContainer = React.createClass({
     contextTypes: {

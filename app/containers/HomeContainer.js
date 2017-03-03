@@ -6,7 +6,7 @@ var React = require('react');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
 var constantStrings = require('../utils/ConstantStrings');
-var styles = require('../styles/homeStyles');
+var styles = require('../styles/managerStyles/homeStyles');
 
 var HomeContainer = React.createClass({
     contextTypes: {

@@ -2,14 +2,18 @@
  * Created by lihiverchik on 19/01/2017.
  */
 
-var React = require('react');
-var constantStrings = require('../utils/ConstantStrings');
-var ReactBsTable = require("react-bootstrap-table");
-var BootstrapTable = ReactBsTable.BootstrapTable;
-var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
-var addSaleStyles = require('../styles/salesmanStyles/addSaleStyles');
-var salesmanServices = require('../communication/salesmanServices');
-var paths = require('../utils/Paths');
+var React                   = require('react');
+var ReactBsTable            = require("react-bootstrap-table");
+var BootstrapTable          = ReactBsTable.BootstrapTable;
+var TableHeaderColumn       = ReactBsTable.TableHeaderColumn;
+
+var constantStrings         = require('../utils/ConstantStrings');
+var paths                   = require('../utils/Paths');
+var styles                  = require('../styles/salesmanStyles/addSaleStyles');
+
+var salesmanServices        = require('../communication/salesmanServices');
+
+var PlusIcon                = require('react-icons/lib/fa/plus');
 
 
 var AddSaleContainer = React.createClass({
@@ -87,15 +91,25 @@ var AddSaleContainer = React.createClass({
     setAmountButton: function(cell, row, enumObject, rowIndex) {
         return (
             <div>
-                <span className="input-group-btn">
-                    <button type="button" className="btn btn-default btn-number" disabled={row.sold == 0}  onClick={() =>
-                        this.decreaseNum(cell, row, enumObject, rowIndex)}> - </button>
-                </span>
-                <input type="text" className="form-control input-number" value={row.sold} min="0" ref={rowIndex}/>
-                <span className="input-group-btn">
-                    <button type="button" className="btn btn-default btn-number" onClick={() =>
-                        this.increaseNum(cell, row, enumObject, rowIndex)}> + </button>
-                </span>
+                <table>
+                    <tr>
+                        <td>
+                            <span className="input-group-btn ">
+                                <button type="button" className="w3-xxlarge btn btn-default btn-number" disabled={row.sold == 0}  onClick={() =>
+                                    this.decreaseNum(cell, row, enumObject, rowIndex)}> - </button>
+                            </span>
+                        </td>
+                        <td>
+                            <input type="text" className="form-control w3-xxlarge input-number" value={row.sold} min="0" ref={rowIndex}/>
+                        </td>
+                        <td>
+                            <span className="input-group-btn">
+                                <button type="button" className="btn w3-xxlarge btn-default btn-number" onClick={() =>
+                                    this.increaseNum(cell, row, enumObject, rowIndex)}> + </button>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
             </div>
         )
     },
@@ -115,44 +129,74 @@ var AddSaleContainer = React.createClass({
             state:{newShift:this.state.shift}
         });
     },
+    tablePlusIcon: function(cell, row, enumObject, rowIndex){
+        return (
+            <div className="w3-jumbo">
+                <PlusIcon/>
+            </div>
+        )
+    },
+    generateSearchField: function(onKeyUp){
+        return (
+            <input type="text" className="w3-xxxlarge"/>
+        )
+    },
     renderStartedSale(){
         var selectRowProp = {
             onRowClick: this.onRowClick
         };
         return(
             <div className='main-container'>
-                <div className="w3-theme-l2">
-                    <div style={addSaleStyles.reportTopContainer}>
-                        <div style={addSaleStyles.reportButtonsContainer}>
-                            <button onClick={this.handleAddSale} className="w3-btn-floating" style={addSaleStyles.reportButtons}> {constantStrings.reportSale_string}</button>
-                        </div>
-                        <div style={addSaleStyles.reportButtonsContainer}>
-                        <button onClick={this.handleOpenBottle} className="w3-btn-floating " style={addSaleStyles.reportButtons}>{constantStrings.reportOpen_string}</button>
-                        </div>
+
+                <div style={styles.reportTopContainer}>
+                    <div style={styles.reportButtonsContainer}>
+                        <button onClick={this.handleAddSale} className="w3-round-large w3-theme-d5 w3-jumbo" > {constantStrings.reportSale_string}</button>
                     </div>
-                        <BootstrapTable data={this.state.soldProducts} bordered={false}>
-                        <TableHeaderColumn
-                            dataField = 'name'
-                            dataAlign = 'right'
-                            isKey = {true}>
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
-                            dataAlign = 'right'
-                            dataField = 'button'
-                            width = '50'
-                            dataFormat = {this.setAmountButton}/>
-                    </BootstrapTable>
+                    <div style={styles.reportButtonsContainer}>
+                        <button onClick={this.handleOpenBottle} className="w3-round-large w3-theme-d5 w3-jumbo">{constantStrings.reportOpen_string}</button>
+                    </div>
+                </div>
+                <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
+                    <div className="w3-margin-top">
+                        <BootstrapTable data={this.state.soldProducts} hover bordered={false}>
+                            <TableHeaderColumn
+                                dataField = 'name'
+                                dataAlign = 'right'
+                                tdStyle = {styles.products_table_body}
+                                isKey = {true}>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
+                                dataAlign = 'right'
+                                dataField = 'button'
+                                width = '180'
+                                dataFormat = {this.setAmountButton}/>
+                        </BootstrapTable>
+                    </div>
                 </div>
 
-                <h1> select products: </h1>
-                <BootstrapTable data={this.state.products} options={selectRowProp} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
-                    <TableHeaderColumn
-                        dataField = 'name'
-                        dataAlign = 'right'
-                        isKey = {true}>
-                    </TableHeaderColumn>
+                <div style={styles.space}></div>
 
-                </BootstrapTable>
+                <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
+                    <div className="w3-margin-top">
+                        <BootstrapTable data={this.state.products} options={selectRowProp}
+                                        bordered={false} hover search
+                                        searchPlaceholder={constantStrings.search_string}>
+                            <TableHeaderColumn
+                                dataField = 'name'
+                                dataAlign = 'right'
+                                tdStyle = {styles.products_table_body}
+                                dataSort
+                                isKey = {true}>
+                                <h1><b>{constantStrings.select_product_for_sale}</b></h1>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
+                                dataField = 'button'
+                                dataAlign = 'left'
+                                dataFormat = {this.tablePlusIcon}>
+                            </TableHeaderColumn>
+                        </BootstrapTable>
+                    </div>
+                </div>
                 <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
             </div>
             )
@@ -163,19 +207,29 @@ var AddSaleContainer = React.createClass({
             onRowClick: this.onRowClick
         };
         return(
-            <div className="col-sm-10">
-                <h1> select product: </h1>
-                <BootstrapTable data={this.state.products} options={selectRowProp} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
-                    <TableHeaderColumn
-                        dataField = 'name'
-                        dataAlign = 'right'
-                        isKey = {true}>
-                    </TableHeaderColumn>
-                    <TableHeaderColumn
-                        dataAlign = 'right'
-                        dataField = 'button'
-                        width = '50'/>
-                </BootstrapTable>
+            <div>
+
+                <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
+                    <div className="w3-margin-top">
+                        <BootstrapTable data={this.state.products} options={selectRowProp}
+                                        bordered={false} hover search
+                                        searchPlaceholder={constantStrings.search_string}>
+                            <TableHeaderColumn
+                                dataField = 'name'
+                                dataAlign = 'right'
+                                tdStyle = {styles.products_table_body}
+                                dataSort
+                                isKey = {true}>
+                                <h1><b>{constantStrings.select_product_for_sale}</b></h1>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
+                                dataField = 'button'
+                                dataAlign = 'left'
+                                dataFormat = {this.tablePlusIcon}>
+                            </TableHeaderColumn>
+                        </BootstrapTable>
+                    </div>
+                </div>
                 <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
             </div>
             )

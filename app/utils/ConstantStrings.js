@@ -170,6 +170,8 @@ class ConstantStrings extends React.Component {
     static dropDownChooseString = 'בחר...';
 
     static email_string = 'אימייל';
+
+    static select_product_for_sale = 'בחר מוצר אשר נמכר/נפתח:'
 }
 
 module.exports = ConstantStrings;

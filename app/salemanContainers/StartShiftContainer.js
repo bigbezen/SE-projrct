@@ -29,7 +29,7 @@ var StartShiftContainer = React.createClass({
                 if (val.success) {
                     alert('edit succeed');
                     self.context.router.push({
-                        pathname: '/salesman/Shift',
+                        pathname: paths.salesman_sale_path,
                         state: {newShift: self.state.shift}
                     })
                 }

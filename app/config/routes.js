@@ -21,7 +21,6 @@ var CreateShifts = require('../containers/ShiftsGenerator');
 var SalesmanBase = require('../salemanContainers/SalesmanBaseContainer');
 var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
 var SalesmanStartShift = require('../salemanContainers/StartShiftContainer');
-var SalesmanShift = require('../salemanContainers/ShiftContainer');
 var SalesmanEndShift = require('../salemanContainers/EndShiftContainer');
 var SalesmanAddSale= require('../salemanContainers/AddSaleContainer');
 
@@ -43,7 +42,6 @@ var routes = (
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='home' component={SalesmanHome}/>
             <Route path='startShift' component={SalesmanStartShift}/>
-            <Route path='shift' component={SalesmanShift}/>
             <Route path='endShift' component={SalesmanEndShift}/>
             <Route path='sale' component={SalesmanAddSale}/>
         </Route>

@@ -3,6 +3,7 @@ var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var salesmanService = require('../communication/salesmanServices');
 var styles = require('../styles/salesmanStyles/homeStyles');
+var userServices = require('../communication/userServices');
 
 var shift = {
     storeId: '1',

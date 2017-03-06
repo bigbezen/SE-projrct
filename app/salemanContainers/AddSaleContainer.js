@@ -150,10 +150,10 @@ var AddSaleContainer = React.createClass({
 
                 <div style={styles.reportTopContainer}>
                     <div style={styles.reportButtonsContainer}>
-                        <button onClick={this.handleAddSale} className="w3-round-large w3-theme-d5 w3-jumbo" > {constantStrings.reportSale_string}</button>
+                        <button onClick={this.handleAddSale} className="w3-round-xxlarge w3-theme-d5 w3-jumbo w3-card-8" > {constantStrings.reportSale_string}</button>
                     </div>
                     <div style={styles.reportButtonsContainer}>
-                        <button onClick={this.handleOpenBottle} className="w3-round-large w3-theme-d5 w3-jumbo">{constantStrings.reportOpen_string}</button>
+                        <button onClick={this.handleOpenBottle} className="w3-round-xxlarge w3-theme-d5 w3-jumbo w3-card-8">{constantStrings.reportOpen_string}</button>
                     </div>
                 </div>
                 <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>

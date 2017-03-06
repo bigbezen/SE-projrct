@@ -120,7 +120,7 @@ module.exports = {
 
 
     deleteEncouragement: function(params){
-        return checkParams(params, ['sessionId', 'encuragementId'], [stringT, stringT]);
+        return checkParams(params, ['sessionId', 'encouragementId'], [stringT, stringT]);
     },
 
     sendBroadcastMessage: function(params){

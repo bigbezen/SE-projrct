@@ -207,8 +207,9 @@ var AddSaleContainer = React.createClass({
             onRowClick: this.onRowClick
         };
         return(
-            <div>
 
+            <div>
+                <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
                 <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
                     <div className="w3-margin-top">
                         <BootstrapTable data={this.state.products} options={selectRowProp}
@@ -230,7 +231,7 @@ var AddSaleContainer = React.createClass({
                         </BootstrapTable>
                     </div>
                 </div>
-                <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
+
             </div>
             )
 

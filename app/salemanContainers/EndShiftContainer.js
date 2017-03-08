@@ -7,6 +7,7 @@ var constantsStrings = require('../utils/ConstantStrings');
 var salesmanServices = require('../communication/salesmanServices');
 var paths = require('../utils/Paths');
 var startShiftStyles = require('../styles/salesmanStyles/startShiftStyles');
+var styles = require('../styles/salesmanStyles/startShiftStyles');
 
 var EndShiftContainer = React.createClass({
     contextTypes: {
@@ -90,19 +91,25 @@ var EndShiftContainer = React.createClass({
         return (
 
             <div>
-                <div className="w3-theme-d5">
-                    <h1>{constantsStrings.storeStatus_string}</h1>
+                <div className="w3-theme-d5 col-sm-12" style={styles.top__title}>
+                    <h1 className="w3-xxxlarge">{constantsStrings.storeStatus_string}</h1>
+                    <div className="container col-sm-offset-7" style={styles.start__button}>
+                        <button className="w3-theme-d5 w3-xxxlarge btn"
+                                onClick={this.handleSubmitReport} type="submit">
+                            {constantsStrings.endShift_string}
+                        </button>
+                    </div>
+                </div>
+                <div style={styles.space} className="w3-theme-l5">
                 </div>
 
-                <div className="w3-theme-l5">
-                    {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
+                <div>
+                    <ul className="col-sm-10 col-sm-offset-1 w3-card-4" style={styles.products__list}>
+                        {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
+                    </ul>
                 </div>
 
-                <div className="">
-                    <button className="w3-theme-d5"
-                            onClick={this.handleSubmitReport} type="submit"> {constantsStrings.endShift_string}
-                    </button>
-                </div>
+
 
             </div>
         )

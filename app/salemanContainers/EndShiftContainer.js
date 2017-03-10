@@ -8,6 +8,8 @@ var salesmanServices = require('../communication/salesmanServices');
 var paths = require('../utils/Paths');
 var startShiftStyles = require('../styles/salesmanStyles/startShiftStyles');
 var styles = require('../styles/salesmanStyles/startShiftStyles');
+var StartShiftIcon = require('react-icons/lib/fa/angle-double-left');
+var WineGlassIcon = require('react-icons/lib/fa/glass');
 
 var EndShiftContainer = React.createClass({
     contextTypes: {
@@ -28,6 +30,7 @@ var EndShiftContainer = React.createClass({
                 if (val.success) {
                     var currShift = val.info;
                     self.setState({shift: currShift});
+
                 }
                 else {
                 }
@@ -64,29 +67,29 @@ var EndShiftContainer = React.createClass({
         for (var product of this.state.shift.salesReport) {
             if (currProductId == product.productId) {
                 if (isSelected) {
-                    product.stockStartShift = 1;
+                    product.stockEndShift = 1;
                 } else {
-                    product.stockStartShift = 0;
+                    product.stockEndShift = 0;
                 }
             }
         }
     },
-    renderEachProduct: function(text, i){
+    renderEachProduct: function(product, i){
         return (
-            <div style={startShiftStyles.product} key={i} height={'100%'}>
-                <div style={startShiftStyles.product__detail}>
-                    <input type="checkbox" onChange={this.onUpdateProduct} style={startShiftStyles.product__selector} checked={text.stockStartShift} value={text.productId}/>
+            <li style={styles.product} key={i}>
+                <div style={styles.checkbox__detail}>
+                    <input type="checkbox" onChange={this.onUpdateProduct} style={styles.product__selector} value={product.productId}/>
                 </div>
-                <div style={startShiftStyles.product__detail}>
-                    <h1> {text.name} </h1>
+                <div style={styles.product__detail}>
+                    <h1 className="w3-xxxlarge"><b> {product.name} </b></h1>
                 </div>
-                <div style={startShiftStyles.product__detail}>
-                    <h1> picture</h1>
+                <div style={styles.image__detail} className="image-rounded">
+                    <div className="w3-theme-d5" style={styles.product__image}><WineGlassIcon/></div>
                 </div>
-            </div>
+            </li>
         );
     },
-    renderStartShift: function () {
+    renderEndShift: function () {
 
         return (
 
@@ -96,6 +99,7 @@ var EndShiftContainer = React.createClass({
                     <div className="container col-sm-offset-7" style={styles.start__button}>
                         <button className="w3-theme-d5 w3-xxxlarge btn"
                                 onClick={this.handleSubmitReport} type="submit">
+                            <StartShiftIcon/>
                             {constantsStrings.endShift_string}
                         </button>
                     </div>
@@ -125,7 +129,7 @@ var EndShiftContainer = React.createClass({
     render: function () {
         if(this.state.shift != null)
         {
-            return this.renderStartShift();
+            return this.renderEndShift();
         }
         else
         {

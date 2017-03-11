@@ -146,7 +146,7 @@ class ConstantStrings extends React.Component {
     //salesman
     static startShift_string = 'התחל משמרת';
     static endShift_string = 'סיים משמרת';
-
+    static continueShift_string = 'המשך משמרת';
     static genderForDropdown = ["נקבה", "זכר"];
 
     static channelForDropdown = ["מסחרי", "קלאסי"];

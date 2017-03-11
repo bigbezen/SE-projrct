@@ -122,6 +122,12 @@ var AddSaleContainer = React.createClass({
         this.setState({products: this.state.shift.salesReport, soldProducts: []})
     },
     handleOpenBottle(){
+        var shiftId = this.state.shift._id;
+        this.state.soldProducts.forEach(function(prod){
+                salesmanServices.reportOpen(shiftId, prod.productId,prod.sold); //TODO: add wait
+            }
+        );
+        this.setState({products: this.state.shift.salesReport, soldProducts: []})
     },
     handleFinishShift: function(){
         this.context.router.push({

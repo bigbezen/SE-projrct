@@ -444,7 +444,7 @@ var salesmanRequests = {
 
     //TODO:
     reportOpen: function(shiftId, productId, quantity){
-        return axios.post(serverUrl + 'salesman/reportOpen', {
+        return axios.post(serverUrl + 'salesman/reportOpened', {
             sessionId:sessionId,
             shiftId:shiftId,
             productId:productId,

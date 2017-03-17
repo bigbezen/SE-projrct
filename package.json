@@ -25,6 +25,7 @@
     "react-bootstrap-table": "^3.1.0",
     "react-dom": "^15.4.1",
     "react-icons": "^2.2.3",
+    "react-notification-system": "^0.2.13",
     "react-router": "^3.0.0",
     "react-uniform": "^1.2.1",
     "rimraf": "^2.5.4",

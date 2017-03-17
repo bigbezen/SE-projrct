@@ -16,7 +16,7 @@ var styles = require('../styles/managerStyles/styles');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
 var DownloadIcon = require('react-icons/lib/md/file-download');
-
+var NotificationSystem = require('react-notification-system');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -90,6 +90,23 @@ var ShiftsContainer = React.createClass({
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
+        var notificationSystem = this.refs.notificationSystem;
+        var self = this;
+        notificationSystem.addNotification({
+            message: constantStrings.areYouSure_string,
+            level: 'info',
+            autoDismiss: 0,
+            position: 'tc',
+            action: {
+                label: constantStrings.yes_string,
+                callback:
+                    function(){
+                        self.handleDeleteShift(row)
+                    }
+            }
+        });
+    },
+    handleDeleteShift: function(row){
         this.setState({
             shifts: null
         });
@@ -219,6 +236,7 @@ var ShiftsContainer = React.createClass({
                         width = '50'
                         dataFormat = {this.deleteButton}/>
                 </BootstrapTable>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

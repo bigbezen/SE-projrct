@@ -50,18 +50,17 @@ var EndShiftContainer = React.createClass({
             if (n) {
                 var val = n;
                 if (val.success) {
-                    alert('edit succeed');
                     self.context.router.push({
                         pathname: '/salesman/Home',
                         state: {newShift: self.state.shift}
                     })
                 }
                 else {
-                    alert('edit failed');
+                   // alert('edit failed');
                 }
             }
             else {
-                alert('edit failed');
+             //   alert('edit failed');
             }
         })
     },

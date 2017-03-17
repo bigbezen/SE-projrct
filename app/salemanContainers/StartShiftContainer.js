@@ -28,18 +28,17 @@ var StartShiftContainer = React.createClass({
             if (n) {
                 var val = n;
                 if (val.success) {
-                    alert('edit succeed');
                     self.context.router.push({
                         pathname: paths.salesman_sale_path,
                         state: {newShift: self.state.shift}
                     })
                 }
                 else {
-                    alert('edit failed');
+                 //   alert('edit failed');
                 }
             }
             else {
-                alert('edit failed');
+               // alert('edit failed');
             }
         })
     },

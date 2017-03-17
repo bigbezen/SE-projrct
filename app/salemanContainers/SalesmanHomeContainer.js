@@ -70,25 +70,20 @@ var SalesmanHomeContainer = React.createClass({
             if (n) { 
                 var result = n; 
                 if (result.success) { 
-                    self.setState({ 
-                        shift: result.info ,
-                        nextScreen: paths.salesman_startShift_path,
-                        buttonTitle: constantsStrings.startShift_string
-                    }); 
-                } 
-                else{ 
-                    salesmanService.getActiveShift("58c3be25d9a4453538b38893").then(function (n){ 
-                        if(n){ 
-                            var result =n; 
-                            if (result.success){ 
-                                self.setState({ 
-                                    shift: result.info ,
-                                    nextScreen: paths.salesman_sale_path,
-                                    buttonTitle: constantsStrings.continueShift_string
-                                }); 
-                            } 
-                        } 
-                    }); 
+                    var currShift = result.info 
+                    if (currShift.status == "STARTED") {
+                        self.setState({
+                            shift: result.info ,
+                            nextScreen: paths.salesman_sale_path,
+                            buttonTitle: constantsStrings.continueShift_string
+                        });
+                    } else {
+                        self.setState({
+                            shift: result.info ,
+                            nextScreen: paths.salesman_startShift_path,
+                            buttonTitle: constantsStrings.startShift_string
+                        });
+                    }
                 } 
             } 
             else{ 

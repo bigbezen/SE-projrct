@@ -118,7 +118,8 @@ var ShiftsContainer = React.createClass({
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {
-        var isFinished = (row.status == 'FINISHED'); //TODO: is this ok?
+        var isFinished = (row.status == 'FINISHED');
+        var isStarted = (row.status == 'STARTED');
         if (isFinished) {
             return (
                 <button
@@ -129,7 +130,7 @@ var ShiftsContainer = React.createClass({
                     {constantStrings.getReport_string}
                 </button>
             )
-        } else {
+        } else if (!isStarted) {
             return (
                 <button
                     className="w3-card-2"
@@ -142,8 +143,9 @@ var ShiftsContainer = React.createClass({
         }
     },
     deleteButton: function(cell, row, enumObject, rowIndex) {
-        var isFinished = (row.status == 'FINISHED'); //TODO: is this ok?
-        if (!isFinished) {
+        var isFinished = (row.status == 'FINISHED');
+        var isStarted = (row.status == 'STARTED');
+        if (!isFinished && !isStarted) {
             return (
                 <button
                     className="w3-card-2"

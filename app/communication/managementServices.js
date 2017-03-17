@@ -11,9 +11,9 @@ var helpers = {
         return connection.managementRequests.addUser(user);
     },
 
-    editUser: function(user){
+    editUser: function(name, user){
         console.log('managementervices- editUser');
-        return connection.managementRequests.editUser(user);
+        return connection.managementRequests.editUser(name, user);
     },
 
     deleteUser: function(user){

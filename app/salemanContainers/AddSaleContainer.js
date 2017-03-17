@@ -115,18 +115,22 @@ var AddSaleContainer = React.createClass({
     },
     handleAddSale(){
         var shiftId = this.state.shift._id;
+        var salesList = [];
         this.state.soldProducts.forEach(function(prod){
-            salesmanServices.reportSale(shiftId, prod.productId,prod.sold); //TODO: add wait
+            salesList.push([prod.productId, prod.sold]);
             }
         );
+        salesmanServices.reportSale(shiftId, salesList); //TODO: add wait
         this.setState({products: this.state.shift.salesReport, soldProducts: []})
     },
     handleOpenBottle(){
         var shiftId = this.state.shift._id;
+        var salesList = [];
         this.state.soldProducts.forEach(function(prod){
-                salesmanServices.reportOpen(shiftId, prod.productId,prod.sold); //TODO: add wait
+            salesList.push([prod.productId, prod.sold]);
             }
         );
+        salesmanServices.reportOpen(shiftId,salesList); //TODO: add wait
         this.setState({products: this.state.shift.salesReport, soldProducts: []})
     },
     handleFinishShift: function(){

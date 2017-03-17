@@ -23,7 +23,8 @@ var UserDetails = React.createClass({
             gender: '',
             role: '',
             area:'',
-            channel:''
+            channel:'',
+            prevUsername:''
         }
     },
 
@@ -126,7 +127,8 @@ var UserDetails = React.createClass({
         var context = this.context;
         if (this.state.editing) {
             newUser._id = this.props.location.query._id;
-            managementServices.editUser(newUser).then(function (n) {
+            var prevName = this.state.prevUsername;
+            managementServices.editUser(prevName, newUser).then(function (n) {
                 if(n){
                     var val = n;
                     if (val.success) {
@@ -168,7 +170,9 @@ var UserDetails = React.createClass({
             <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right">
                     <div className="form-group">
-                        <h1 className="col-sm-offset-1 col-sm-9"><b><u>{constantsStrings.addUser_string}</u></b></h1>
+                        <h1 className="col-sm-offset-1 col-sm-9 w3-xxlarge">
+                            <b>{constantsStrings.addUser_string}</b>
+                        </h1>
                     </div>
 
                     <div className="form-group ">
@@ -378,6 +382,7 @@ var UserDetails = React.createClass({
     setFields: function () {
         this.currProduct = flatten.unflatten(this.props.location.query);
 
+        this.state.prevUsername = this.currProduct.username;
         this.state.gender = this.currProduct.personal.sex;
         this.state.role = this.currProduct.jobDetails.userType;
         this.state.area = this.currProduct.jobDetails.area;

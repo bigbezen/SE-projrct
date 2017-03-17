@@ -106,10 +106,10 @@ var managementRequests = {
         })
     },
 
-    editUser: function(user) {
+    editUser: function(name, user) {
         return axios.post(serverUrl + 'management/editUser', {
             sessionId:sessionId,
-            username:user.username,
+            username:name,
             userDetails:user
         }).then(function (info) {
             return returnVal(true, info.data);
@@ -275,10 +275,10 @@ var managementRequests = {
     },
 
     deleteShift: function(shift) {
-        console.log('add shift');
-        return axios.post(serverUrl + 'management/deleteShifts', {
+        console.log('delete shift');
+        return axios.post(serverUrl + 'management/deleteShift', {
             sessionId:sessionId,
-            shiftArr:shift
+            shiftId:shift._id
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
@@ -428,13 +428,11 @@ var salesmanRequests = {
         })
     },
 
-    //TODO:
-    reportSale: function(shiftId, productId, quantity){
+    reportSale: function(shiftId, products){
         return axios.post(serverUrl + 'salesman/reportSale', {
             sessionId:sessionId,
             shiftId:shiftId,
-            productId:productId,
-            quantity:quantity
+            sales:products
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
@@ -442,13 +440,11 @@ var salesmanRequests = {
         })
     },
 
-    //TODO:
-    reportOpen: function(shiftId, productId, quantity){
+    reportOpen: function(shiftId, products){
         return axios.post(serverUrl + 'salesman/reportOpened', {
             sessionId:sessionId,
             shiftId:shiftId,
-            productId:productId,
-            quantity:quantity
+            opens:products
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

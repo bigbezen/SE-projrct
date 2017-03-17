@@ -26,14 +26,14 @@ var helpers = {
         return connection.salesmanRequests.finishShift(shift);
     },
 
-    reportSale: function(shiftId, productId, quantity){
+    reportSale: function(shiftId, products){
         console.log('salesmanServices- reportSale');
-        return connection.salesmanRequests.reportSale(shiftId, productId, quantity);
+        return connection.salesmanRequests.reportSale(shiftId, products);
     },
 
-    reportOpen: function(shiftId, productId, quantity){
+    reportOpen: function(shiftId, products){
         console.log('salesmanServices- reportOpen');
-        return connection.salesmanRequests.reportOpen(shiftId, productId, quantity);
+        return connection.salesmanRequests.reportOpen(shiftId, products);
     },
 
     addShiftComment: function(shiftId, content){

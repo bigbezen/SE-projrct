@@ -139,6 +139,24 @@ describe('salesman acceptance test', function(){
             expect(result.data).to.include.all.keys('salesmanId', 'store', 'startTime', 'salesReport', 'status');
         });
 
+        it('getCurrentShift_strtedShift_returnsShift', async function(){
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
+                headers: {
+                    sessionId: salesman.sessionId
+                }
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+            expect(result).to.have.property('status', 200);
+
+            expect(result.data).to.include.all.keys('salesmanId', 'store', 'startTime', 'salesReport', 'status');
+        });
+
         it('get current shift 0 shifts in system', async function(){
             let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
                 headers: {

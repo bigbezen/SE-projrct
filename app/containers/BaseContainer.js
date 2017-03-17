@@ -45,7 +45,7 @@ var BaseContainer = React.createClass({
     render: function () {
         return (
             <div className='main-container'>
-                <ul className="w3-navbar w3-top w3-large w3-theme-d4 w3-left-align">
+                <ul className="w3-navbar w3-top w3-large w3-theme-d4 w3-left-align w3-card-4">
                     <li className="w3-hide-medium w3-hide-large w3-theme-d4 w3-opennav w3-right">
                         <a href="javascript:void(0);" onClick={this.handleMenuBar}>☰</a>
                     </li>

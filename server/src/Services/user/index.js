@@ -56,19 +56,21 @@ let setAdminUser = async function(){
 let login = async function(username, password){
     logger.info('Services.user.index.login', {'username': username});
     let user = await dal.getUserByUsername(username);
+    let err;
+    if(user == null)
+        return {'code': 409, 'err': 'user does not exist'};
+    if(cypher.decrypt(user.password) != password)
+        return {'code': 409, 'err': 'password is incorrect'};
 
-    if(user != null && cypher.decrypt(user.password) == password){
-        let newSessionId = await _generateSessionId();
-        user.sessionId = newSessionId;
-        let res = await dal.editUser(user);
-        if(res != null)
-            return {'sessionId': newSessionId, 'userType': user.jobDetails.userType};
-        else
-            return {'code': '500', 'err': 'something went wrong'};
-    }
-    else{
-        return {'code': 409, 'err': 'error while logging in'};
-    }
+    let newSessionId = await _generateSessionId();
+    user.sessionId = newSessionId;
+    let res = await dal.editUser(user);
+    if(res != null)
+        return {'sessionId': newSessionId, 'userType': user.jobDetails.userType};
+    else
+        return {'code': '500', 'err': 'something went wrong'};
+
+
 };
 
 let logout = async function(sessionId) {

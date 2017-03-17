@@ -118,7 +118,9 @@ var StoreDetails = React.createClass({
             <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right">
                     <div className="form-group">
-                        <h1 className="col-sm-offset-1 col-sm-9"><b><u>{constantsStrings.addStore_string}</u></b></h1>
+                        <h1 className="col-sm-offset-1 col-sm-9 w3-xxlarge">
+                            <b>{constantsStrings.addStore_string}</b>
+                        </h1>
                     </div>
                     <div className="form-group ">
                         <label className="col-sm-4 col-sm-offset-2">{constantsStrings.storeName_string}:</label>

@@ -205,8 +205,8 @@ var ShiftDetails = React.createClass({
 
                 <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
                     <div className="form-group">
-                        <h1 className="col-sm-offset-1 col-sm-10">
-                            <b><u>{constantsStrings.addShift_string}</u></b>
+                        <h1 className="col-sm-offset-1 col-sm-10 w3-xxlarge">
+                            <b>{constantsStrings.addShift_string}</b>
                         </h1>
                     </div>
 

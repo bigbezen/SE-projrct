@@ -200,6 +200,10 @@ let getActiveShift = async function(sessionId, shiftId){
     return {'code': 200, 'shift': shift.toObject()};
 };
 
+let setStoreAndProductNamesToShift = async function(shift){
+
+}
+
 let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 

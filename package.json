@@ -55,7 +55,12 @@
     "compile": "babel server/ -d build/ --source-maps",
     "production": "webpack -p --devtool source-map",
     "watch": "babel -w server/ -d build/ --source-maps",
-    "swagger": "swagger project edit"
+    "swagger": "swagger project edit",
+    "start": "node ./build/main.js",
+    "build": "babel server/ -d build/ --source-maps"
+  },
+  "engines": {
+    "node": "5.10.0"
   },
   "author": "",
   "license": "ISC"

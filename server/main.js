@@ -19,22 +19,46 @@ let shiftService             = require('./src/Services/shift/index');
 
 let app = express();
 
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'https://svjgiyksxg.localtunnel.me');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
 app.set('view engine', 'ejs');
 let port = 3000;
 app.use(bodyparser.json());
-app.listen(port);
-app.locals.baseurl = "http://localhost:" + port;
-let db = 'IBBLS';
-if('DB' in process.env)
-    db = process.env['DB'];
-app.locals.mongourl = 'mongodb://localhost/' + db;
+app.listen(process.env.PORT || port);
 
+app.use(express.static(__dirname + '/public'));
+
+let db = 'IBBLS';
+if('DB' in process.env) {
+    db = process.env['DB'];
+}
+app.locals.baseurl = "http://localhost:" + port;
+let localdb = 'mongodb://localhost/' + db;
+let remotedb = "mongodb://shahafstein:ibbls!234@ibbls-shard-00-00-9au6a.mongodb.net:27017,ibbls-shard-00-01-9au6a.mongodb.net:27017,ibbls-shard-00-02-9au6a.mongodb.net:27017/ibbls?ssl=true&replicaSet=ibbls-shard-0&authSource=admin";
+app.locals.mongourl = localdb;
 
 
 _connectToDb();
 _setapApiEndpoints();
 
-logger.info('server is now running on port: ', {'port': port});
+console.log('server is now running on port: ', {'port': port});
 
 
 function _connectToDb(){
@@ -43,10 +67,12 @@ function _connectToDb(){
     let db = mongoose.connection;
     db.on('error', function(){
         console.error.bind(console, 'connection error:');
-        throw 'Cant connect to DB...';
+        console.log('cant connect to db');
+        //throw 'Cant connect to DB...';
     });
     db.once('open', function() {
         console.log('connected to db successfuly');
+        userService.setAdminUser();
     });
 }
 

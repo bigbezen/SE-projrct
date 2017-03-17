@@ -10,6 +10,49 @@ var inboxModel      = require('../../Models/message');
 var hashGenerator   = require('hash-generator');
 
 
+var setAdminUser = async function(){
+    let user = new userModel();
+    user.username = 'admin';
+    user.password = cypher.encrypt("admin");
+    user.startDate = "09-16-2016";
+    user.endDate = null;
+    user.personal = {
+        "id": "0987654321",
+        "firstName": "israel",
+        "lastName": "israeli",
+        "sex": "male",
+        "birthday": "01-01-1999"
+    };
+    user.contact = {
+        "address": {
+            "street": "st",
+            "number": "100",
+            "city": "some city",
+            "zip": "11111"
+        },
+        "phone": "054-9999999",
+        "email": "w@gmail.com"
+    };
+    user.jobDetails = {
+        "userType": "manager",
+        "area": "south",
+        "channel": "spirit",
+        "encouragements": []
+    };
+
+
+    let isExistUsername = await dal.getUserByUsername("admin");
+    let res = null;
+    if(isExistUsername == null){
+        res = await dal.addUser(user);
+        console.log('admin user is now set...');
+    }
+    else{
+        console.log('admin user is already set...');
+    }
+    return res;
+};
+
 var login = async function(username, password){
     logger.info('Services.user.index.login', {'username': username});
     var user = await dal.getUserByUsername(username);
@@ -191,7 +234,7 @@ var getAllUsers = async function(sessionId){
 
     var users = await dal.getAllUsers();
     if(users != null) {
-    var usersAsObjects = [];
+        var usersAsObjects = [];
         for(var user of users){
             user = user.toObject();
             delete user.password;
@@ -227,3 +270,4 @@ module.exports.changePassword = changePassword;
 module.exports.getProfile = getProfile;
 module.exports.retrievePassword = retrievePassword;
 module.exports.getAllUsers = getAllUsers;
+module.exports.setAdminUser = setAdminUser;

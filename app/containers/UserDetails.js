@@ -10,8 +10,9 @@ var flatten = require('flat');
 var ReactBootstrap = require("react-bootstrap");
 var moment = require('moment');
 var paths = require('../utils/Paths');
-
 var DropDownInput = ReactBootstrap.DropdownButton;
+var NotificationSystem = require('react-notification-system');
+var styles = require('../styles/managerStyles/styles');
 
 var UserDetails = React.createClass({
     contextTypes: {
@@ -87,10 +88,10 @@ var UserDetails = React.createClass({
 
     handleSubmitUser: function (e) {
         e.preventDefault();
-        if (!this.checkDropDowns()) {
+        /*if (!this.checkDropDowns()) {
             alert('Invalid values. please make sure that you filled all of the fields');
             return;
-        }
+        }*/
         var newUser = new userInfo();
         newUser.username = this.refs.usernameBox.value;
         newUser.startDate = this.refs.startDateBox.value;
@@ -125,6 +126,7 @@ var UserDetails = React.createClass({
         newUser.jobDetails.channel = this.state.channel;
 
         var context = this.context;
+        var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newUser._id = this.props.location.query._id;
             var prevName = this.state.prevUsername;
@@ -132,16 +134,33 @@ var UserDetails = React.createClass({
                 if(n){
                     var val = n;
                     if (val.success) {
-                        alert('edit succeed');
-                        context.router.push({
-                            pathname: paths.manager_users_path
-                        })
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editSuccessMessage_string,
+                            level: 'success',
+                            autoDismiss: 2,
+                            position: 'tc',
+                            onRemove: function (notification) {
+                                context.router.push({
+                                    pathname: paths.manager_users_path
+                                })
+                            }
+                        });
                     } else {
-                        alert('edit failed. please check your parameters');
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 0,
+                            position: 'tc'
+                        });
                     }
                 }
                 else{
-                    alert('edit failed. please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                     console.log("error");
                 }
             })
@@ -150,16 +169,33 @@ var UserDetails = React.createClass({
                 if(n){
                     var val = n;
                     if (val.success) {
-                        alert('add succeed');
-                        context.router.push({
-                            pathname: paths.manager_users_path
-                        })
+                        notificationSystem.addNotification({
+                            message: constantsStrings.addSuccessMessage_string,
+                            level: 'success',
+                            autoDismiss: 2,
+                            position: 'tc',
+                            onRemove: function (notification) {
+                                context.router.push({
+                                    pathname: paths.manager_users_path
+                                })
+                            }
+                        });
                     } else {
-                        alert('add failed. please check your parameters');
+                        notificationSystem.addNotification({
+                            message: constantsStrings.addFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 0,
+                            position: 'tc'
+                        });
                     }
                 }
                 else{
-                    alert('add failed. please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                     console.log("error");
                 }
             })
@@ -375,6 +411,7 @@ var UserDetails = React.createClass({
                         </button>
                     </div>
                 </form>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

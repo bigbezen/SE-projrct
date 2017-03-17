@@ -7,6 +7,8 @@ var managementServices = require('../communication/managementServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var productInfo = require('../models/product');
 var paths = require('../utils/Paths');
+var NotificationSystem = require('react-notification-system');
+var styles = require('../styles/managerStyles/styles');
 
 var ProductDetails = React.createClass({
     contextTypes: {
@@ -59,10 +61,10 @@ var ProductDetails = React.createClass({
 
     handleSubmitUser: function (e) {
         e.preventDefault();
-        if (!this.checkDropDowns()) {
+        /*if (!this.checkDropDowns()) {
             alert('Invalid values. please make sure that you filled all of the fields');
             return;
-        }
+        }*/
         //                        parseInt("the string you want to parse to int")
         var newProduct = new productInfo();
         newProduct.name = this.refs.nameBox.value;
@@ -73,22 +75,40 @@ var ProductDetails = React.createClass({
         newProduct.minRequiredAmount =  parseInt(this.refs.minAmountBox.value);
         newProduct.notifyManager = this.refs.notifyBox.checked;
         var context = this.context;
+        var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newProduct._id = this.props.location.query._id;
             managementServices.editProduct(newProduct).then(function (n) {
                 if(n){
                         var val = n;
                         if (val.success) {
-                            alert('edit succeed');
-                            context.router.push({
-                                pathname: paths.manager_products_path
-                            })
+                            notificationSystem.addNotification({
+                                message: constantsStrings.editSuccessMessage_string,
+                                level: 'success',
+                                autoDismiss: 2,
+                                position: 'tc',
+                                onRemove: function (notification) {
+                                    context.router.push({
+                                        pathname: paths.manager_products_path
+                                    })
+                                }
+                            });
                         } else {
-                            alert('edit failed. please check your parameters');
+                            notificationSystem.addNotification({
+                                message: constantsStrings.editFailMessage_string,
+                                level: 'error',
+                                autoDismiss: 0,
+                                position: 'tc'
+                            });
                         }
                 }
                 else{
-                    alert('edit failed. please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                     console.log("error");
                 }
             })
@@ -97,16 +117,33 @@ var ProductDetails = React.createClass({
                 if(n){
                         var val = n;
                         if (val.success) {
-                            alert('add succeed');
-                            context.router.push({
-                                pathname: paths.manager_products_path
-                            })
+                            notificationSystem.addNotification({
+                                message: constantsStrings.addSuccessMessage_string,
+                                level: 'success',
+                                autoDismiss: 2,
+                                position: 'tc',
+                                onRemove: function (notification) {
+                                    context.router.push({
+                                        pathname: paths.manager_products_path
+                                    })
+                                }
+                            });
                         } else {
-                            alert('add failed. please check your parameters');
+                            notificationSystem.addNotification({
+                                message: constantsStrings.addFailMessage_string,
+                                level: 'error',
+                                autoDismiss: 0,
+                                position: 'tc'
+                            });
                         }
                 }
                 else{
-                    alert('add failed. please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                     console.log("error");
                 }
             })
@@ -202,6 +239,7 @@ var ProductDetails = React.createClass({
                         </button>
                     </div>
                 </form>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

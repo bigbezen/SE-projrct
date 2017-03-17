@@ -9,7 +9,7 @@ var flatten = require('flat');
 var moment = require('moment');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
-
+var NotificationSystem = require('react-notification-system');
 
 
 function dateFormatter(cell, row) {
@@ -68,6 +68,24 @@ var UsersContainer = React.createClass({
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
+        var notificationSystem = this.refs.notificationSystem;
+        var self = this;
+        notificationSystem.addNotification({
+            message: "are you sure?",
+            level: 'info',
+            autoDismiss: 0,
+            position: 'tc',
+            action: {
+                label: 'Yes',
+                callback:
+                    function(){
+                        self.handleDeleteUser(row)
+                    }
+            }
+        });
+
+    },
+    handleDeleteUser: function(row){
         this.setState({
             users: null
         });
@@ -87,7 +105,6 @@ var UsersContainer = React.createClass({
             }
         })
     },
-
     onClickAddButton: function(){
         this.context.router.push({
             pathname: paths.manager_userDetails_path
@@ -178,6 +195,7 @@ var UsersContainer = React.createClass({
                         dataFormat = {this.deleteButton}>
                     </TableHeaderColumn>
                 </BootstrapTable>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

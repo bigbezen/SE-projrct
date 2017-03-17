@@ -27,6 +27,7 @@ describe('shift unit test', function () {
     let shift2;
     let shifts = [];
     let store;
+    let store2;
     let product1;
     let product2;
     let product3;
@@ -103,6 +104,16 @@ describe('shift unit test', function () {
         store.channel = 'hot';
         let res = await dal.addStore(store);
 
+        store2 = new storeModel();
+        store2.name = 'bana2';
+        store2.managerName = 'shahaf';
+        store2.phone = '0542458658';
+        store2.city = 'beersheva2';
+        store2.address = 'rager12';
+        store2.area = 'south2';
+        store2.channel = 'hot2';
+        res = await dal.addStore(store2);
+
         product1 = new productModel();
         product1.name = 'absulut';
         product1.retailPrice = 122;
@@ -178,9 +189,9 @@ describe('shift unit test', function () {
         shifts.push(shift2);
     });
 
-    afterEach(async function () {
+    /*afterEach(async function () {
         let res = await dal.cleanDb();
-    });
+    });*/
 
 
     describe('test add shifts', function () {
@@ -1134,6 +1145,44 @@ describe('shift unit test', function () {
                 assert.equal(shifts[0].salesReport[i].opened, 1);
                 assert.equal(shifts[0].salesReport[i].stockEndShift, 1);
             }
+        });
+    });
+
+    describe('test delete shift', function () {
+        it('delete shift not by manager', async function() {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            let result = await shiftService.deleteShift(salesman.sessionId, 'shiftId');
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.store, null, 'shift return null');
+
+            //get all the shifts to ensure that the product is not removed
+            let dbShifts = await dal.getShiftsByIds([res.shiftArr[0]._id, res.shiftArr[1]._id]);
+            expect(dbShifts).to.have.lengthOf(2);
+        });
+
+        it('delete shift by manager', async function() {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            let result = await shiftService.deleteShift(manager.sessionId, res.shiftArr[0]._id);
+            assert.equal(result.err, null);
+            assert.equal(result.code, 200, 'code 200');
+
+            //get all the shifts to ensure that the product is not removed
+            let dbShifts = await dal.getShiftsByIds([res.shiftArr[0]._id]);
+            expect(dbShifts).to.have.lengthOf(0);
+        });
+
+        it('delete started shift', async function() {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            res.shiftArr[0].status = "STARTED";
+            let result = await dal.updateShift(  res.shiftArr[0]);
+            result = await shiftService.deleteShift(manager.sessionId, res.shiftArr[0]._id);
+            assert.equal(result.err, 'permission denied shift already started');
+            assert.equal(result.code, 401, 'code 401');
+
+            //get all the shifts to ensure that the product is not removed
+            let dbShifts = await dal.getShiftsByIds([res.shiftArr[0]._id, res.shiftArr[1]._id]);
+            expect(dbShifts).to.have.lengthOf(2);
         });
     });
 });

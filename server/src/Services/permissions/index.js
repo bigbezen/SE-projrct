@@ -43,6 +43,8 @@ var funcNameToPermission = {
     'getActiveShift': ['salesman'],
     'getActiveShiftEncouragements': ['manager', 'salesman'],
     'getShiftsFromDate': ['manager'],
+    'deleteShift': ['manager'],
+    'editShift': ['manager'],
     'getSaleReportXl': ['manager']
 };
 

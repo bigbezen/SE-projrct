@@ -24,15 +24,15 @@ var EndShiftContainer = React.createClass({
     },
     componentDidMount() {
         var self = this;
-        salesmanServices.getActiveShift(this.state.ShiftId).then(function (n) {
+        salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
                 var val = n;
                 if (val.success) {
                     var currShift = val.info;
-                    self.setState({shift: currShift});
-                    for (var product of self.state.shift.salesReport) {
+                    for (var product of currShift.salesReport) {
                         product.stockEndShift = product.stockStartShift
                     }
+                    self.setState({shift: currShift});
                 }
                 else {
                 }
@@ -72,8 +72,8 @@ var EndShiftContainer = React.createClass({
     onUpdateProduct:function(event) {
         var currProductId = event.target.value;
         var isSelected = event.target.checked;
-        //var products = this.state.shift.salesReport;
-        for (var product of this.state.shift.salesReport) {
+        var currShift = this.state.shift;
+        for (var product of currShift.salesReport) {
             if (currProductId == product.productId) {
                 if (isSelected) {
                     product.stockEndShift = 1;
@@ -82,6 +82,7 @@ var EndShiftContainer = React.createClass({
                 }
             }
         }
+        this.setState({shift:currShift});
     },
     renderEachProduct: function(product, i){
         return (
@@ -116,7 +117,7 @@ var EndShiftContainer = React.createClass({
 
                 <div>
                     <ul className="col-sm-10 col-sm-offset-1 w3-card-4" style={styles.products__list}>
-                        {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
+                        {this.state.shift.salesReport.map(this.renderEachProduct)}
                     </ul>
                 </div>
             </div>

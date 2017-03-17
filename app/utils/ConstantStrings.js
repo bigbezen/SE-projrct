@@ -31,6 +31,7 @@ class ConstantStrings extends React.Component {
     //products
     static id_string = 'מס׳ סידורי';
     static addProduct_string = 'הוספת מוצר חדש';
+    static editProduct_string = 'עריכת מוצר קיים';
     static productName_string = 'שם מוצר';
     static retailPrice_string = 'מחיר עלות';
     static salePrice_string = 'מחיר מכירות';
@@ -46,10 +47,10 @@ class ConstantStrings extends React.Component {
     static selectSubCategory_string = 'בחר תת קטגוריה..';
     static enterQuantity_string = 'הכנס כמות';
 
-
     //users
     static userID_string ='ת״ז';
     static addUser_string = 'הוספת משתמש חדש';
+    static editUser_string = 'עריכת משתמש קיים';
     static firstName_string = 'שם פרטי';
     static lastName_string = 'שם משפחה';
     static gender_string = 'מין';
@@ -71,6 +72,7 @@ class ConstantStrings extends React.Component {
     //stores
     static storeName_string ='שם חנות';
     static addStore_string = 'הוספת חנות חדשה';
+    static editStore_string = 'עריכת חנות קיימת';
     static managerName_string = 'מנהל';
     static phone_string = 'טלפון';
     static address_string = 'כתובת';
@@ -90,6 +92,7 @@ class ConstantStrings extends React.Component {
     //shifts
     static status_string = 'מצב';
     static addShift_string = 'הוספת משמרת חדשה';
+    static editShift_string = 'עריכת משמרת קיימת';
     static type_string = 'סוג';
     static salesman_string = 'דייל';
     static getReport_string = 'הורד דוח';
@@ -189,6 +192,8 @@ class ConstantStrings extends React.Component {
     static saleProductFailedMessage_string = 'אירעה שגיאה בעת ביצוע הדיווח. אנא נסה שנית';
     static badActionMessage_string = 'הפעולה נכשלה. נא לוודא כי כל השדות חוקיים';
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
+    static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
+    static yes_string = 'כן';
 }
 
 module.exports = ConstantStrings;

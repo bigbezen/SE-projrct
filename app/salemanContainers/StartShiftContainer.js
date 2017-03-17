@@ -44,8 +44,9 @@ var StartShiftContainer = React.createClass({
         })
     },
     onReturn:function(event) { //TODO: relate this method to return button
-        context.router.push({
-            pathname: paths.salesman_home_path
+        this.context.router.push({
+            pathname: '/salesman/Home',
+            state: {newShift: this.state.shift}
         })
     },
     onUpdateProduct:function(event) {

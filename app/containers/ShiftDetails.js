@@ -9,7 +9,6 @@ var shiftInfo = require('../models/shift');
 var flatten = require('flat');
 var ReactBootstrap = require("react-bootstrap");
 var moment = require('moment');
-//var momentTz = require('moment-timezone');
 var paths = require('../utils/Paths');
 
 var DropDownInput = ReactBootstrap.DropdownButton;
@@ -135,8 +134,8 @@ var ShiftDetails = React.createClass({
         newShift.salesmanId = this.state.salesmanId;
         var startT = moment(this.refs.startTimeBox.value).format('YYYY-MM-DD hh:mm');
         var endT = moment(this.refs.endTimeBox.value).format('YYYY-MM-DD hh:mm');
-        newShift.startTime = this.refs.startTimeBox.value + '+02:00';
-        newShift.endTime = this.refs.endTimeBox.value + '+02:00';
+        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+02:00';
+        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+02:00';
 
         var context = this.context;
         if (this.state.editing) {
@@ -242,12 +241,21 @@ var ShiftDetails = React.createClass({
                         </select>
                     </div>
 
+                    <div className="form-group ">
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.startDate_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <input type="date"
+                               className="col-sm-4 col-sm-offset-2"
+                               ref="dateBox"
+                        />
+                    </div>
 
                     <div className="form-group ">
                         <label className="col-sm-4 col-sm-offset-2">{constantsStrings.startDate_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <input type="datetime-local"
+                        <input type="time"
                                className="col-sm-4 col-sm-offset-2"
                                ref="startTimeBox"
                         />
@@ -257,12 +265,11 @@ var ShiftDetails = React.createClass({
                         <label className="col-sm-4 col-sm-offset-2">{constantsStrings.endDate_string}</label>
                     </div>
                     <div className="form-group ">
-                        <input type="datetime-local"
+                        <input type="time"
                                className="col-sm-4 col-sm-offset-2"
                                ref="endTimeBox"
                         />
                     </div>
-
 
                     <div className="form-group">
                         <button
@@ -279,22 +286,22 @@ var ShiftDetails = React.createClass({
     setFields: function () {
         this.currShift = flatten.unflatten(this.props.location.query);
 
-        console.log('11111111111');
         console.log(this.currShift);
-        console.log('22222222222');
 
         this.state.shishiftType =  this.currShift.type;
         this.state.storeId = this.currShift.store._id;
         this.state.salesmanId = this.currShift.salesman._id;
 
+        this.refs.dateBox.type = "datetime";
         this.refs.startTimeBox.type = "datetime";
         this.refs.endTimeBox.type = "datetime";
 
         this.refs.storeBox.value = this.currShift.store._id; //TODO- fix this
         this.refs.userBox.value = this.currShift.salesman._id;  //TODO- fix this
         this.refs.shiftTypeBox.value =  this.currShift.type;
-        this.refs.startTimeBox.value = moment(this.currShift.startTime).format('YYYY-MM-DD hh:mm');
-        this.refs.endTimeBox.value = moment(this.currShift.endTime).format('YYYY-MM-DD hh:mm');
+        this.refs.dateBox.value =  moment(this.currShift.startTime).format('YYYY-MM-DD');
+        this.refs.startTimeBox.value = moment(this.currShift.startTime).format('HH:mm');
+        this.refs.endTimeBox.value = moment(this.currShift.endTime).format('HH:mm');
     },
     render: function () {
         if (this.state.storesForDropDown.length == 0) {

@@ -10,7 +10,8 @@ var flatten = require('flat');
 var ReactBootstrap = require("react-bootstrap");
 var moment = require('moment');
 var paths = require('../utils/Paths');
-
+var NotificationSystem = require('react-notification-system');
+var styles = require('../styles/managerStyles/styles');
 var DropDownInput = ReactBootstrap.DropdownButton;
 
 var ShiftDetails = React.createClass({
@@ -123,10 +124,10 @@ var ShiftDetails = React.createClass({
 
     handleSubmitShift: function (e) {
         e.preventDefault();
-        if (!this.checkDropDowns()) {
+        /*if (!this.checkDropDowns()) {
             alert('Invalid values. please make sure that you filled all of the fields');
             return;
-        }
+        }*/
 
         var newShift = new shiftInfo();
         newShift.storeId = this.state.storeId;
@@ -138,6 +139,7 @@ var ShiftDetails = React.createClass({
         newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+02:00';
 
         var context = this.context;
+        var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newShift._id = this.props.location.query._id;
             managementServices.editShift(newShift).then(function (n) {
@@ -149,21 +151,43 @@ var ShiftDetails = React.createClass({
                             if (n) {
                                 var val2 = n;
                                 if (val2.success) {
-                                    alert('publish succeed');
-                                    context.router.push({
-                                        pathname: paths.manager_home_path
-                                    })
+                                    notificationSystem.addNotification({
+                                        message: constantsStrings.editSuccessMessage_string,
+                                        level: 'success',
+                                        autoDismiss: 2,
+                                        position: 'tc',
+                                        onRemove: function (notification) {
+                                            context.router.push({
+                                                pathname: paths.manager_home_path
+                                            })
+                                        }
+                                    });
                                 }
                             } else {
-                                alert('edit failed. please check your parameters');
+                                notificationSystem.addNotification({
+                                    message: constantsStrings.editFailMessage_string,
+                                    level: 'error',
+                                    autoDismiss: 0,
+                                    position: 'tc'
+                                });
                             }
                         })
                     } else {
-                        alert('edit failed. please check your parameters');
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 0,
+                            position: 'tc'
+                        });
                     }
                 }
                 else{
-                    alert('edit failed. please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                     console.log("error");
                 }
             })
@@ -177,22 +201,43 @@ var ShiftDetails = React.createClass({
                             if (n) {
                                 var val2 = n;
                                 if (val2.success) {
-                                    alert('publish succeed');
-                                    context.router.push({
-                                        pathname: paths.manager_home_path
-                                    })
+                                    notificationSystem.addNotification({
+                                        message: constantsStrings.addSuccessMessage_string,
+                                        level: 'success',
+                                        autoDismiss: 2,
+                                        position: 'tc',
+                                        onRemove: function (notification) {
+                                            context.router.push({
+                                                pathname: paths.manager_home_path
+                                            })
+                                        }
+                                    });
                                 }
                             } else {
-                                alert('add failed. please check your parameters');
+                                notificationSystem.addNotification({
+                                    message: constantsStrings.addFailMessage_string,
+                                    level: 'error',
+                                    autoDismiss: 0,
+                                    position: 'tc'
+                                });
                             }
                         })
                     } else {
-                        alert('add failed. please check your parameters');
+                        notificationSystem.addNotification({
+                            message: constantsStrings.addFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 0,
+                            position: 'tc'
+                        });
                     }
                 }
                 else{
-                    alert('add failed. please check your parameters');
-                    console.log("error");
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                 }
             })
         }
@@ -253,7 +298,7 @@ var ShiftDetails = React.createClass({
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.startDate_string}:</label>
+                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.date_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="date"
@@ -290,6 +335,7 @@ var ShiftDetails = React.createClass({
                         </button>
                     </div>
                 </form>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

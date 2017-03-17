@@ -23,7 +23,8 @@ var UserDetails = React.createClass({
             gender: '',
             role: '',
             area:'',
-            channel:''
+            channel:'',
+            prevUsername:''
         }
     },
 
@@ -126,7 +127,8 @@ var UserDetails = React.createClass({
         var context = this.context;
         if (this.state.editing) {
             newUser._id = this.props.location.query._id;
-            managementServices.editUser(newUser).then(function (n) {
+            var prevName = this.state.prevUsername;
+            managementServices.editUser(prevName, newUser).then(function (n) {
                 if(n){
                     var val = n;
                     if (val.success) {
@@ -378,6 +380,7 @@ var UserDetails = React.createClass({
     setFields: function () {
         this.currProduct = flatten.unflatten(this.props.location.query);
 
+        this.state.prevUsername = this.currProduct.username;
         this.state.gender = this.currProduct.personal.sex;
         this.state.role = this.currProduct.jobDetails.userType;
         this.state.area = this.currProduct.jobDetails.area;

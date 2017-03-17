@@ -117,7 +117,7 @@ var AddSaleContainer = React.createClass({
         var shiftId = this.state.shift._id;
         var salesList = [];
         this.state.soldProducts.forEach(function(prod){
-            salesList.push([prod.productId, prod.sold]);
+            salesList.push({'productId': prod.productId, 'quantity':prod.sold});
             }
         );
         salesmanServices.reportSale(shiftId, salesList); //TODO: add wait
@@ -127,7 +127,7 @@ var AddSaleContainer = React.createClass({
         var shiftId = this.state.shift._id;
         var salesList = [];
         this.state.soldProducts.forEach(function(prod){
-            salesList.push([prod.productId, prod.sold]);
+            salesList.push({'productId': prod.productId, 'quantity':prod.sold});
             }
         );
         salesmanServices.reportOpen(shiftId,salesList); //TODO: add wait

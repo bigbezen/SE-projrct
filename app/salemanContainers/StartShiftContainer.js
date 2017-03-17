@@ -42,6 +42,11 @@ var StartShiftContainer = React.createClass({
             }
         })
     },
+    onReturn:function(event) { //TODO: relate this method to return button
+        context.router.push({
+            pathname: paths.salesman_home_path
+        })
+    },
     onUpdateProduct:function(event) {
         var currProductId = event.target.value;
         var isSelected = event.target.checked;

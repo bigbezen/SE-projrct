@@ -61,6 +61,12 @@ var EndShiftContainer = React.createClass({
             }
         })
     },
+    onReturn:function(event) { //TODO: relate this method to return button
+        self.context.router.push({
+            pathname: paths.salesman_sale_path,
+            state: {newShift: self.state.shift}
+        })
+    },
     onUpdateProduct:function(event) {
         var currProductId = event.target.value;
         var isSelected = event.target.checked;

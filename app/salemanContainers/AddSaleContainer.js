@@ -12,7 +12,7 @@ var paths                   = require('../utils/Paths');
 var styles                  = require('../styles/salesmanStyles/addSaleStyles');
 
 var salesmanServices        = require('../communication/salesmanServices');
-
+var StartShiftIcon          = require('react-icons/lib/fa/angle-double-left');
 var PlusIcon                = require('react-icons/lib/fa/plus');
 
 
@@ -122,6 +122,12 @@ var AddSaleContainer = React.createClass({
         this.setState({products: this.state.shift.salesReport, soldProducts: []})
     },
     handleOpenBottle(){
+        var shiftId = this.state.shift._id;
+        this.state.soldProducts.forEach(function(prod){
+                salesmanServices.reportOpen(shiftId, prod.productId,prod.sold); //TODO: add wait
+            }
+        );
+        this.setState({products: this.state.shift.salesReport, soldProducts: []})
     },
     handleFinishShift: function(){
         this.context.router.push({
@@ -147,6 +153,15 @@ var AddSaleContainer = React.createClass({
         };
         return(
             <div className='main-container'>
+                <div className="w3-theme-d5 col-sm-12" style={styles.endShiftButton}>
+                    <div className="col-sm-offset-7">
+                        <button className="w3-theme-d5 w3-xxxlarge btn"
+                                onClick={this.handleFinishShift} type="submit">
+                            <StartShiftIcon/>
+                            {constantStrings.endShift_string}
+                        </button>
+                    </div>
+                </div>
 
                 <div style={styles.reportTopContainer}>
                     <div style={styles.reportButtonsContainer}>
@@ -197,7 +212,6 @@ var AddSaleContainer = React.createClass({
                         </BootstrapTable>
                     </div>
                 </div>
-                <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
             </div>
             )
 
@@ -209,7 +223,15 @@ var AddSaleContainer = React.createClass({
         return(
 
             <div>
-                <button onClick={this.handleFinishShift}> {constantStrings.endShift_string} </button>
+                <div className="w3-theme-d5 col-sm-12">
+                    <div className="col-sm-offset-7">
+                        <button className="w3-theme-d5 w3-xxxlarge btn"
+                                onClick={this.handleFinishShift} type="submit">
+                            <StartShiftIcon/>
+                            {constantStrings.endShift_string}
+                        </button>
+                    </div>
+                </div>
                 <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
                     <div className="w3-margin-top">
                         <BootstrapTable data={this.state.products} options={selectRowProp}

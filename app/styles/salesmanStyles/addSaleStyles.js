@@ -37,6 +37,9 @@ var addSaleStyles = {
         fontSize: '50px',
         fontWeight: 'bold',
         height: '120px'
+    },
+    endShiftButton:{
+        marginBottom: '20px',
     }
 };
 

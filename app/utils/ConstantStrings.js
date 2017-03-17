@@ -23,7 +23,7 @@ class ConstantStrings extends React.Component {
     static storeStatus_string = 'מצב המלאי בחנות:';
 
     //home page
-    static numberOfSalesmen = 'סך הדיילים בחברה';
+    static numberOfUUsers = 'סך המשתמשים בחברה';
     static numberOfStores = 'סך החנויות בחברה';
     static numberOfProducts = 'סך המוצרים בחברה';
 
@@ -146,7 +146,7 @@ class ConstantStrings extends React.Component {
     //salesman
     static startShift_string = 'התחל משמרת';
     static endShift_string = 'סיים משמרת';
-
+    static continueShift_string = 'המשך משמרת';
     static genderForDropdown = ["נקבה", "זכר"];
 
     static channelForDropdown = ["מסחרי", "קלאסי"];
@@ -172,6 +172,23 @@ class ConstantStrings extends React.Component {
     static email_string = 'אימייל';
 
     static select_product_for_sale = 'בחר מוצר אשר נמכר/נפתח:'
+
+    //popups
+    static errorMessage_string = 'ארעה שגיאה בשרת, אנא נסה שוב מאוחר יותר';
+    static errorTitle_string = 'שגיאה';
+    static addMessage_string = 'ההוספה התבצעה בהצלחה!';
+    static editMessage_string = 'העריכה התבצעה בהצלחה!';
+    static addFailMessage_string = 'שגיאה קרתה בעת הוספה';
+    static editFailMessage_string = 'שגיאה קרתה בעת עריכה';
+    static deleteFailMessage_string = 'שגיאה קרתה בעת מחיקה';
+    static deleteMessage_string = 'המחיקה התבצעה בהצלחה!';
+    static loginFailMessage_string = 'שם משתמש או סיסמא אינם נכונים';
+    static startShiftFailedMessage_string = 'קרתה שגיאה בעת הכניסה למשמרת. אנא נסה שנית';
+    static startShiftMessage_string = 'משמרת מהנה! (:';
+    static endShiftFailedMessage_string = 'קרתה שגיאה בעת ביצוע סיום משמרת. אנא נסה שנית';
+    static saleProductFailedMessage_string = 'קרתה שגיאה בעת ביצוע הדיווח. אנא נסה שנית';
+    static badActionMessage_string = 'הפעולה נכשלה. נא לוודא כי כל השדות חוקיים';
+    static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
 }
 
 module.exports = ConstantStrings;

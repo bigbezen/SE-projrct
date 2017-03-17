@@ -56,30 +56,49 @@ var SalesmanHomeContainer = React.createClass({
     },
     getInitialState(){
         return({
-            shift: null
+            shift: null,
+            nextScreen: null,
+            buttonTitle: null
         })
     },
     componentWillMount() {
         this.updateShifts();
     },
-    updateShifts() {
-        var self = this;
-        salesmanService.getCurrentShift().then(function (n) {
-            if (n) {
-                var result = n;
-                if (result.success) {
-                    self.setState({
-                        shift: result.info
-                    });
-                }
-            } else {
-                alert("Error while retrieving shift from the server");
-            }
-        })
-    },
+    updateShifts() { 
+        var self = this; 
+        salesmanService.getCurrentShift().then(function (n) { 
+            if (n) { 
+                var result = n; 
+                if (result.success) { 
+                    self.setState({ 
+                        shift: result.info ,
+                        nextScreen: paths.salesman_startShift_path,
+                        buttonTitle: constantsStrings.startShift_string
+                    }); 
+                } 
+                else{ 
+                    salesmanService.getActiveShift("58c3be25d9a4453538b38893").then(function (n){ 
+                        if(n){ 
+                            var result =n; 
+                            if (result.success){ 
+                                self.setState({ 
+                                    shift: result.info ,
+                                    nextScreen: paths.salesman_sale_path,
+                                    buttonTitle: constantsStrings.continueShift_string
+                                }); 
+                            } 
+                        } 
+                    }); 
+                } 
+            } 
+            else{ 
+                alert("Error while retrieving shift from the server"); 
+            } 
+        });
+     },
     handleStartShift: function () {
         this.context.router.push({
-            pathname: paths.salesman_startShift_path,
+            pathname: this.state.nextScreen,
             state: {newShift: this.state.shift}
         })
     },
@@ -110,7 +129,7 @@ var SalesmanHomeContainer = React.createClass({
                     <span style={styles.title}>IBBLS</span>
                 </div>
                 <div style={styles.centerAlign}>
-                    <button className="btn w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{constantsStrings.startShift_string}</button>
+                    <button className="btn w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
                 </div>
             </div>
 

@@ -95,7 +95,7 @@ var HomeContainer = React.createClass({
         return (
             <div className="w3-theme-l5" style={styles.cardsRow}>
                 <div className="w3-card-2 w3-theme-l4 col-sm-3 col-sm-offset-1 w3-margin">
-                    <h5> {constantStrings.numberOfSalesmen}</h5>
+                    <h5> {constantStrings.numberOfUUsers}</h5>
                     <h1>{this.state.salesmenNum}</h1>
                 </div>
                 <div className="w3-card-2 w3-theme-l4 col-sm-3 w3-margin">

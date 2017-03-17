@@ -74,12 +74,12 @@ var UsersContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
         notificationSystem.addNotification({
-            message: "are you sure?",
+            message: constantStrings.areYouSure_string,
             level: 'info',
             autoDismiss: 0,
             position: 'tc',
             action: {
-                label: 'Yes',
+                label: constantStrings.yes_string,
                 callback:
                     function(){
                         self.handleDeleteUser(row)

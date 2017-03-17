@@ -9,7 +9,7 @@ var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
-
+var NotificationSystem = require('react-notification-system');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -55,6 +55,23 @@ var StoresContainer = React.createClass({
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
+        var notificationSystem = this.refs.notificationSystem;
+        var self = this;
+        notificationSystem.addNotification({
+            message: constantStrings.areYouSure_string,
+            level: 'info',
+            autoDismiss: 0,
+            position: 'tc',
+            action: {
+                label: constantStrings.yes_string,
+                callback:
+                    function(){
+                        self.handleDeleteStore(row)
+                    }
+            }
+        });
+    },
+    handleDeleteStore: function(row){
         this.setState({
             products: null
         });
@@ -164,6 +181,7 @@ var StoresContainer = React.createClass({
                         width = '50'
                         dataFormat = {this.deleteButton}/>
                 </BootstrapTable>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

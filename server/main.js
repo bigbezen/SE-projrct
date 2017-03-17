@@ -609,7 +609,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.deleteShift(req.body.sessionId, req.body.storeId);
+        let result = await shiftService.deleteShift(req.body.sessionId, req.body.shiftId);
         if (result.err != null)
         {
             res.status(result.code).send(result.err);

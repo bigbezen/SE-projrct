@@ -249,8 +249,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportSale', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product1._id,
-                quantity: 2
+                sales:[{productId: product1._id,
+                quantity: 2}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -262,8 +262,8 @@ describe('salesman acceptance test', function(){
             result = await axios.post(serverUrl + 'salesman/reportSale', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product2._id,
-                quantity: 1
+                sales:[{productId: product2._id,
+                    quantity: 1}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -287,8 +287,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportSale', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product1._id,
-                quantity: 0
+                sales: [{productId: product1._id,
+                quantity: 0}]
             }).then(async function (info) {
                 return info;
             }).catch(async function (err) {
@@ -300,8 +300,8 @@ describe('salesman acceptance test', function(){
             result = await axios.post(serverUrl + 'salesman/reportSale', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product2._id,
-                quantity: -1
+                sales: [{productId: product2._id,
+                quantity: -1}]
             }).then(async function (info) {
                 return info;
             }).catch(async function (err) {
@@ -324,8 +324,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportSale', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: "objectId",
-                quantity: 2
+                sales: [{productId: "objectId",
+                quantity: 2}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -349,8 +349,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportSale', {
                 sessionId: manager.sessionId,
                 shiftId: shift._id,
-                productId: product1._id,
-                quantity: 2
+                sales:[{productId: product1._id,
+                quantity: 2}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -373,8 +373,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportOpened', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product1._id,
-                quantity: 2
+                opens:[{productId: product1._id,
+                quantity: 2}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -386,8 +386,8 @@ describe('salesman acceptance test', function(){
             result = await axios.post(serverUrl + 'salesman/reportOpened', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product2._id,
-                quantity: 1
+                opens:[{productId: product2._id,
+                quantity: 1}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -407,8 +407,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportOpened', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product1._id,
-                quantity: 0
+                opens:[{productId: product1._id,
+                quantity: 0}]
             }).then(async function (info) {
                 return info;
             }).catch(async function (err) {
@@ -420,8 +420,8 @@ describe('salesman acceptance test', function(){
             result = await axios.post(serverUrl + 'salesman/reportOpened', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: product2._id,
-                quantity: -1
+                opens:[{productId: product2._id,
+                quantity: -1}]
             }).then(async function (info) {
                 return info;
             }).catch(async function (err) {
@@ -442,8 +442,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportOpened', {
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
-                productId: "objectId",
-                quantity: 2
+                opens:[{productId: "objectId",
+                quantity: 2}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -464,8 +464,8 @@ describe('salesman acceptance test', function(){
             let result = await axios.post(serverUrl + 'salesman/reportOpened', {
                 sessionId: manager.sessionId,
                 shiftId: shift._id,
-                productId: product1._id,
-                quantity: 2
+                opens:[{productId: product1._id,
+                quantity: 2}]
             }).then(async function(info){
                 return info;
             }).catch(async function(err){

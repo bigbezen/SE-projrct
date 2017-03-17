@@ -327,12 +327,6 @@ let reportOpened = async function(sessionId, shiftId, opens){
             if (open.productId == product.productId.toString()) {
                 product.opened += open.quantity;
                 productExist = true;
-
-                shift.sales.push({
-                    'productId': open.productId,
-                    'timeOfSale': new Date(Date.now()),
-                    'quantity': open.quantity
-                });
             }
         }
     }

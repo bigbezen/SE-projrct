@@ -257,33 +257,43 @@ let startShift = async function(sessionId, shift){
 
 };
 
-let reportSale = async function(sessionId, shiftId, productId, quantity){
+let reportSale = async function(sessionId, shiftId, sales){
     logger.info('Services.shift.index.reportSale', {'session-id': sessionId});
 
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportSale', null);
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
-    if (quantity <= 0 || shift == null)
+    if (shift == null)
         return {'code': 409, 'err': 'problem with one or more of the parameters'};
+    //check for all the quantity of sales
+    for(let sale of sales){
+        if(sale.quantity <= 0){
+            return {'code': 409, 'err': 'problem with one or more of the parameters'};
+        }
+    }
+
     if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
         return {'code': 401, 'err': 'user not authorized'};
     }
 
     let productExist = false;
     for(let product of shift.salesReport) {
-        if (product.productId.toString() == productId) {
-            product.sold += quantity;
-            productExist = true;
+        for (let sale of sales) {
+            if (sale.productId == product.productId.toString()) {
+                product.sold += sale.quantity;
+                productExist = true;
+
+                shift.sales.push({
+                    'productId': sale.productId,
+                    'timeOfSale': new Date(Date.now()),
+                    'quantity': sale.quantity
+                });
+            }
         }
     }
+
     if(!productExist)
         return {'code': 409, 'err': 'product does not exist'};
-
-    shift.sales.push({
-        'productId': productId,
-        'timeOfSale': new Date(Date.now()),
-        'quantity': quantity
-    });
 
     let result = await dal.updateShift(shift);
     if(result.ok != 1)
@@ -292,25 +302,41 @@ let reportSale = async function(sessionId, shiftId, productId, quantity){
         return {'code': 200}
 };
 
-let reportOpened = async function(sessionId, shiftId, productId, quantity){
+let reportOpened = async function(sessionId, shiftId, opens){
     logger.info('Services.shift.index.reportOpened', {'session-id': sessionId});
 
-    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportSale', null);
+    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportOpened', null);
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
-    if (quantity <= 0 || shift == null)
+    if (shift == null)
         return {'code': 409, 'err': 'problem with one or more of the parameters'};
+    //check for all the quantity of sales
+    for(let open of opens){
+        if(open.quantity <= 0){
+            return {'code': 409, 'err': 'problem with one or more of the parameters'};
+        }
+    }
+
     if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
         return {'code': 401, 'err': 'user not authorized'};
     }
 
     let productExist = false;
     for(let product of shift.salesReport) {
-        if (product.productId.toString() == productId) {
-            product.opened += quantity;
-            productExist = true;
+        for (let open of opens) {
+            if (open.productId == product.productId.toString()) {
+                product.opened += open.quantity;
+                productExist = true;
+
+                shift.sales.push({
+                    'productId': open.productId,
+                    'timeOfSale': new Date(Date.now()),
+                    'quantity': open.quantity
+                });
+            }
         }
     }
+
     if(!productExist)
         return {'code': 409, 'err': 'product does not exist'};
 

@@ -177,7 +177,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.reportSale(req.body.sessionId, req.body.shiftId, req.body.productId, req.body.quantity);
+        let result = await shiftService.reportSale(req.body.sessionId, req.body.shiftId, req.body.sales);
         if(result.code == 200)
             res.status(200).send();
         else

@@ -281,6 +281,57 @@ describe('user unit test', function () {
         });
     });
 
+    describe('TestDeleteUser', function () {
+        it('delete user not by manager', async function () {
+            let userCount = await dal.getAllUsers();
+            userCount = userCount.count;
+            let user = await dal.getUserByUsername('shahaf');
+            let result = await userServices.deleteUser(user.sessionId, user.username.toString());
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.err, 'user not authorized');
+            assert.equal(result.store, null, 'user return null');
+
+            //get all the store to ensure that the store not added
+            let userCountAfterDelete = await dal.getAllUsers();
+            userCountAfterDelete = userCountAfterDelete.count;
+            assert.equal(userCount, userCountAfterDelete, 'the db not contains any store');
+        });
+
+        it('delete user by manager', async function () {
+            let userCount = await dal.getAllUsers();
+            userCount = userCount.count;
+            let manager = await dal.getUserByUsername('manager');
+            let result = await userServices.deleteUser(manager.sessionId, 'shahaf');
+
+            assert.equal(result.err, null);
+            assert.equal(result.code, 200, 'code 200');
+        });
+
+        it('delete user not existing user', async function () {
+            let userCount = await dal.getAllUsers();
+            userCount = userCount.count;
+            let manager = await dal.getUserByUsername('manager');
+            let result = await userServices.deleteUser(manager.sessionId, 'notExisying');
+            assert.equal(result.err, 'problem occurred with one of the parameters');
+            assert.equal(result.code, 409, 'code 409');
+        });
+
+        it('delete manager by manager', async function () {
+            let userCount = await dal.getAllUsers();
+            userCount = userCount.count;
+            let manager = await dal.getUserByUsername('manager');
+            let result = await userServices.deleteUser(manager.sessionId, 'manager');
+
+            assert.equal(result.code, 401, 'code 401');
+            assert.equal(result.err, 'user not authorized');
+            assert.equal(result.store, null, 'user return null');
+
+            let userCountAfterDelete = await dal.getAllUsers();
+            userCountAfterDelete = userCountAfterDelete.count;
+            assert.equal(userCount, userCountAfterDelete, 'the db not contains any store');
+        });
+    });
+
     describe('TestChangePassword', function(){
         it('ChangePasswordValid', async function(){
             let result = await userServices.changePassword('sessionId', '123456', 'new pass');
@@ -391,6 +442,4 @@ describe('user unit test', function () {
             expect(res).to.have.property('err');
         });
     });
-
-
 });

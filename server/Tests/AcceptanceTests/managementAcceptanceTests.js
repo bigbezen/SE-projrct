@@ -259,8 +259,14 @@ describe('management acceptance test', function(){
 
     describe('test delete user', function() {
         it('delete valid user', async function () {
-            let res = await axios.post(serverUrl + 'management/deleteUser', {
-                username: manager.username,
+            let res = await axios.post(serverUrl + 'management/addUser', {
+                sessionId: manager.sessionId,
+                userDetails: salesman
+            });
+            assert.equal(res.status, 200);
+
+            res = await axios.post(serverUrl + 'management/deleteUser', {
+                username: salesman.username,
                 sessionId: manager.sessionId
             });
             assert.equal(res.status, 200);
@@ -284,6 +290,20 @@ describe('management acceptance test', function(){
             let res = await axios.post(serverUrl + 'management/deleteUser', {
                 username: notManager.username,
                 sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, 'user not authorized')
+        });
+
+        it('delete manager by manager', async function () {
+            let res = await axios.post(serverUrl + 'management/deleteUser', {
+                username: manager.username,
+                sessionId: manager.sessionId
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -959,7 +979,6 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'user not authorized');
         });
     });
 

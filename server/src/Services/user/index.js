@@ -158,8 +158,8 @@ let editUser = async function(sessionId, username, userDetails){
 };
 
 let deleteUser = async function(sessionId, username) {
-    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
-    if (isAuthorized == null)
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'deleteUser');
+    if (isAuthorized == null || username == isAuthorized.username)
         return {'code': 401, 'err': 'user not authorized'};
 
     let user = await dal.getUserByUsername(username);

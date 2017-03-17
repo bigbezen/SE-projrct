@@ -189,9 +189,9 @@ describe('shift unit test', function () {
         shifts.push(shift2);
     });
 
-    /*afterEach(async function () {
+    afterEach(async function () {
         let res = await dal.cleanDb();
-    });*/
+    });
 
 
     describe('test add shifts', function () {

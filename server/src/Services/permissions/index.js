@@ -1,7 +1,7 @@
-var dal = require('../../DAL/dal');
+let dal = require('../../DAL/dal');
 
-var validatePermissionForSessionId = async function(sessionId, funcName) {
-    var user = await dal.getUserBySessionId(sessionId);
+let validatePermissionForSessionId = async function(sessionId, funcName) {
+    let user = await dal.getUserBySessionId(sessionId);
     if(user != null && (funcNameToPermission[funcName].indexOf(user.jobDetails.userType) > -1)){
         return user;
     }
@@ -10,7 +10,7 @@ var validatePermissionForSessionId = async function(sessionId, funcName) {
     }
 };
 
-var funcNameToPermission = {
+let funcNameToPermission = {
     'addUser': ['manager'],
     'editUser': ['manager'],
     'deleteUser': ['manager'],

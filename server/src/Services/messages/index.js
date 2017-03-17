@@ -1,25 +1,25 @@
-var logger          = require('../../Utils/Logger/logger');
-var dal             = require('../../DAL/dal');
-var permissions     = require('../permissions/index');
+let logger          = require('../../Utils/Logger/logger');
+let dal             = require('../../DAL/dal');
+let permissions     = require('../permissions/index');
 
-var messageModel       = require('../../Models/message');
+let messageModel       = require('../../Models/message');
 
 
-var sendBroadcast = async function(sessionId, content, date){
+let sendBroadcast = async function(sessionId, content, date){
     logger.info('Services.messages.index.sendBroadcast', {'sessionId': sessionId});
 
-    var sender = await permissions.validatePermissionForSessionId(sessionId, 'sendBroadcast');
+    let sender = await permissions.validatePermissionForSessionId(sessionId, 'sendBroadcast');
     if(sender == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var msg = new messageModel();
+    let msg = new messageModel();
     msg.sender = sender.username;
     msg.content = content;
     msg.type = 'broadcast';
     msg.date = date;
 
 
-    var res = await dal.sendBroadcast(msg);
+    let res = await dal.sendBroadcast(msg);
     if (res != null)
         return {'code':200};
     else
@@ -27,13 +27,13 @@ var sendBroadcast = async function(sessionId, content, date){
 };
 
 
-var markAsRead = async function(sessionId){
+let markAsRead = async function(sessionId){
     logger.info('Services.messages.index.markAsRead', {'sessionId': sessionId});
 
-    var user = await permissions.validatePermissionForSessionId(sessionId, 'getInbox');
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getInbox');
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
-    var result = await dal.markMessagesAsRead(user._id);
+    let result = await dal.markMessagesAsRead(user._id);
     if(result != null)
         return {'code': 200};
     else
@@ -41,15 +41,15 @@ var markAsRead = async function(sessionId){
 
 };
 
-var getInbox = async function(sessionId){
+let getInbox = async function(sessionId){
     logger.info('Services.messages.index.getInboxt', {'sessionId': sessionId});
 
-    var user = await permissions.validatePermissionForSessionId(sessionId, 'getInbox');
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getInbox');
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var messagesIds = user.inbox.toObject();
-    var inbox = await dal.getMessages(messagesIds);
+    let messagesIds = user.inbox.toObject();
+    let inbox = await dal.getMessages(messagesIds);
     inbox = inbox.map(x => x.toObject());
     return {'code': 200, 'inbox': inbox};
 };

@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 let logger          = require('../../Utils/Logger/logger');
 let productModel    = require('../../Models/product');

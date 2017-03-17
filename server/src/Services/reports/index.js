@@ -1,7 +1,7 @@
 let logger          = require('../../Utils/Logger/logger');
 let permissions     = require('../permissions/index');
 let dal             = require('../../DAL/dal');
-var mailer          = require('../../Utils/Mailer/index');
+let mailer          = require('../../Utils/Mailer/index');
 let fs              = require('fs');
 let Excel           = require('exceljs');
 

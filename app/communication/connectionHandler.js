@@ -428,13 +428,11 @@ var salesmanRequests = {
         })
     },
 
-    //TODO:
-    reportSale: function(shiftId, productId, quantity){
+    reportSale: function(shiftId, products){
         return axios.post(serverUrl + 'salesman/reportSale', {
             sessionId:sessionId,
             shiftId:shiftId,
-            productId:productId,
-            quantity:quantity
+            sales:products
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
@@ -442,13 +440,11 @@ var salesmanRequests = {
         })
     },
 
-    //TODO:
-    reportOpen: function(shiftId, productId, quantity){
+    reportOpen: function(shiftId, products){
         return axios.post(serverUrl + 'salesman/reportOpened', {
             sessionId:sessionId,
             shiftId:shiftId,
-            productId:productId,
-            quantity:quantity
+            sales:products
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

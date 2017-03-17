@@ -161,8 +161,8 @@ var AddSaleContainer = React.createClass({
                     <div className="col-sm-offset-7">
                         <button className="w3-theme-d5 w3-xxxlarge btn"
                                 onClick={this.handleFinishShift} type="submit">
-                            <StartShiftIcon/>
                             {constantStrings.endShift_string}
+                            <StartShiftIcon/>
                         </button>
                     </div>
                 </div>
@@ -231,8 +231,8 @@ var AddSaleContainer = React.createClass({
                     <div className="col-sm-offset-7">
                         <button className="w3-theme-d5 w3-xxxlarge btn"
                                 onClick={this.handleFinishShift} type="submit">
-                            <StartShiftIcon/>
                             {constantStrings.endShift_string}
+                            <StartShiftIcon/>
                         </button>
                     </div>
                 </div>
@@ -252,6 +252,7 @@ var AddSaleContainer = React.createClass({
                             <TableHeaderColumn
                                 dataField = 'button'
                                 dataAlign = 'left'
+                                className = "col-sm-2"
                                 dataFormat = {this.tablePlusIcon}>
                             </TableHeaderColumn>
                         </BootstrapTable>

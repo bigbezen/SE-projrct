@@ -6,6 +6,8 @@ var constantStrings = require('../utils/ConstantStrings');
 var managementServices = require('../communication/managementServices');
 var helpers = require('../utils/Helpers');
 var paths = require('../utils/Paths');
+var styles = require('../styles/managerStyles/styles');
+
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -78,6 +80,7 @@ var StoresContainer = React.createClass({
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
+                className="w3-card-2"
                 type="button"
                 onClick={() =>
                     this.onClickEditButton(cell, row, rowIndex)}>
@@ -88,6 +91,7 @@ var StoresContainer = React.createClass({
     deleteButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
+                className="w3-card-2"
                 type="button"
                 onClick={() =>
                     this.onClickDeleteButton(cell, row, rowIndex)}>
@@ -97,8 +101,8 @@ var StoresContainer = React.createClass({
     },
     renderTable: function () {
         return (
-            <div className="col-sm-offset-1 col-sm-10">
-                <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
+            <div className="col-sm-offset-1 col-sm-10" style={styles.marginBottom}>
+                <button className="w3-card-2 w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
                 <BootstrapTable data={this.state.stores} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'name'

@@ -582,27 +582,52 @@ describe('shift unit test', function () {
 
         });
 
+        it('getCurrentShiftOnSTARTEDShift_retrievesCurrentShift', async function(){
+             shifts[0].status = "STARTED";
+
+             shifts[0].startTime = new Date();
+             shifts[0].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+
+            shifts[0].salesReport = await createNewSalesReport();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId);
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shift');
+            expect(result.shift.status).to.be.equal('STARTED');
+            expect(result.shift).to.include.all.keys('store', 'salesReport');
+            let productNames = result.shift.salesReport.map(x => x.name);
+            expect(productNames).to.include(product1.name, product2.name, product3.name);
+        });
+
         it('get current shift non valid sessionid', async function(){
-                shifts[0].status = "PUBLISHED";
-                shifts[1].status = "CREATED";
+            shifts[0].status = "PUBLISHED";
+            shifts[1].status = "CREATED";
 
-                shifts[0].startTime = new Date();
-                shifts[0].endTime = new Date();
-                shifts[1].startTime = new Date();
-                shifts[1].endTime = new Date();
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
 
-                shifts[0] = shift_object_to_model(shifts[0]);
-                shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
 
-                let user1 = await dal.getUserByUsername('matan');
-                shifts[0].salesmanId = user1._id.toString();
-                shifts[1].salesmanId = user1._id.toString();
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
 
-                shifts[0] = (await dal.addShift(shifts[0])).toObject();
-                shifts[1] = (await dal.addShift(shifts[1])).toObject();
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
 
-                let result = await shiftService.getSalesmanCurrentShift('non existing session id');
-                expect(result).to.have.property('code', 401);
+            let result = await shiftService.getSalesmanCurrentShift('non existing session id');
+            expect(result).to.have.property('code', 401);
         });
 
         it('get current shift there is no current shift', async function(){

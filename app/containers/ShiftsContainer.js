@@ -12,6 +12,8 @@ var helpers = require('../utils/Helpers');
 var paths = require('../utils/Paths');
 var moment = require('moment');
 var flatten = require('flat');
+var styles = require('../styles/managerStyles/styles');
+
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -120,6 +122,7 @@ var ShiftsContainer = React.createClass({
         if (isFinished) {
             return (
                 <button
+                    className="w3-card-2"
                     type="button"
                     onClick={() =>
                         this.onClickGetReportButton(cell, row, rowIndex)}>
@@ -129,6 +132,7 @@ var ShiftsContainer = React.createClass({
         } else {
             return (
                 <button
+                    className="w3-card-2"
                     type="button"
                     onClick={() =>
                         this.onClickEditButton(cell, row, rowIndex)}>
@@ -142,6 +146,7 @@ var ShiftsContainer = React.createClass({
         if (!isFinished) {
             return (
                 <button
+                    className="w3-card-2"
                     type="button"
                     disabled= {isFinished}
                     onClick={() =>
@@ -153,9 +158,9 @@ var ShiftsContainer = React.createClass({
     },
     renderTable: function () {
         return (
-            <div className="col-sm-offset-1 col-sm-10">
-                <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
-                <button className="w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddShiftsButton}> +++ </button>
+            <div className="col-sm-offset-1 col-sm-10" style={styles.marginBottom}>
+                <button className="w3-card-2 w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
+                <button className="w3-card-2 w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddShiftsButton}> +++ </button>
                 <BootstrapTable data={this.state.shifts} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'store.name'

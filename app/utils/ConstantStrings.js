@@ -192,6 +192,8 @@ class ConstantStrings extends React.Component {
     static saleProductFailedMessage_string = 'אירעה שגיאה בעת ביצוע הדיווח. אנא נסה שנית';
     static badActionMessage_string = 'הפעולה נכשלה. נא לוודא כי כל השדות חוקיים';
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
+    static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
+    static yes_string = 'כן';
 }
 
 module.exports = ConstantStrings;

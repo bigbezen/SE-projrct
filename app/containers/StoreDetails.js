@@ -8,6 +8,7 @@ var constantsStrings = require('../utils/ConstantStrings');
 var storeInfo = require('../models/store');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
+var NotificationSystem = require('react-notification-system');
 
 var StoreDetails = React.createClass({
     contextTypes: {

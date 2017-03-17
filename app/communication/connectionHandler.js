@@ -444,7 +444,7 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/reportOpened', {
             sessionId:sessionId,
             shiftId:shiftId,
-            sales:products
+            opens:products
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

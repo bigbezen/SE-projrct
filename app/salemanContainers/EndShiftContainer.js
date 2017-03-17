@@ -30,7 +30,9 @@ var EndShiftContainer = React.createClass({
                 if (val.success) {
                     var currShift = val.info;
                     self.setState({shift: currShift});
-
+                    for (var product of self.state.shift.salesReport) {
+                        product.stockEndShift = product.stockStartShift
+                    }
                 }
                 else {
                 }
@@ -70,6 +72,7 @@ var EndShiftContainer = React.createClass({
     onUpdateProduct:function(event) {
         var currProductId = event.target.value;
         var isSelected = event.target.checked;
+        //var products = this.state.shift.salesReport;
         for (var product of this.state.shift.salesReport) {
             if (currProductId == product.productId) {
                 if (isSelected) {
@@ -84,7 +87,7 @@ var EndShiftContainer = React.createClass({
         return (
             <li style={styles.product} key={i}>
                 <div style={styles.checkbox__detail}>
-                    <input type="checkbox" onChange={this.onUpdateProduct} style={styles.product__selector} value={product.productId}/>
+                    <input type="checkbox" onChange={this.onUpdateProduct} checked={product.stockEndShift} style={styles.product__selector} value={product.productId}/>
                 </div>
                 <div style={styles.product__detail}>
                     <h1 className="w3-xxxlarge"><b> {product.name} </b></h1>
@@ -96,9 +99,7 @@ var EndShiftContainer = React.createClass({
         );
     },
     renderEndShift: function () {
-
         return (
-
             <div>
                 <div className="w3-theme-d5 col-sm-12" style={styles.top__title}>
                     <h1 className="w3-xxxlarge">{constantsStrings.storeStatus_string}</h1>
@@ -118,9 +119,6 @@ var EndShiftContainer = React.createClass({
                         {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
                     </ul>
                 </div>
-
-
-
             </div>
         )
     },

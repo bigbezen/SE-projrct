@@ -66,9 +66,9 @@ var EndShiftContainer = React.createClass({
         })
     },
     onReturn:function(event) { //TODO: relate this method to return button
-        self.context.router.push({
+        this.context.router.push({
             pathname: paths.salesman_sale_path,
-            state: {newShift: self.state.shift}
+            state: {newShift: this.state.shift}
         })
     },
     onUpdateProduct:function(event) {

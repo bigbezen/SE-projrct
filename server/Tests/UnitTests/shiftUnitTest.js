@@ -672,7 +672,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = parseInt(Math.random() * 10) + 1;
-            let result = await shiftService.reportSale(salesman.sessionId, shift._id.toString(), product1._id.toString(), quantity);
+            let sales= [{'productId': product1._id.toString(), 'quantity': quantity}];
+            let result = await shiftService.reportSale(salesman.sessionId, shift._id.toString(), sales);
             expect(result).to.have.property('code', 200);
 
             shift = (await dal.getShiftsByIds([shift._id]))[0];
@@ -683,7 +684,8 @@ describe('shift unit test', function () {
             expect(productReport).to.have.property('stockEndShift', 0);
 
             let quantity2 = parseInt(Math.random() * 10) + 1;
-            result = await shiftService.reportSale(salesman.sessionId, shift._id.toString(), product1._id.toString(), quantity2);
+            sales = [{'productId': product1._id.toString() ,'quantity': quantity2}];
+            result = await shiftService.reportSale(salesman.sessionId, shift._id.toString(), sales);
             expect(result).to.have.property('code', 200);
 
             shift = (await dal.getShiftsByIds([shift._id]))[0];
@@ -709,7 +711,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportSale(manager.sessionId, shift._id.toString(), product1._id.toString(), quantity);
+            let sales = [{'productId': product1._id.toString() ,'quantity': quantity}];
+            let result = await shiftService.reportSale(manager.sessionId, shift._id.toString(), sales);
             expect(result).to.have.property('code', 401);
         });
 
@@ -734,7 +737,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportSale(salesman2.sessionId, shift._id.toString(), product1._id.toString(), quantity);
+            let sales = [{'productId': product1._id.toString() ,'quantity': quantity}];
+            let result = await shiftService.reportSale(salesman2.sessionId, shift._id.toString(), sales);
             expect(result).to.have.property('code', 401);
         });
 
@@ -753,7 +757,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportSale('invalid sessionid', shift._id.toString(), product1._id.toString(), quantity);
+            let sales = [{'productId': product1._id.toString() ,'quantity': quantity}];
+            let result = await shiftService.reportSale('invalid sessionid', shift._id.toString(), sales);
             expect(result).to.have.property('code', 401);
         });
 
@@ -772,6 +777,7 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
+            let sales = [{'productId':  product1._id.toString() ,'quantity': quantity}];
             let result = await shiftService.reportSale(salesman.sessionId, "invalid8shif", product1._id.toString(), quantity);
             expect(result).to.have.property('code', 409);
         });
@@ -791,7 +797,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportSale(salesman.sessionId, shift._id.toString(), "invalid8shif", quantity);
+            let sales = [{'productId': 'invalid8shif' ,'quantity': quantity}];
+            let result = await shiftService.reportSale(salesman.sessionId, shift._id.toString(),sales);
             expect(result).to.have.property('code', 409);
         });
     });
@@ -812,7 +819,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = parseInt(Math.random() * 10) + 1;
-            let result = await shiftService.reportOpened(salesman.sessionId, shift._id.toString(), product1._id.toString(), quantity);
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportOpened(salesman.sessionId, shift._id.toString(), opens);
             expect(result).to.have.property('code', 200);
 
             shift = (await dal.getShiftsByIds([shift._id]))[0];
@@ -823,7 +831,8 @@ describe('shift unit test', function () {
             expect(productReport).to.have.property('stockEndShift', 0);
 
             let quantity2 = parseInt(Math.random() * 10) + 1;
-            result = await shiftService.reportOpened(salesman.sessionId, shift._id.toString(), product1._id.toString(), quantity2);
+            opens = [{'productId':product1._id.toString(),'quantity':quantity2}];
+            result = await shiftService.reportOpened(salesman.sessionId, shift._id.toString(), opens);
             expect(result).to.have.property('code', 200);
 
             shift = (await dal.getShiftsByIds([shift._id]))[0];
@@ -849,7 +858,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportOpened(manager.sessionId, shift._id.toString(), product1._id.toString(), quantity);
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportOpened(manager.sessionId, shift._id.toString(), opens);
             expect(result).to.have.property('code', 401);
         });
 
@@ -874,7 +884,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportOpened(salesman2.sessionId, shift._id.toString(), product1._id.toString(), quantity);
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportOpened(salesman2.sessionId, shift._id.toString(), opens);
             expect(result).to.have.property('code', 401);
         });
 
@@ -893,7 +904,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportOpened('invalid sessionid', shift._id.toString(), product1._id.toString(), quantity);
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportOpened('invalid sessionid', shift._id.toString(), opens);
             expect(result).to.have.property('code', 401);
         });
 
@@ -912,7 +924,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportOpened(salesman.sessionId, "invalid8shif", product1._id.toString(), quantity);
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportOpened(salesman.sessionId, "invalid8shif", opens);
             expect(result).to.have.property('code', 409);
         });
 
@@ -931,7 +944,8 @@ describe('shift unit test', function () {
             shift = (await dal.addShift(shift)).toObject();
 
             let quantity = 2;
-            let result = await shiftService.reportOpened(user1.sessionId, shift._id.toString(), "invalid8shif", quantity);
+            let opens = [{'productId':"invalid8shif",'quantity':quantity}];
+            let result = await shiftService.reportOpened(user1.sessionId, shift._id.toString(), opens);
             expect(result).to.have.property('code', 409);
         });
     });

@@ -197,7 +197,18 @@ var ShiftDetails = React.createClass({
             })
         }
     },
-
+    getTitle: function() {
+        if (this.state.editing) {
+            return constantsStrings.editShift_string;
+        }
+        return constantsStrings.addShift_string;
+    },
+    getButtonString: function() {
+        if (this.state.editing) {
+            return constantsStrings.edit_string;
+        }
+        return constantsStrings.add_string;
+    },
     addNewShift: function() {
         return (
             <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
@@ -205,7 +216,7 @@ var ShiftDetails = React.createClass({
                 <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
                     <div className="form-group">
                         <h1 className="col-sm-offset-1 col-sm-10 w3-xxlarge">
-                            <b>{constantsStrings.addShift_string}</b>
+                            <b>{this.getTitle()}</b>
                         </h1>
                     </div>
 
@@ -275,7 +286,7 @@ var ShiftDetails = React.createClass({
                         <button
                             className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-2"
                             type="submit">
-                            {constantsStrings.add_string}
+                            {this.getButtonString()}
                         </button>
                     </div>
                 </form>

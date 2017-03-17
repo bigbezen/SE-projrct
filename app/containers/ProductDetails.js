@@ -149,13 +149,25 @@ var ProductDetails = React.createClass({
             })
         }
     },
+    getTitle: function() {
+      if (this.state.editing) {
+          return constantsStrings.editProduct_string;
+      }
+      return constantsStrings.addProduct_string;
+    },
+    getButtonString: function() {
+        if (this.state.editing) {
+            return constantsStrings.edit_string;
+        }
+        return constantsStrings.add_string;
+    },
     addNewProduct: function() {
         return (
             <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right">
                     <div className="form-group">
                         <h1 className="col-sm-offset-1 col-sm-9 w3-xxlarge">
-                            <b>{constantsStrings.addProduct_string}</b>
+                            <b>{this.getTitle()}</b>
                         </h1>
                     </div>
 
@@ -235,7 +247,7 @@ var ProductDetails = React.createClass({
                         <button
                             className="w3-btn btn w3-theme-d5 col-sm-4 col-sm-offset-2"
                             type="submit">
-                            {constantsStrings.add_string}
+                            {this.getButtonString()}
                         </button>
                     </div>
                 </form>

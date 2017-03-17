@@ -149,13 +149,25 @@ var StoreDetails = React.createClass({
             })
         }
     },
+    getTitle: function() {
+        if (this.state.editing) {
+            return constantsStrings.editStore_string;
+        }
+        return constantsStrings.addStore_string;
+    },
+    getButtonString: function() {
+        if (this.state.editing) {
+            return constantsStrings.edit_string;
+        }
+        return constantsStrings.add_string;
+    },
     addNewStore: function() {
         return (
             <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right">
                     <div className="form-group">
                         <h1 className="col-sm-offset-1 col-sm-9 w3-xxlarge">
-                            <b>{constantsStrings.addStore_string}</b>
+                            <b>{this.getTitle()}</b>
                         </h1>
                     </div>
                     <div className="form-group ">
@@ -237,7 +249,7 @@ var StoreDetails = React.createClass({
                         <button
                             className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-2"
                             type="submit">
-                            {constantsStrings.edit_string}
+                            {this.getButtonString()}
                         </button>
                     </div>
                 </form>

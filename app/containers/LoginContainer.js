@@ -71,14 +71,14 @@ var LoginContainer = React.createClass({
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-12 w3-xxlarge"
+                                   className="col-sm-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
                                    ref="usernameTextBox"
                                    placeholder="שם משתמש"
                                    value={this.username} />
                         </div>
                         <div className="form-group">
                             <input type="password"
-                                   className="col-sm-12 w3-xxlarge"
+                                   className="col-sm-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
                                    ref="passwordTextBox"
                                    placeholder="סיסמא"
                                    value={this.password}/>

@@ -15,6 +15,9 @@ var styles = {
                 textAlign: 'center',
                 margin: '100px -20px'
             },
+            info: {
+                height: '100px'
+            },
         }
     },
     transparentBg: {

@@ -156,7 +156,7 @@ module.exports = {
         var tomorrow = moment(today).add(1, 'days');
 
         return shiftModel.findOne({$and: [{'salesmanId': salesmanId},
-            {'status': 'PUBLISHED'}, {'startTime': {$gte: today.toDate(), $lt: tomorrow.toDate()}}]});
+            {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}, {'startTime': {$gte: today.toDate(), $lt: tomorrow.toDate()}}]});
     },
 
     deleteShift: async function(shiftId){

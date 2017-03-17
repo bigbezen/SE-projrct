@@ -180,7 +180,7 @@ let getSalesmanCurrentShift = async function(sessionId){
 
     currShift = currShift.toObject();
     currShift.store = (await dal.getStoresByIds([currShift.storeId]))[0];
-    for(var product of currShift.salesReport) {
+    for(let product of currShift.salesReport) {
         product.name = productsDict[product.productId.toString()];
     }
     return {'code': 200, 'shift': currShift};
@@ -223,7 +223,7 @@ let getShiftsFromDate = async function(sessionId, fromDate){
 let startShift = async function(sessionId, shift){
     logger.info('Services.shift.index.startShift', {'session-id': sessionId});
 
-    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift');
+    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift');
     if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 
@@ -341,7 +341,7 @@ let addShiftComment = async function(sessionId, shiftId, content){
 let endShift = async function(sessionId, shift){
     logger.info('Services.shift.index.endShift', {'session-id': sessionId});
 
-    var salesman = await permissions.validatePermissionForSessionId(sessionId, 'endShift');
+    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'endShift');
     if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
 

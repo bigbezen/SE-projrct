@@ -1,1 +1,1 @@
-var logger          = require('./src/Utils/Logger/logger');
+let logger          = require('./src/Utils/Logger/logger');

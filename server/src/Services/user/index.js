@@ -1,16 +1,16 @@
-var logger          = require('../../Utils/Logger/logger');
-var mailer          = require('../../Utils/Mailer/index');
-var cypher          = require('../../Utils/Cypher/index');
-var dal             = require('../../DAL/dal');
-var permissions     = require('../permissions/index');
+let logger          = require('../../Utils/Logger/logger');
+let mailer          = require('../../Utils/Mailer/index');
+let cypher          = require('../../Utils/Cypher/index');
+let dal             = require('../../DAL/dal');
+let permissions     = require('../permissions/index');
 
-var userModel       = require('../../Models/user');
-var inboxModel      = require('../../Models/message');
+let userModel       = require('../../Models/user');
+let inboxModel      = require('../../Models/message');
 
-var hashGenerator   = require('hash-generator');
+let hashGenerator   = require('hash-generator');
 
 
-var setAdminUser = async function(){
+let setAdminUser = async function(){
     let user = new userModel();
     user.username = 'admin';
     user.password = cypher.encrypt("admin");
@@ -53,14 +53,14 @@ var setAdminUser = async function(){
     return res;
 };
 
-var login = async function(username, password){
+let login = async function(username, password){
     logger.info('Services.user.index.login', {'username': username});
-    var user = await dal.getUserByUsername(username);
+    let user = await dal.getUserByUsername(username);
 
     if(user != null && cypher.decrypt(user.password) == password){
-        var newSessionId = await _generateSessionId();
+        let newSessionId = await _generateSessionId();
         user.sessionId = newSessionId;
-        var res = await dal.editUser(user);
+        let res = await dal.editUser(user);
         if(res != null)
             return {'sessionId': newSessionId, 'userType': user.jobDetails.userType};
         else
@@ -71,35 +71,35 @@ var login = async function(username, password){
     }
 };
 
-var logout = async function(sessionId) {
+let logout = async function(sessionId) {
     logger.info('Services.user.index.logout', {'session-id': sessionId});
-    var user = await dal.getUserBySessionId(sessionId);
+    let user = await dal.getUserBySessionId(sessionId);
     if(user == null){
         return {'code': 401, 'err': 'user is not logged in'};
     }
 
     user.sessionId = undefined;
-    var res = await dal.editUser(user);
+    let res = await dal.editUser(user);
     if(res != null)
         return {'code': 200};
     else
         return {'code': 500, 'err': 'something went wrong'};
 };
 
-var addUser = async function(sessionId, userDetails) {
+let addUser = async function(sessionId, userDetails) {
     logger.info('Services.user.index.addUser', {'session-id': sessionId});
-    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser');
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser');
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var isExistUsername = await dal.getUserByUsername(userDetails.username);
-    var isExistId = await dal.getUserById(userDetails.personal.id);
+    let isExistUsername = await dal.getUserByUsername(userDetails.username);
+    let isExistId = await dal.getUserById(userDetails.personal.id);
     if(isExistUsername != null || isExistId != null){
         return {'code': 409, 'err': 'Username or Id already exists'}
     }
 
-    var newUser = new userModel();
-    var generatedPassword = Math.random().toString(36).substring(2,10);
+    let newUser = new userModel();
+    let generatedPassword = Math.random().toString(36).substring(2,10);
     newUser.username = userDetails.username;
     newUser.password =  cypher.encrypt(generatedPassword);
     newUser.startDate = new Date(userDetails.startDate);
@@ -108,10 +108,10 @@ var addUser = async function(sessionId, userDetails) {
     newUser.contact = userDetails.contact;
     newUser.jobDetails = userDetails.jobDetails;
     newUser.inbox = [];
-    var res = await dal.addUser(newUser);
+    let res = await dal.addUser(newUser);
     if(res != null){
         newUser = newUser.toObject();
-        var content = 'ברוכים הבאים\nהנה פרטי ההתחברות שלך לאפליקציה\n\nשם משתמש: ' + newUser.username;
+        let content = 'ברוכים הבאים\nהנה פרטי ההתחברות שלך לאפליקציה\n\nשם משתמש: ' + newUser.username;
         content += '\n\n' + 'סיסמא: ' + cypher.decrypt(newUser.password);
         mailer.sendMail([newUser.contact.email], 'Welcome To IBBLS', content);
         delete newUser.password;
@@ -122,33 +122,33 @@ var addUser = async function(sessionId, userDetails) {
     }
 };
 
-var editUser = async function(sessionId, username, userDetails){
+let editUser = async function(sessionId, username, userDetails){
     logger.info('Services.user.index.editUser', {'sessionId': sessionId});
 
-    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var user = await dal.getUserByUsername(username);
+    let user = await dal.getUserByUsername(username);
     if(user == null) {
         return {'code': 409, 'err': 'edited user does not exist'};
     }
     user = user.toObject();
     if(userDetails.username != user.username) {
-        var isExistUsername = await dal.getUserByUsername(userDetails.username);
+        let isExistUsername = await dal.getUserByUsername(userDetails.username);
         if (isExistUsername != null) {
             return {'code': 409, 'err': 'Username already exists'}
         }
     }
     if(userDetails.personal.id != user.personal.id){
-        var isExistId = await dal.getUserById(userDetails.personal.id);
+        let isExistId = await dal.getUserById(userDetails.personal.id);
         if(isExistId != null){
             return {'code': 409, 'err': 'Id already exists'}
         }
     }
 
     userDetails._id = user._id;
-    var res = await dal.updateUser(userDetails);
+    let res = await dal.updateUser(userDetails);
     if(res.ok == 1){
         return {'code': 200};
     }
@@ -157,24 +157,24 @@ var editUser = async function(sessionId, username, userDetails){
     }
 };
 
-var deleteUser = async function(sessionId, username) {
-    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
+let deleteUser = async function(sessionId, username) {
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
     if (isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var user = await dal.getUserByUsername(username);
+    let user = await dal.getUserByUsername(username);
     if (user == null)
         return {'code': 409, 'err': 'problem occurred with one of the parameters'};
 
-    var res = await dal.deleteUser(username);
+    let res = await dal.deleteUser(username);
     //TODO: check return value of remove from mongo
     return {'code': 200};
 };
 
-var changePassword = async function(sessionId, oldPass, newPass) {
+let changePassword = async function(sessionId, oldPass, newPass) {
     logger.info('Services.user.index.changePassword', {'session-id': sessionId});
 
-    var user = await dal.getUserBySessionId(sessionId);
+    let user = await dal.getUserBySessionId(sessionId);
     if(user == null){
         return {'code': 401, 'err': 'unauthorized request'};
     }
@@ -184,16 +184,16 @@ var changePassword = async function(sessionId, oldPass, newPass) {
     }
 
     user.password = cypher.encrypt(newPass);
-    var res = await dal.editUser(user);
+    let res = await dal.editUser(user);
     if(res != null)
         return {'code': 200};
     else
         return {'code': 500, 'err': 'something went wrong'};
 };
 
-var retrievePassword = async function(sessionId) {
+let retrievePassword = async function(sessionId) {
     logger.info('Services.user.index.retrievePassword', {'sessionId': sessionId});
-    var user = await dal.getUserBySessionId(sessionId);
+    let user = await dal.getUserBySessionId(sessionId);
     if(user == null)
         return {'code': 401, 'err': 'user is not logged in'};
 
@@ -206,9 +206,9 @@ var retrievePassword = async function(sessionId) {
 
 };
 
-var getProfile = async function(sessionId) {
+let getProfile = async function(sessionId) {
     logger.info('Services.user.index.getProfile', {'sessionId': sessionId});
-    var user = await dal.getUserBySessionId(sessionId);
+    let user = await dal.getUserBySessionId(sessionId);
     if(user == null){
         return {'code': 401, 'err': 'user is not logged in'};
     }
@@ -219,16 +219,16 @@ var getProfile = async function(sessionId) {
     return {'code': 200, 'user': user};
 };
 
-var getAllUsers = async function(sessionId){
+let getAllUsers = async function(sessionId){
     logger.info('Services.user.index.getAllUsers', {'sessionId': sessionId});
-    var isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getAllUsers', null);
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getAllUsers', null);
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    var users = await dal.getAllUsers();
+    let users = await dal.getAllUsers();
     if(users != null) {
-        var usersAsObjects = [];
-        for(var user of users){
+        let usersAsObjects = [];
+        for(let user of users){
             user = user.toObject();
             delete user.password;
             delete user.sessionId;
@@ -240,9 +240,9 @@ var getAllUsers = async function(sessionId){
         return {'code': 500, 'err': 'something went wrong'};
 };
 
-var _generateSessionId = async function() {
-    var isDuplicateSessionId = true;
-    var sessionId, isIdInUse;
+let _generateSessionId = async function() {
+    let isDuplicateSessionId = true;
+    let sessionId, isIdInUse;
     while(isDuplicateSessionId){
         sessionId = hashGenerator(128);
         isIdInUse = await dal.getUserBySessionId(sessionId);

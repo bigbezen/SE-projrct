@@ -102,7 +102,7 @@ describe('salesman acceptance test', function(){
             });
 
             expect(result.response.status).to.equal(409);
-            expect(result.response.data).to.equal('error while logging in');
+            expect(result.response.data).to.equal('user does not exist');
         });
 
         it('TestLoginInvalidParameter', async function(){
@@ -129,7 +129,7 @@ describe('salesman acceptance test', function(){
             });
 
             expect(result.response.status).to.equal(409);
-            expect(result.response.data).to.equal('error while logging in');
+            expect(result.response.data).to.equal('password is incorrect');
         });
     });
 

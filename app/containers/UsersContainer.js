@@ -9,6 +9,8 @@ var flatten = require('flat');
 var moment = require('moment');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
+var TrashIcon = require('react-icons/lib/fa/trash-o');
+var EditIcon = require('react-icons/lib/md/edit');
 
 
 
@@ -96,29 +98,29 @@ var UsersContainer = React.createClass({
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2"
+                className="w3-card-2 col-sm-offset-8"
                 type="button"
                 onClick={() =>
                     this.onClickEditButton(cell, row, rowIndex)}>
-                {constantStrings.edit_string}
+                <EditIcon/>
             </button>
         )
     },
     deleteButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2"
+                className="w3-card-2 col-sm-offset-8"
                 type="button"
                 onClick={() =>
                     this.onClickDeleteButton(cell, row, rowIndex)}>
-                {constantStrings.delete_string}
+                <TrashIcon/>
             </button>
         )
     },
     renderTable: function () {
         return (
-            <div className="col-sm-offset-1 col-sm-10" style={styles.marginBottom}>
-                <button className="w3-card-2 w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddButton}> + </button>
+            <div className="col-sm-12" style={styles.marginBottom}>
+                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
                 <BootstrapTable data={this.state.users} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'personal.id'

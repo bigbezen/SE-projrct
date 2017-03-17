@@ -4,7 +4,7 @@
 
 var styles = {
     marginBottom: {
-        marginBottom: '40px'
+        marginBottom: '60px'
     }
 
 };

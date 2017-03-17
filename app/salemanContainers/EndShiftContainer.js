@@ -10,6 +10,8 @@ var startShiftStyles = require('../styles/salesmanStyles/startShiftStyles');
 var styles = require('../styles/salesmanStyles/startShiftStyles');
 var StartShiftIcon = require('react-icons/lib/fa/angle-double-left');
 var WineGlassIcon = require('react-icons/lib/fa/glass');
+var BackButtonIcon = require('react-icons/lib/fa/angle-left');
+
 
 var EndShiftContainer = React.createClass({
     contextTypes: {
@@ -104,12 +106,16 @@ var EndShiftContainer = React.createClass({
             <div>
                 <div className="w3-theme-d5 col-sm-12" style={styles.top__title}>
                     <h1 className="w3-xxxlarge">{constantsStrings.storeStatus_string}</h1>
-                    <div className="container col-sm-offset-7" style={styles.start__button}>
-                        <button className="w3-theme-d5 w3-xxxlarge btn"
+                    <div style={styles.start__button}>
+                        <button className="w3-theme-d4 w3-xxxlarge btn"
                                 onClick={this.handleSubmitReport} type="submit">
-                            <StartShiftIcon/>
                             {constantsStrings.endShift_string}
+                            <StartShiftIcon/>
                         </button>
+                        <span className="col-sm-offset-7 w3-xxxlarge"
+                                onClick={this.onReturn}>
+                            <BackButtonIcon/>
+                        </span>
                     </div>
                 </div>
                 <div style={styles.space} className="w3-theme-l5">

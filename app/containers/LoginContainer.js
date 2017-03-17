@@ -5,22 +5,26 @@ var React = require('react');
 var userServices = require('../communication/userServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
-var styles = require('../styles/index.js');
+var styles = require('../styles/managerStyles/styles');
+var NotificationSystem = require('react-notification-system');
 
 var LoginContainer = React.createClass({
+
     contextTypes: {
-        router: React.PropTypes.object.isRequired
+        router: React.PropTypes.object.isRequired,
     },
     getInitialState: function () {
         return {
             username: '',
-            password: ''
+            password: '',
+
         }
     },
     handleSubmitUser: function (e) {
         e.preventDefault();
         var password = this.refs.passwordTextBox.value;
         var username = this.refs.usernameTextBox.value;
+        var notificationSystem = this.refs.notificationSystem;
         this.setState({
             username: '',
             password: ''
@@ -42,8 +46,12 @@ var LoginContainer = React.createClass({
                         })
                     }
                 }else {
-                    console.log("error in login: " + answer.info);
-                    alert('Username or password are incorrect.');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.loginFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                 }
             }
             else{
@@ -84,6 +92,7 @@ var LoginContainer = React.createClass({
                         </div>
                     </form>
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     }

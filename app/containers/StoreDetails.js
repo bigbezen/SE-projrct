@@ -7,6 +7,7 @@ var managerServices = require('../communication/managementServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var storeInfo = require('../models/store');
 var paths = require('../utils/Paths');
+var styles = require('../styles/managerStyles/styles');
 
 var StoreDetails = React.createClass({
     contextTypes: {
@@ -60,10 +61,10 @@ var StoreDetails = React.createClass({
 
     handleSubmitUser: function (e) {
         e.preventDefault();
-        if (!this.checkDropDowns()) {
+       /* if (!this.checkDropDowns()) {
             alert('Invalid values. please make sure that you filled all of the fields');
             return;
-        }
+        }*/
         console.log('we are here');
         var newStore = new storeInfo();
         newStore.name = this.refs.nameBox.value;
@@ -74,22 +75,40 @@ var StoreDetails = React.createClass({
         newStore.area = this.state.area;
         newStore.channel = this.state.channel;
         var context = this.context;
+        var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newStore._id = this.props.location.query._id;
             managerServices.editStore(newStore).then(function (n) {
                 if(n){
                     var val = n;
                     if (val.success) {
-                        alert('edit succeed');
-                        context.router.push({
-                            pathname: paths.manager_stores_path
-                        })
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editSuccessMessage_string,
+                            level: 'success',
+                            autoDismiss: 2,
+                            position: 'tc',
+                            onRemove: function (notification) {
+                                context.router.push({
+                                    pathname: paths.manager_stores_path
+                                })
+                            }
+                        });
                     } else {
-                        alert('edit failed. please check your parameters');
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 0,
+                            position: 'tc'
+                        });
                     }
                 }
                 else{
-                    alert('edit failed. please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                     console.log("error");
                 }
             })
@@ -98,16 +117,33 @@ var StoreDetails = React.createClass({
                 if(n){
                     var val = n;
                     if (val.success) {
-                        alert('add succeed');
-                        context.router.push({
-                            pathname: paths.manager_stores_path
-                        })
+                        notificationSystem.addNotification({
+                            message: constantsStrings.addSuccessMessage_string,
+                            level: 'success',
+                            autoDismiss: 2,
+                            position: 'tc',
+                            onRemove: function (notification) {
+                                context.router.push({
+                                    pathname: paths.manager_stores_path
+                                })
+                            }
+                        });
                     } else {
-                        alert('add failed. please check your parameters');
+                        notificationSystem.addNotification({
+                            message: constantsStrings.addFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 0,
+                            position: 'tc'
+                        });
                     }
                 }
                 else{
-                    alert('add failed. please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc'
+                    });
                     console.log("error");
                 }
             })
@@ -205,6 +241,7 @@ var StoreDetails = React.createClass({
                         </button>
                     </div>
                 </form>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

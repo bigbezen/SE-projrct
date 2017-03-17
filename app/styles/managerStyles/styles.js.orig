@@ -4,7 +4,10 @@
 
 var styles = {
     marginBottom: {
+<<<<<<< HEAD
         marginBottom: '60px'
+=======
+        marginBottom: '40px'
     },
     notificationStyle: {
         NotificationItem: {
@@ -22,6 +25,7 @@ var styles = {
     },
     topBuffer: {
         marginTop: '200px'
+>>>>>>> origin/Lihi_bugBash
     }
 
 };

@@ -136,6 +136,10 @@ module.exports = {
         return res;
     },
 
+    deleteShift: function(params){
+        return checkParams(params, ['sessionId', 'shiftId'], [stringT, stringT]);
+    },
+
     generateShifts: function(params){
         return checkParams(params, ['sessionId', 'startTime', 'endTime'], [stringT, stringT, stringT]);
     },

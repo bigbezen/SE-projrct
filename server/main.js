@@ -604,8 +604,22 @@ function _setapApiEndpoints() {
         res.status(200).send('edit user');
     });
 
-    app.post('/management/deleteShift', function (req, res) {
-        res.status(200).send('delete user');
+    app.post('/management/deleteShift', async function (req, res) {
+        if (!validator.deleteShift(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.deleteShift(req.body.sessionId, req.body.storeId);
+        if (result.err != null)
+        {
+            res.status(result.code).send(result.err);
+            return;
+        }
+        else
+        {
+            res.status(result.code).send(result.store);
+            return;
+        }
     });
 
 //Manager Services

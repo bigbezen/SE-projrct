@@ -58,6 +58,13 @@ describe('management acceptance test', function(){
 
         notManager = new userModel();
         notManager.username = 'aviram';
+        notManager.personal = {
+            "id": "0984454321",
+            "firstName": "israeld",
+            "lastName": "israelid",
+            "sex": "male",
+            "birthday": "01-01-1999"
+        };
         notManager.sessionId = '12123434';
         notManager.password = '111111';
         notManager.jobDetails.userType = 'salesman';
@@ -234,7 +241,7 @@ describe('management acceptance test', function(){
             assert.equal(res.response.data, 'invalid parameters');
         });
 
-        it('add user not by invalid parameter', async function () {
+        it('add user not by invalid sessionId', async function () {
             salesman.username = 12345;
             let res = await axios.post(serverUrl + 'management/addUser', {
                 sessionId: salesman.sessionId,
@@ -687,6 +694,72 @@ describe('management acceptance test', function(){
         });
     });
 
+    describe('test delete shift', function() {
+        it('delete valid user', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+
+            let res = await axios.post(serverUrl + 'management/deleteShift', {
+                shiftId: result.data[0]._id,
+                sessionId: manager.sessionId
+            });
+            assert.equal(res.status, 200);
+        });
+
+        it('delete shift invalid parameters', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+
+            let res = await axios.post(serverUrl + 'management/deleteShift', {
+                shiftId: result.data[0]._id,
+                sessionId: 11111
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 404);
+            assert.equal(res.response.data, 'invalid parameters')
+        });
+
+        it('delete shift not by manager', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+
+            let res = await axios.post(serverUrl + 'management/deleteShift', {
+                shiftId: result.data[0]._id,
+                sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, 'permission denied')
+        });
+    });
+
     describe('test delete encouragement', function() {
         it('delete encouragement valid user', async function () {
             let encouragementRes= await dal.addEncouragement(encouragement);
@@ -814,6 +887,79 @@ describe('management acceptance test', function(){
 
             assert.equal(res.response.status, 404);
             assert.equal(res.response.data, 'invalid parameters');
+        });
+    });
+
+    describe('test edit user', function() {
+        it('edit user valid', async function () {
+            let res = await axios.post(serverUrl + 'management/editUser', {
+                userDetails: salesman,
+                username:notManager.username,
+                sessionId: manager.sessionId
+            });
+            assert.equal(res.status, 200);
+        });
+
+        it('edit unexist user', async function () {
+            let res = await axios.post(serverUrl + 'management/editUser', {
+                userDetails: salesman,
+                username:salesman.username,
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 409);
+            assert.equal(res.response.data, 'edited user does not exist');
+        });
+
+        it('edit user not by manager ', async function () {
+            let res = await axios.post(serverUrl + 'management/editUser', {
+                userDetails: salesman,
+                username:notManager.username,
+                sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, 'user not authorized');
+        });
+
+        it('edit user invalid', async function () {
+            salesman.username = 12;
+            let res = await axios.post(serverUrl + 'management/editUser', {
+                userDetails: salesman,
+                username:notManager.username,
+                sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 404);
+            assert.equal(res.response.data, 'invalid parameters');
+        });
+
+        it('edit user existing editUser', async function () {
+            salesman.username = manager.username;
+            let res = await axios.post(serverUrl + 'management/editUser', {
+                userDetails: salesman,
+                username:notManager.username,
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 409);
+            assert.equal(res.response.data, 'user not authorized');
         });
     });
 

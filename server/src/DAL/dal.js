@@ -26,7 +26,7 @@ module.exports = {
     },
 
     updateUser: async function(user){
-        return userModel.update({'_id': user._id}, user, {upsert: false});
+        return userModel.update({'_id': mongoose.Types.ObjectId(user._id)}, user, { upsert: false });
     },
 
     getUserBySessionId: async function(sessionId){
@@ -136,7 +136,9 @@ module.exports = {
         return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },
 
-
+    editShift: async function(shiftDetails){
+        return storeModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
+    },
 
     publishShifts: async function(shiftArr){
         var results = [];
@@ -155,6 +157,10 @@ module.exports = {
 
         return shiftModel.findOne({$and: [{'salesmanId': salesmanId},
             {'status': 'PUBLISHED'}, {'startTime': {$gte: today.toDate(), $lt: tomorrow.toDate()}}]});
+    },
+
+    deleteShift: async function(shiftId){
+        return shiftModel.remove({'_id': mongoose.Types.ObjectId(shiftId)});
     },
 
     sendBroadcast: async function(msg){

@@ -147,15 +147,8 @@ var editUser = async function(sessionId, username, userDetails){
         }
     }
 
-
-    user.username = userDetails.username;
-    user.startDate = new Date(userDetails.startDate);
-    user.endDate = userDetails.endDate;
-    user.personal = userDetails.personal;
-    user.contact = userDetails.contact;
-    user.jobDetails = userDetails.jobDetails;
-
-    var res = await dal.updateUser(user);
+    userDetails._id = user._id;
+    var res = await dal.updateUser(userDetails);
     if(res.ok == 1){
         return {'code': 200};
     }

@@ -408,6 +408,37 @@ let getActiveShiftEncouragements = async function(sessionId, shiftId){
         return {'code': 200, 'encouragements': result};
 };
 
+let deleteShift = async function (sessionId, shiftId) {
+    logger.info('Services.shift.index.deleteShift', {'session-id': sessionId});
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'deleteShift');
+    if(user == null)
+        return {'shift': null, 'code': 401, 'err': 'permission denied'};
+
+    let shift = await dal.getShiftsByIds([shiftId]);
+    if(shift[0] != null && shift[0].status == "STARTED")
+        return {'shift': null, 'code': 401, 'err': 'permission denied shift already started'};
+
+    shift = await dal.deleteShift(shiftId);
+    return {'shift': shift, 'code':200, 'err': null};
+};
+
+let editShift = async function (sessionId, shiftDetails) {
+    logger.info('Services.shift.index.editShift', {'session-id': sessionId});
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'editShift');
+    if(user == null)
+        return {'shift': null, 'code': 401, 'err': 'permission denied'};
+
+    let shift = await dal.getShiftsByIds([shiftDetails._id]);
+    if(shift[0] != null && shift[0].status == "STARTED")
+        return {'shift': null, 'code': 401, 'err': 'permission denied shift already started'};
+
+    let res = await dal.editShift(shiftDetails);
+    if(res.ok == 0)
+        return {'shift': shift[0], 'code':400, 'err': 'cannot edit this shift'};
+
+    return {'shift': shift[0], 'code':200, 'err': null};
+};
+
 let _createNewSalesReport = async function(){
     let report = [];
     let productsIds = await dal.getAllProducts();
@@ -458,5 +489,7 @@ module.exports.getActiveShiftEncouragements = getActiveShiftEncouragements;
 module.exports.automateGenerateShifts = automateGenerateShifts;
 module.exports.getShiftsFromDate = getShiftsFromDate;
 module.exports.getActiveShift = getActiveShift;
+module.exports.deleteShift = deleteShift;
+module.exports.editShift = editShift;
 
 

@@ -116,7 +116,7 @@ var UsersContainer = React.createClass({
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2 col-sm-offset-8"
+                className="w3-card-2"
                 type="button"
                 onClick={() =>
                     this.onClickEditButton(cell, row, rowIndex)}>
@@ -127,7 +127,7 @@ var UsersContainer = React.createClass({
     deleteButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2 col-sm-offset-8"
+                className="w3-card-2"
                 type="button"
                 onClick={() =>
                     this.onClickDeleteButton(cell, row, rowIndex)}>
@@ -197,11 +197,13 @@ var UsersContainer = React.createClass({
                     <TableHeaderColumn
                         dataAlign = 'right'
                         dataField = 'button'
+                        width="4%"
                         dataFormat = {this.editButton}>
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataAlign = 'right'
                         dataField = 'button'
+                        width="4%"
                         dataFormat = {this.deleteButton}>
                     </TableHeaderColumn>
                 </BootstrapTable>

@@ -149,6 +149,13 @@ var UsersContainer = React.createClass({
                         {constantStrings.userID_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
+                        dataField = 'username'
+                        dataAlign = 'right'
+                        dataSort = {true}
+                        filter = { {type: 'TextFilter', placeholder:constantStrings.enterUsername_string} }>
+                        {constantStrings.username_string}
+                    </TableHeaderColumn>
+                    <TableHeaderColumn
                         dataField = 'personal.firstName'
                         dataAlign = 'right'
                         dataSort = {true}

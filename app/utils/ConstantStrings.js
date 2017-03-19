@@ -46,6 +46,7 @@ class ConstantStrings extends React.Component {
     static selectCategory_string = 'בחר קטגוריה..';
     static selectSubCategory_string = 'בחר תת קטגוריה..';
     static enterQuantity_string = 'הכנס כמות';
+    static enterUsername_string = 'הכנס שם משתמש';
 
     //users
     static userID_string ='ת״ז';

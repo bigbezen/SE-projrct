@@ -256,7 +256,7 @@ var ShiftDetails = React.createClass({
     },
     addNewShift: function() {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-l4">
+            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-d4 w3-card-8">
 
                 <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
                     <div className="form-group">

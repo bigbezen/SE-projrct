@@ -68,9 +68,7 @@ var BaseContainer = React.createClass({
                 </div>
                 <div style={styles.space} className="w3-theme-l5" />
                 {this.props.children}
-                <div className="footer navbar-fixed-bottom w3-theme-d4" style={styles.space}>
 
-                </div>
             </div>
         )
     }

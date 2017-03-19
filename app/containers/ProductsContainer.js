@@ -126,7 +126,7 @@ var ProductsContainer = React.createClass({
             <div className="col-sm-12">
                 <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
                 <div style={styles.marginBottom}>
-                    <BootstrapTable data={this.state.products} options={options} bordered={false} hover striped search searchPlaceholder={constantStrings.search_string}>
+                    <BootstrapTable data={this.state.products} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                         <TableHeaderColumn
                             dataField = 'name'
                             dataAlign = 'right'

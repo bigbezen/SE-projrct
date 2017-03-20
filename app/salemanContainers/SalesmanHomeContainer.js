@@ -115,16 +115,20 @@ var SalesmanHomeContainer = React.createClass({
         //TODO: present to user details about the shift or some other message if he has no shift
         return (
             <div className='main-container'>
-                <div>
-                    <button className="w3-btn w3-theme-d5 col-sm-2 col-sm-offset-10" onClick={this.handleLogoutUser}>
-                        {constantsStrings.logout_string}
-                    </button>
+                <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
+                    <ul>
+                        <li>
+                            <button className="w3-btn w3-round-large w3-xlarge w3-card-4 w3-theme-d4 col-sm-2 col-sm-offset-10" onClick={this.handleLogoutUser}>
+                                {constantsStrings.logout_string}
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div style={styles.centerAlign}>
                     <span style={styles.title}>IBBLS</span>
                 </div>
                 <div style={styles.centerAlign}>
-                    <button className="btn w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
+                    <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
                 </div>
             </div>
 
@@ -133,9 +137,16 @@ var SalesmanHomeContainer = React.createClass({
     renderLoading:function () {
         return(
             <div>
-                <button className="w3-btn w3-theme-d5 col-sm-2 col-sm-offset-10" onClick={this.handleLogoutUser}>
-                    {constantsStrings.logout_string}
-                </button>
+                <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
+                    <ul>
+                        <li>
+                            <button className="w3-btn w3-theme-l1 col-sm-2 col-sm-offset-10" onClick={this.handleLogoutUser}>
+                                {constantsStrings.logout_string}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
                 <h1>אין לך משמרות היום, סע לים!!! (:</h1>
             </div>
         )

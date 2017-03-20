@@ -2,7 +2,9 @@
  * Created by aviramad on 12/17/2016.
  */
 var axios = require('axios');
-var serverUrl = 'http://localhost:3000/';
+var remoteServer = 'https://ibbls.herokuapp.com/';
+var localServer = 'http://localhost:3000/';
+var serverUrl = localServer;
 var sessionId = null;
 var name = null;
 var userType = null;

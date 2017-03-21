@@ -149,7 +149,7 @@ var UserDetails = React.createClass({
                         notificationSystem.addNotification({
                             message: constantsStrings.editFailMessage_string,
                             level: 'error',
-                            autoDismiss: 0,
+                            autoDismiss: 5,
                             position: 'tc'
                         });
                     }
@@ -158,10 +158,9 @@ var UserDetails = React.createClass({
                     notificationSystem.addNotification({
                         message: constantsStrings.editFailMessage_string,
                         level: 'error',
-                        autoDismiss: 0,
+                        autoDismiss: 5,
                         position: 'tc'
                     });
-                    console.log("error");
                 }
             })
         }else {
@@ -184,7 +183,7 @@ var UserDetails = React.createClass({
                         notificationSystem.addNotification({
                             message: constantsStrings.addFailMessage_string,
                             level: 'error',
-                            autoDismiss: 0,
+                            autoDismiss: 5,
                             position: 'tc'
                         });
                     }
@@ -193,10 +192,9 @@ var UserDetails = React.createClass({
                     notificationSystem.addNotification({
                         message: constantsStrings.addFailMessage_string,
                         level: 'error',
-                        autoDismiss: 0,
+                        autoDismiss: 5,
                         position: 'tc'
                     });
-                    console.log("error");
                 }
             })
         }

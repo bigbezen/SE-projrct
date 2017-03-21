@@ -49,7 +49,7 @@ var LoginContainer = React.createClass({
                     notificationSystem.addNotification({
                         message: constantsStrings.loginFailMessage_string,
                         level: 'error',
-                        autoDismiss: 0,
+                        autoDismiss: 5,
                         position: 'tc'
                     });
                 }

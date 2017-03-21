@@ -7,6 +7,7 @@ var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
 var constantStrings = require('../utils/ConstantStrings');
 var styles = require('../styles/managerStyles/homeStyles');
+var NotificationSystem = require('react-notification-system');
 
 var HomeContainer = React.createClass({
     contextTypes: {
@@ -25,6 +26,7 @@ var HomeContainer = React.createClass({
     },
     updateStatistics() {
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllProducts().then(function (n) {
             if (n) {
                 var result = n;
@@ -33,7 +35,12 @@ var HomeContainer = React.createClass({
                         productsNum: result.info.length
                     });
                 } else {
-                    alert("Error while retrieving all products from the server: "+ result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             } else {
                 console.log("error in home: " + n);
@@ -47,7 +54,12 @@ var HomeContainer = React.createClass({
                         salesmenNum: result.info.length
                     });
                 } else {
-                    alert("Error while retrieving all products from the server: "+ result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             } else {
                 console.log("error in home: " + n);
@@ -61,7 +73,12 @@ var HomeContainer = React.createClass({
                         storesNum: result.info.length
                     });
                 } else {
-                    alert("Error while retrieving all products from the server: "+ result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             } else {
                 console.log("error in home: " + n);
@@ -106,6 +123,7 @@ var HomeContainer = React.createClass({
                     <h5> {constantStrings.numberOfStores}</h5>
                     <h1>{this.state.storesNum}</h1>
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
 
         )

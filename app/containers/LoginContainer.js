@@ -66,26 +66,26 @@ var LoginContainer = React.createClass({
                     <div className="row" style={styles.topBuffer}>
                     </div>
                 </div>
-                <div className="w3-theme-l5 col-sm-offset-2 col-sm-8 text-center img-rounded" >
+                <div className="w3-theme-l5 col-xs-offset-2 col-xs-8 text-center img-rounded" >
                     <h1 className="h1 w3-jumbo">IBBLS</h1>
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group ">
                             <input type="text"
-                                   className="col-sm-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
                                    ref="usernameTextBox"
                                    placeholder="שם משתמש"
                                    value={this.username} />
                         </div>
                         <div className="form-group">
                             <input type="password"
-                                   className="col-sm-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
                                    ref="passwordTextBox"
                                    placeholder="סיסמא"
                                    value={this.password}/>
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 col-sm-4 col-sm-offset-4"
+                                className="w3-btn btn w3-theme-d5 col-xs-4 col-xs-offset-4"
                                 type="submit">
                                 {constantsStrings.login_string}
                             </button>

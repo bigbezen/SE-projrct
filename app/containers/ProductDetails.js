@@ -163,89 +163,89 @@ var ProductDetails = React.createClass({
     },
     addNewProduct: function() {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right w3-text-black">
                     <div className="form-group">
-                        <h1 className="col-sm-offset-1 col-sm-9 w3-xxlarge">
+                        <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
                             <b>{this.getTitle()}</b>
                         </h1>
                     </div>
 
                     <div className="form-group">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.productName_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.productName_string}:</label>
 
                     </div>
                     <div className="form-group">
                         <input type="text"
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="nameBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.retailPrice_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.retailPrice_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="number" min={0}
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="retailBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.salePrice_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.salePrice_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="number" min={0}
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="saleBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.category_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.category_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleCategoryChange} ref="categoryBox" data="" >
+                        <select className="col-xs-4 col-xs-offset-2" onChange={this.handleCategoryChange} ref="categoryBox" data="" >
                             {this.getOptions(constantsStrings.categoryForDropdown)}
                         </select>
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.subCategory_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.subCategory_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleSubCategoryChange} ref="subCategoryBox" data="" >
+                        <select className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange} ref="subCategoryBox" data="" >
                             {this.getOptions(constantsStrings.subCategoryForDropdown)}
                         </select>
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.minRequiredAmount_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.minRequiredAmount_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="number" min={0}
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="minAmountBox"
                         />
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-sm-3 col-sm-offset-2">{constantsStrings.notifyManager_string}:</label>
+                        <label className="col-xs-3 col-xs-offset-2">{constantsStrings.notifyManager_string}:</label>
                         <input type="checkbox"
-                               className="col-sm-1"
+                               className="col-xs-1"
                                ref="notifyBox"
                         />
                     </div>
 
                     <div className="form-group">
                         <button
-                            className="w3-btn btn w3-theme-d5 col-sm-4 col-sm-offset-2"
+                            className="w3-btn btn w3-theme-d5 col-xs-4 col-xs-offset-2"
                             type="submit">
                             {this.getButtonString()}
                         </button>

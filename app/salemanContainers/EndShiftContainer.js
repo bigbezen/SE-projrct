@@ -103,7 +103,7 @@ var EndShiftContainer = React.createClass({
     renderEndShift: function () {
         return (
             <div>
-                <div className="w3-theme-d5 col-sm-12" style={styles.top__title}>
+                <div className="w3-theme-d5 col-xs-12" style={styles.top__title}>
                     <h1 className="w3-xxxlarge">{constantsStrings.storeStatus_string}</h1>
                     <div style={styles.start__button}>
                         <span className="w3-xxxlarge"
@@ -111,7 +111,7 @@ var EndShiftContainer = React.createClass({
                             <BackButtonIcon/>
                         </span>
 
-                        <button className="col-sm-offset-7 w3-theme-d4 w3-xxxlarge btn"
+                        <button className="col-xs-offset-7 w3-theme-d4 w3-xxxlarge btn"
                                 onClick={this.handleSubmitReport} type="submit">
                             {constantsStrings.endShift_string}
                             <StartShiftIcon/>
@@ -123,7 +123,7 @@ var EndShiftContainer = React.createClass({
                 </div>
 
                 <div>
-                    <ul className="col-sm-10 col-sm-offset-1 w3-card-4" style={styles.products__list}>
+                    <ul className="col-xs-10 col-xs-offset-1 w3-card-4" style={styles.products__list}>
                         {this.state.shift.salesReport.map(this.renderEachProduct)}
                     </ul>
                 </div>

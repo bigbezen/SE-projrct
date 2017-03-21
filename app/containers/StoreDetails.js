@@ -164,83 +164,83 @@ var StoreDetails = React.createClass({
     },
     addNewStore: function() {
         return (
-            <div className="jumbotron col-sm-offset-3 col-sm-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right w3-text-black">
                     <div className="form-group">
-                        <h1 className="col-sm-offset-1 col-sm-9 w3-xxlarge">
+                        <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
                             <b>{this.getTitle()}</b>
                         </h1>
                     </div>
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.storeName_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.storeName_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="text"
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="nameBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.managerName_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.managerName_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="text" min={0}
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="managerNameBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.phone_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.phone_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="text" min={0}
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="phoneBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.city_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.city_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="text"
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="cityBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.address_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.address_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="text"
-                               className="col-sm-4 col-sm-offset-2"
+                               className="col-xs-4 col-xs-offset-2"
                                ref="addressBox"
                         />
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.area_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.area_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleAreaChange} ref="areaBox">
+                        <select className="col-xs-4 col-xs-offset-2" onChange={this.handleAreaChange} ref="areaBox">
                             {this.getOptions(constantsStrings.areaForDropdown)}
                         </select>
                     </div>
 
 
                     <div className="form-group ">
-                        <label className="col-sm-4 col-sm-offset-2">{constantsStrings.channel_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.channel_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <select className="col-sm-4 col-sm-offset-2" onChange={this.handleChannelChange} ref="channelBox">
+                        <select className="col-xs-4 col-xs-offset-2" onChange={this.handleChannelChange} ref="channelBox">
                             {this.getOptions(constantsStrings.channelForDropdown)}
                         </select>
                     </div>
@@ -248,7 +248,7 @@ var StoreDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-sm-4 col-sm-offset-2"
+                            className="w3-btn w3-theme-d5 col-xs-4 col-xs-offset-2"
                             type="submit">
                             {this.getButtonString()}
                         </button>

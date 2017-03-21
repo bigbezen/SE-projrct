@@ -7,6 +7,9 @@ var styles = {
     },
     hoverBackground: {
         backgroundColor:'w3-theme-l5'
+    },
+    margin: {
+        margin: '70px'
     }
 
 };

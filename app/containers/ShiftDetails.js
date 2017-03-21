@@ -57,6 +57,7 @@ var ShiftDetails = React.createClass({
     getOptionsForStores: function() {
         var optionsForDropDown = [];
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllStores().then(function (n) {
             if (n) {
                 var val = n;
@@ -73,11 +74,21 @@ var ShiftDetails = React.createClass({
                         self.refs.userBox.value = self.state.salesmanId;
                     }
                 } else {
-                    alert('cannot load the list of stores. please try again later');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             }
             else {
-                alert('cannot load the list of stores. please try again later');
+                notificationSystem.addNotification({
+                    message: constantsStrings.errorMessage_string,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             }
         })
     },
@@ -85,6 +96,7 @@ var ShiftDetails = React.createClass({
     getOptionsForSalesmen: function() {
         var optionsForDropDown = [];
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllUsers().then(function (n) {
             if (n) {
                 var val = n;
@@ -97,11 +109,21 @@ var ShiftDetails = React.createClass({
                     }
                     self.setState({salesmenForDropDown: optionsForDropDown});
                 } else {
-                    alert('cannot load the list of stores. please try again later');
+                    notificationSystem.addNotification({
+                        message: constantsStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             }
             else {
-                alert('cannot load the list of stores. please try again later');
+                notificationSystem.addNotification({
+                    message: constantsStrings.errorMessage_string,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             }
         })
     },
@@ -167,7 +189,7 @@ var ShiftDetails = React.createClass({
                                 notificationSystem.addNotification({
                                     message: constantsStrings.editFailMessage_string,
                                     level: 'error',
-                                    autoDismiss: 0,
+                                    autoDismiss: 5,
                                     position: 'tc'
                                 });
                             }
@@ -176,7 +198,7 @@ var ShiftDetails = React.createClass({
                         notificationSystem.addNotification({
                             message: constantsStrings.editFailMessage_string,
                             level: 'error',
-                            autoDismiss: 0,
+                            autoDismiss: 5,
                             position: 'tc'
                         });
                     }
@@ -185,10 +207,9 @@ var ShiftDetails = React.createClass({
                     notificationSystem.addNotification({
                         message: constantsStrings.editFailMessage_string,
                         level: 'error',
-                        autoDismiss: 0,
+                        autoDismiss: 5,
                         position: 'tc'
                     });
-                    console.log("error");
                 }
             })
         }else {
@@ -217,7 +238,7 @@ var ShiftDetails = React.createClass({
                                 notificationSystem.addNotification({
                                     message: constantsStrings.addFailMessage_string,
                                     level: 'error',
-                                    autoDismiss: 0,
+                                    autoDismiss: 5,
                                     position: 'tc'
                                 });
                             }
@@ -226,7 +247,7 @@ var ShiftDetails = React.createClass({
                         notificationSystem.addNotification({
                             message: constantsStrings.addFailMessage_string,
                             level: 'error',
-                            autoDismiss: 0,
+                            autoDismiss: 5,
                             position: 'tc'
                         });
                     }
@@ -235,7 +256,7 @@ var ShiftDetails = React.createClass({
                     notificationSystem.addNotification({
                         message: constantsStrings.addFailMessage_string,
                         level: 'error',
-                        autoDismiss: 0,
+                        autoDismiss: 5,
                         position: 'tc'
                     });
                 }

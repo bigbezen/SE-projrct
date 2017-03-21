@@ -32,6 +32,7 @@ var ProductsContainer = React.createClass({
     },
     updateProducts() {
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllProducts().then(function (n) {
             if (n) {
                 var result = n;
@@ -42,7 +43,12 @@ var ProductsContainer = React.createClass({
                     console.log("works!!");
                 } else {
                     console.log("error in getAllProducts: " + result.info);
-                    alert("Error while retrieving all products from the server: "+ result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             } else {
                 console.log("error in storesContainers: " + n);
@@ -79,6 +85,7 @@ var ProductsContainer = React.createClass({
             products: null
         });
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteProduct(row).then(function (n) {
             if (n) {
                 var result = n;
@@ -87,7 +94,12 @@ var ProductsContainer = React.createClass({
                     console.log("works!!");
                 } else {
                     console.log("error in deleteProduct: " + result.info);
-                    alert("Error while deleting product from the server: "+ result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.deleteFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             } else {
                 console.log("error in deleteProduct: " + n);

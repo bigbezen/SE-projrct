@@ -48,6 +48,7 @@ var ShiftsContainer = React.createClass({
     updateShifts() {
         var self = this;
         var currentDate = new Date();
+        var notificationSystem = this.refs.notificationSystem;
         currentDate.setDate(currentDate.getDate()-30);
         managementServices.getShiftsFromDate(currentDate).then(function (n) {
             if (n) {
@@ -60,11 +61,19 @@ var ShiftsContainer = React.createClass({
                     console.log("works!!");
                 } else {
                     console.log("error in getAllShifts: " + result.info);
-                    alert("Error while retrieving all shifts from the server: "+ result.info);
-                }
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });                }
             } else {
-                console.log("error in shiftsContainer: " + n);
-            }
+                notificationSystem.addNotification({
+                    message: constantStrings.errorMessage_string,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });            }
         })
     },
     onClickEditButton: function(cell, row, rowIndex){
@@ -76,13 +85,19 @@ var ShiftsContainer = React.createClass({
         })
     },
     onClickGetReportButton: function(cell, row, rowIndex){
+        var notificationSystem = this.refs.notificationSystem;
         managerServices.getSaleReportXl(row).then(function (n) {
             if (n) {
                 var result = n;
                 if (result.success) {
                     console.log("works!!");
                 } else {
-                    alert("Error while creating excel file: "+ result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             } else {
                 console.log("error in getSaleReportXl: " + n);
@@ -111,6 +126,7 @@ var ShiftsContainer = React.createClass({
             shifts: null
         });
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteShift(row).then(function (n) {
             if (n) {
                 var result = n;
@@ -119,7 +135,12 @@ var ShiftsContainer = React.createClass({
                     console.log("works!!");
                 } else {
                     console.log("error in deleteShift: " + result.info);
-                    alert("Error while deleting shift from the server: "+ result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             } else {
                 console.log("error in deleteShift: " + n);

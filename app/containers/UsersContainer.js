@@ -44,6 +44,7 @@ var UsersContainer = React.createClass({
     },
     updateUsers() {
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllUsers().then(function (n) {
             if (n) {
                 var result = n;
@@ -55,8 +56,12 @@ var UsersContainer = React.createClass({
                     console.log("works!!");
                 } else {
                     console.log("error in getAllUsers: " + result.info);
-                    alert("Error while retrieving all users from the server: "+ result.info);
-                }
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });                }
             } else {
                 console.log("error in userContainers: " + n);
             }
@@ -93,6 +98,7 @@ var UsersContainer = React.createClass({
             users: null
         });
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteUser(row).then(function (n) {
             if (n) {
                 var result = n;
@@ -101,8 +107,12 @@ var UsersContainer = React.createClass({
                     console.log("works!!");
                 } else {
                     console.log("error in deleteUser: " + result.info);
-                    alert("Error while deleting user from the server: "+ result.info);
-                }
+                    notificationSystem.addNotification({
+                        message: constantStrings.deleteFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });                   }
             } else {
                 console.log("error in deleteUser: " + n);
             }

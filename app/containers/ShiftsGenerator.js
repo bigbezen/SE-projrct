@@ -10,6 +10,8 @@ var flatten = require('flat');
 var ReactBootstrap = require("react-bootstrap");
 var moment = require('moment');
 var paths = require('../utils/Paths');
+var styles = require('../styles/managerStyles/styles');
+var constantStrings = require('../utils/ConstantStrings');
 
 var ShiftDetails = React.createClass({
     contextTypes: {
@@ -30,21 +32,39 @@ var ShiftDetails = React.createClass({
 
         var context = this.context;
         var shifts;
+        var notificationSystem = this.refs.notificationSystem;
         managementServices.AddAllShifts(startTime, endTime).then(function (n) {
             if(n){
                 var val = n;
                 if (val.success) {
                     shifts = val.info;
-                    alert('All shifts as been created!');
-                    context.router.push({
-                        pathname: paths.manager_home_path
-                    })
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_home_path
+                            })
+                        }
+                    });
                 } else {
-                    alert('shifts creator as been failed. Please check your parameters');
+                    notificationSystem.addNotification({
+                        message: constantStrings.addFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
                 }
             }
             else{
-                alert('shifts creator as been failed. Please check your parameters');
+                notificationSystem.addNotification({
+                    message: constantStrings.addFailMessage_string,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
                 console.log("error");
             }
         })
@@ -80,6 +100,7 @@ var ShiftDetails = React.createClass({
                         </button>
                     </div>
                 </form>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

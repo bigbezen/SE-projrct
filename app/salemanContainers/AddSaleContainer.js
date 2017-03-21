@@ -100,7 +100,9 @@ var AddSaleContainer = React.createClass({
                             </span>
                         </td>
                         <td>
-                            <input type="text" className="form-control w3-xxlarge input-number" value={row.sold} min="0" ref={rowIndex}/>
+                            <input type="text" className="form-control w3-xxlarge input-number"
+                                   style={styles.inputMinHeight}
+                                   value={row.sold} min="0" ref={rowIndex}/>
                         </td>
                         <td>
                             <span className="input-group-btn">

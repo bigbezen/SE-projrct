@@ -67,6 +67,24 @@ var helpers = {
         return connection.managementRequests.deleteProduct(product);
     },
 
+    addIncentive: function(incentive){
+        console.log('managementervices- addIncentive');
+        return connection.managementRequests.addIncentive(incentive);
+    },
+
+    editIncentive: function(incentive){
+        console.log('managementervices- editIncentive');
+    },
+
+    getAllIncentives: function(){
+        console.log('managementervices- getAllIncentives');
+        return connection.managementRequests.getAllIncentives();
+    },
+
+    deleteIncentive(incentive){
+        console.log('managementervices- deleteIncentive');
+    },
+
     addEncouragement: function(){
         console.log('managementervices- addEncouragement');
         return connection.managementRequests.addEncouragement();

@@ -40,7 +40,6 @@ var ProductsContainer = React.createClass({
                     self.setState({
                         products: result.info
                     });
-                    console.log("works!!");
                 } else {
                     console.log("error in getAllProducts: " + result.info);
                     notificationSystem.addNotification({

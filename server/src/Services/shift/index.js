@@ -200,10 +200,6 @@ let getActiveShift = async function(sessionId, shiftId){
     return {'code': 200, 'shift': shift.toObject()};
 };
 
-let setStoreAndProductNamesToShift = async function(shift){
-
-}
-
 let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
@@ -368,9 +364,6 @@ let endShift = async function(sessionId, shift){
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'endShift');
     if(salesman == null || !salesman._id.equals(shift.salesmanId))
         return {'code': 401, 'err': 'user not authorized'};
-
-
-
 
     let shiftDb = await dal.getShiftsByIds([shift._id]);
     shiftDb = shiftDb[0];

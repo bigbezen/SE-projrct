@@ -13,6 +13,7 @@ let addEncouragement = async function(sessionId, encouragementDetails) {
     //check if to user have the permissions
     if(user != null) {
         let encouragement = new encouragementModel();
+        encouragement.name = encouragementDetails.name;
         encouragement.active = encouragementDetails.active;
         encouragement.numOfProducts = encouragementDetails.numOfProducts;
         encouragement.rate = encouragementDetails.rate;

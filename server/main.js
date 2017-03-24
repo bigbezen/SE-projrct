@@ -4,7 +4,7 @@ let express         = require('express');
 let bodyparser      = require('body-parser');
 let path            = require('path');
 let mongoose        = require('mongoose');
-let fs              = require('fs');
+var scheduler       = require('node-schedule');
 
 let logger          = require('./src/Utils/Logger/logger');
 let validator       = require('./src/Utils/Validators/index');
@@ -57,6 +57,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
+let monthlyJob  = scheduler.scheduleJob('1 * * * *', reportsService.genarateMonthlyUserHoursReport);
 
 console.log('server is now running on port: ', {'port': port});
 
@@ -674,5 +675,23 @@ function _setapApiEndpoints() {
     app.get('/manager/getSaleReportXl', async function (req, res) {
         var result = await reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
         res.status(result.code).send(result.err);
+    });
+
+    app.get('/manager/getMonthlyHoursSalesmansReportXl', async function (req, res) {
+        console.log('here');
+        var result = await reportsService.getMonthlyHoursSalesmansReportXl('123456',2017, 2);
+        res.status(result.code).send(result.err);
+    });
+
+    app.get('/manager/getMonthlyHoursSalesmansReport', async function (req, res) {
+        if (!validator.getMontlyhouresSalesmanReport(req.header)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await reportsService.getMonthlyUserHoursReport(req.header.sessionId, req.header.year, req.header.month);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
     });
 }

@@ -97,7 +97,7 @@ describe('user unit test', function () {
 
     describe('TestLogin', function () {
         it('LoginValid', async function () {
-            let result = await userServices.login('shahaf', '123456');
+            let result = await userServices.login('shahaf', "123456");
             expect(result).to.have.all.keys('sessionId', 'userType');
             expect(result.sessionId).to.be.a('string');
             expect(result.userType).to.be.a('string');

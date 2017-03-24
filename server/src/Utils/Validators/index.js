@@ -127,6 +127,10 @@ module.exports = {
         return checkParams(params, ['sessionId', 'content', 'date'], [stringT, stringT, stringT])
     },
 
+    getMontlyhouresSalesmanReport: function(params){
+        return checkParams(params, ['sessionId', 'year', 'month'], [stringT, numberT, numberT])
+    },
+
     addOrPublishShifts: function(params){
         var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
         for(let shift of params.shiftArr){

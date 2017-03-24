@@ -255,6 +255,36 @@ let _generateSessionId = async function() {
     return sessionId;
 };
 
+let getMonthlyEncouragements = async function(username, year, month){
+    let user = await dal.getUserByUsername(username);
+    let encouragements = await dal.getAllEncouragements();
+    let userEncouragements = user.jobDetails.encouragements;
+    let startMonth = new Date(year, month, 1);
+    let endMonth = new Date(year, month + 1, 1);
+    let encMonth = [];
+    let encFilter;
+
+    for (let enc of encouragements) {
+        if (enc.active ) {
+            let count = 0;
+
+            for(let encUser of userEncouragements){
+                if(encUser.date >= startMonth && encUser.date < endMonth && encUser.enc.equals(enc._id)){
+                    count = count + 1;
+                }
+            }
+
+            let monthlyEncoragement = {
+                'encouragemant': enc,
+                'amount': count
+            };
+            encMonth.push(monthlyEncoragement);
+        }
+    }
+
+    return encMonth;
+};
+
 
 module.exports.login = login;
 module.exports.logout = logout;
@@ -266,3 +296,4 @@ module.exports.getProfile = getProfile;
 module.exports.retrievePassword = retrievePassword;
 module.exports.getAllUsers = getAllUsers;
 module.exports.setAdminUser = setAdminUser;
+module.exports.getMonthlyEncouragements = getMonthlyEncouragements;

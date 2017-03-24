@@ -7,6 +7,7 @@ var shiftModel          = require('../Models/shift');
 var storeModel          = require('../Models/store');
 var userModel           = require('../Models/user');
 var messageModel          = require('../Models/message');
+var monthlySalesmanHoursReportModel = require('../Models/Reports/SummaryMonthlyHoursReport');
 
 module.exports = {
     addUser: async function (user) {
@@ -39,6 +40,10 @@ module.exports = {
 
     getUserById: async function(Id){
         return userModel.findOne({'personal.id': Id});
+    },
+
+    getUserByobjectId(userId){
+        return userModel.findOne({'_id': userId});
     },
 
     getAllUsers: async function(){
@@ -169,6 +174,19 @@ module.exports = {
         return update;
     },
 
+    getMonthShifts: async function(year, month){
+        var startMonth = new Date(year, month, 1);
+        var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
+        return shiftModel.find({$and: [{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
+    },
+
+    addMonthlySalesmanReport: async function(report){
+        return report.save()
+    },
+
+    getMonthlyUserHoursReport: async function(year, month){
+        return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]});
+    },
 
     markMessagesAsRead: async function(userId){
         return userModel.update({'_id': userId}, {$set: {inbox: []}});
@@ -198,6 +216,8 @@ module.exports = {
         messages.map(x => x.remove());
         var shift = await shiftModel.find({});
         shift.map(x => x.remove());
+        var reports = await monthlySalesmanHoursReportModel.find({});
+        reports.map(x => x.remove());
     }
 };
 

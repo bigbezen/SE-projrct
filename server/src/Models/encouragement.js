@@ -2,6 +2,7 @@ var mongoose    = require('mongoose');
 var Schema      = mongoose.Schema;
 
 var encouragementSchema = new Schema({
+    'name': String,
     'products': [{type: mongoose.Schema.Types.ObjectId, ref: 'product'}],
     'numOfProducts': Number,
     'rate': Number,

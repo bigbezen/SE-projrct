@@ -30,7 +30,7 @@ var userSchema = new Schema({
         'channel': String,
         'encouragements': [
             {
-                'enc': {type: mongoose.Schema.Types.ObjectId, ref: 'encouragements'},
+                'enc': {type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'},
                 'date': Date
             }
         ]

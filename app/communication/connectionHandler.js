@@ -94,6 +94,9 @@ var userRequests = {
         }).catch(function (err) {
             return returnVal(false, err);
         })
+    },
+    getUsername: function () {
+        return name;
     }
 };
 

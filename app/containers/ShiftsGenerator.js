@@ -12,6 +12,7 @@ var moment = require('moment');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var constantStrings = require('../utils/ConstantStrings');
+var NotificationSystem = require('react-notification-system');
 
 var ShiftDetails = React.createClass({
     contextTypes: {

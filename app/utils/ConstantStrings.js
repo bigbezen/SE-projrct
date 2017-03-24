@@ -195,6 +195,8 @@ class ConstantStrings extends React.Component {
     static badActionMessage_string = 'הפעולה נכשלה. נא לוודא כי כל השדות חוקיים';
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
     static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
+    static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
+    static close_string = "סגירה";
     static yes_string = 'כן';
 }
 

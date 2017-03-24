@@ -201,7 +201,7 @@ var ShiftsContainer = React.createClass({
     },
     renderTable: function () {
         return (
-            <div className="col-sm-12" style={styles.marginBottom}>
+            <div className="col-xs-12" style={styles.marginBottom}>
                 <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
                 <button className="w3-card-2 w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddShiftsButton}> +++ </button>
                 <BootstrapTable data={this.state.shifts} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>

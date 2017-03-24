@@ -111,7 +111,7 @@ var StoresContainer = React.createClass({
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2 col-sm-offset-2"
+                className="w3-card-2 col-xs-offset-2"
                 type="button"
                 onClick={() =>
                     this.onClickEditButton(cell, row, rowIndex)}>
@@ -132,7 +132,7 @@ var StoresContainer = React.createClass({
     },
     renderTable: function () {
         return (
-            <div className="col-sm-12" style={styles.marginBottom}>
+            <div className="col-xs-12" style={styles.marginBottom}>
                 <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
                 <BootstrapTable data={this.state.stores} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn

@@ -100,7 +100,9 @@ var AddSaleContainer = React.createClass({
                             </span>
                         </td>
                         <td>
-                            <input type="text" className="form-control w3-xxlarge input-number" value={row.sold} min="0" ref={rowIndex}/>
+                            <input type="text" className="form-control w3-xxlarge input-number"
+                                   style={styles.inputMinHeight}
+                                   value={row.sold} min="0" ref={rowIndex}/>
                         </td>
                         <td>
                             <span className="input-group-btn">
@@ -157,8 +159,8 @@ var AddSaleContainer = React.createClass({
         };
         return(
             <div className='main-container'>
-                <div className="w3-theme-d5 col-sm-12" style={styles.endShiftButton}>
-                    <div className="col-sm-offset-7">
+                <div className="w3-theme-d5 col-xs-12" style={styles.endShiftButton}>
+                    <div className="col-xs-offset-7">
                         <button className="w3-theme-d5 w3-xxxlarge btn"
                                 onClick={this.handleFinishShift} type="submit">
                             {constantStrings.endShift_string}
@@ -169,13 +171,13 @@ var AddSaleContainer = React.createClass({
 
                 <div style={styles.reportTopContainer}>
                     <div style={styles.reportButtonsContainer}>
-                        <button onClick={this.handleAddSale} className="w3-round-xxlarge w3-theme-d5 w3-jumbo w3-card-8" > {constantStrings.reportSale_string}</button>
+                        <button onClick={this.handleAddSale} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8" > {constantStrings.reportSale_string}</button>
                     </div>
                     <div style={styles.reportButtonsContainer}>
-                        <button onClick={this.handleOpenBottle} className="w3-round-xxlarge w3-theme-d5 w3-jumbo w3-card-8">{constantStrings.reportOpen_string}</button>
+                        <button onClick={this.handleOpenBottle} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8">{constantStrings.reportOpen_string}</button>
                     </div>
                 </div>
-                <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
+                <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
                     <div className="w3-margin-top">
                         <BootstrapTable data={this.state.soldProducts} hover bordered={false}>
                             <TableHeaderColumn
@@ -195,7 +197,7 @@ var AddSaleContainer = React.createClass({
 
                 <div style={styles.space}></div>
 
-                <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
+                <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
                     <div className="w3-margin-top">
                         <BootstrapTable data={this.state.products} options={selectRowProp}
                                         bordered={false} hover search
@@ -227,8 +229,8 @@ var AddSaleContainer = React.createClass({
         return(
 
             <div>
-                <div className="w3-theme-d5 col-sm-12">
-                    <div className="col-sm-offset-7">
+                <div className="w3-theme-d5 col-xs-12">
+                    <div className="col-xs-offset-7">
                         <button className="w3-theme-d5 w3-xxxlarge btn"
                                 onClick={this.handleFinishShift} type="submit">
                             {constantStrings.endShift_string}
@@ -236,7 +238,7 @@ var AddSaleContainer = React.createClass({
                         </button>
                     </div>
                 </div>
-                <div className="w3-card-8 col-sm-offset-1 col-sm-10" style={styles.products_table_container}>
+                <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
                     <div className="w3-margin-top">
                         <BootstrapTable data={this.state.products} options={selectRowProp}
                                         bordered={false} hover search
@@ -252,7 +254,7 @@ var AddSaleContainer = React.createClass({
                             <TableHeaderColumn
                                 dataField = 'button'
                                 dataAlign = 'left'
-                                className = "col-sm-2"
+                                className = "col-xs-2"
                                 dataFormat = {this.tablePlusIcon}>
                             </TableHeaderColumn>
                         </BootstrapTable>

@@ -40,6 +40,9 @@ var addSaleStyles = {
     },
     endShiftButton:{
         marginBottom: '20px',
+    },
+    inputMinHeight:{
+        height: '60px',
     }
 };
 

@@ -3,6 +3,7 @@
  */
 var axios = require('axios');
 var remoteServer = 'https://ibbls.herokuapp.com/';
+var ngrok = 'https://7a269114.ngrok.io/';
 var localServer = 'http://localhost:3000/';
 var serverUrl = localServer;
 var sessionId = null;

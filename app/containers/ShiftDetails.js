@@ -329,7 +329,7 @@ var ShiftDetails = React.createClass({
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.startDate_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.startTime_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="time"
@@ -339,7 +339,7 @@ var ShiftDetails = React.createClass({
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.endDate_string}</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.endTime_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="time"

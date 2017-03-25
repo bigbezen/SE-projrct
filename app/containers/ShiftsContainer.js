@@ -230,19 +230,19 @@ var ShiftsContainer = React.createClass({
                         dataField = 'status'
                         dataAlign = 'right'
                         dataSort = {true}
-                        filter={ { type: 'TextFilter', placeholder:constantStrings.enterManagerName_string} }>
+                        filter={ { type: 'TextFilter', placeholder:constantStrings.enterStatus_string} }>
                         {constantStrings.status_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'type'
                         dataAlign = 'right'
-                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterPhone_string} }>
+                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterType_string} }>
                         {constantStrings.type_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'salesman.username'
                         dataAlign = 'right'
-                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterCity_string} }>
+                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterSalesmanName_string} }>
                         {constantStrings.salesman_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn

@@ -62,6 +62,8 @@ class ConstantStrings extends React.Component {
     static birthDate_string = 'תאריך לידה';
     static street_string = 'מספר בית';
     static zip_string = 'מיקוד';
+    static startTime_string = 'שעת התחלה';
+    static endTime_string = 'שעת סיום';
 
     //filter strings
     static enterID_string = 'הכנס ת״ז..';
@@ -90,7 +92,9 @@ class ConstantStrings extends React.Component {
     static enterCity_string = 'הכנס עיר..';
     static selectArea_string = 'בחר איזור..';
     static selectChannel_string = 'בחר ערוץ..';
-
+    static enterSalesmanName_string ='הכנס שם דייל..';
+    static enterType_string = 'הכנס סוג...';
+    static enterStatus_string = 'הכנס מצב...';
     //shifts
     static status_string = 'מצב';
     static addShift_string = 'הוספת משמרת חדשה';

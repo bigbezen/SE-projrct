@@ -21,6 +21,11 @@ class ConstantStrings extends React.Component {
     static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
     static save_string = 'שמירה';
     static storeStatus_string = 'מצב המלאי בחנות:';
+    static retrievePassButton_string = 'שלח סיסמא חדשה';
+    static changePassButton_string = 'עדכן סיסמא';
+    static changePassTitle_string = 'עדכון סיסמא';
+    static retrievePassTitle_string = 'שחזור סיסמא';
+    static retrievePass_string = 'שחזור סיסמא';
 
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';
@@ -202,6 +207,11 @@ class ConstantStrings extends React.Component {
     static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
     static close_string = "סגירה";
     static yes_string = 'כן';
+    static retrievePassFailMessage_string = 'שם המשתמש וכתובת האימייל אינם תואמים';
+    static changePassNotEqualFailedMessage_string = 'אי התאמה בין הסיסמאות החדשות שהוקלדו';
+    static retrievePassSuccessMessage_string = 'סיסמא חדשה נשלחה אליכם בזה הרגע לדואר האלקטרוני';
+    static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
+    static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
 }
 
 module.exports = ConstantStrings;

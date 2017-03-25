@@ -61,9 +61,10 @@ var userRequests = {
         })
     },
 
-    retrievePassword: function(){ //TODO: doesn't
+    retrievePassword: function(username, email){ //TODO: doesn't
         return axios.post(serverUrl + 'user/retrievePassword', {
-            sessionId:sessionId
+            username:username,
+            email:email
         }).then(function (info) {
             console.log('the user ' + name + ' retrievePassword.');
             return returnVal(true, info);

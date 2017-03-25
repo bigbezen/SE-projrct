@@ -74,12 +74,14 @@ describe('reports unit test', function () {
         salesman.username = 'matan';
         salesman.sessionId = '12123434';
         salesman.jobDetails.userType = 'salesman';
+        salesman.jobDetails.salary = 35;
         salesman = await dal.addUser(salesman);
 
         salesman2 = new userModel();
         salesman2.username = 'bigbezen';
         salesman2.sessionId = '1212343456';
         salesman2.jobDetails.userType = 'salesman';
+        salesman2.jobDetails.salary = 42;
         salesman2 = await dal.addUser(salesman2);
 
         store = new storeModel();

@@ -26,6 +26,7 @@ var userSchema = new Schema({
     },
     'jobDetails': {
         'userType': String,
+        'salary': Number,
         'area': String,
         'channel': String,
         'encouragements': [

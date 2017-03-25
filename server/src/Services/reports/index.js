@@ -313,8 +313,46 @@ let genarateMonthlyUserHoursReport = async function() {
     return {'report': res ,'code': 200 ,'err': null};
 };
 
+let genarateMonthAnalysisReport = async function() {
+    console.log('genarateMonthAnalysisReport');
+   /* let date = new Date();
+    let report = new monthlyUserHoursReportModel();
+    let shifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
+    let users = await dal.getAllUsers();
+
+    //add month and year
+    report.month = date.getMonth();
+    report.year = date.getFullYear();
+
+    //initilize all users
+    for(let user of users) {
+        if (user.jobDetails.userType == 'salesman') {
+            let salesmanData = {
+                'user': user,
+                'numOfHours': 0,
+                'monthlyEncoragement': []
+            };
+            let encouragements = await userService.getMonthlyEncouragements(user.username, report.year, report.month);
+            salesmanData.monthlyEncoragement = encouragements;
+            //count the total shift hours of user
+            for (let shift of shifts){
+                if(shift.salesmanId.equals(user._id)){
+                    let duration = (shift.endTime - shift.startTime)/36e5;
+                    salesmanData.numOfHours += duration;
+                }
+            }
+
+            report.salesmansData.push(salesmanData);
+        }
+    }
+
+    let res = await dal.addMonthlySalesmanReport(report);
+    return {'report': res ,'code': 200 ,'err': null};*/
+};
+
 
 module.exports.getSaleReportXl = getSaleReportXl;
 module.exports.getMonthlyUserHoursReport = getMonthlyUserHoursReport;
 module.exports.genarateMonthlyUserHoursReport = genarateMonthlyUserHoursReport;
 module.exports.getMonthlyHoursSalesmansReportXl = getMonthlyHoursSalesmansReportXl;
+module.exports.genarateMonthAnalysisReport = genarateMonthAnalysisReport;

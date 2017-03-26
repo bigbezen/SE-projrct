@@ -13,9 +13,44 @@ var managementServices = require('../communication/managementServices');
 
 
 
+
 var IncentiveDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
+    },
+    getInitialState: function () {
+        return {
+            productsForIncentive: [1],
+            products: []
+        }
+    },
+    componentWillMount() {
+        this.updateProducts();
+    },
+    updateProducts: function() {
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
+
+        managementServices.getAllProducts().then(function (result) {
+            if (result) {
+                if (result.success) {
+                    result.info = result.info.map((x) => x.name);
+                    self.setState({
+                        products: result.info
+                    });
+                } else {
+                    console.log("error in getAllProducts: " + result.info);
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
+                }
+            } else {
+                console.log("error in storesContainers: " + n);
+            }
+        })
     },
     getOptions: function(arrayOfObjects) {
         var optionsForDropDown = [];
@@ -28,17 +63,32 @@ var IncentiveDetails = React.createClass({
     },
 
     addProduct: function(){
+        alert('added product choice');
+        var newProducts = this.state.productsForIncentive;
+        newProducts.push(1);
+        this.setState({
+            products: newProducts
+        })
+    },
 
+    renderProductChoice: function(){
+        return (
+            <select className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange}
+                ref="productsBox" data="" >
+                {this.getOptions(this.state.products)}
+            </select>
+        )
     },
 
     handleSubmitIncentive: function (e) {
         e.preventDefault();
+        alert('not implemented');
         /*if (!this.checkDropDowns()) {
          alert('Invalid values. please make sure that you filled all of the fields');
          return;
          }*/
         //                        parseInt("the string you want to parse to int")
-        var newProduct = new productInfo();
+        /*var newProduct = new productInfo();
         newProduct.name = this.refs.nameBox.value;
         newProduct.retailPrice =  parseInt(this.refs.retailBox.value);
         newProduct.salePrice =  parseInt(this.refs.saleBox.value);
@@ -117,12 +167,12 @@ var IncentiveDetails = React.createClass({
                     });
                 }
             })
-        }
+        }*/
     },
     addNewIncentive: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
-                <form onSubmit={this.handleSubmitIncentive} className="form-horizontal text-right w3-text-black">
+                <form className="form-horizontal text-right w3-text-black">
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
                             <b>{constantsStrings.addIncentive_string}</b>
@@ -144,14 +194,11 @@ var IncentiveDetails = React.createClass({
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentiveProducts_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <select className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange}
-                                ref="productsBox" data="" >
-                            {this.getOptions(constantsStrings.subCategoryForDropdown)}
-                        </select>
+                        {this.state.productsForIncentive.map(this.renderProductChoice)}
                     </div>
 
                     <div className="form-group">
-                        <button className="w3-card-4 w3-button col-xs-1 col-xs-offset-2" onClick={this.addProduct}>+</button>
+                        <button className="w3-card-4 w3-circle w3-button col-xs-1 col-xs-offset-2" onClick={this.addProduct}>+</button>
                     </div>
 
 
@@ -180,7 +227,8 @@ var IncentiveDetails = React.createClass({
                     <div className="form-group">
                         <button
                             className="w3-button w3-card-4 btn w3-theme-d5 col-xs-4 col-xs-offset-2"
-                            type="submit">
+                            type="submit"
+                        onClick={this.handleSubmitIncentive}>
                             {constantsStrings.add_string}
                         </button>
                     </div>

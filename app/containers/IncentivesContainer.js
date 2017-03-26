@@ -18,7 +18,6 @@ var IncentivesContainer = React.createClass({
     },
 
     onClickAddButton: function(){
-        alert('moving to add incentive');
         this.context.router.push({
             pathname: paths.manager_incentiveDetails_path
         })

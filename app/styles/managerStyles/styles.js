@@ -25,6 +25,22 @@ var styles = {
     },
     topBuffer: {
         marginTop: '200px'
+    },
+    incentiveCard: {
+        paddingLeft: '0px',
+        paddingRight: '0px',
+        marginLeft: '5px',
+        marginRight: '5px',
+        marginTop: '5px',
+        marginBottom: '5px',
+        minHeight: '180px'
+    },
+    incentiveRow: {
+        marginTop: '10px',
+        marginRight: '10px'
+    },
+    incentiveCardDivider: {
+        minHeight: '96px'
     }
 
 };

@@ -242,6 +242,32 @@ var managementRequests = {
         })
     },
 
+    addIncentive: function(incentive) {
+        console.log('add incentive');
+        return axios.post(serverUrl + 'management/addEncouragement', {
+            sessionId:sessionId,
+            encouragementDetails: incentive
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            console.log(err);
+            return returnVal(false, err);
+        })
+    },
+
+    getAllIncentives: function() {
+        return axios.get(serverUrl + 'management/getAllEncouragements', {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            console.log(err);
+            return returnVal(false, err);
+        })
+    },
+
     addEncouragement: function() {
         errorMessage('addEncouragement', 'Not implemented yet');
     },

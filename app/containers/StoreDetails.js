@@ -246,7 +246,7 @@ var StoreDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-btn w3-card-4 w3-theme-d5 col-xs-4 col-xs-offset-2"
                             type="submit">
                             {this.getButtonString()}
                         </button>

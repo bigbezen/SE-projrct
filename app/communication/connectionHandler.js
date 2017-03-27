@@ -268,17 +268,7 @@ var managementRequests = {
         })
     },
 
-    addEncouragement: function() {
-        errorMessage('addEncouragement', 'Not implemented yet');
-    },
 
-    editEncouragement: function() {
-        errorMessage('editEncouragement', 'Not implemented yet');
-    },
-
-    deleteEncouragement: function() {
-        errorMessage('deleteEncouragement', 'Not implemented yet');
-    },
 
     addShift: function(shift) {
         console.log('add shift');

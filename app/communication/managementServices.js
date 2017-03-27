@@ -1,7 +1,7 @@
 /**
  * Created by lihiverchik on 14/12/2016.
  */
-var connection = require('../communication/connectionHandler')
+var connection = require('../communication/connectionHandler');
 //var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
@@ -85,20 +85,6 @@ var helpers = {
         console.log('managementervices- deleteIncentive');
     },
 
-    addEncouragement: function(){
-        console.log('managementervices- addEncouragement');
-        return connection.managementRequests.addEncouragement();
-    },
-
-    editEncouragement: function(){
-        console.log('managementervices- editEncouragement');
-        return connection.managementRequests.editEncouragement();
-    },
-
-    deleteEncouragement: function(){
-        console.log('managementervices- deleteEncouragement');
-        return connection.managementRequests.deleteEncouragement();
-    },
 
     addShift: function(shift){
         console.log('managementervices- addShift');

@@ -18,14 +18,14 @@ var IncentiveDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    componentWillMount() {
+      this.updateProducts();
+    },
     getInitialState: function () {
         return {
             productsForIncentive: [1],
             products: []
         }
-    },
-    componentWillMount() {
-        this.updateProducts();
     },
     updateProducts: function() {
         var self = this;
@@ -52,127 +52,82 @@ var IncentiveDetails = React.createClass({
             }
         })
     },
-    getOptions: function(arrayOfObjects) {
+    getOptions: function(arrayOfObjects, index) {
         var optionsForDropDown = [];
         optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
         for (var i = 0; i < arrayOfObjects.length; i++) {
             var currOption = arrayOfObjects[i];
-            optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
+            optionsForDropDown.push(<option key={i + (index*10)} value={currOption}>{currOption}</option>);
         }
         return optionsForDropDown;
     },
 
     addProduct: function(){
-        alert('added product choice');
         var newProducts = this.state.productsForIncentive;
         newProducts.push(1);
         this.setState({
-            products: newProducts
+            productsForIncentive: newProducts
         })
     },
 
-    renderProductChoice: function(){
+    deleteProduct: function(){
+        var newProducts = this.state.productsForIncentive;
+        newProducts.splice(-1);
+        this.setState({
+            productsForIncentive: newProducts
+        });
+    },
+
+    renderProductChoice: function(product, i){
         return (
-            <select className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange}
-                ref="productsBox" data="" >
-                {this.getOptions(this.state.products)}
-            </select>
+            <div className="row" style={styles.productSelect}>
+                <select key={i} className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange}
+                    ref={"product" + i} data="" >
+                    {this.getOptions(this.state.products, i)}
+                </select>
+            </div>
         )
     },
 
-    handleSubmitIncentive: function (e) {
-        e.preventDefault();
-        alert('not implemented');
-        /*if (!this.checkDropDowns()) {
-         alert('Invalid values. please make sure that you filled all of the fields');
-         return;
-         }*/
-        //                        parseInt("the string you want to parse to int")
-        /*var newProduct = new productInfo();
-        newProduct.name = this.refs.nameBox.value;
-        newProduct.retailPrice =  parseInt(this.refs.retailBox.value);
-        newProduct.salePrice =  parseInt(this.refs.saleBox.value);
-        newProduct.category = this.state.category;
-        newProduct.subCategory = this.state.subCategory;
-        newProduct.minRequiredAmount =  parseInt(this.refs.minAmountBox.value);
-        newProduct.notifyManager = this.refs.notifyBox.checked;
-        var context = this.context;
-        var notificationSystem = this.refs.notificationSystem;
-        if (this.state.editing) {
-            newProduct._id = this.props.location.query._id;
-            managementServices.editProduct(newProduct).then(function (n) {
-                if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_products_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
-                }
-                else{
-                    notificationSystem.addNotification({
-                        message: constantsStrings.editFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+    handleSubmitIncentive: function () {
+        var incentiveName = this.refs.nameBox.value;
+
+        var numOfProducts = this.state.productsForIncentive.length;
+        var selectedProducts = [];
+        for(var i=0; i<numOfProducts; i++) {
+            var chosenProduct = this.refs["product" + i].value;
+            if(chosenProduct != constantsStrings.dropDownChooseString)
+                selectedProducts.push(chosenProduct);
+        }
+
+        var numOfProducts = this.refs.numOfProductsBox.value;
+        var rate = this.refs.rateBox.value;
+
+        var newIncentive = {
+            name: incentiveName,
+            products: selectedProducts,
+            numOfProducts: numOfProducts,
+            rate: rate,
+            active: true
+        };
+
+        managementServices.addIncentive(newIncentive)
+            .then(function(result) {
+                alert(result)
             })
-        }else {
-            managementServices.addProduct(newProduct).then(function (n) {
-                if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_products_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
-                }
-                else{
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
-            })
-        }*/
+            .catch(function (err) {
+                alert(err);
+            });
+
+
+        /**/
     },
     addNewIncentive: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
-                <form className="form-horizontal text-right w3-text-black">
+                <form className="form-horizontal text-right w3-text-black" onSubmit={function(e){
+                    e.preventDefault();
+                }}>
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
                             <b>{constantsStrings.addIncentive_string}</b>
@@ -198,7 +153,10 @@ var IncentiveDetails = React.createClass({
                     </div>
 
                     <div className="form-group">
-                        <button className="w3-card-4 w3-circle w3-button col-xs-1 col-xs-offset-2" onClick={this.addProduct}>+</button>
+                        <div className="row">
+                            <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" onClick={this.addProduct}>+</button>
+                            <button className="w3-card-4 w3-circle w3-button" onClick={this.deleteProduct}>-</button>
+                        </div>
                     </div>
 
 

@@ -41,6 +41,9 @@ var styles = {
     },
     incentiveCardDivider: {
         minHeight: '96px'
+    },
+    productSelect: {
+        marginBottom: '10px'
     }
 
 };

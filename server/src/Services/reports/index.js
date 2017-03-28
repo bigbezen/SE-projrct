@@ -3,7 +3,7 @@ let permissions     = require('../permissions/index');
 let dal             = require('../../DAL/dal');
 let mailer          = require('../../Utils/Mailer/index');
 let fs              = require('fs');
-var moment          = require('moment');
+let moment          = require('moment');
 let Excel           = require('exceljs');
 let userService     = require('../../Services/user');
 let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
@@ -70,30 +70,64 @@ let getSaleReportXl =  async function(sessionId, shiftId){
             row.commit();
 
             //write the sales
+            let salesSpiritRow = 58;
+            let salesWeinRow = 58;
+            let openedSpritRow = 45;
+            let openedWeinRow = 45;
+            let shortageRow = 18;
             for (let i = 0; i < shift.salesReport.length; i++) {
                 let product = await dal.getProductById(shift.salesReport[i].productId);
                 if (shift.salesReport[i].sold > 0) {
-                    row = worksheet.getRow(58 + i);
-                    row.getCell(1).value = product.subCategory;
-                    row.getCell(2).value = product.name;
-                    row.getCell(4).value = shift.salesReport[i].sold;
+                    if(product.category == 'ספיריט') {
+                        row = worksheet.getRow(salesSpiritRow);
+                        row.getCell(1).value = product.subCategory;
+                        row.getCell(2).value = product.name;
+                        row.getCell(4).value = shift.salesReport[i].sold;
+                        salesSpiritRow = salesSpiritRow + 1;
+                    }
+                    else{
+                        row = worksheet.getRow(salesWeinRow);
+                        row.getCell(7).value = product.subCategory;
+                        row.getCell(8).value = product.name;
+                        row.getCell(9).value = shift.salesReport[i].sold;
+                        salesWeinRow = salesWeinRow + 1;
+                    }
                     row.commit();
                 }
 
                 if(shift.salesReport[i].opened > 0) {
                     //opened battle
-                    row = worksheet.getRow(45 + i);
+                    if(product.category == 'ספיריט') {
+                        row = worksheet.getRow(openedSpritRow);
+                        row.getCell(1).value = product.subCategory;
+                        row.getCell(2).value = product.name;
+                        row.getCell(4).value = shift.salesReport[i].opened;
+                        openedSpritRow = openedSpritRow + 1;
+                    }
+                    else {
+                        row = worksheet.getRow(openedWeinRow);
+                        row.getCell(6).value = product.subCategory;
+                        row.getCell(7).value = product.name;
+                        row.getCell(8).value = shift.salesReport[i].opened;
+                        openedWeinRow = openedWeinRow + 1;
+                    }
+                    row.commit();
+                }
+
+                if(shift.salesReport[i].stockEndShift == 0) {
+                    //shortage battle
+                    row = worksheet.getRow(shortageRow);
                     row.getCell(1).value = product.subCategory;
                     row.getCell(2).value = product.name;
-                    row.getCell(4).value = shift.salesReport[i].opened;
+                    shortageRow = shortageRow + 1;
                     row.commit();
                 }
             }
-            return workbook.xlsx.writeFile(__dirname + '\\sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
         });
 
     let content = ' מצורף דוח טעימות של:' + salesman.username;
-    mailer.sendMailWithFile([user.contact.email, salesman.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username, content, __dirname+'\\sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
     return {'code': 200};
 };
 

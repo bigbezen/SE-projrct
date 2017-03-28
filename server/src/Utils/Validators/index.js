@@ -104,6 +104,10 @@ module.exports = {
             [stringT, stringT]);
     },
 
+    rideReport: function(params){
+        return checkParams(params, ['sessionId', 'shiftId', 'numOfKM', 'parkingCost'], [stringT, objectT, numberT, numberT]);
+    },
+
     addOrEditEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encouragementDetails'],
                 [stringT, objectT]) &&

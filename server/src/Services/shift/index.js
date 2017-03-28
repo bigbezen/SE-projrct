@@ -58,6 +58,8 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.type = shift.type;
         newShift.salesReport = newSalesReportSchema;
         newShift.sales = [];
+        newShift.numOfKm = 0;
+        newShift.parkingCost = 0;
         newShift.constraints = [];
         newShift.shiftComments = [];
         resultAddShift.push(await dal.addShift(newShift));
@@ -184,6 +186,32 @@ let getSalesmanCurrentShift = async function(sessionId){
         product.name = productsDict[product.productId.toString()];
     }
     return {'code': 200, 'shift': currShift};
+};
+
+let getSalesmanShifts = async function(sessionId){
+    logger.info('Services.shift.index.getSalesmanShifts', {'session-id': sessionId});
+
+    let salesman = await dal.getUserBySessionId(sessionId);
+    if(salesman == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let currShifts = await dal.getSalesmanShifts(salesman._id);
+    if(currShifts == null)
+        return {'code': 409, 'err': 'user does not have a shift today'};
+
+    let productsDict = {};
+    let products = await dal.getAllProducts();
+    for(let product of products)
+        productsDict[product._id] = product.name;
+
+    for(let currentShift of currShifts){
+        currentShift = currentShift.toObject();
+        currentShift.store = (await dal.getStoresByIds([currentShift.storeId]))[0];
+        for(let product of currentShift.salesReport) {
+            product.name = productsDict[product.productId.toString()];
+        }
+    }
+    return {'code': 200, 'shifts': currShifts};
 };
 
 let getActiveShift = async function(sessionId, shiftId){

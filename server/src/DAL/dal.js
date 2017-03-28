@@ -188,6 +188,10 @@ module.exports = {
         return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]});
     },
 
+    getSalesmanShifts: async function(salesmanId){
+      return shiftModel.find({'salesmanId': salesmanId});
+    },
+
     markMessagesAsRead: async function(userId){
         return userModel.update({'_id': userId}, {$set: {inbox: []}});
     },

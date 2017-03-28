@@ -230,8 +230,16 @@ function _setapApiEndpoints() {
         res.status(200).send('get encouragements list');
     });
 
-    app.get('/salesman/getAllShifts', function (req, res) {
-        res.status(200).send('get shifts list');
+    app.get('/salesman/getAllShifts', async function (req, res) {
+        if(!('sessionid' in req.headers)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getSalesmanShifts(req.headers.sessionid);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.get('/salesman/getCurrentShift', async function (req, res) {

@@ -243,7 +243,20 @@ describe('reports unit test', function () {
         });
     });
 
-    describe('test genarate monthly salesman hours report', function () {
+    describe('test get XL list salesman', function(){
+        it('test get XL list salesman not by manager', async function () {
+            let result = await repoetService.getSalesmanListXL(salesman.sessionId);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('test get XL list salesman by manager', async function () {
+            let result = await repoetService.getSalesmanListXL(manager.sessionId);
+            expect(result).to.have.property('code', 200);
+        });
+    });
+
+    /*describe('test genarate monthly salesman hours report', function () {
         it('test get XL monthly salesman hours report valid', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
@@ -489,9 +502,9 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
             assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
-    });
+    });*/
 
-    describe('test get monthly salesman hours report', function () {
+    /*describe('test get monthly salesman hours report', function () {
         it('test get XL monthly salesman hours report valid', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
@@ -856,5 +869,5 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 404);
             expect(result).to.have.property('err', 'report still not genarated');
         });
-    });
+    });*/
 });

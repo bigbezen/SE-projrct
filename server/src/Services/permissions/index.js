@@ -47,6 +47,8 @@ let funcNameToPermission = {
     'editShift': ['manager'],
     'getMonthlyUserHoursReportXl': ['manager'],
     'getMonthlyUserHoursReport': ['manager'],
+    'getSalaryForHumanResourceReport': ['manager'],
+    'getSalesmanListXL': ['manager'],
     'getSaleReportXl': ['manager']
 };
 

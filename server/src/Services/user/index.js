@@ -242,8 +242,6 @@ let getAllUsers = async function(sessionId){
         return {'code': 500, 'err': 'something went wrong'};
 };
 
-let rideReport = async function(sessionId, shiftId, numOfKM, parkingCost){}
-
 let _generateSessionId = async function() {
     let isDuplicateSessionId = true;
     let sessionId, isIdInUse;

@@ -46,6 +46,10 @@ module.exports = {
         return userModel.findOne({'_id': userId});
     },
 
+    getAllSalesman: async function(){
+        return userModel.find({'jobDetails.userType': 'salesman'});
+    },
+
     getAllUsers: async function(){
         return userModel.find({});
     },
@@ -178,6 +182,12 @@ module.exports = {
         var startMonth = new Date(year, month, 1);
         var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
         return shiftModel.find({$and: [{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
+    },
+
+    getSalesmanMonthShifts: async function(salesmanId, year, month){
+        var startMonth = new Date(year, month, 1);
+        var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
+        return shiftModel.find({$and: [{'salesmanId': salesmanId},{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
     },
 
     addMonthlySalesmanReport: async function(report){

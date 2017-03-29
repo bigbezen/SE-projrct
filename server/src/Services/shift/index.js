@@ -62,6 +62,7 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.parkingCost = 0;
         newShift.constraints = [];
         newShift.shiftComments = [];
+        newShift.encouragements = [];
         resultAddShift.push(await dal.addShift(newShift));
     }
 
@@ -414,21 +415,15 @@ let endShift = async function(sessionId, shift){
 
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'FINISHED';
-    let result = await dal.updateShift(shiftDb);
-    if(result.ok != 1)
-        return {'code': 500, 'err': 'unexpected error'};
 
     let encouragements = await encouragementServices.calculateEncouragements(shift.salesReport);
-    if(encouragements == null)
-        return {'code': 500, 'err': 'unexpected error'};
+    //if(encouragements == null)
+       // return {'code': 500, 'err': 'unexpected error'};
 
-    for(let enc of encouragements)
-        salesman.jobDetails.encouragements.push({
-            'enc': enc._id,
-            'date': new Date()
-        });
+    //for(let enc of encouragements)
+      //  shiftDb.encouragements.push(enc._id);
 
-    result = await dal.updateUser(salesman);
+    let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)
         return {'code': 500, 'err': 'unexpected error'};
     else

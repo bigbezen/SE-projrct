@@ -6,7 +6,8 @@ let fs              = require('fs');
 let moment          = require('moment');
 let Excel           = require('exceljs');
 let userService     = require('../../Services/user');
-let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
+let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport')
+let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
 
 let getSaleReportXl =  async function(sessionId, shiftId){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getSaleReportXl');
@@ -30,7 +31,6 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     salesman = salesman[0];
 
     let workbook = new Excel.Workbook();
-
     workbook.xlsx.readFile('saleReport.xlsx')
         .then(async function() {
             let worksheet = workbook.getWorksheet(1);
@@ -129,6 +129,172 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     let content = ' מצורף דוח טעימות של:' + salesman.username;
     mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
     return {'code': 200};
+};
+
+let getSalaryForHumanResourceReport = async function(sessionId, year, month){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getSalaryForHumanResourceReport');
+    if(user == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let workbook = new Excel.Workbook();
+    workbook.xlsx.readFile('salaryForHumanResourceReport.xlsx')
+        .then(async function() {
+            let salesman = await dal.getAllSalesman();
+            let sheetNum = 1;
+            let user;
+            for(user of salesman){
+                let worksheet = workbook.getWorksheet(sheetNum);
+                worksheet.name = user.personal.firstName + ' ' + user.personal.lastName;
+                worksheet.properties = {tabColor :{argb : 'FFC0000'}};
+
+                //write the year and month
+                let row = worksheet.getRow(1);
+                row.getCell(3).value = month + ' - ' + year; //C1
+
+                //write the salesman name
+                row = worksheet.getRow(3);
+                row.getCell(3).value = user.contact.address.street + ' ' + user.contact.address.number + ' ' + user.contact.address.city; //C3
+
+                //write the salesman address
+                row = worksheet.getRow(2);
+                row.getCell(3).value = user.personal.firstName + ' ' + user.personal.lastName; //C2
+
+                //write the salesman salary per hour
+                row = worksheet.getRow(4);
+                row.getCell(3).value = user.jobDetails.salary;//C4
+
+
+                //write the encouragements names
+                let allEnc = await dal.getAllEncouragements();
+                for(let i = 0; i < allEnc.length; i++){
+                    row = worksheet.getRow(7);
+                    row.getCell(18 + i).value = allEnc[i].name;//R+i7
+                }
+
+                //add all the shifts and the encouragements
+                let salesmanShifts = await dal.getSalesmanMonthShifts(user._id, year, month);
+                for(let j  = 0; j < salesmanShifts.length + 0; j++){
+                    let currentShift = salesmanShifts[j];
+                    row = worksheet.getRow(j + 8);
+                    row.getCell(1).value = new Date(currentShift.startTime).getDate() + '.' + (new Date(currentShift.startTime).getMonth() + 1) + '.' + new Date(currentShift.startTime).getFullYear();
+                    row.getCell(2).value = days[new Date(currentShift.startTime).getDay()];
+                    let shiftStore = (await dal.getStoresByIds([currentShift.storeId]))[0];
+                    row.getCell(3).value = shiftStore.name;
+                    row.getCell(4).value = shiftStore.city;
+                    row.getCell(5).value = currentShift.type;
+                    row.getCell(6).value = new Date(currentShift.startTime);
+                    row.getCell(7).value = new Date(currentShift.endTime);
+                    row.getCell(15).value = 100;
+
+                    row.commit();
+                }
+
+                sheetNum = sheetNum + 1;
+            }
+            return workbook.xlsx.writeFile('monthReport/salaryForHumanResourceReport.xlsx');
+        });
+
+//    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
+ //   mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    return {'code': 200};
+};
+
+let getSalesmanListXL = async function(sessionId){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanListXL');
+    if(user == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let workbook = new Excel.Workbook();
+    workbook.xlsx.readFile('salesmanList.xlsx')
+        .then(async function() {
+            let worksheet = workbook.getWorksheet(1);
+            let allSalesman = await dal.getAllUsers();
+            let rowNum = 3;
+            for(let salesman of allSalesman){
+                let row = worksheet.getRow(rowNum);
+                if(salesman.jobDetails.userType = 'salesman'){
+                    row.getCell(1).value = salesman.personal.lastName;
+                    row.getCell(1).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(2).value = salesman.personal.firstName;
+                    row.getCell(2).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(3).value = salesman.personal.id;
+                    row.getCell(3).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(4).value = salesman.personal.birthday;
+                    row.getCell(4).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(5).value = salesman.startDate;
+                    row.getCell(5).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(6).value = salesman.contact.address.street;
+                    row.getCell(6).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(7).value = salesman.contact.address.number;
+                    row.getCell(7).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(8).value = salesman.contact.address.city;
+                    row.getCell(8).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(9).value = salesman.contact.address.zip;
+                    row.getCell(9).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(10).value = salesman.contact.phone;
+                    row.getCell(10).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.commit();
+                    rowNum = rowNum + 1;
+                }
+            }
+
+            return workbook.xlsx.writeFile( 'salesReports/salesmanListReport.xlsx');
+        });
+
+    let content = 'מצורף רשימת דיילים נכון ל ' + new Date();
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - רשימת דיילים ', content, 'salesReports/salesmanListReport.xlsx');
+    return {'code': 200};
+
 };
 
 let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
@@ -286,6 +452,9 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
     let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
     mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
     return {'code': 200};
+};
+
+let getMonthlySalesmanReport = async function(sessionId, year, month){
 
 };
 
@@ -390,3 +559,6 @@ module.exports.getMonthlyUserHoursReport = getMonthlyUserHoursReport;
 module.exports.genarateMonthlyUserHoursReport = genarateMonthlyUserHoursReport;
 module.exports.getMonthlyHoursSalesmansReportXl = getMonthlyHoursSalesmansReportXl;
 module.exports.genarateMonthAnalysisReport = genarateMonthAnalysisReport;
+module.exports.getMonthlySalesmanReport = getMonthlySalesmanReport;
+module.exports.getSalaryForHumanResourceReport = getSalaryForHumanResourceReport;
+module.exports.getSalesmanListXL = getSalesmanListXL;

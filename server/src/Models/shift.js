@@ -33,7 +33,8 @@ var shiftSchema = new Schema({
             'quantity': Number
         }
     ],
-    'shiftComments': ['String']
+    'shiftComments': ['String'],
+    'encouragements': [{type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'}]
 });
 
 var shift = mongoose.model('shift', shiftSchema);

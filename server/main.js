@@ -690,6 +690,17 @@ function _setapApiEndpoints() {
         res.status(result.code).send(result.err);
     });
 
+    app.get('/manager/getSalaryForHumanResourceReport', async function (req, res) {
+        var result = await reportsService.getSalaryForHumanResourceReport('123456',2017,2 );
+        res.status(result.code).send(result.err);
+    });
+
+    app.get('/manager/getSalesmanListXL', async function (req, res) {
+        var result = await reportsService.getSalesmanListXL(req.headers.sessionid);
+        res.status(result.code).send(result.err);
+        return;
+    });
+
     app.get('/manager/getMonthlyHoursSalesmansReportXl', async function (req, res) {
         var result = await reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, reg.headers.year, req.headers.month);
         res.status(result.code).send(result.err);

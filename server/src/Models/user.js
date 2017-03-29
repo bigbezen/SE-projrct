@@ -28,13 +28,7 @@ var userSchema = new Schema({
         'userType': String,
         'salary': Number,
         'area': String,
-        'channel': String,
-        'encouragements': [
-            {
-                'enc': {type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'},
-                'date': Date
-            }
-        ]
+        'channel': String
     },
     'inbox': [{type: mongoose.Schema.Types.ObjectId, ref: 'messages'}]
     // {

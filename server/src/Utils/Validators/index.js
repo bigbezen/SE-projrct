@@ -30,6 +30,11 @@ module.exports = {
             [stringT, stringT, stringT]);
     },
 
+    retrievePassword: function (params){
+        return checkParams(params, ['username', 'email'],
+            [stringT, stringT]);
+    },
+
     addUser: function(params){
         return checkParams(params, ['sessionId', 'userDetails'],
                     [stringT, objectT]) &&

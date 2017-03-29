@@ -118,11 +118,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/user/retrievePassword', async function (req, res) {
-        if (!validator.sessionId(req.body)) {
+        if (!validator.retrievePassword(req.body)) {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await userService.retrievePassword(req.body.sessionId);
+        let result = await userService.retrievePassword(req.body.username, req.body.email);
         if(result.code == 200)
             res.status(200).send('retrieved password successfully');
         else

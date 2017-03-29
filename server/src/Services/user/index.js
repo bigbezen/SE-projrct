@@ -193,11 +193,14 @@ let changePassword = async function(sessionId, oldPass, newPass) {
         return {'code': 500, 'err': 'something went wrong'};
 };
 
-let retrievePassword = async function(sessionId) {
-    logger.info('Services.user.index.retrievePassword', {'sessionId': sessionId});
-    let user = await dal.getUserBySessionId(sessionId);
+let retrievePassword = async function(username, email) {
+    logger.info('Services.user.index.retrievePassword', {'username': username});
+    let user = await dal.getUserByUsername(username);
     if(user == null)
         return {'code': 401, 'err': 'user is not logged in'};
+
+    if(user.contact.email != email)
+        return {'code': 401, 'err': 'user not exist'};
 
     if (mailer.sendMail([user.contact.email], mailer.subjects.retrievePassword,
             'Your password is: ' + cypher.decrypt(user.password)))

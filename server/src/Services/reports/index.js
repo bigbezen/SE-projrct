@@ -454,10 +454,6 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
     return {'code': 200};
 };
 
-let getMonthlySalesmanReport = async function(sessionId, year, month){
-
-};
-
 let getMonthlyUserHoursReport = async function(sessionId, year, month){
     let aut = await permissions.validatePermissionForSessionId(sessionId, 'getMonthlyUserHoursReport');
     if(aut == null)
@@ -559,6 +555,5 @@ module.exports.getMonthlyUserHoursReport = getMonthlyUserHoursReport;
 module.exports.genarateMonthlyUserHoursReport = genarateMonthlyUserHoursReport;
 module.exports.getMonthlyHoursSalesmansReportXl = getMonthlyHoursSalesmansReportXl;
 module.exports.genarateMonthAnalysisReport = genarateMonthAnalysisReport;
-module.exports.getMonthlySalesmanReport = getMonthlySalesmanReport;
 module.exports.getSalaryForHumanResourceReport = getSalaryForHumanResourceReport;
 module.exports.getSalesmanListXL = getSalesmanListXL;

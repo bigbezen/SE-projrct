@@ -42,7 +42,7 @@ let getUserDetails = function(){
 
 describe('user unit test', function () {
 
-
+    let manager;
     beforeEach(async function () {
         let user = new userModel();
         user.username = 'shahaf';
@@ -81,13 +81,14 @@ describe('user unit test', function () {
         managerUser.sessionId = "sessionId";
         managerUser.jobDetails.userType = "manager";
         managerUser.personal.id = "12345";
-        managerUser.contact = "";
+        managerUser.contact = {'email':'matanbezen@walla.com'};
         managerUser.startDate = "";
 
         managerUser.endDate = "";
         let pass = user.password;
         console.log(pass);
         res = await dal.addUser(managerUser);
+        manager = managerUser;
 
     });
 
@@ -368,9 +369,19 @@ describe('user unit test', function () {
 
     describe('TestRetrievePassword', function(){
         it('RetrievePasswordValid', async function(){
-            let result = await userServices.retrievePassword('sessionId');
+            let result = await userServices.retrievePassword(manager.username, manager.contact.email);
 
             expect(result).to.have.property('code', 200);
+
+            //check that it did not change the old password
+            let user = await dal.getUserBySessionId('sessionId');
+            expect(user.password).to.equal(cypher.encrypt('123456'));
+        });
+
+        it('RetrievePasswordValidInvalidEmail', async function(){
+            let result = await userServices.retrievePassword(manager.username, 'invalid');
+
+            expect(result).to.have.property('code', 401);
 
             //check that it did not change the old password
             let user = await dal.getUserBySessionId('sessionId');

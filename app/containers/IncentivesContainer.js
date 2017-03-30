@@ -9,6 +9,7 @@ var styles = require('../styles/managerStyles/styles');
 var encs = require('../utils/encouragmentsMock');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
+var constantsStrings = require('../utils/ConstantStrings');
 
 
 
@@ -24,7 +25,7 @@ var IncentivesContainer = React.createClass({
     },
     getInitialState() {
         return{
-            incentives: null
+            incentives: []
         }
     },
     componentWillMount() {
@@ -38,6 +39,9 @@ var IncentivesContainer = React.createClass({
             if (n) {
                 var result = n;
                 if (result.success) {
+                    result.info.sort(function(a, b){
+                        return a.products.length - b.products.length;
+                    });
                     self.setState({
                         incentives: result.info
                     });
@@ -55,19 +59,11 @@ var IncentivesContainer = React.createClass({
             }
         })
     },
-    renderProductRow: function(productList, numOfProducts) {
-        if (productList.length == 1){
-            return (
-                <p>{productList[0]} - {numOfProducts}</p>
-            )
-        }
-        else{
-            return productList.map(function(productName, i){
-                return (
-                    <p key={i}>{productName} - 1</p>
-                )
-            })
-        }
+    renderProductRow: function(product, i) {
+        return (
+            <p>{product.name}</p>
+        )
+
     },
     renderCard: function(encouragement, i){
         return (
@@ -77,8 +73,12 @@ var IncentivesContainer = React.createClass({
                 </header>
 
                 <div className="w3-container" style={styles.incentiveCardDivider}>
-                    {this.renderProductRow(encouragement.products, encouragement.numOfProducts)}
+                    <p><u>{constantsStrings.incentiveProducts_string}</u></p>
+                    {encouragement.products.map(this.renderProductRow)}
+                    <p><u>{constantsStrings.incentiveNumOfProducts_string}</u> - {encouragement.numOfProducts}</p>
+                    <p><u>{constantsStrings.incentiveRate_string}</u> - {encouragement.rate}</p>
                 </div>
+
                 <button className="w3-button w3-block w3-theme-l1">
                     + Edit
                 </button>
@@ -91,7 +91,7 @@ var IncentivesContainer = React.createClass({
             <div className="col-xs-12">
                 <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}>+</button>
                 <div className="row" style={styles.incentiveRow}>
-                    {encs.encouragementList.map(this.renderCard)}
+                    {this.state.incentives.map(this.renderCard)}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

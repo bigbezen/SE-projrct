@@ -43,9 +43,10 @@ class ConstantStrings extends React.Component {
     //incentives
     static addIncentive_string = 'הוספת תמריץ חדש';
     static incentiveName_string = 'שם התמריץ';
-    static incentiveNumOfProducts_string = 'כמות המוצרים בתמריץ';
+    static incentiveNumOfProducts_string = 'כמות הבקבוקים למכירה בתמריץ';
     static incentiveRate_string ='גודל התמריץ';
-    static incentiveProducts_string = 'בחר מוצרים';
+    static incentivePickProducts_string = 'בחר מוצרים';
+    static incentiveProducts_string = 'מוצרים בתמריץ';
 
     //filter strings
     static enterProductName_string = 'הכנס שם מוצר..';

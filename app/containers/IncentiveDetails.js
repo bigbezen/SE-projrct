@@ -34,7 +34,6 @@ var IncentiveDetails = React.createClass({
         managementServices.getAllProducts().then(function (result) {
             if (result) {
                 if (result.success) {
-                    result.info = result.info.map((x) => x.name);
                     self.setState({
                         products: result.info
                     });
@@ -56,7 +55,7 @@ var IncentiveDetails = React.createClass({
         var optionsForDropDown = [];
         optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
         for (var i = 0; i < arrayOfObjects.length; i++) {
-            var currOption = arrayOfObjects[i];
+            var currOption = arrayOfObjects[i].name;
             optionsForDropDown.push(<option key={i + (index*10)} value={currOption}>{currOption}</option>);
         }
         return optionsForDropDown;
@@ -91,29 +90,55 @@ var IncentiveDetails = React.createClass({
 
     handleSubmitIncentive: function () {
         var incentiveName = this.refs.nameBox.value;
-
+        var notificationSystem = this.refs.notificationSystem;
         var numOfProducts = this.state.productsForIncentive.length;
+        var context = this.context;
         var selectedProducts = [];
+        var productsAsObjects = this.state.products;
+        var productsAsDict = {};
+
+        for(var productIndex in productsAsObjects)
+            productsAsDict[productsAsObjects[productIndex].name] = productsAsObjects[productIndex]._id;
         for(var i=0; i<numOfProducts; i++) {
             var chosenProduct = this.refs["product" + i].value;
             if(chosenProduct != constantsStrings.dropDownChooseString)
-                selectedProducts.push(chosenProduct);
+                selectedProducts.push(productsAsDict[chosenProduct]);
         }
 
-        var numOfProducts = this.refs.numOfProductsBox.value;
-        var rate = this.refs.rateBox.value;
+        var numOfChosenProducts = parseInt(this.refs.numOfProductsBox.value);
+        var rate = parseInt(this.refs.rateBox.value);
 
         var newIncentive = {
             name: incentiveName,
             products: selectedProducts,
-            numOfProducts: numOfProducts,
+            numOfProducts: numOfChosenProducts,
             rate: rate,
             active: true
         };
 
         managementServices.addIncentive(newIncentive)
             .then(function(result) {
-                alert(result)
+                if(result.success){
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_incentives_path
+                            })
+                        }
+                    });
+                }
+                else{
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addFailMessage_string,
+                        level: 'error',
+                        autoDismiss: 2,
+                        position: 'tc',
+                    });
+                }
             })
             .catch(function (err) {
                 alert(err);
@@ -146,7 +171,7 @@ var IncentiveDetails = React.createClass({
 
 
                     <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentiveProducts_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentivePickProducts_string}:</label>
                     </div>
                     <div className="form-group ">
                         {this.state.productsForIncentive.map(this.renderProductChoice)}

@@ -16,7 +16,7 @@ let addEncouragement = async function(sessionId, encouragementDetails) {
         encouragement.active = encouragementDetails.active;
         encouragement.numOfProducts = encouragementDetails.numOfProducts;
         encouragement.rate = encouragementDetails.rate;
-
+        encouragement.name = encouragementDetails.name;
         //check if all the products id belongs to products
         for (let i = 0; i < encouragementDetails.products.length; i++) {
            let exist = await dal.getProductById(encouragementDetails.products[i]);
@@ -24,7 +24,6 @@ let addEncouragement = async function(sessionId, encouragementDetails) {
                return {'encouragement': null, 'code': 404, 'err': 'product not found'};
            }
         }
-
         //create id object from the string id
         let products = await dal.getProductsById(encouragementDetails);
         encouragement.products = products;
@@ -74,6 +73,9 @@ let getAllEncouragements = async function (sessionId) {
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getAllEncouragements');
     if(user != null) {
         let encouragements =  await dal.getAllEncouragements();
+        for(let encIndex in encouragements){
+            encouragements[encIndex].products = await dal.getProductsById(encouragements[encIndex]);
+        }
         return {'encouragements': encouragements, 'code': 200, 'err': null};
     }
     else {

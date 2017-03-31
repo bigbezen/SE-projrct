@@ -256,7 +256,7 @@ describe('reports unit test', function () {
         });
     });
 
-    /*describe('test genarate monthly salesman hours report', function () {
+    describe('test genarate monthly salesman hours report', function () {
         it('test get XL monthly salesman hours report valid', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
@@ -276,16 +276,6 @@ describe('reports unit test', function () {
             shifts[1].salesmanId = user1._id.toString();
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
-
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -298,8 +288,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with not finish shift', async function () {
@@ -322,15 +310,6 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -343,8 +322,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 0);
             assert.equal(result.report.salesmansData[1].numOfHours, 0);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with FINISH and PUBLISH shift', async function () {
@@ -366,16 +343,6 @@ describe('reports unit test', function () {
             shifts[1].salesmanId = user1._id.toString();
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
-
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -388,8 +355,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 6);
             assert.equal(result.report.salesmansData[1].numOfHours, 6);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with shift at the first day of the month', async function () {
@@ -422,17 +387,7 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            let res = await dal.updateUser(user1);
-            res = await dal.updateUser(user2);
+            let res = await dal.updateUser(user2);
 
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
             shifts[1] = (await dal.addShift(shifts[1])).toObject();
@@ -443,8 +398,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with shift at the last day of the month', async function () {
@@ -477,16 +430,6 @@ describe('reports unit test', function () {
             shifts[1].salesmanId = user1._id.toString();
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
-
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -499,12 +442,10 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
-    });*/
+    });
 
-    /*describe('test get monthly salesman hours report', function () {
+    describe('test get monthly salesman hours report', function () {
         it('test get XL monthly salesman hours report valid', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
@@ -525,15 +466,6 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -548,8 +480,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with not finish shift', async function () {
@@ -595,8 +525,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 0);
             assert.equal(result.report.salesmansData[1].numOfHours, 0);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with FINISH and PUBLISH shift', async function () {
@@ -619,15 +547,6 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -642,8 +561,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 6);
             assert.equal(result.report.salesmansData[1].numOfHours, 6);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with shift at the first day of the month', async function () {
@@ -676,15 +593,6 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -699,8 +607,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report with shift at the last day of the month', async function () {
@@ -734,15 +640,6 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -757,8 +654,6 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
-            assert.equal(result.report.salesmansData[0].monthlyEncoragement.length, 4);
-            assert.equal(result.report.salesmansData[1].monthlyEncoragement.length, 4);
         });
 
         it('test get XL monthly salesman hours report not by manager', async function () {
@@ -791,16 +686,6 @@ describe('reports unit test', function () {
             shifts[1].salesmanId = user1._id.toString();
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
-
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -847,15 +732,6 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
@@ -869,5 +745,5 @@ describe('reports unit test', function () {
             expect(result).to.have.property('code', 404);
             expect(result).to.have.property('err', 'report still not genarated');
         });
-    });*/
+    });
 });

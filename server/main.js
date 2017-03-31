@@ -702,7 +702,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getMonthlyHoursSalesmansReportXl', async function (req, res) {
-        var result = await reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, reg.headers.year, req.headers.month);
+        var result = await reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, req.headers.year, req.headers.month);
         res.status(result.code).send(result.err);
     });
 

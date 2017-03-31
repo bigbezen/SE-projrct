@@ -11,6 +11,15 @@ var styles = {
     marginTopBottom: {
         marginTop: '70px',
         marginBottom: '50px'
+    },
+    FooterSpace:{
+        height: '100px'
+    },
+    footerButtons:{
+        width:'33%',
+        height:'100%',
+        borderLeft: '1px solid gray',
+        fontSize:'xx-large'
     }
 
 };

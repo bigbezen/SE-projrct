@@ -202,6 +202,14 @@ class ConstantStrings extends React.Component {
     static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
     static close_string = "סגירה";
     static yes_string = 'כן';
+
+     //salesman menu
+    static addSale_string = 'הוספת מכירה';
+    static editSales_string = 'עריכת מכירה';
+    static addComment_string = 'הוספת הערה';
+    static addCommentContent_string = 'הוספת הערה:';
+
+    //shift comments
 }
 
 module.exports = ConstantStrings;

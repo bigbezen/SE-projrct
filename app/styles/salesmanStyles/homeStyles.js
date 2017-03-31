@@ -10,7 +10,10 @@ var styles = {
     },
     centerAlign: {
         'textAlign': 'center'
-    }
+    },
+    space: {
+        height: '50px'
+    },
 
 };
 

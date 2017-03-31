@@ -18,7 +18,8 @@ class Paths extends React.Component {
     static manager_createShifts_path = '/manager/createShifts';
     static salesman_home_path = '/salesman/home';
     static salesman_startShift_path = '/salesman/startShift';
-    static salesman_sale_path = '/salesman/sale';
+    static salesman_sale_path = '/salesman/shift/sale';
+    static salesman_shift_comments_path = '/salesman/shift/comments';
     static salesman_shift_path = '/salesman/shift';
     static salesman_endShift_path = '/salesman/endShift';
 }

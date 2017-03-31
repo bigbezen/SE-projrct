@@ -1,7 +1,7 @@
 /**
  * Created by lihiverchik on 14/12/2016.
  */
-var connection = require('../communication/connectionHandler')
+var connection = require('../communication/connectionHandler');
 //var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
@@ -67,20 +67,24 @@ var helpers = {
         return connection.managementRequests.deleteProduct(product);
     },
 
-    addEncouragement: function(){
-        console.log('managementervices- addEncouragement');
-        return connection.managementRequests.addEncouragement();
+    addIncentive: function(incentive){
+        console.log('managementervices- addIncentive');
+        return connection.managementRequests.addIncentive(incentive);
     },
 
-    editEncouragement: function(){
-        console.log('managementervices- editEncouragement');
-        return connection.managementRequests.editEncouragement();
+    editIncentive: function(incentive){
+        console.log('managementervices- editIncentive');
     },
 
-    deleteEncouragement: function(){
-        console.log('managementervices- deleteEncouragement');
-        return connection.managementRequests.deleteEncouragement();
+    getAllIncentives: function(){
+        console.log('managementervices- getAllIncentives');
+        return connection.managementRequests.getAllIncentives();
     },
+
+    deleteIncentive(incentive){
+        console.log('managementervices- deleteIncentive');
+    },
+
 
     addShift: function(shift){
         console.log('managementervices- addShift');

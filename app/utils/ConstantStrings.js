@@ -40,6 +40,14 @@ class ConstantStrings extends React.Component {
     static minRequiredAmount_string = 'כמות מינימלית למכירה';
     static notifyManager_string = 'התראת מנהל';
 
+    //incentives
+    static addIncentive_string = 'הוספת תמריץ חדש';
+    static incentiveName_string = 'שם התמריץ';
+    static incentiveNumOfProducts_string = 'כמות הבקבוקים למכירה בתמריץ';
+    static incentiveRate_string ='גודל התמריץ';
+    static incentivePickProducts_string = 'בחר מוצרים';
+    static incentiveProducts_string = 'מוצרים בתמריץ';
+
     //filter strings
     static enterProductName_string = 'הכנס שם מוצר..';
     static enterPrice_string = 'הכנס מחיר..';

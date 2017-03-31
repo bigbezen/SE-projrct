@@ -1,4 +1,5 @@
 let logger          = require('../../Utils/Logger/logger');
+let mongoose    = require('mongoose');
 let permissions     = require('../permissions/index');
 let dal             = require('../../DAL/dal');
 let mailer          = require('../../Utils/Mailer/index');
@@ -163,12 +164,13 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                 row = worksheet.getRow(4);
                 row.getCell(3).value = user.jobDetails.salary;//C4
 
-
+                let maxEncCol;
                 //write the encouragements names
                 let allEnc = await dal.getAllEncouragements();
                 for(let i = 0; i < allEnc.length; i++){
                     row = worksheet.getRow(7);
-                    row.getCell(18 + i).value = allEnc[i].name;//R+i7
+                    row.getCell(17 + i).value = allEnc[i].name;//R+i7
+                    maxEncCol = 17 + i;
                 }
 
                 //add all the shifts and the encouragements
@@ -184,18 +186,27 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                     row.getCell(5).value = currentShift.type;
                     row.getCell(6).value = new Date(currentShift.startTime);
                     row.getCell(7).value = new Date(currentShift.endTime);
-                    row.getCell(15).value = 100;
+                    row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+
+                    for(let enc of currentShift.encouragements){
+                        let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc));
+                        for(let k = 18; k <= maxEncCol; k++){
+                            if(worksheet.getRow(7).getCell(k).value == encName.name){
+                                row.getCell(k).value = encName.rate;
+                            }
+                        }
+                    }
 
                     row.commit();
                 }
 
                 sheetNum = sheetNum + 1;
             }
-            return workbook.xlsx.writeFile('monthReport/salaryForHumanResourceReport.xlsx');
+            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
         });
 
-//    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
- //   mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
     return {'code': 200};
 };
 

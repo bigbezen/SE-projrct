@@ -7,6 +7,8 @@ var shiftSchema = new Schema({
     'endTime': Date,
     'status': String,
     'type': String,
+    'numOfKM': Number,
+    'parkingCost': Number,
     'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'users'},
     'constraints': [
         {
@@ -31,7 +33,8 @@ var shiftSchema = new Schema({
             'quantity': Number
         }
     ],
-    'shiftComments': ['String']
+    'shiftComments': ['String'],
+    'encouragements': [{type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'}]
 });
 
 var shift = mongoose.model('shift', shiftSchema);

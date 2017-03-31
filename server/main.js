@@ -203,10 +203,10 @@ function _setapApiEndpoints() {
     });
 
     app.post('/salesman/addShiftComment', async function (req, res) {
-        if(!validator.addShiftComment(req.body)) {
+        /*if(!validator.addShiftComment(req.body)) {
             res.status(404).send('invalid parameters');
             return;
-        }
+        }*/
         let result = await shiftService.addShiftComment(req.body.sessionId, req.body.shiftId, req.body.content);
         if(result.code == 200)
             res.status(200).send();

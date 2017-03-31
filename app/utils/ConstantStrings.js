@@ -204,10 +204,12 @@ class ConstantStrings extends React.Component {
     static yes_string = 'כן';
 
      //salesman menu
-    static addSale_string = 'הוספת מכירה';
-    static editSales_string = 'עריכת מכירה';
+    static addSale_string = 'מכירות';
+    static editSales_string = 'עריכה';
     static addComment_string = 'הוספת הערה';
     static addCommentContent_string = 'הוספת הערה:';
+    static comments_string = 'הערות';
+    static encouragements_string = 'תמריצים';
 
     //shift comments
 }

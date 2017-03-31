@@ -16,7 +16,7 @@ var styles = {
         height: '100px'
     },
     footerButtons:{
-        width:'33%',
+        width:'25%',
         height:'100%',
         borderLeft: '1px solid gray',
         fontSize:'xx-large'

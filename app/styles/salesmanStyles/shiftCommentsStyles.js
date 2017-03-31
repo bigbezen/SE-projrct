@@ -15,6 +15,9 @@ var styles = {
     },
     containerStyle: {
         'marginBottom': '30px'
+    },
+    space: {
+        height: '50px'
     }
 
 };

@@ -22,6 +22,8 @@ class Paths extends React.Component {
     static salesman_shift_comments_path = '/salesman/shift/comments';
     static salesman_shift_path = '/salesman/shift';
     static salesman_endShift_path = '/salesman/endShift';
+    static salesman_editShift_path = '/salesman/shift/editSale';
+    static salesman_shift_encouragements_path = '/salesman/shift/encouragements';
 }
 
 module.exports = Paths;

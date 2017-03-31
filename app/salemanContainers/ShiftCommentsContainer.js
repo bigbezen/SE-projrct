@@ -45,9 +45,20 @@ var ShiftComments = React.createClass({
     },
     handleAddComment(){
         var content = this.refs.commentContent.value;
-        salesmanServices.addShiftComment(this.state.shift._id,content);
-        this.updateShift()
-        this.changeStateToViewMode()
+        var self = this;
+        salesmanServices.addShiftComment(this.state.shift._id,content).then(function (n) {
+            if (n) {
+                var val = n;
+                if (val.success) {
+                    self.updateShift()
+                    self.changeStateToViewMode()
+                }
+                else {
+                }
+            }
+            else {
+            }
+        })
     },
     renderEachComment: function(comment, i) {
         return (
@@ -59,7 +70,7 @@ var ShiftComments = React.createClass({
     renderAddMode: function(){
         return(
             <div className='main-container' >
-                <div style={styles.containerStyle}>
+                <div>
                     <div className="row col-xs-10 col-xs-offset-1 w3-card-4 col-offset-xs-2" style={styles.commentsStyle}>
                         <h1>{constantsStrings.addCommentContent_string}</h1>
                         <input ref="commentContent" className="col-xs-10 col-offset-xs-2 w3-input w3-xxlarge"  type="text"/>
@@ -70,6 +81,7 @@ var ShiftComments = React.createClass({
                     </div>
                     {this.state.shift.shiftComments.map(this.renderEachComment)}
                 </div>
+                <div style={styles.space}></div>
             </div>
         )
     },
@@ -82,6 +94,7 @@ var ShiftComments = React.createClass({
                     </div>
                     {this.state.shift.shiftComments.map(this.renderEachComment)}
                 </div>
+                <div style={styles.space}> </div >
             </div>
         )
     },

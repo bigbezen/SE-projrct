@@ -22,10 +22,32 @@ var AddSaleContainer = React.createClass({
     },
     getInitialState(){
         return{
-            shift: this.props.location.state.newShift,
-            products: this.props.location.state.newShift.salesReport,
+            shift: null,
+            products: [],
             soldProducts: []
         }
+    },
+    componentDidMount() {
+        this.updateShift();
+    },
+    updateShift(){
+        var self = this;
+        salesmanServices.getCurrentShift().then(function (n) {
+            if (n) {
+                var val = n;
+                if (val.success) {
+                    var currShift = val.info;
+                    self.setState(
+                        {shift: currShift,
+                         products: currShift.salesReport
+                    });
+                }
+                else {
+                }
+            }
+            else {
+            }
+        })
     },
     onRowClick(row){
         var sold = this.state.soldProducts;

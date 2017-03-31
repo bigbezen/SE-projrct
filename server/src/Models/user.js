@@ -26,14 +26,9 @@ var userSchema = new Schema({
     },
     'jobDetails': {
         'userType': String,
+        'salary': Number,
         'area': String,
-        'channel': String,
-        'encouragements': [
-            {
-                'enc': {type: mongoose.Schema.Types.ObjectId, ref: 'encouragements'},
-                'date': Date
-            }
-        ]
+        'channel': String
     },
     'inbox': [{type: mongoose.Schema.Types.ObjectId, ref: 'messages'}]
     // {

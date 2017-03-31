@@ -60,7 +60,7 @@ describe('salesman acceptance test', function(){
         managerUser.sessionId = "sessionId";
         managerUser.jobDetails.userType = "manager";
         managerUser.personal.id = "12345";
-        managerUser.contact = "";
+        managerUser.contact.email = 'bez@gamil.com';
         managerUser.startDate = "";
 
         managerUser.endDate = "";
@@ -281,7 +281,8 @@ describe('salesman acceptance test', function(){
     describe('TestRetrievePassword', function(){
         it('RetrievePasswordValid', async function(){
             let result = await axios.post(serverUrl + 'user/retrievePassword', {
-                sessionId: 'sessionId'
+                username: 'manager',
+                email: 'bez@gamil.com'
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -303,9 +304,23 @@ describe('salesman acceptance test', function(){
             expect(result).to.have.property('status', 200);
         });
 
-        it('InvalidSessionId', async function(){
+        it('InvalidUsername', async function(){
             let result = await axios.post(serverUrl + 'user/retrievePassword', {
-                sessionId: 'non existing session id'
+                username: 'non existing session id',
+                email: 'bez@gmial.com'
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(result.response.status,401);
+        });
+
+        it('InvalidEmail', async function(){
+            let result = await axios.post(serverUrl + 'user/retrievePassword', {
+                username: 'manager',
+                email: 'un exist'
             }).then(async function(info){
                 return info;
             }).catch(async function(err){

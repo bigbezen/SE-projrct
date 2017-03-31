@@ -40,6 +40,14 @@ class ConstantStrings extends React.Component {
     static minRequiredAmount_string = 'כמות מינימלית למכירה';
     static notifyManager_string = 'התראת מנהל';
 
+    //incentives
+    static addIncentive_string = 'הוספת תמריץ חדש';
+    static incentiveName_string = 'שם התמריץ';
+    static incentiveNumOfProducts_string = 'כמות הבקבוקים למכירה בתמריץ';
+    static incentiveRate_string ='גודל התמריץ';
+    static incentivePickProducts_string = 'בחר מוצרים';
+    static incentiveProducts_string = 'מוצרים בתמריץ';
+
     //filter strings
     static enterProductName_string = 'הכנס שם מוצר..';
     static enterPrice_string = 'הכנס מחיר..';
@@ -62,6 +70,8 @@ class ConstantStrings extends React.Component {
     static birthDate_string = 'תאריך לידה';
     static street_string = 'מספר בית';
     static zip_string = 'מיקוד';
+    static startTime_string = 'שעת התחלה';
+    static endTime_string = 'שעת סיום';
 
     //filter strings
     static enterID_string = 'הכנס ת״ז..';
@@ -90,7 +100,9 @@ class ConstantStrings extends React.Component {
     static enterCity_string = 'הכנס עיר..';
     static selectArea_string = 'בחר איזור..';
     static selectChannel_string = 'בחר ערוץ..';
-
+    static enterSalesmanName_string ='הכנס שם דייל..';
+    static enterType_string = 'הכנס סוג...';
+    static enterStatus_string = 'הכנס מצב...';
     //shifts
     static status_string = 'מצב';
     static addShift_string = 'הוספת משמרת חדשה';
@@ -195,6 +207,8 @@ class ConstantStrings extends React.Component {
     static badActionMessage_string = 'הפעולה נכשלה. נא לוודא כי כל השדות חוקיים';
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
     static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
+    static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
+    static close_string = "סגירה";
     static yes_string = 'כן';
 }
 

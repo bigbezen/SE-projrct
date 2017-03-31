@@ -30,7 +30,7 @@ function flatList(shifts) {
 }
 
 function dateFormatter(cell, row) {
-    return moment(cell).format('YYYY-MM-DD hh:mm');
+    return moment(cell).format('YYYY-MM-DD H:mm');
 }
 
 var ShiftsContainer = React.createClass({
@@ -203,7 +203,6 @@ var ShiftsContainer = React.createClass({
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
                 <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
-                <button className="w3-card-2 w3-btn w3-theme-d5 w3-margin-top w3-round-xxlarge" onClick={this.onClickAddShiftsButton}> +++ </button>
                 <BootstrapTable data={this.state.shifts} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'store.name'
@@ -231,19 +230,19 @@ var ShiftsContainer = React.createClass({
                         dataField = 'status'
                         dataAlign = 'right'
                         dataSort = {true}
-                        filter={ { type: 'TextFilter', placeholder:constantStrings.enterManagerName_string} }>
+                        filter={ { type: 'TextFilter', placeholder:constantStrings.enterStatus_string} }>
                         {constantStrings.status_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'type'
                         dataAlign = 'right'
-                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterPhone_string} }>
+                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterType_string} }>
                         {constantStrings.type_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'salesman.username'
                         dataAlign = 'right'
-                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterCity_string} }>
+                        filter = { { type: 'TextFilter', placeholder:constantStrings.enterSalesmanName_string} }>
                         {constantStrings.salesman_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn

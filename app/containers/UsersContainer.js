@@ -5,6 +5,7 @@ var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
 var helpers = require('../utils/Helpers');
 var managementServices = require('../communication/managementServices');
+var userServices = require('../communication/userServices');
 var flatten = require('flat');
 var moment = require('moment');
 var paths = require('../utils/Paths');
@@ -36,11 +37,19 @@ var UsersContainer = React.createClass({
     },
     getInitialState() {
         return{
-            users: null
+            users: null,
+            username: null
         }
     },
     componentWillMount() {
         this.updateUsers();
+        this.updateUsername();
+    },
+    updateUsername(){
+        var name = userServices.getUsername();
+        this.setState({
+            username : name
+        })
     },
     updateUsers() {
         var self = this;
@@ -78,20 +87,31 @@ var UsersContainer = React.createClass({
     onClickDeleteButton: function(cell, row, rowIndex){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
-        notificationSystem.addNotification({
-            message: constantStrings.areYouSure_string,
-            level: 'info',
-            autoDismiss: 0,
-            position: 'tc',
-            action: {
-                label: constantStrings.yes_string,
-                callback:
-                    function(){
-                        self.handleDeleteUser(row)
-                    }
-            }
-        });
-
+        if(row.username==this.state.username){
+            notificationSystem.addNotification({
+                message: constantStrings.cannotDeleteSelf_string,
+                level: 'info',
+                autoDismiss: 0,
+                position: 'tc',
+                action: {
+                    label: constantStrings.close_string
+                }
+            });
+        }else{
+            notificationSystem.addNotification({
+                message: constantStrings.areYouSure_string,
+                level: 'info',
+                autoDismiss: 0,
+                position: 'tc',
+                action: {
+                    label: constantStrings.yes_string,
+                    callback:
+                        function(){
+                            self.handleDeleteUser(row)
+                        }
+                }
+            });
+        }
     },
     handleDeleteUser: function(row){
         this.setState({

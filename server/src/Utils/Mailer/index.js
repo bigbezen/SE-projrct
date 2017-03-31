@@ -31,7 +31,18 @@ var sendMailWithFile = async function(recepientArr, subject, text , filePath) {
 };
 
 
+var sendDummyMail = function(){
+    var mailOptions = {
+        from: '"IBBLS 👥" <IBBLSServices@gmail.com>', // sender address
+        to: 'shahafstein@gmail.com',
+        subject: 'test mail',
+        text: 'test',
+    };
+    transporter.sendMail(mailOptions);
+};
+
 
 module.exports.sendMail = sendMail;
 module.exports.sendMailWithFile = sendMailWithFile;
+module.exports.dummyMail = sendDummyMail;
 module.exports.subjects = subjects;

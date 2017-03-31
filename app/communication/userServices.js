@@ -36,6 +36,9 @@ var helpers = {
     getProfile: function(){
         console.log('userServices- getProfile function');
         return connection.userRequests.getProfile();
+    },
+    getUsername: function () {
+        return connection.userRequests.getUsername();
     }
 };
 

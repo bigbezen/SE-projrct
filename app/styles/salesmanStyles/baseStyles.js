@@ -3,13 +3,14 @@
  */
 var styles = {
     space: {
-        height: '60px'
+        height: '80px'
     },
     hoverBackground: {
         backgroundColor:'w3-theme-l5'
     },
-    margin: {
-        margin: '70px'
+    marginTopBottom: {
+        marginTop: '70px',
+        marginBottom: '50px'
     }
 
 };

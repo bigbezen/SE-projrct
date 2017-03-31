@@ -417,11 +417,11 @@ let endShift = async function(sessionId, shift){
     shiftDb.status = 'FINISHED';
 
     let encouragements = await encouragementServices.calculateEncouragements(shift.salesReport);
-    //if(encouragements == null)
-       // return {'code': 500, 'err': 'unexpected error'};
+    if(encouragements == null)
+       return {'code': 500, 'err': 'unexpected error'};
 
-    //for(let enc of encouragements)
-      //  shiftDb.encouragements.push(enc._id);
+    for(let enc of encouragements)
+        shiftDb.encouragements.push(enc._id);
 
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)

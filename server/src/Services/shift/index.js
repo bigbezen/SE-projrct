@@ -186,6 +186,9 @@ let getSalesmanCurrentShift = async function(sessionId){
     for(let product of currShift.salesReport) {
         product.name = productsDict[product.productId.toString()];
     }
+    for(let sales of currShift.sales) {
+        sales.name = productsDict[sales.productId.toString()];
+    }
     return {'code': 200, 'shift': currShift};
 };
 

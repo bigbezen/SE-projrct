@@ -16,6 +16,7 @@ var EditSaleContainer = React.createClass({
     getInitialState(){
         return{
             shift: null,
+            sales: []
         }
     },
     componentDidMount() {
@@ -30,7 +31,7 @@ var EditSaleContainer = React.createClass({
                     var currShift = val.info;
                     self.setState(
                         {shift: currShift,
-                            products: currShift.salesReport
+                            sales: currShift.sales
                         });
                 }
                 else {
@@ -44,7 +45,19 @@ var EditSaleContainer = React.createClass({
     render: function () {
         return(
             <div>
-                TO DO!!
+                <div className="w3-margin-top">
+                    <BootstrapTable data={this.state.sales} hover bordered={false}>
+                        <TableHeaderColumn
+                            dataField = 'name'
+                            dataAlign = 'right'
+                            isKey = {true}>
+                        </TableHeaderColumn>
+                        <TableHeaderColumn
+                            dataField = 'quantity'
+                            dataAlign = 'right'>
+                        </TableHeaderColumn>
+                    </BootstrapTable>
+                </div>
             </div>
         )
     }

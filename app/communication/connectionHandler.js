@@ -397,7 +397,20 @@ var managerRequests = {
         }).catch(function (err) {
             return returnVal(false, err);
         })
+    },
+
+    getSalesmanListXL: function(){
+        return axios.get(serverUrl + 'manager/getSalesmanListXL', {
+            headers:{
+                sessionId:sessionId
+            }
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
     }
+
 };
 
 var salesmanRequests = {

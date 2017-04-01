@@ -8,6 +8,7 @@ var storeModel          = require('../Models/store');
 var userModel           = require('../Models/user');
 var messageModel          = require('../Models/message');
 var monthlySalesmanHoursReportModel = require('../Models/Reports/SummaryMonthlyHoursReport');
+var monthAnalysisReportModel = require('../Models/Reports/monthAnalysisReport');
 
 module.exports = {
     addUser: async function (user) {
@@ -192,6 +193,18 @@ module.exports = {
 
     addMonthlySalesmanReport: async function(report){
         return report.save()
+    },
+
+    addMonthAnalysisReport: async function(report){
+        return report.save();
+    },
+
+    getMonthAnalysisReport(year){
+        return monthAnalysisReportModel.findOne({'year': year});
+    },
+
+    editMonthAnalysisReport(report){
+        return monthAnalysisReportModel.update({'_id': report._id}, report, { upsert: false});
     },
 
     getMonthlyUserHoursReport: async function(year, month){

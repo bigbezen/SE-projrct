@@ -7,7 +7,8 @@ let fs              = require('fs');
 let moment          = require('moment');
 let Excel           = require('exceljs');
 let userService     = require('../../Services/user');
-let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport')
+let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
+let monthAnalysisReportModel = require('../../Models/Reports/monthAnalysisReport');
 let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
 
 let getSaleReportXl =  async function(sessionId, shiftId){
@@ -565,40 +566,102 @@ let genarateMonthlyUserHoursReport = async function() {
 };
 
 let genarateMonthAnalysisReport = async function() {
-    console.log('genarateMonthAnalysisReport');
-   /* let date = new Date();
-    let report = new monthlyUserHoursReportModel();
-    let shifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
-    let users = await dal.getAllUsers();
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
 
-    //add month and year
-    report.month = date.getMonth();
-    report.year = date.getFullYear();
-
-    //initilize all users
-    for(let user of users) {
-        if (user.jobDetails.userType == 'salesman') {
-            let salesmanData = {
-                'user': user,
-                'numOfHours': 0,
-                'monthlyEncoragement': []
-            };
-            let encouragements = await userService.getMonthlyEncouragements(user.username, report.year, report.month);
-            salesmanData.monthlyEncoragement = encouragements;
-            //count the total shift hours of user
-            for (let shift of shifts){
-                if(shift.salesmanId.equals(user._id)){
-                    let duration = (shift.endTime - shift.startTime)/36e5;
-                    salesmanData.numOfHours += duration;
-                }
+    let yearReport = await dal.getMonthAnalysisReport(year);
+    if(yearReport == null){
+        yearReport = new monthAnalysisReportModel();
+        yearReport.monthData = [];
+        yearReport.year = year;
+        for(let i = 0; i < 12; i++){
+            let monthReport = {'month': (i + 1),
+                'salesmanCost':{
+                'traditional': 0,
+                    'organized': 0
+            },
+            'totalHours': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'shiftsCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'uniqueCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'saleBottlesCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'openedCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'saleAverage': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'monthlyEncoragement': []
+        };
+            let allEnc = await dal.getAllEncouragements();
+            for(let enc of allEnc){
+                monthReport.monthlyEncoragement.push({'encouragement': enc, 'amount': 0});
             }
-
-            report.salesmansData.push(salesmanData);
+            yearReport.monthData.push(monthReport);
         }
+
+        yearReport = await dal.addMonthAnalysisReport(yearReport);
     }
 
-    let res = await dal.addMonthlySalesmanReport(report);
-    return {'report': res ,'code': 200 ,'err': null};*/
+    let monthShifts = await dal.getMonthShifts(year, month);
+    for(let currentShift of monthShifts){
+        let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
+        let duration = (currentShift.endTime - currentShift.startTime)/36e5;
+        if(currentShift.type == 'traditional'){
+            yearReport.monthData[month].totalHours.traditional += duration;
+            yearReport.monthData[month].salesmanCost.traditional += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.traditional += 1;
+            yearReport.monthData[month].saleBottlesCount.traditional += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.traditional+= sale.opened;
+            }
+            for(let shiftEnc of currentShift.encouragements){
+                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
+                    if(encReport._id.equals(shiftEnc._id)){
+                        encReport.amount += 1;
+                    }
+                }
+            }
+        }
+        else{//organized
+            yearReport.monthData[month].totalHours.organized += duration;
+            yearReport.monthData[month].salesmanCost.organized += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.organized += 1;
+            yearReport.monthData[month].saleBottlesCount.organized += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.organized+= sale.opened;
+            }
+            for(let shiftEnc of currentShift.encouragements){
+                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
+                    if(encReport._id.equals(shiftEnc._id)){
+                        encReport.amount += 1;
+                    }
+                }
+            }
+        }
+    }
+    if(yearReport.monthData[month].totalHours.traditional > 0){
+        yearReport.monthData[month].saleAverage.traditional = yearReport.monthData[month].saleBottlesCount.traditional/yearReport.monthData[month].totalHours.traditional;
+    }
+    if(yearReport.monthData[month].totalHours.organized > 0){
+        yearReport.monthData[month].saleAverage.organized = yearReport.monthData[month].saleBottlesCount.organized/yearReport.monthData[month].totalHours.organized;
+    }
+
+    let res = await dal.editMonthAnalysisReport(yearReport);
+    return {'code':200};
 };
 
 

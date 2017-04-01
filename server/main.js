@@ -57,7 +57,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('1 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('40 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
 
@@ -698,7 +698,6 @@ function _setapApiEndpoints() {
     app.get('/manager/getSalesmanListXL', async function (req, res) {
         var result = await reportsService.getSalesmanListXL(req.headers.sessionid);
         res.status(result.code).send(result.err);
-        return;
     });
 
     app.get('/manager/getMonthlyHoursSalesmansReportXl', async function (req, res) {

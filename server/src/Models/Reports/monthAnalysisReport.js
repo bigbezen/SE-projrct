@@ -13,11 +13,23 @@ var monthAnalysisReport = new Schema({
             'traditional': Number,
             'organized': Number
         },
-        'salesmanCount': {
+        'shiftsCount': {
+            'traditional': Number,
+            'organized': Number
+        },
+        'uniqueCount': {
             'traditional': Number,
             'organized': Number
         },
         'saleBottlesCount': {
+            'traditional': Number,
+            'organized': Number
+        },
+        'openedCount': {
+            'traditional': Number,
+            'organized': Number
+        },
+        'saleAverage': {
             'traditional': Number,
             'organized': Number
         },

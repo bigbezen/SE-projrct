@@ -165,6 +165,47 @@ let publishShifts = async function(sessionId, shiftArr){
 
 };
 
+let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
+    logger.info('Services.shift.index.getSalesmanFinishedShifts', {'session-id': sessionId, 'userId': salesmanId});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanFinishedShifts', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let salesman = await dal.getUserByobjectId(salesmanId);
+    if(salesman == null)
+        return {'code': 401, 'err': 'user does not exist'};
+
+    let finishedShifts = await dal.getSalesmanShifts(salesman._id);
+    if(finishedShifts == null)
+        return {'code': 409, 'err': 'user does not have a shift today'};
+
+    let productsDict = {};
+    let products = await dal.getAllProducts();
+    for(let product of products)
+        productsDict[product._id] = product.name;
+
+    finishedShifts = finishedShifts.filter(function(shift){
+        return shift.status == 'FINISHED';
+    });
+
+    for(let shiftIndex in finishedShifts){
+        finishedShifts[shiftIndex] = finishedShifts[shiftIndex].toObject();
+    }
+    for(let currentShift of finishedShifts){
+        //currentShift = currentShift.toObject();
+        currentShift.store = (await dal.getStoresByIds([currentShift.storeId]))[0];
+        for(let product of currentShift.salesReport) {
+            console.log('bla');
+            product.name = productsDict[product.productId.toString()];
+        }
+    }
+    console.log('bla');
+
+    return {'code': 200, 'shifts': finishedShifts};
+
+
+};
+
 let getSalesmanCurrentShift = async function(sessionId){
     logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
 
@@ -526,6 +567,7 @@ module.exports.reportSale = reportSale;
 module.exports.reportOpened = reportOpened;
 module.exports.addShiftComment = addShiftComment;
 module.exports.getActiveShiftEncouragements = getActiveShiftEncouragements;
+module.exports.getSalesmanFinishedShifts = getSalesmanFinishedShifts;
 module.exports.automateGenerateShifts = automateGenerateShifts;
 module.exports.getShiftsFromDate = getShiftsFromDate;
 module.exports.getActiveShift = getActiveShift;

@@ -25,6 +25,7 @@ var SalesmanEndShift = require('../salemanContainers/EndShiftContainer');
 var SalesmanAddSale= require('../salemanContainers/AddSaleContainer');
 var IncentivesContainer = require('../containers/IncentivesContainer');
 var Incentive = require('../containers/IncentiveDetails');
+var Reports = require('../containers/ReportsContainer');
 
 var routes = (
     <Router history={hashHistory}>
@@ -42,6 +43,7 @@ var routes = (
             <Route path='createShifts' component={CreateShifts}/>
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
+            <Route path='reports' component={Reports} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='home' component={SalesmanHome}/>

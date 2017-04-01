@@ -13,6 +13,7 @@ class ConstantStrings extends React.Component {
     static stores_string = 'חנויות';
     static products_string = 'מוצרים';
     static shifts_string = ' משמרות';
+    static reports_string = ' דוחות';
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';
@@ -111,6 +112,11 @@ class ConstantStrings extends React.Component {
     static salesman_string = 'דייל';
     static getReport_string = 'הורד דוח';
     static shiftType_string = 'סוג משמרת';
+
+    //reports
+    static defaultSalesmanDropDown_string = 'בחר/י דייל';
+    static defaultShiftDropDown_string = 'בחר/י משמרת';
+    static noShifts_string = 'לא קיימות משמרות להצגה';
 
     static reportSale_string = 'דווח מכירה';
     static reportOpen_string = 'דווח פתיחה';

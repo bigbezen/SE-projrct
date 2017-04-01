@@ -322,6 +322,21 @@ var managementRequests = {
         })
     },
 
+    getSalesmanFinishedShifts: function(salesmanId){
+        console.log('get finshed shifts of salesman');
+        return axios.get(serverUrl + 'management/getSalesmanFinishedShifts?salesmanId=' + salesmanId, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            if(info.status == 200)
+                return returnVal(true, info.data);
+            else throw returnVal(false, info);
+        }).catch(function (err){
+            throw returnVal(false, err)
+        })
+    },
+
     publishShifts: function(shift){
         console.log('publish shift');
         var shiftArr = [];

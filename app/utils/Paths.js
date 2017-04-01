@@ -23,6 +23,7 @@ class Paths extends React.Component {
     static salesman_endShift_path = '/salesman/endShift';
     static manager_incentives_path = '/manager/incentives';
     static manager_incentiveDetails_path = 'manager/incentive';
+    static manager_reports_path = 'manager/reports';
 
 }
 

@@ -33,7 +33,7 @@ class ConstantStrings extends React.Component {
     static addProduct_string = 'הוספת מוצר חדש';
     static editProduct_string = 'עריכת מוצר קיים';
     static productName_string = 'שם מוצר';
-    static retailPrice_string = 'מחיר עלות';
+    static retailPrice_string = 'מחיר קמעונאי';
     static salePrice_string = 'מחיר מכירות';
     static category_string = 'קטגוריה';
     static subCategory_string = 'תת קטגוריה';
@@ -208,6 +208,7 @@ class ConstantStrings extends React.Component {
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
     static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
     static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
+    static mailSentSuccess_string = 'הדוח נשלח לאימייל בהצלחה!';
     static close_string = "סגירה";
     static yes_string = 'כן';
 

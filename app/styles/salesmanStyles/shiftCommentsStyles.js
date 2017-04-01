@@ -5,7 +5,8 @@
 var styles = {
     commentsStyle: {
         'marginTop': '10px',
-        'background': 'white'
+        'background': 'white',
+        'word-wrap': 'break-word'
     },
     commentsMargin: {
         'marginTop': '10px',
@@ -14,7 +15,7 @@ var styles = {
         'margin': '10px'
     },
     containerStyle: {
-        'marginBottom': '30px'
+        'marginBottom': '120px'
     },
     space: {
         height: '50px'

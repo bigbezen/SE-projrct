@@ -169,7 +169,7 @@ describe('reports unit test', function () {
         start.setDate(start.getDate() + 1);
         start.setHours(16);
 
-        let saleReport = createNewSalesReport();
+        let saleReport = await createNewSalesReport();
         shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'salesReport':saleReport};
         shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'salesReport':saleReport};
         shift3  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'salesReport':saleReport};
@@ -279,10 +279,10 @@ describe('reports unit test', function () {
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 
-            shifts[0] = (await dal.addShift(shifts[0])).toObject();
-            shifts[1] = (await dal.addShift(shifts[1])).toObject();
-            shifts[2] = (await dal.addShift(shifts[2])).toObject();
-            shifts[3] = (await dal.addShift(shifts[3])).toObject();
+            shifts[0] = (await dal.addShift(shifts[0]));
+            shifts[1] = (await dal.addShift(shifts[1]));
+            shifts[2] = (await dal.addShift(shifts[2]));
+            shifts[3] = (await dal.addShift(shifts[3]));
 
             let result = await repoetService.genarateMonthlyUserHoursReport();
             expect(result).to.have.property('code', 200);
@@ -502,15 +502,6 @@ describe('reports unit test', function () {
             shifts[2].salesmanId = user2._id.toString();
             shifts[3].salesmanId = user2._id.toString();
 
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc1,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-            user1.jobDetails.encouragements.push({'enc':enc2,'date':shift1.startTime});
-
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc3,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
-            user2.jobDetails.encouragements.push({'enc':enc4,'date':shift1.startTime});
             let res = await dal.updateUser(user1);
             res = await dal.updateUser(user2);
 

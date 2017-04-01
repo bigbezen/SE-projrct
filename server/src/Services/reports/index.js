@@ -533,6 +533,7 @@ let genarateMonthlyUserHoursReport = async function() {
     //add month and year
     report.month = date.getMonth();
     report.year = date.getFullYear();
+    report.salesmansData = [];
 
     //initilize all users
     for(let user of users) {

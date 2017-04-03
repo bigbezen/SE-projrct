@@ -49,13 +49,13 @@ var routes = (
             <Route path='createShifts' component={CreateShifts}/>
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
-            <Route path='retrievePassword' component={RetrievePass}/>
+            <Route path='changePassword' component={ChangePass}/>
         </Route>
         <Route path='/member/'>
             <Route path='retrievePassword' component={RetrievePass}/>
-            <Route path='changePassword' component={ChangePass}/>
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
+            <Route path='changePassword' component={ChangePass}/>
             <Route path='home' component={SalesmanHome}/>
             <Route path='startShift' component={SalesmanStartShift}/>
             <Route path='endShift' component={SalesmanEndShift}/>

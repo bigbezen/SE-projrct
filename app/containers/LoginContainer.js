@@ -96,11 +96,7 @@ var LoginContainer = React.createClass({
                             </button>
                         </div>
                     </form>
-                    <button
-                        className="w3-btn btn w3-theme-d5 col-xs-4 col-xs-offset-4" onClick={this.handleRetrievePass}
-                        type="submit">
-                        {constantsStrings.retrievePass_string}
-                    </button>
+                    <label onClick={this.handleRetrievePass}>{constantsStrings.retrievePass_string}</label>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

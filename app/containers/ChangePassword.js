@@ -39,6 +39,15 @@ var ChangePassContainer = React.createClass({
             });
             return;
         }
+        if (newPass1 == "") {
+            notificationSystem.addNotification({
+                message: constantsStrings.changePassNotValidMessage_string,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
+            return;
+        }
         this.setState({
             prevPass: '',
             newPass1: '',
@@ -50,6 +59,7 @@ var ChangePassContainer = React.createClass({
             if(n){
                 var answer = n;
                 if (answer.success) {
+                    var nextPage = self.getNextPage();
                     notificationSystem.addNotification({
                         message: constantsStrings.changePassSuccessMessage_string,
                         level: 'success',
@@ -57,7 +67,7 @@ var ChangePassContainer = React.createClass({
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
-                                pathname: self.retPath
+                                pathname: nextPage
                             })
                         }
                     });
@@ -75,9 +85,17 @@ var ChangePassContainer = React.createClass({
             }
         })
     },
+    getNextPage: function() {
+        if (userServices.managerIsLoggedin()) {
+            return paths.manager_home_path;
+        } else {
+            return paths.salesman_home_path;
+        }
+    },
     onReturn: function() {
+        var nextPage = this.getNextPage();
         context.router.push({
-            pathname: this.retPath
+            pathname: nextPage
         })
     },
     render: function () {

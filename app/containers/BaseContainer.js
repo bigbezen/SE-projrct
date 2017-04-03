@@ -8,6 +8,7 @@ var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var Users = require('react-icons/lib/fa/user');
 var Products = require('react-icons/lib/fa/glass');
+var Incentives = require('react-icons/lib/md/attach-money');
 var Stores = require('react-icons/lib/md/store');
 var Shifts = require('react-icons/lib/fa/calendar');
 var styles = require('../styles/managerStyles/baseStyles');
@@ -53,6 +54,7 @@ var BaseContainer = React.createClass({
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
+                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
                     <li className="w3-hide-small w3-right" ><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
                     <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a></li>
                 </ul>
@@ -63,6 +65,7 @@ var BaseContainer = React.createClass({
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
+                        <li><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
                         <li><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>התנתק</a></li>
                     </ul>
                 </div>

@@ -38,12 +38,20 @@ class ConstantStrings extends React.Component {
     static addProduct_string = 'הוספת מוצר חדש';
     static editProduct_string = 'עריכת מוצר קיים';
     static productName_string = 'שם מוצר';
-    static retailPrice_string = 'מחיר עלות';
+    static retailPrice_string = 'מחיר קמעונאי';
     static salePrice_string = 'מחיר מכירות';
     static category_string = 'קטגוריה';
     static subCategory_string = 'תת קטגוריה';
     static minRequiredAmount_string = 'כמות מינימלית למכירה';
     static notifyManager_string = 'התראת מנהל';
+
+    //incentives
+    static addIncentive_string = 'הוספת תמריץ חדש';
+    static incentiveName_string = 'שם התמריץ';
+    static incentiveNumOfProducts_string = 'כמות הבקבוקים למכירה בתמריץ';
+    static incentiveRate_string ='גודל התמריץ';
+    static incentivePickProducts_string = 'בחר מוצרים';
+    static incentiveProducts_string = 'מוצרים בתמריץ';
 
     //filter strings
     static enterProductName_string = 'הכנס שם מוצר..';
@@ -205,6 +213,7 @@ class ConstantStrings extends React.Component {
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
     static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
     static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
+    static mailSentSuccess_string = 'הדוח נשלח לאימייל בהצלחה!';
     static close_string = "סגירה";
     static yes_string = 'כן';
     static retrievePassFailMessage_string = 'שם המשתמש וכתובת האימייל אינם תואמים';
@@ -212,6 +221,16 @@ class ConstantStrings extends React.Component {
     static retrievePassSuccessMessage_string = 'סיסמא חדשה נשלחה אליכם בזה הרגע לדואר האלקטרוני';
     static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
     static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
+
+     //salesman menu
+    static addSale_string = 'מכירות';
+    static editSales_string = 'עריכה';
+    static addComment_string = 'הוספת הערה';
+    static addCommentContent_string = 'הוספת הערה:';
+    static comments_string = 'הערות';
+    static encouragements_string = 'תמריצים';
+
+    //shift comments
 }
 
 module.exports = ConstantStrings;

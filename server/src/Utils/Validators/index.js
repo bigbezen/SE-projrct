@@ -30,6 +30,11 @@ module.exports = {
             [stringT, stringT, stringT]);
     },
 
+    retrievePassword: function (params){
+        return checkParams(params, ['username', 'email'],
+            [stringT, stringT]);
+    },
+
     addUser: function(params){
         return checkParams(params, ['sessionId', 'userDetails'],
                     [stringT, objectT]) &&
@@ -104,6 +109,10 @@ module.exports = {
             [stringT, stringT]);
     },
 
+    rideReport: function(params){
+        return checkParams(params, ['sessionId', 'shiftId', 'numOfKM', 'parkingCost'], [stringT, objectT, numberT, numberT]);
+    },
+
     addOrEditEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encouragementDetails'],
                 [stringT, objectT]) &&
@@ -125,6 +134,10 @@ module.exports = {
 
     sendBroadcastMessage: function(params){
         return checkParams(params, ['sessionId', 'content', 'date'], [stringT, stringT, stringT])
+    },
+
+    getMontlyhouresSalesmanReport: function(params){
+        return checkParams(params, ['sessionId', 'year', 'month'], [stringT, numberT, numberT])
     },
 
     addOrPublishShifts: function(params){

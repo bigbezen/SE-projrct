@@ -35,8 +35,8 @@ describe('encouragements unit test', function () {
         res = await productServices.addProduct(manager.sessionId,product2);
         product2 = res.product;
 
-        newEncouragement = {'active': true, 'numOfProducts': '2', 'rate': '100', 'products': []};
-        editEncouragement = {'active': false, 'numOfProducts': '5', 'rate': '120', 'products': []};
+        newEncouragement = {'name':'vodka', 'active': true, 'numOfProducts': '2', 'rate': '100', 'products': []};
+        editEncouragement = {'name':'wein', 'active': false, 'numOfProducts': '5', 'rate': '120', 'products': []};
         newEncouragement.products.push(product1._id);
         newEncouragement.products.push(product2._id);
         editEncouragement.products.push(product1._id);

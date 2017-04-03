@@ -40,7 +40,6 @@ var ProductsContainer = React.createClass({
                     self.setState({
                         products: result.info
                     });
-                    console.log("works!!");
                 } else {
                     console.log("error in getAllProducts: " + result.info);
                     notificationSystem.addNotification({
@@ -156,12 +155,6 @@ var ProductsContainer = React.createClass({
                             placeholder:constantStrings.enterPrice_string
                         } }>
                             {constantStrings.retailPrice_string}
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
-                            dataField = 'salePrice'
-                            dataAlign = 'right'
-                            filter = { { type: 'NumberFilter', placeholder:constantStrings.enterPrice_string} }>
-                            {constantStrings.salePrice_string}
                         </TableHeaderColumn>
                         <TableHeaderColumn
                             dataField = 'category'

@@ -69,7 +69,7 @@ var ProductDetails = React.createClass({
         var newProduct = new productInfo();
         newProduct.name = this.refs.nameBox.value;
         newProduct.retailPrice =  parseInt(this.refs.retailBox.value);
-        newProduct.salePrice =  parseInt(this.refs.saleBox.value);
+        //newProduct.salePrice =  parseInt(this.refs.saleBox.value);
         newProduct.category = this.state.category;
         newProduct.subCategory = this.state.subCategory;
         newProduct.minRequiredAmount =  parseInt(this.refs.minAmountBox.value);
@@ -191,18 +191,6 @@ var ProductDetails = React.createClass({
                         />
                     </div>
 
-
-                    <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.salePrice_string}:</label>
-                    </div>
-                    <div className="form-group ">
-                        <input type="number" min={0}
-                               className="col-xs-4 col-xs-offset-2"
-                               ref="saleBox"
-                        />
-                    </div>
-
-
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.category_string}:</label>
                     </div>
@@ -243,7 +231,7 @@ var ProductDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn btn w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-button w3-card-4 btn w3-theme-d5 col-xs-4 col-xs-offset-2"
                             type="submit">
                             {this.getButtonString()}
                         </button>
@@ -260,7 +248,7 @@ var ProductDetails = React.createClass({
         this.state.subCategory = this.currProduct.subCategory;
         this.refs.nameBox.value = this.currProduct.name;
         this.refs.retailBox.value = this.currProduct.retailPrice;
-        this.refs.saleBox.value = this.currProduct.salePrice;
+        //this.refs.saleBox.value = this.currProduct.salePrice;
         this.refs.categoryBox.value = this.currProduct.category;
         this.refs.subCategoryBox.value = this.currProduct.subCategory;
         this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;

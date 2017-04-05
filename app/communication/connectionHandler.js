@@ -112,6 +112,24 @@ var managementRequests = {
         })
     },
 
+    updateSalesReport: function(shiftId, productId, newSold, newOpened){
+        return axios.post(serverUrl + 'management/updateSalesReport', {
+            sessionId:sessionId,
+            shiftId: shiftId,
+            productId: productId,
+            newSold: newSold,
+            newOpened: newOpened
+        }).then(function (info) {
+            console.log('the user ' + name + ' changePassword.');
+            return info;
+        }).catch(function (err) {
+            console.log('debug');
+            if(err)
+                console.log('debug');
+            throw err;
+        })
+    },
+
     editUser: function(name, user) {
         return axios.post(serverUrl + 'management/editUser', {
             sessionId:sessionId,
@@ -361,7 +379,9 @@ var managementRequests = {
         }).catch(function (err) {
             return returnVal(false, err);
         })
-    }
+    },
+
+
 };
 
 var managerRequests = {
@@ -387,6 +407,7 @@ var managerRequests = {
 
     editSalesReport: function(){
         errorMessage('editSalesReport', 'Not implemented yet');
+        //DEPRECATED - NOT USED
     },
 
     getRecommendations: function(){

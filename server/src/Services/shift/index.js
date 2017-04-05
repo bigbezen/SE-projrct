@@ -182,7 +182,7 @@ let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
     let productsDict = {};
     let products = await dal.getAllProducts();
     for(let product of products)
-        productsDict[product._id] = product.name;
+        productsDict[product._id.toString()] = product.name;
 
     finishedShifts = finishedShifts.filter(function(shift){
         return shift.status == 'FINISHED';
@@ -520,6 +520,37 @@ let editShift = async function (sessionId, shiftDetails) {
     return {'shift': shift[0], 'code':200, 'err': null};
 };
 
+let updateSalesReport = async function(sessionId, shiftId, productId, newSold, newOpened){
+    logger.info('Services.shift.index.updateSalesReport', {'session-id': sessionId, 'shiftId': shiftId});
+    console.log('debug');
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'updateSalesReport');
+    console.log('debug');
+    if(user == null) {
+        return {'shift': null, 'code': 401, 'err': 'permission denied'};
+    }
+    let shift = await dal.getShiftsByIds([shiftId]);
+    console.log('debug');
+    if(shift[0] != null && shift[0].status != "FINISHED")
+        return {'shift': null, 'code': 401, 'err': 'permission denied - shift is not finished or does not exist'};
+    shift = shift[0].toObject();
+    let salesReport = shift.salesReport;
+    for(let i in salesReport){
+
+        if(salesReport[i].productId.toString() == productId){
+            console.log('debug');
+            salesReport[i].sold = newSold;
+            salesReport[i].opened = newOpened;
+        }
+    }
+    let res = await dal.editSalesReport(shift._id, shift.salesReport);
+    console.log('debug');
+    if(res.ok == 0)
+        return {'shift': shift, 'code':400, 'err': 'cannot edit this shift'};
+
+    return {'shift': shift, 'code':200, 'err': null};
+
+};
+
 let _createNewSalesReport = async function(){
     let report = [];
     let productsIds = await dal.getAllProducts();
@@ -573,5 +604,6 @@ module.exports.getShiftsFromDate = getShiftsFromDate;
 module.exports.getActiveShift = getActiveShift;
 module.exports.deleteShift = deleteShift;
 module.exports.editShift = editShift;
+module.exports.updateSalesReport = updateSalesReport;
 
 

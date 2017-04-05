@@ -51,6 +51,7 @@ let funcNameToPermission = {
     'getSalaryForHumanResourceReport': ['manager'],
     'getSalesmanListXL': ['manager'],
     'getSaleReportXl': ['manager'],
+    'updateSalesReport': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

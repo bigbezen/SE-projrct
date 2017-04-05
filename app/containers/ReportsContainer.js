@@ -9,6 +9,7 @@ var managementServices = require('../communication/managementServices');
 
 var moment = require('moment');
 var NotificationSystem = require('react-notification-system');
+var EditIcon = require('react-icons/lib/md/edit');
 
 import ReactDOM from 'react-dom';
 import fusioncharts from 'fusioncharts';
@@ -34,7 +35,8 @@ var ReportsContainer = React.createClass({
     getInitialState() {
         return{
             salesmen: [],
-            shifts: []
+            shifts: [],
+            chosenShift: undefined
         }
     },
     componentWillMount() {
@@ -97,24 +99,31 @@ var ReportsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         var chosenShift = this.state.shifts[event.target.selectedIndex - 1];
-        var chartData = chosenShift.salesReport;
-        chartData = chartData
+
+        this.renderChart(chosenShift);
+
+        this.setState({
+            chosenShift: chosenShift
+        });
+
+    },
+
+    renderChart: function(shift) {
+        var chartData = shift.salesReport
             .filter(function(product) {
                 return product.sold > 0;
             })
             .map(function(product,i) {
-            return {
-                label: product.name,
-                value: product.sold
-            }});
-
-
+                return {
+                    label: product.name,
+                    value: product.sold
+                }});
 
         FusionCharts.ready(function () {
             var myDataSource = {
                 chart: {
                     caption: "Sales Report",
-                    subCaption: "Sales Report from " + moment(chosenShift.startTime).format('YYYY-MM-DD'),
+                    subCaption: "Sales Report from " + moment(shift.startTime).format('YYYY-MM-DD'),
                     theme: "zune"
                 },
                 data: chartData
@@ -133,9 +142,65 @@ var ReportsContainer = React.createClass({
                 document.getElementById('chart-container')
             );
         });
+    },
+
+    renderSalesReportList: function(){
+        if(this.state.chosenShift != undefined){
+            var report = this.state.chosenShift.salesReport.sort(function(a, b){
+                if(a.name < b.name)
+                    return -1;
+                else if(a.name > b.name)
+                    return 1;
+                return 0;
+            });
+            return (
+                <div className="w3-container">
+                    <h1>{constantStrings.editReport_string}</h1>
+                    <div className="row col-sm-8 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
+                        <p className="col-sm-3" style={styles.listHeader}>{constantStrings.productName_string}</p>
+                        <p className="col-sm-3" style={styles.listHeader}>{constantStrings.reportsNumberOfProductsSold_string}</p>
+                        <p className="col-sm-3" style={styles.listHeader}>{constantStrings.reportsNumberOfProductsOpened_string}</p>
+                        <p className="col-sm-1"></p>
+                    </div>
+                    {report.map(this.renderSalesProducts)}
+                </div>
+            )
+        }
+    },
 
 
 
+    renderSalesProducts: function(product, i){
+        return (
+            <div className="row col-sm-8 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
+                 style={{marginTop: '10px', height: '40px'}}>
+                <p className="col-sm-3">{product.name}</p>
+                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editSold" + i} defaultValue={product.sold} />
+                <p className="col-sm-1"></p>
+                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editOpened" + i} defaultValue={product.opened} />
+                <p className="col-sm-1"></p>
+                <a href="#" className="w3-xlarge" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></a>
+            </div>
+        )
+    },
+
+    onClickEditButton: function(product, index){
+        var newSold = this.refs["editSold" + index].value;
+        var newOpened = this.refs["editOpened" + index].value;
+        var productId = product.productId;
+        var shiftId = this.state.chosenShift._id;
+        var self = this;
+
+        managementServices.updateSalesReport(shiftId, productId, newSold, newOpened)
+            .then(function(result) {
+                console.log('updated sales report');
+                self.setState({
+                    chosenShift: undefined
+                })
+            })
+            .catch(function(err) {
+                console.log('error');
+            })
     },
 
     getSalesmenOptions: function() {
@@ -160,7 +225,7 @@ var ReportsContainer = React.createClass({
 
     renderSalesGraph: function() {
         return (
-            <div id="chart-container"></div>
+            <div style={{fontSize: '40px'}} id="chart-container"></div>
         )
     },
 
@@ -192,6 +257,9 @@ var ReportsContainer = React.createClass({
                     </div>
                     <div className="">
                         {this.renderSalesGraph()}
+                    </div>
+                    <div style={{marginBottom: '30px'}}>
+                        {this.renderSalesReportList()}
                     </div>
                     <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
                 </div>

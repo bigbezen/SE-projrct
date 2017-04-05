@@ -119,6 +119,13 @@ var helpers = {
     getSalesmanFinishedShifts: function(salesmanId) {
         console.log('managementServices - getSalesmanFinishedShifts');
         return connection.managementRequests.getSalesmanFinishedShifts(salesmanId);
+    },
+
+    updateSalesReport: function(shiftId, productId, newSold, newOpened){
+        console.log('managementServices - updateSaleReport');
+        var result = connection.managementRequests.updateSalesReport(shiftId, productId, newSold, newOpened);
+        console.log(result);
+        return result;
     }
 };
 

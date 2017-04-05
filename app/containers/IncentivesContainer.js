@@ -59,6 +59,12 @@ var IncentivesContainer = React.createClass({
             }
         })
     },
+    onClickEdit: function(encouragement){
+        this.context.router.push({
+            pathname: paths.manager_incentiveDetails_path,
+            query: encouragement
+        })
+    },
     renderProductRow: function(product, i) {
         return (
             <p>&nbsp;&nbsp;&nbsp;&nbsp;{product.name}</p>
@@ -79,7 +85,7 @@ var IncentivesContainer = React.createClass({
                     <p><b>{constantsStrings.incentiveRate_string}</b>: {encouragement.rate}</p>
                 </div>
 
-                <button className="w3-button w3-block w3-theme-l1">
+                <button className="w3-button w3-block w3-theme-l1" onClick={() => this.onClickEdit(encouragement)}>
                     + Edit
                 </button>
             </div>

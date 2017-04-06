@@ -183,8 +183,8 @@ describe('shift unit test', function () {
         let start = new Date();
         start.setDate(start.getDate() + 1);
 
-        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'salesmanId': salesman._id};
-        shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED'};
+        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'salesmanId': salesman._id, 'sales':[]};
+        shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'sales':[]};
         shifts.push(shift1);
         shifts.push(shift2);
     });
@@ -281,7 +281,6 @@ describe('shift unit test', function () {
             assert.equal(res.shiftComments[0], 'new comment');
         });
     });
-
 
     describe('test start shift', function(){
         it('start shift not by salesman', async function(){
@@ -1242,6 +1241,110 @@ describe('shift unit test', function () {
             let date =  new Date();
             let dbShifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
             expect(dbShifts).to.have.lengthOf(1);
+        });
+    });
+
+    describe('test edit sale', function(){
+        it('edit sale not by salesman', async function() {
+            let saleTime = new Date();
+            shift1.salesReport = [{
+                'productId': product1,
+                'stockStartShift': 4,
+                'stockEndShift': 4,
+                'sold': 13,
+                'opened': 0}];
+            shift1.sales.push({'productId':product1,
+                'timeOfSale': saleTime,
+                'quantity': 2});
+
+            shift1 = await dal.addShift(shift_object_to_model(shift1));
+            let result = await shiftService.editSale(manager.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, 2);
+            assert.equal(result.err, 'permission denied');
+            assert.equal(result.code, 401, 'code 401');
+
+            let res = await dal.getShiftsByIds([shift1._id]);
+            assert.equal(res[0].sales[0].quantity, 2);
+        });
+
+        it('edit sale negative quantety', async function() {
+                let saleTime = new Date();
+                shift1.salesReport = [{
+                    'productId': product1,
+                    'stockStartShift': 4,
+                    'stockEndShift': 4,
+                    'sold': 13,
+                    'opened': 0}];
+                shift1.sales.push({'productId':product1,
+                    'timeOfSale': saleTime,
+                    'quantity': 2});
+
+                shift1 = await dal.addShift(shift_object_to_model(shift1));
+                let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, -1);
+                assert.equal(result.err, 'quantity cannot be negative');
+                assert.equal(result.code, 400, 'code 400');
+
+                let res = await dal.getShiftsByIds([shift1._id]);
+                assert.equal(res[0].sales[0].quantity, 2);
+        });
+
+        it('edit sale shift not found', async function() {
+            let saleTime = new Date();
+            shift1.salesReport = [{
+                'productId': product1,
+                'stockStartShift': 4,
+                'stockEndShift': 4,
+                'sold': 13,
+                'opened': 0}];
+            shift1.sales.push({'productId':product1,
+                'timeOfSale': saleTime,
+                'quantity': 2});
+
+            shift1 = await dal.addShift(shift_object_to_model(shift1));
+            let result = await shiftService.editSale(salesman.sessionId, "notexisting1", product1._id.toString(), saleTime, 2);
+            assert.equal(result.err, 'shift not found');
+            assert.equal(result.code, 404, 'code 400');
+        });
+
+        it('edit sale product not found', async function() {
+            let saleTime = new Date();
+            shift1.salesReport = [{
+                'productId': product1,
+                'stockStartShift': 4,
+                'stockEndShift': 4,
+                'sold': 13,
+                'opened': 0}];
+            shift1.sales.push({'productId':product1,
+                'timeOfSale': saleTime,
+                'quantity': 2});
+
+            shift1 = await dal.addShift(shift_object_to_model(shift1));
+            let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),"notexisting1", saleTime, 2);
+            assert.equal(result.err, 'product not found');
+            assert.equal(result.code, 404, 'code 404');
+
+            let res = await dal.getShiftsByIds([shift1._id]);
+            assert.equal(res[0].sales[0].quantity, 2);
+        });
+
+        it('edit sale valid', async function() {
+            let saleTime = new Date();
+            shift1.salesReport = [{
+                'productId': product1,
+                'stockStartShift': 4,
+                'stockEndShift': 4,
+                'sold': 13,
+                'opened': 0}];
+            shift1.sales.push({'productId':product1,
+                'timeOfSale': saleTime,
+                'quantity': 2});
+
+            shift1 = await dal.addShift(shift_object_to_model(shift1));
+            let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(), product1._id.toString(), saleTime, 0);
+            assert.equal(result.code, 200, 'code 404');
+
+            let res = await dal.getShiftsByIds([shift1._id]);
+            assert.equal(res[0].sales[0].quantity, 0);
+            assert.equal(res[0].salesReport[0].sold, 11);
         });
     });
 });

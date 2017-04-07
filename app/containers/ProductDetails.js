@@ -59,6 +59,23 @@ var ProductDetails = React.createClass({
         return optionsForDropDown;
     },
 
+
+    getSubCategoryDropDown: function() {
+        var arrayOfObjects = [];
+        var optionsForDropDown = [];
+        if (this.state.category == "יין") {
+            arrayOfObjects = constantsStrings.subCategoryForDropdown_wine;
+        } else if (this.state.category == "ספיריט") {
+            arrayOfObjects = constantsStrings.subCategoryForDropdown_spirit;
+        }
+        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        for (var i = 0; i < arrayOfObjects.length; i++) {
+            var currOption = arrayOfObjects[i];
+            optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
+        }
+        return optionsForDropDown;
+    },
+
     handleSubmitUser: function (e) {
         e.preventDefault();
         /*if (!this.checkDropDowns()) {
@@ -69,7 +86,7 @@ var ProductDetails = React.createClass({
         var newProduct = new productInfo();
         newProduct.name = this.refs.nameBox.value;
         newProduct.retailPrice =  parseInt(this.refs.retailBox.value);
-        newProduct.salePrice =  parseInt(this.refs.saleBox.value);
+        newProduct.salePrice = 0;
         newProduct.category = this.state.category;
         newProduct.subCategory = this.state.subCategory;
         newProduct.minRequiredAmount =  parseInt(this.refs.minAmountBox.value);
@@ -191,18 +208,6 @@ var ProductDetails = React.createClass({
                         />
                     </div>
 
-
-                    <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.salePrice_string}:</label>
-                    </div>
-                    <div className="form-group ">
-                        <input type="number" min={0}
-                               className="col-xs-4 col-xs-offset-2"
-                               ref="saleBox"
-                        />
-                    </div>
-
-
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.category_string}:</label>
                     </div>
@@ -218,7 +223,7 @@ var ProductDetails = React.createClass({
                     </div>
                     <div className="form-group ">
                         <select className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange} ref="subCategoryBox" data="" >
-                            {this.getOptions(constantsStrings.subCategoryForDropdown)}
+                            {this.getSubCategoryDropDown()}
                         </select>
                     </div>
 
@@ -260,7 +265,7 @@ var ProductDetails = React.createClass({
         this.state.subCategory = this.currProduct.subCategory;
         this.refs.nameBox.value = this.currProduct.name;
         this.refs.retailBox.value = this.currProduct.retailPrice;
-        this.refs.saleBox.value = this.currProduct.salePrice;
+        //this.refs.saleBox.value = this.currProduct.salePrice;
         this.refs.categoryBox.value = this.currProduct.category;
         this.refs.subCategoryBox.value = this.currProduct.subCategory;
         this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;

@@ -33,6 +33,13 @@ var BaseContainer = React.createClass({
         })
     },
 
+    handleChangePassword: function () {
+        console.log('BaseContainer- changePass function');
+        this.context.router.push({
+            pathname: paths.manager_changePass_path
+        })
+    },
+
     handleMenuBar: function () {
         console.log('BaseContainer- click on menu bar');
         var x = this.refs.demo;
@@ -54,9 +61,10 @@ var BaseContainer = React.createClass({
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
-                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.incentiveIncentives_string}</a></li>
+                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
                     <li className="w3-hide-small w3-right" ><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
                     <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a></li>
+                    <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleChangePassword}>{constantsStrings.changePass_string}</a></li>
                 </ul>
 
                 <div ref="demo" value={this.props.children} className="w3-hide w3-hide-large w3-hide-medium">
@@ -65,8 +73,9 @@ var BaseContainer = React.createClass({
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
-                        <li><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.incentiveIncentives_string}</a></li>
-                        <li><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>התנתק</a></li>
+                        <li><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
+                        <li><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a></li>
+                        <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleChangePassword}>{constantsStrings.changePass_string}</a></li>
                     </ul>
                 </div>
                 <div style={styles.space} className="w3-theme-l5" />

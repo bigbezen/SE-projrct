@@ -91,6 +91,12 @@ var ShiftsContainer = React.createClass({
                 var result = n;
                 if (result.success) {
                     console.log("works!!");
+                    notificationSystem.addNotification({
+                        message: constantStrings.mailSentSuccess_string,
+                        level: 'success',
+                        autoDismiss: 3,
+                        position: 'tc'
+                    });
                 } else {
                     notificationSystem.addNotification({
                         message: constantStrings.errorMessage_string,

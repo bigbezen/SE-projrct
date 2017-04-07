@@ -129,7 +129,7 @@ var ShiftDetails = React.createClass({
     },
 
     getOptionsForShiftType: function() {
-        var arrayOfObjects = ['רגילה','טעימות']; // todo: remove to constants
+        var arrayOfObjects = constantsStrings.shiftType;
         var optionsForDropDown = [];
         optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
         for (var i = 0; i < arrayOfObjects.length; i++) {

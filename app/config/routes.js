@@ -23,8 +23,15 @@ var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
 var SalesmanStartShift = require('../salemanContainers/StartShiftContainer');
 var SalesmanEndShift = require('../salemanContainers/EndShiftContainer');
 var SalesmanAddSale= require('../salemanContainers/AddSaleContainer');
+var RetrievePass = require('../containers/RetrievePassword');
+var ChangePass = require('../containers/ChangePassword');
+var SalesmanEditSale= require('../salemanContainers/EditSaleContainer');
+var ShiftBaseContainer = require('../salemanContainers/ShiftBaseContainer');
+var shiftComments = require('../salemanContainers/ShiftCommentsContainer');
+var ShiftEncouragements = require('../salemanContainers/ShiftEncouragementsContainer');
 var IncentivesContainer = require('../containers/IncentivesContainer');
 var Incentive = require('../containers/IncentiveDetails');
+
 
 var routes = (
     <Router history={hashHistory}>
@@ -42,12 +49,23 @@ var routes = (
             <Route path='createShifts' component={CreateShifts}/>
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
+            <Route path='changePassword' component={ChangePass}/>
+        </Route>
+        <Route path='/member/'>
+            <Route path='retrievePassword' component={RetrievePass}/>
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
+            <Route path='changePassword' component={ChangePass}/>
             <Route path='home' component={SalesmanHome}/>
             <Route path='startShift' component={SalesmanStartShift}/>
             <Route path='endShift' component={SalesmanEndShift}/>
+        </Route>
+
+        <Route path='/salesman/shift/' component={ShiftBaseContainer}>
             <Route path='sale' component={SalesmanAddSale}/>
+            <Route path='comments' component={shiftComments}/>
+            <Route path='editSale' component={SalesmanEditSale}/>
+            <Route path='encouragements' component={ShiftEncouragements}/>
         </Route>
     </Router>
 );

@@ -1224,4 +1224,24 @@ describe('shift unit test', function () {
             expect(dbShifts).to.have.lengthOf(2);
         });
     });
+
+    describe('test test get month shifts', function () {
+        it('get shift month', async function() {
+            shifts[0].startTime = new Date(2018,1,1);
+            shifts[0].endTime = new Date(2018,1,1);
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            shifts[0].status = "FINISHED";
+            shifts[0]._id = res.shiftArr[0]._id;
+            shifts[1].status = "FINISHED";
+            shifts[1]._id = res.shiftArr[1]._id;
+            for(let shift of shifts) {
+                res = await dal.updateShift(shift);
+            }
+
+            //get all the shifts to ensure that the product is not removed
+            let date =  new Date();
+            let dbShifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
+            expect(dbShifts).to.have.lengthOf(1);
+        });
+    });
 });

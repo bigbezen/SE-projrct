@@ -5,8 +5,7 @@
 var styles = {
     cardsRow: {
         margin: 'auto'
-    }
-
+    },
 };
 
 module.exports = styles;

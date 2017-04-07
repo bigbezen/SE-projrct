@@ -7,6 +7,9 @@ var userServices = require('../communication/userServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var styles = require('../styles/salesmanStyles/baseStyles');
+var Sale = require('react-icons/lib/ti/shopping-cart');
+var EditSales = require('react-icons/lib/ti/edit');
+var AddComment = require('react-icons/lib/ti/document-add');
 
 var SalesmanBaseContainer = React.createClass({
     contextTypes: {

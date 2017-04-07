@@ -157,12 +157,6 @@ var ProductsContainer = React.createClass({
                             {constantStrings.retailPrice_string}
                         </TableHeaderColumn>
                         <TableHeaderColumn
-                            dataField = 'salePrice'
-                            dataAlign = 'right'
-                            filter = { { type: 'NumberFilter', placeholder:constantStrings.enterPrice_string} }>
-                            {constantStrings.salePrice_string}
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
                             dataField = 'category'
                             dataAlign = 'right'
                             filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.product_category }

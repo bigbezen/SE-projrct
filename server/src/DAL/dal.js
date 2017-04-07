@@ -245,6 +245,21 @@ module.exports = {
         shift.map(x => x.remove());
         var reports = await monthlySalesmanHoursReportModel.find({});
         reports.map(x => x.remove());
+    },
+
+    cleanDbOnStart: async function() {
+        var encs = await encouragementModel.find({});
+        encs.map(x => x.remove());
+        var shifts = await shiftModel.find({});
+        shifts.map(x => x.remove());
+        var stores = await storeModel.find({});
+        stores.map(x => x.remove());
+        var messages = await messageModel.find({});
+        messages.map(x => x.remove());
+        var shift = await shiftModel.find({});
+        shift.map(x => x.remove());
+        var reports = await monthlySalesmanHoursReportModel.find({});
+        reports.map(x => x.remove());
     }
 };
 

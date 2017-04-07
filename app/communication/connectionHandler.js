@@ -487,6 +487,20 @@ var salesmanRequests = {
         })
     },
 
+    editSale: function(shiftId,productId, saleTime, quantity){
+        return axios.post(serverUrl + 'salesman/editSale', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            productId:productId,
+            saleTime:saleTime,
+            quantity:quantity
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            return returnVal(false, err);
+        })
+    },
+
     //TODO
     addShiftComment: function(shiftId, content){
         return axios.post(serverUrl + 'salesman/addShiftComment', {
@@ -569,6 +583,8 @@ var salesmanRequests = {
             errorMessage('shiftRegister', err);
         })
     }
+
+
 };
 
 module.exports.managerRequests = managerRequests;

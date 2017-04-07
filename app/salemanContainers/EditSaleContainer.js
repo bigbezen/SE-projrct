@@ -82,6 +82,19 @@ var EditSaleContainer = React.createClass({
         })
     },
     onUpdateAmount: function (row, amount) {
+        var self = this;
+        salesmanServices.editSale(this.state.shift._id, row._id, row.timeOfSale, amount).then(function (n) {
+            if (n) {
+                var val = n;
+                if (val.success) {
+                    self.updateShift()
+                }
+                else {
+                }
+            }
+            else {
+            }
+        })
         console.log("onUpdateAmount");
         console.log(amount);
         console.log(row);

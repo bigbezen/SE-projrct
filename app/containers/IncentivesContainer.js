@@ -62,7 +62,7 @@ var IncentivesContainer = React.createClass({
     onClickEdit: function(encouragement){
         this.context.router.push({
             pathname: paths.manager_incentiveDetails_path,
-            query: encouragement
+            query: JSON.stringify(encouragement)
         })
     },
     renderProductRow: function(product, i) {

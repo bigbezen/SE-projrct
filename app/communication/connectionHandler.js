@@ -120,13 +120,12 @@ var managementRequests = {
             newSold: newSold,
             newOpened: newOpened
         }).then(function (info) {
-            console.log('the user ' + name + ' changePassword.');
-            return info;
+            if(info.status == 200)
+                return "";
+            else
+                throw "Edit Was Not Successful";
         }).catch(function (err) {
-            console.log('debug');
-            if(err)
-                console.log('debug');
-            throw err;
+            throw "Edit Was Not Successful";
         })
     },
 

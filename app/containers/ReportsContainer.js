@@ -10,6 +10,7 @@ var managementServices = require('../communication/managementServices');
 var moment = require('moment');
 var NotificationSystem = require('react-notification-system');
 var EditIcon = require('react-icons/lib/md/edit');
+var salesChart = undefined;
 
 import ReactDOM from 'react-dom';
 import fusioncharts from 'fusioncharts';
@@ -66,6 +67,14 @@ var ReportsContainer = React.createClass({
     salesmanChanged: function(event) {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
+        var salesChart = FusionCharts('sales_report_chart');
+        if(salesChart){
+            salesChart.dispose();
+        }
+        this.setState({
+            chosenShift: undefined,
+            shifts: []
+        });
 
         var salesman = this.state.salesmen[event.target.selectedIndex - 1];
         console.log('fetching shifts of ' + salesman.username);
@@ -73,11 +82,12 @@ var ReportsContainer = React.createClass({
             .then(function(result) {
                 if(result.info.length == 0){
                     notificationSystem.addNotification({
-                        message: constantsStrings.noShifts_string,
+                        message: constantStrings.noShifts_string,
                         level: 'error',
-                        autoDismiss: 1,
+                        autoDismiss: 2,
                         position: 'tc',
                     });
+
                 }
                 else{
                     self.setState({
@@ -86,9 +96,9 @@ var ReportsContainer = React.createClass({
                 }
             }).catch(function (err) {
                 notificationSystem.addNotification({
-                    message: constantsStrings.errorMessage_string,
+                    message: constantStrings.errorMessage_string,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 2,
                     position: 'tc',
                 });
             })
@@ -120,17 +130,18 @@ var ReportsContainer = React.createClass({
                 }});
 
         FusionCharts.ready(function () {
+
             var myDataSource = {
                 chart: {
-                    caption: "Sales Report",
-                    subCaption: "Sales Report from " + moment(shift.startTime).format('YYYY-MM-DD'),
+                    caption: constantStrings.reportsSalesReportTitle_string,
+                    subCaption: constantStrings.reportsSalesReportSubTitle_string + moment(shift.startTime).format('YYYY-MM-DD'),
                     theme: "zune"
                 },
                 data: chartData
             };
 
-            var revenueChartConfigs = {
-                id: "revenue-chart",
+            salesChart = {
+                id: "sales_report_chart",
                 type: "column2d",
                 width: "80%",
                 height: 400,
@@ -138,7 +149,7 @@ var ReportsContainer = React.createClass({
                 dataSource: myDataSource
             };
 
-            ReactDOM.render( < ReactFC {...revenueChartConfigs }/>,
+            ReactDOM.render( < ReactFC {...salesChart }/>,
                 document.getElementById('chart-container')
             );
         });
@@ -169,7 +180,6 @@ var ReportsContainer = React.createClass({
     },
 
 
-
     renderSalesProducts: function(product, i){
         return (
             <div className="row col-sm-8 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
@@ -179,7 +189,7 @@ var ReportsContainer = React.createClass({
                 <p className="col-sm-1"></p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editOpened" + i} defaultValue={product.opened} />
                 <p className="col-sm-1"></p>
-                <a href="#" className="w3-xlarge" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></a>
+                <p className="w3-xlarge" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
             </div>
         )
     },
@@ -190,16 +200,21 @@ var ReportsContainer = React.createClass({
         var productId = product.productId;
         var shiftId = this.state.chosenShift._id;
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
 
         managementServices.updateSalesReport(shiftId, productId, newSold, newOpened)
             .then(function(result) {
                 console.log('updated sales report');
-                self.setState({
-                    chosenShift: undefined
-                })
+
             })
             .catch(function(err) {
                 console.log('error');
+                notificationSystem.addNotification({
+                    message: constantsStrings.editFailMessage_string,
+                    level: 'error',
+                    autoDismiss: 1,
+                    position: 'tc',
+                });
             })
     },
 
@@ -225,7 +240,10 @@ var ReportsContainer = React.createClass({
 
     renderSalesGraph: function() {
         return (
-            <div style={{fontSize: '40px'}} id="chart-container"></div>
+
+            <div>
+                <div style={{fontSize: '40px'}} id="chart-container"></div>
+            </div>
         )
     },
 

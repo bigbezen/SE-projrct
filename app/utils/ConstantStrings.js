@@ -120,6 +120,8 @@ class ConstantStrings extends React.Component {
     static editReport_string = 'עריכת דוח';
     static reportsNumberOfProductsSold_string = 'כמות הבקבוקים שנמכרו';
     static reportsNumberOfProductsOpened_string = 'כמות הבקבוקים שנפתחו';
+    static reportsSalesReportTitle_string = 'דוח טעימות';
+    static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
 
     static reportSale_string = 'דווח מכירה';
     static reportOpen_string = 'דווח פתיחה';

@@ -57,7 +57,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('1 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('40 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
 
@@ -203,10 +203,10 @@ function _setapApiEndpoints() {
     });
 
     app.post('/salesman/addShiftComment', async function (req, res) {
-        if(!validator.addShiftComment(req.body)) {
+        /*if(!validator.addShiftComment(req.body)) {
             res.status(404).send('invalid parameters');
             return;
-        }
+        }*/
         let result = await shiftService.addShiftComment(req.body.sessionId, req.body.shiftId, req.body.content);
         if(result.code == 200)
             res.status(200).send();
@@ -716,18 +716,17 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getSalaryForHumanResourceReport', async function (req, res) {
-        var result = await reportsService.getSalaryForHumanResourceReport('123456',2017,2 );
+        var result = await reportsService.getSalaryForHumanResourceReport(req.headers.sessionid ,req.headers.year,req.headers.month);
         res.status(result.code).send(result.err);
     });
 
     app.get('/manager/getSalesmanListXL', async function (req, res) {
         var result = await reportsService.getSalesmanListXL(req.headers.sessionid);
         res.status(result.code).send(result.err);
-        return;
     });
 
     app.get('/manager/getMonthlyHoursSalesmansReportXl', async function (req, res) {
-        var result = await reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, reg.headers.year, req.headers.month);
+        var result = await reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, req.headers.year, req.headers.month);
         res.status(result.code).send(result.err);
     });
 

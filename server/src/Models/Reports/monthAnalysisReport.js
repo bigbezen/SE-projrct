@@ -5,15 +5,31 @@ var monthAnalysisReport = new Schema({
     'year': Number,
     'monthData': [{
         'month': Number,
+        'salesmanCost':{
+            'traditional': Number,
+            'organized': Number
+        },
         'totalHours': {
             'traditional': Number,
             'organized': Number
         },
-        'salesmanCount': {
+        'shiftsCount': {
             'traditional': Number,
             'organized': Number
         },
-        'saleBattlesCount': {
+        'uniqueCount': {
+            'traditional': Number,
+            'organized': Number
+        },
+        'saleBottlesCount': {
+            'traditional': Number,
+            'organized': Number
+        },
+        'openedCount': {
+            'traditional': Number,
+            'organized': Number
+        },
+        'saleAverage': {
             'traditional': Number,
             'organized': Number
         },

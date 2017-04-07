@@ -210,7 +210,7 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context4.prev = _context4.next) {
                         case 0:
-                            if (validator.sessionId(req.body)) {
+                            if (validator.retrievePassword(req.body)) {
                                 _context4.next = 3;
                                 break;
                             }
@@ -220,7 +220,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context4.next = 5;
-                            return userService.retrievePassword(req.body.sessionId);
+                            return userService.retrievePassword(req.body.username, req.body.email);
 
                         case 5:
                             result = _context4.sent;
@@ -1786,7 +1786,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyHoursSalesmansReportXl', function () {
+    app.get('/manager/getSalaryForHumanResourceReport', function () {
         var _ref43 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee43(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee43$(_context43) {
@@ -1794,7 +1794,7 @@ function _setapApiEndpoints() {
                     switch (_context43.prev = _context43.next) {
                         case 0:
                             _context43.next = 2;
-                            return reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, reg.headers.year, req.headers.month);
+                            return reportsService.getSalaryForHumanResourceReport('123456', 2017, 2);
 
                         case 2:
                             result = _context43.sent;
@@ -1814,31 +1814,23 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyHoursSalesmansReport', function () {
+    app.get('/manager/getSalesmanListXL', function () {
         var _ref44 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee44(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee44$(_context44) {
                 while (1) {
                     switch (_context44.prev = _context44.next) {
                         case 0:
-                            if (validator.getMontlyhouresSalesmanReport(req.header)) {
-                                _context44.next = 3;
-                                break;
-                            }
+                            _context44.next = 2;
+                            return reportsService.getSalesmanListXL(req.headers.sessionid);
 
-                            res.status(404).send('invalid parameters');
-                            return _context44.abrupt('return');
-
-                        case 3:
-                            _context44.next = 5;
-                            return reportsService.getMonthlyUserHoursReport(req.header.sessionId, req.header.year, req.header.month);
-
-                        case 5:
+                        case 2:
                             result = _context44.sent;
 
-                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+                            res.status(result.code).send(result.err);
+                            return _context44.abrupt('return');
 
-                        case 7:
+                        case 5:
                         case 'end':
                             return _context44.stop();
                     }
@@ -1848,6 +1840,71 @@ function _setapApiEndpoints() {
 
         return function (_x85, _x86) {
             return _ref44.apply(this, arguments);
+        };
+    }());
+
+    app.get('/manager/getMonthlyHoursSalesmansReportXl', function () {
+        var _ref45 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee45(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee45$(_context45) {
+                while (1) {
+                    switch (_context45.prev = _context45.next) {
+                        case 0:
+                            _context45.next = 2;
+                            return reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, req.headers.year, req.headers.month);
+
+                        case 2:
+                            result = _context45.sent;
+
+                            res.status(result.code).send(result.err);
+
+                        case 4:
+                        case 'end':
+                            return _context45.stop();
+                    }
+                }
+            }, _callee45, this);
+        }));
+
+        return function (_x87, _x88) {
+            return _ref45.apply(this, arguments);
+        };
+    }());
+
+    app.get('/manager/getMonthlyHoursSalesmansReport', function () {
+        var _ref46 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee46(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee46$(_context46) {
+                while (1) {
+                    switch (_context46.prev = _context46.next) {
+                        case 0:
+                            if (validator.getMontlyhouresSalesmanReport(req.header)) {
+                                _context46.next = 3;
+                                break;
+                            }
+
+                            res.status(404).send('invalid parameters');
+                            return _context46.abrupt('return');
+
+                        case 3:
+                            _context46.next = 5;
+                            return reportsService.getMonthlyUserHoursReport(req.header.sessionId, req.header.year, req.header.month);
+
+                        case 5:
+                            result = _context46.sent;
+
+                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+
+                        case 7:
+                        case 'end':
+                            return _context46.stop();
+                    }
+                }
+            }, _callee46, this);
+        }));
+
+        return function (_x89, _x90) {
+            return _ref46.apply(this, arguments);
         };
     }());
 }

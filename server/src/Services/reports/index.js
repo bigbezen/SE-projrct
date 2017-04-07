@@ -1,4 +1,5 @@
 let logger          = require('../../Utils/Logger/logger');
+let mongoose    = require('mongoose');
 let permissions     = require('../permissions/index');
 let dal             = require('../../DAL/dal');
 let mailer          = require('../../Utils/Mailer/index');
@@ -6,7 +7,8 @@ let fs              = require('fs');
 let moment          = require('moment');
 let Excel           = require('exceljs');
 let userService     = require('../../Services/user');
-let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport')
+let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
+let monthAnalysisReportModel = require('../../Models/Reports/monthAnalysisReport');
 let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
 
 let getSaleReportXl =  async function(sessionId, shiftId){
@@ -163,12 +165,13 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                 row = worksheet.getRow(4);
                 row.getCell(3).value = user.jobDetails.salary;//C4
 
-
+                let maxEncCol;
                 //write the encouragements names
                 let allEnc = await dal.getAllEncouragements();
                 for(let i = 0; i < allEnc.length; i++){
                     row = worksheet.getRow(7);
-                    row.getCell(18 + i).value = allEnc[i].name;//R+i7
+                    row.getCell(17 + i).value = allEnc[i].name;//R+i7
+                    maxEncCol = 17 + i;
                 }
 
                 //add all the shifts and the encouragements
@@ -184,18 +187,27 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                     row.getCell(5).value = currentShift.type;
                     row.getCell(6).value = new Date(currentShift.startTime);
                     row.getCell(7).value = new Date(currentShift.endTime);
-                    row.getCell(15).value = 100;
+                    row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+
+                    for(let enc of currentShift.encouragements){
+                        let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc));
+                        for(let k = 18; k <= maxEncCol; k++){
+                            if(worksheet.getRow(7).getCell(k).value == encName.name){
+                                row.getCell(k).value = encName.rate;
+                            }
+                        }
+                    }
 
                     row.commit();
                 }
 
                 sheetNum = sheetNum + 1;
             }
-            return workbook.xlsx.writeFile('monthReport/salaryForHumanResourceReport.xlsx');
+            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
         });
 
-//    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
- //   mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
     return {'code': 200};
 };
 
@@ -348,35 +360,52 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
                 right: {style:'medium'}
             };
 
-            //write all the encouragements
-            let encouragemnets = await dal.getAllEncouragements();
-            let col = 3;
-            for(let enc of encouragemnets){
-                if(enc.active){
-                    row.getCell(col).value = enc.name;
-                    row.getCell(col).fill = {
-                        type: 'pattern',
-                        pattern:'solid',
-                        fgColor:{argb:'99CCF0FF'},
-                        bgColor:{argb:'99CCF0FF'}
-                    };
+            //write total sales and opened
+            row.getCell(3).value = 'מכירות';
+            row.getCell(3).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(3).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
 
-                    row.getCell(col).border = {
-                        top: {style:'medium'},
-                        left: {style:'medium'},
-                        bottom: {style:'medium'},
-                        right: {style:'medium'}
-                    };
-                    col = col + 1;
-                }
-            }
+            row.getCell(4).value = 'מכירות לשעה';
+            row.getCell(4).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(4).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
 
-            let encMaxCol = col;
+            row.getCell(5).value = 'בקבוקים שנפתחו';
+            row.getCell(5).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(5).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
+
             let rowNum = 4;
-            let encRow = worksheet.getRow(3);
-            //foreach user write the total number shifts hours and ecourangements
             for(let userData of report.salesmansData){
-                col = 1;
+                let col = 1;
                 row = worksheet.getRow(rowNum);
                 let userDB = await dal.getUserByobjectId(userData.user);
                 row.getCell(col).value = userDB.personal.firstName + ' ' + userDB.personal.lastName;
@@ -398,25 +427,45 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
                 };
                 col = col + 1;
 
-                for(let encUser of userData.monthlyEncoragement){
-                    for(let i = col ; i <= encMaxCol; i++) {
-                        let encDB = await dal.getEncouragement(encUser.encouragemant);
-                        if (encRow.getCell(i).value == encDB.name) {
-                            row.getCell(i).value = encUser.amount;
-                            row.getCell(i).border = {
-                                top: {style:'medium'},
-                                left: {style:'medium'},
-                                bottom: {style:'medium'},
-                                right: {style:'medium'}
-                            };
-                        }
-                    }
+                //add user sales
+                row.getCell(col).value = userData.sales;
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
+                if(userData.numOfHours > 0){
+                    row.getCell(col).value = (userData.sales/userData.numOfHours);
+                }else{
+                    row.getCell(col).value = 0;
                 }
+
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
+                //add user battle opened
+                row.getCell(col).value = userData.opened;
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
                 rowNum++;
             }
 
             //add total row
-            col = 1;
+            let col = 1;
             row = worksheet.getRow(rowNum);
             row.getCell(col).font = {'bold':true, 'size':13};
             row.getCell(col).value = 'סה"כ';
@@ -428,10 +477,10 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
             };
             col = col + 1;
 
-            for(let j = col; j < encMaxCol; j++) {
+            for(let j = col; j < 6; j++) {
                 let count = 0;
                 let rowCount;
-                for (let t = 4; t < rowNum; t++) {
+                for (let t = 5; t < rowNum; t++) {
                     rowCount = worksheet.getRow(t);
                     count += rowCount.getCell(j).value;
                 }
@@ -439,6 +488,10 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
                 rowCount = worksheet.getRow(rowNum);
                 rowCount.getCell(j).font = {'bold':true, 'size':13};
                 rowCount.getCell(j).value = count;
+                if(j == 4){
+                    rowCount.getCell(j).value = count/(rowNum - 4);
+                }
+
                 rowCount.getCell(j).border = {
                     top: {style: 'medium'},
                     left: {style: 'medium'},
@@ -467,10 +520,6 @@ let getMonthlyUserHoursReport = async function(sessionId, year, month){
     for(let userData of report.salesmansData){
        let user = await dal.getUserByobjectId(userData.user);
         userData.user = user.personal.firstName + ' ' + user.personal.lastName;
-        for(let enc of userData.monthlyEncoragement){
-            let encDB = await dal.getEncouragement(enc.encouragement);
-            enc.encouragement = encDB;
-        }
     }
 
     return {'report': report, 'code': 200, 'err': null};
@@ -485,6 +534,7 @@ let genarateMonthlyUserHoursReport = async function() {
     //add month and year
     report.month = date.getMonth();
     report.year = date.getFullYear();
+    report.salesmansData = [];
 
     //initilize all users
     for(let user of users) {
@@ -492,15 +542,18 @@ let genarateMonthlyUserHoursReport = async function() {
             let salesmanData = {
                 'user': user,
                 'numOfHours': 0,
-                'monthlyEncoragement': []
+                'sales': 0,
+                'opened': 0
             };
-            let encouragements = await userService.getMonthlyEncouragements(user.username, report.year, report.month);
-            salesmanData.monthlyEncoragement = encouragements;
             //count the total shift hours of user
             for (let shift of shifts){
                 if(shift.salesmanId.equals(user._id)){
                     let duration = (shift.endTime - shift.startTime)/36e5;
                     salesmanData.numOfHours += duration;
+                    for(let sales of shift.salesReport){
+                        salesmanData.sales += sales.sold;
+                        salesmanData.opened += sales.opened;
+                    }
                 }
             }
 
@@ -513,40 +566,102 @@ let genarateMonthlyUserHoursReport = async function() {
 };
 
 let genarateMonthAnalysisReport = async function() {
-    console.log('genarateMonthAnalysisReport');
-   /* let date = new Date();
-    let report = new monthlyUserHoursReportModel();
-    let shifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
-    let users = await dal.getAllUsers();
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
 
-    //add month and year
-    report.month = date.getMonth();
-    report.year = date.getFullYear();
-
-    //initilize all users
-    for(let user of users) {
-        if (user.jobDetails.userType == 'salesman') {
-            let salesmanData = {
-                'user': user,
-                'numOfHours': 0,
-                'monthlyEncoragement': []
-            };
-            let encouragements = await userService.getMonthlyEncouragements(user.username, report.year, report.month);
-            salesmanData.monthlyEncoragement = encouragements;
-            //count the total shift hours of user
-            for (let shift of shifts){
-                if(shift.salesmanId.equals(user._id)){
-                    let duration = (shift.endTime - shift.startTime)/36e5;
-                    salesmanData.numOfHours += duration;
-                }
+    let yearReport = await dal.getMonthAnalysisReport(year);
+    if(yearReport == null){
+        yearReport = new monthAnalysisReportModel();
+        yearReport.monthData = [];
+        yearReport.year = year;
+        for(let i = 0; i < 12; i++){
+            let monthReport = {'month': (i + 1),
+                'salesmanCost':{
+                'traditional': 0,
+                    'organized': 0
+            },
+            'totalHours': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'shiftsCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'uniqueCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'saleBottlesCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'openedCount': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'saleAverage': {
+                'traditional': 0,
+                    'organized': 0
+            },
+            'monthlyEncoragement': []
+        };
+            let allEnc = await dal.getAllEncouragements();
+            for(let enc of allEnc){
+                monthReport.monthlyEncoragement.push({'encouragement': enc, 'amount': 0});
             }
-
-            report.salesmansData.push(salesmanData);
+            yearReport.monthData.push(monthReport);
         }
+
+        yearReport = await dal.addMonthAnalysisReport(yearReport);
     }
 
-    let res = await dal.addMonthlySalesmanReport(report);
-    return {'report': res ,'code': 200 ,'err': null};*/
+    let monthShifts = await dal.getMonthShifts(year, month);
+    for(let currentShift of monthShifts){
+        let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
+        let duration = (currentShift.endTime - currentShift.startTime)/36e5;
+        if(currentShift.type == 'traditional'){
+            yearReport.monthData[month].totalHours.traditional += duration;
+            yearReport.monthData[month].salesmanCost.traditional += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.traditional += 1;
+            yearReport.monthData[month].saleBottlesCount.traditional += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.traditional+= sale.opened;
+            }
+            for(let shiftEnc of currentShift.encouragements){
+                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
+                    if(encReport._id.equals(shiftEnc._id)){
+                        encReport.amount += 1;
+                    }
+                }
+            }
+        }
+        else{//organized
+            yearReport.monthData[month].totalHours.organized += duration;
+            yearReport.monthData[month].salesmanCost.organized += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.organized += 1;
+            yearReport.monthData[month].saleBottlesCount.organized += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.organized+= sale.opened;
+            }
+            for(let shiftEnc of currentShift.encouragements){
+                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
+                    if(encReport._id.equals(shiftEnc._id)){
+                        encReport.amount += 1;
+                    }
+                }
+            }
+        }
+    }
+    if(yearReport.monthData[month].totalHours.traditional > 0){
+        yearReport.monthData[month].saleAverage.traditional = yearReport.monthData[month].saleBottlesCount.traditional/yearReport.monthData[month].totalHours.traditional;
+    }
+    if(yearReport.monthData[month].totalHours.organized > 0){
+        yearReport.monthData[month].saleAverage.organized = yearReport.monthData[month].saleBottlesCount.organized/yearReport.monthData[month].totalHours.organized;
+    }
+
+    let res = await dal.editMonthAnalysisReport(yearReport);
+    return {'code':200};
 };
 
 

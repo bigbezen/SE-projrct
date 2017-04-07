@@ -111,6 +111,12 @@ var SalesmanHomeContainer = React.createClass({
             }
         })
     },
+    handleChangePassword: function () {
+        console.log('BaseContainer- changePass function');
+        this.context.router.push({
+            pathname: paths.salesman_changePass_path
+        })
+    },
     renderShift: function () {
         //TODO: present to user details about the shift or some other message if he has no shift
         return (
@@ -120,6 +126,11 @@ var SalesmanHomeContainer = React.createClass({
                         <li>
                             <button className="w3-btn w3-xlarge w3-round-xlarge w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
+                            </button>
+                        </li>
+                        <li>
+                            <button className="w3-btn w3-round-xlarge w3-theme-l3 col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
+                                {constantsStrings.changePass_string}
                             </button>
                         </li>
                     </ul>
@@ -142,6 +153,11 @@ var SalesmanHomeContainer = React.createClass({
                         <li>
                             <button className="w3-btn w3-xlarge w3-round-xlarge w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
+                            </button>
+                        </li>
+                        <li>
+                            <button className="w3-btn w3-round-xlarge w3-theme-l3 col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
+                                {constantsStrings.changePass_string}
                             </button>
                         </li>
                     </ul>

@@ -52,6 +52,11 @@ var helpers = {
     getSaleReportXl: function(shift){
         console.log('managerServices- getReports');
         return connection.managerRequests.getSaleReportXl(shift);
+    },
+
+    getSalesmanListXL: function () {
+        console.log('managerServices- getSalesmanReports');
+        return connection.managerRequests.getSalesmanListXL();
     }
 };
 

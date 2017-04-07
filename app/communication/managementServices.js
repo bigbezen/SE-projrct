@@ -74,6 +74,7 @@ var helpers = {
 
     editIncentive: function(incentive){
         console.log('managementervices- editIncentive');
+        return connection.managementRequests.editIncentive(incentive);
     },
 
     getAllIncentives: function(){

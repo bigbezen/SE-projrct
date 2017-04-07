@@ -5,6 +5,7 @@ var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
 var constantStrings = require('../utils/ConstantStrings');
 var helpers = require('../utils/Helpers');
 var managementServices = require('../communication/managementServices');
+var managerServices = require('../communication/managerServices');
 var userServices = require('../communication/userServices');
 var flatten = require('flat');
 var moment = require('moment');
@@ -143,6 +144,32 @@ var UsersContainer = React.createClass({
             pathname: paths.manager_userDetails_path
         })
     },
+    onClickGetReportButton: function(cell, row, rowIndex){
+        var notificationSystem = this.refs.notificationSystem;
+        managerServices.getSalesmanListXL().then(function (n) {
+            if (n) {
+                var result = n;
+                if (result.success) {
+                    console.log("works!!");
+                    notificationSystem.addNotification({
+                        message: constantStrings.mailSentSuccess_string,
+                        level: 'success',
+                        autoDismiss: 3,
+                        position: 'tc'
+                    });
+                } else {
+                    notificationSystem.addNotification({
+                        message: constantStrings.errorMessage_string,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
+                }
+            } else {
+                console.log("error in getSalesmanListXL: " + n);
+            }
+        })
+    },
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
@@ -169,6 +196,7 @@ var UsersContainer = React.createClass({
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
                 <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
+                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top" onClick={this.onClickGetReportButton}> הורד דוח </button>
                 <BootstrapTable data={this.state.users} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'personal.id'

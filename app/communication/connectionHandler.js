@@ -256,6 +256,19 @@ var managementRequests = {
         })
     },
 
+    editIncentive: function(incentive) {
+        console.log('add incentive');
+        return axios.post(serverUrl + 'management/editEncouragement', {
+            sessionId:sessionId,
+            encouragementDetails: incentive
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            console.log(err);
+            return returnVal(false, err);
+        })
+    },
+
     getAllIncentives: function() {
         return axios.get(serverUrl + 'management/getAllEncouragements', {
             headers: {

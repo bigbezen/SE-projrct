@@ -35,7 +35,7 @@ var ReportsContainer = React.createClass({
 
     getInitialState() {
         return{
-            salesmen: [],
+            salesmen: undefined,
             shifts: [],
             chosenShift: undefined
         }
@@ -255,7 +255,7 @@ var ReportsContainer = React.createClass({
         )
     },
     render: function () {
-        if(this.state.salesmen.length == 0){
+        if(this.state.salesmen == undefined){
             return this.renderLoading();
         }
         else {

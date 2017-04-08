@@ -499,9 +499,10 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     let found = false;
     let diffQuant;
     for(let sale of shift.sales){
+        console.log('bla');
         let saleDate = new Date(sale.timeOfSale).getTime();
         let getTime = new Date(time).getTime();
-        if(sale.productId.equals(productId) &&  saleDate == getTime){
+        if(sale.productId.toString()==(productId) &&  saleDate == getTime){
             diffQuant = sale.quantity - quantity;
             sale.quantity = quantity;
             found = true;

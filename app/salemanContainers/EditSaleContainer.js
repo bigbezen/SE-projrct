@@ -83,7 +83,7 @@ var EditSaleContainer = React.createClass({
     },
     onUpdateAmount: function (row, amount) {
         var self = this;
-        salesmanServices.editSale(this.state.shift._id, row._id, row.timeOfSale, amount).then(function (n) {
+        salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount).then(function (n) {
             if (n) {
                 var val = n;
                 if (val.success) {
@@ -104,6 +104,7 @@ var EditSaleContainer = React.createClass({
         return(
             <div>
                 <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
+                    <h1><b>{constantStrings.press_quantity_for_edit}</b></h1>
                     <BootstrapTable data={this.state.sales} hover bordered={false} cellEdit={ cellEditProp }>
                         <TableHeaderColumn
                             dataField = 'name'

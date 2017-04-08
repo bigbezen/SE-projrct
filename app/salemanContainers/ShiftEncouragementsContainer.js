@@ -42,7 +42,7 @@ var ShiftEncouragementsContainer = React.createClass({
     render: function () {
         return(
             <div>
-                TO DO!!
+                <h1>Coming Soon...</h1>
             </div>
         )
     }

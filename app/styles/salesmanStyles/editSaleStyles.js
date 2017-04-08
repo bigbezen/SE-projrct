@@ -35,15 +35,15 @@ var editSaleStyles = {
         fontSize: '50px'
     },
     products_table_body: {
-        fontSize: '50px',
+        fontSize: '45px',
         fontWeight: 'bold',
         height: '120px'
     },
     productName_column: {
-        fontSize: '50px',
+        fontSize: '45px',
         fontWeight: 'bold',
         height: '120px',
-        width: '50%'
+        width: '60%'
     },
     time_column: {
         fontSize: '30px',
@@ -57,8 +57,10 @@ var editSaleStyles = {
         height: '60px',
     },
     quantityEditorStyle:{
-        fontSize: '50px',
-        width: '35%'
+        fontSize: '45px',
+        width: '35%',
+        fontWeight: 'bold',
+
     }
 };
 

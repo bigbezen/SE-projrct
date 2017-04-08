@@ -12,6 +12,9 @@ var styles = {
     },
     hoverBackground: {
         backgroundColor:'w3-theme-l5'
+    },
+    navbarDivider: {
+        borderLeft: '1px solid gray'
     }
 
 };

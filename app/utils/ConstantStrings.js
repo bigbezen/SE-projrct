@@ -14,6 +14,7 @@ class ConstantStrings extends React.Component {
     static products_string = 'מוצרים';
     static shifts_string = ' משמרות';
     static reports_string = ' דוחות';
+    static saleReport_string = 'טעימות';
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';

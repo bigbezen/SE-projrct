@@ -268,7 +268,9 @@ class ConstantStrings extends React.Component {
     static comments_string = 'הערות';
     static encouragements_string = 'תמריצים';
 
-    //shift comments
+    //shift expenses
+    static num_of_km_string = 'מספר ק"מ';
+    static parking_price_string = 'מחיר חנייה';
 }
 
 module.exports = ConstantStrings;

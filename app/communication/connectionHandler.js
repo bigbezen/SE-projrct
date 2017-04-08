@@ -591,9 +591,11 @@ var salesmanRequests = {
         })
     },
 
-    shifts: function(){
-        return axios.post(serverUrl + 'salesman/shifts', {
-            sessionId:sessionId
+    getAllShifts: function(){
+        return axios.get(serverUrl + 'salesman/getAllShifts', {
+            headers:{
+                sessionId:sessionId
+            }
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {

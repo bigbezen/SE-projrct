@@ -126,6 +126,11 @@ var SalesmanHomeContainer = React.createClass({
             pathname: paths.salesman_changePass_path
         })
     },
+    handleExpensesUpdate: function() {
+        this.context.router.push({
+            pathname: paths.salesman_shiftExpenses_path
+        })
+    },
     renderShift: function () {
         //TODO: present to user details about the shift or some other message if he has no shift
         return (
@@ -149,6 +154,9 @@ var SalesmanHomeContainer = React.createClass({
                 </div>
                 <div style={styles.centerAlign}>
                     <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
+                </div>
+                <div>
+                    <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleExpensesUpdate}>עדכן נסיעות</button>
                 </div>
             </div>
 
@@ -188,9 +196,5 @@ var SalesmanHomeContainer = React.createClass({
         }
     }
 });
-
-/**
- *
- */
 
 module.exports = SalesmanHomeContainer;

@@ -56,9 +56,9 @@ var helpers = {
         return connection.salesmanRequests.encouragements();
     },
 
-    shifts: function(){
+    getAllShifts: function(){
         console.log('salesmanServices- shifts');
-        return connection.salesmanRequests.shifts();
+        return connection.salesmanRequests.getAllShifts();
     },
 
     addShiftsConstraints: function(){

@@ -32,7 +32,7 @@ var ShiftEncouragements = require('../salemanContainers/ShiftEncouragementsConta
 var IncentivesContainer = require('../containers/IncentivesContainer');
 var Incentive = require('../containers/IncentiveDetails');
 var Reports = require('../containers/ReportsContainer');
-
+var SalesmanShiftsExpenses = require('../salemanContainers/shiftsExpensesContainer');
 
 var routes = (
     <Router history={hashHistory}>
@@ -62,6 +62,7 @@ var routes = (
             <Route path='home' component={SalesmanHome}/>
             <Route path='startShift' component={SalesmanStartShift}/>
             <Route path='endShift' component={SalesmanEndShift}/>
+            <Route path='shiftsExpenses' component={SalesmanShiftsExpenses}/>
         </Route>
 
         <Route path='/salesman/shift/' component={ShiftBaseContainer}>

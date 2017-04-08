@@ -652,5 +652,6 @@ module.exports.deleteShift = deleteShift;
 module.exports.editShift = editShift;
 module.exports.updateSalesReport = updateSalesReport;
 module.exports.editSale = editSale;
+module.exports.getSalesmanShifts = getSalesmanShifts;
 
 

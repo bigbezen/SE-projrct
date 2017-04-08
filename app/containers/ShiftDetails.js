@@ -115,7 +115,9 @@ var ShiftDetails = React.createClass({
                     optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
                     for (var i = 0; i < arrayOfObjects.length; i++) {
                         var currOption = arrayOfObjects[i];
-                        optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
+                        if (currOption.jobDetails.userType == "salesman") {
+                            optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
+                        }
                     }
                     self.setState({salesmenForDropDown: optionsForDropDown});
                 } else {

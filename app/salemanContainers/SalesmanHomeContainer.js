@@ -111,6 +111,12 @@ var SalesmanHomeContainer = React.createClass({
             }
         })
     },
+    handleChangePassword: function () {
+        console.log('BaseContainer- changePass function');
+        this.context.router.push({
+            pathname: paths.salesman_changePass_path
+        })
+    },
     renderShift: function () {
         //TODO: present to user details about the shift or some other message if he has no shift
         return (
@@ -118,9 +124,14 @@ var SalesmanHomeContainer = React.createClass({
                 <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
                     <ul>
                         <li>
-                            <button className="w3-btn w3-xlarge w3-round-xlarge w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
-                            </button>
+                            </label>
+                        </li>
+                        <li>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
+                                {constantsStrings.changePass_string}
+                            </label>
                         </li>
                     </ul>
                 </div>
@@ -140,9 +151,14 @@ var SalesmanHomeContainer = React.createClass({
                 <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
                     <ul>
                         <li>
-                            <button className="w3-btn w3-xlarge w3-round-xlarge w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
-                            </button>
+                            </label>
+                        </li>
+                        <li>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
+                                {constantsStrings.changePass_string}
+                            </label>
                         </li>
                     </ul>
                 </div>

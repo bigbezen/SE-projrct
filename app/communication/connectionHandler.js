@@ -61,9 +61,10 @@ var userRequests = {
         })
     },
 
-    retrievePassword: function(){ //TODO: doesn't
+    retrievePassword: function(username, email){ //TODO: doesn't
         return axios.post(serverUrl + 'user/retrievePassword', {
-            sessionId:sessionId
+            username:username,
+            email:email
         }).then(function (info) {
             console.log('the user ' + name + ' retrievePassword.');
             return returnVal(true, info);
@@ -245,6 +246,19 @@ var managementRequests = {
     addIncentive: function(incentive) {
         console.log('add incentive');
         return axios.post(serverUrl + 'management/addEncouragement', {
+            sessionId:sessionId,
+            encouragementDetails: incentive
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            console.log(err);
+            return returnVal(false, err);
+        })
+    },
+
+    editIncentive: function(incentive) {
+        console.log('add incentive');
+        return axios.post(serverUrl + 'management/editEncouragement', {
             sessionId:sessionId,
             encouragementDetails: incentive
         }).then(function (info) {

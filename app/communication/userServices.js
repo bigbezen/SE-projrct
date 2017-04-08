@@ -23,9 +23,9 @@ var helpers = {
         return  connection.userRequests.salesmanIsLoggedin();
     },
 
-    retrievePassword: function(){
+    retrievePassword: function(username, email){
         console.log('userServices- retrievePassword function');
-        return connection.userRequests.retrievePassword();
+        return connection.userRequests.retrievePassword(username, email);
     },
 
     changePassword: function(oldPass, newPass){

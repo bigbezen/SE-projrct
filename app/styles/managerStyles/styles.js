@@ -44,6 +44,9 @@ var styles = {
     },
     productSelect: {
         marginBottom: '10px'
+    },
+    getReportButtonStyle:{
+        marginLeft: '10px'
     }
 
 };

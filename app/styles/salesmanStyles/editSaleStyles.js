@@ -60,7 +60,6 @@ var editSaleStyles = {
         fontSize: '45px',
         width: '35%',
         fontWeight: 'bold',
-
     }
 };
 

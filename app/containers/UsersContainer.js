@@ -195,9 +195,11 @@ var UsersContainer = React.createClass({
     renderTable: function () {
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top" onClick={this.onClickGetReportButton}> הורד דוח </button>
-                <BootstrapTable data={this.state.users} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle " onClick={this.onClickAddButton}> + </button>
+                <span className="pull-left">
+                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round" style={styles.getReportButtonStyle} onClick={this.onClickGetReportButton}> הורד דוח </button>
+                </span>
+                    <BootstrapTable data={this.state.users} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'personal.id'
                         dataAlign = 'right'

@@ -525,6 +525,47 @@ let editShift = async function (sessionId, shiftDetails) {
     return {'shift': shift[0], 'code':200, 'err': null};
 };
 
+let editSale = async function(sessionId, shiftId, productId, time, quantity){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'editSale');
+    if(user == null)
+        return {'code': 401, 'err': 'permission denied'};
+
+    if(quantity < 0)
+        return ({'code': 400, 'err': 'quantity cannot be negative'});
+
+    let shift = await dal.getShiftsByIds([shiftId]);
+    if(shift.length == 0)
+        return {'code': 404, 'err': 'shift not found'};
+
+    shift = shift[0];
+
+    let found = false;
+    let diffQuant;
+    for(let sale of shift.sales){
+        console.log('bla');
+        let saleDate = new Date(sale.timeOfSale).getTime();
+        let getTime = new Date(time).getTime();
+        if(sale.productId.toString()==(productId) &&  saleDate == getTime){
+            diffQuant = sale.quantity - quantity;
+            sale.quantity = quantity;
+            found = true;
+        }
+    }
+
+    if(!found)
+        return {'code': 404, 'err': 'product not found'};
+
+    for(let saleR of shift.salesReport){
+        if(saleR.productId.equals(productId)){
+            saleR.sold -= diffQuant;
+        }
+    }
+
+    let res = await dal.updateShift(shift);
+    return ({'code': 200});
+
+};
+
 let updateSalesReport = async function(sessionId, shiftId, productId, newSold, newOpened){
     logger.info('Services.shift.index.updateSalesReport', {'session-id': sessionId, 'shiftId': shiftId});
     console.log('debug');
@@ -610,5 +651,6 @@ module.exports.getActiveShift = getActiveShift;
 module.exports.deleteShift = deleteShift;
 module.exports.editShift = editShift;
 module.exports.updateSalesReport = updateSalesReport;
+module.exports.editSale = editSale;
 
 

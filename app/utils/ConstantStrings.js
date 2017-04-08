@@ -231,7 +231,7 @@ class ConstantStrings extends React.Component {
     static email_string = 'אימייל';
 
     static select_product_for_sale = 'בחר מוצר אשר נמכר/נפתח:'
-
+    static press_quantity_for_edit = 'לחץ על כמות על מנת לערוך אותה:';
     //popups
     static errorMessage_string = 'אירעה שגיאה בשרת, אנא נסה שוב מאוחר יותר';
     static errorTitle_string = 'שגיאה';

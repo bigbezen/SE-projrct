@@ -7,9 +7,9 @@ var React = require('react');
 var salesmanServices = require('../communication/salesmanServices');
 var constantStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
-var styles = require('../styles/salesmanStyles/shiftCommentsStyles');
+var styles = require('../styles/salesmanStyles/shiftExpensesStyles');
 var userServices = require('../communication/userServices');
-var managementServices = require('../communication/managementServices');
+var managementServices = require('../communication/managementServices'); //delete when getAllShifts is fixed
 var EditIcon = require('react-icons/lib/md/edit');
 
 var ShiftsExpensesContainer = React.createClass({
@@ -20,7 +20,6 @@ var ShiftsExpensesContainer = React.createClass({
         this.setSessionId();
         return{
             shifts: null,
-            viewMode: true
         }
     },
     setSessionId: function() {
@@ -42,7 +41,6 @@ var ShiftsExpensesContainer = React.createClass({
                 if (val.success) {
                     var shifts = val.info;
                     self.setState({shifts: shifts});
-                    console.log('yayyyyy');
                 }
                 else {
                 }
@@ -50,14 +48,6 @@ var ShiftsExpensesContainer = React.createClass({
             else {
             }
         })
-    },
-    changeStateToAddMode: function(){
-        this.setState({viewMode: false})
-    },
-    changeStateToViewMode: function(){
-        this.setState({viewMode: true})
-    },
-    handleEditShift(){
     },
     onClickEditButton: function(shift, index){
         var newSold = this.refs["numOfKM" + index].value;
@@ -86,7 +76,7 @@ var ShiftsExpensesContainer = React.createClass({
         var ShiftDateFormated = shiftDate.toLocaleDateString();
         return (
             <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
-                 style={{marginTop: '10px', height: '45px'}}>
+                 style={styles.rowStyle}>
                 <p className="col-sm-2"><b>{shift.store.name}</b></p>
                 <p className="col-sm-3">{ShiftDateFormated}</p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"numOfKM" + i} defaultValue={shift.numOfKM} />
@@ -97,14 +87,14 @@ var ShiftsExpensesContainer = React.createClass({
             </div>
         )
     },
-    renderViewMode: function(){
+    renderList: function(){
         return (
-            <div className="w3-container col-sm-12">
-                <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
-                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.storeName_string}</b></p>
+            <div className="w3-container col-sm-12" style={styles.bodyStyle}>
+                <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black" style={styles.rowStyle}>
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.store_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.date_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.num_of_km_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.parking_price_string}</b></p>
+                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.km_string}</b></p>
+                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.parking_string}</b></p>
                     <p className="col-sm-1"></p>
                 </div>
                 {this.state.shifts.map(this.renderEachShift)}
@@ -119,9 +109,9 @@ var ShiftsExpensesContainer = React.createClass({
         )
     },
     render: function () {
-        if(this.state.shifts != null && this.state.viewMode)
+        if(this.state.shifts != null)
         {
-            return this.renderViewMode();
+            return this.renderList();
         }
         else
         {

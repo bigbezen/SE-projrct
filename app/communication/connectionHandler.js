@@ -23,6 +23,14 @@ function returnVal(isOk, info) {
 }
 
 var userRequests = {
+    getSessionId : function() {
+      return sessionId;
+    },
+
+    setSessionId : function(newSessionid) {
+        sessionId = newSessionid;
+    },
+
     login: function(username, password) {
         return axios.post(serverUrl + 'user/login', {
             username:username,
@@ -32,7 +40,7 @@ var userRequests = {
             name = username;
             userType = info.data.userType;
             console.log('the user ' + username + ' Was logged in. user type: ' + info.data.userType);
-            return returnVal(true ,info.data.userType);
+            return returnVal(true ,info.data);
         }).catch(function (err) {
             errorMessage('Error in login', err);
             return returnVal(false, err);

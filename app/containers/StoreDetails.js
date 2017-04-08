@@ -9,19 +9,28 @@ var storeInfo = require('../models/store');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var StoreDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             editing: false,
             area:'',
             channel:''
         }
     },
-
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     handleAreaChange(event) {
         this.setState({area: event.target.value});
     },

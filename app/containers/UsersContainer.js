@@ -14,8 +14,7 @@ var styles = require('../styles/managerStyles/styles');
 var NotificationSystem = require('react-notification-system');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
-
-
+var userServices = require('../communication/userServices');
 
 function dateFormatter(cell, row) {
     return moment(cell).format('YYYY-MM-DD');
@@ -37,10 +36,19 @@ var UsersContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
+        this.setSessionId();
         return{
             users: null,
             username: null
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateUsers();

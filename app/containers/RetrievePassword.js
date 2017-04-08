@@ -14,11 +14,20 @@ var RetrievePassContainer = React.createClass({
         router: React.PropTypes.object.isRequired,
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             username: '',
             email: '',
 
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     handleSubmitUser: function (e) {
         e.preventDefault();

@@ -10,6 +10,8 @@ var constantStrings         = require('../utils/ConstantStrings');
 var salesmanServices        = require('../communication/salesmanServices');
 var styles                  = require('../styles/salesmanStyles/editSaleStyles');
 var moment                  = require('moment');
+var userServices            = require('../communication/userServices');
+
 
 const cellEditProp = {
     mode: 'click',
@@ -53,7 +55,16 @@ var EditSaleContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState(){
+        this.setSessionId();
         return{
             shift: null,
             sales: []

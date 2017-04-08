@@ -5,6 +5,13 @@ var connection = require('../communication/connectionHandler')
 //var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
+    getSessionId : function() {
+        return connection.userRequests.getSessionId();
+    },
+    setSessionId : function(newSessionid) {
+        connection.userRequests.setSessionId(newSessionid);
+    },
+
     login: function(username, password){
         console.log('userServices- Login function: username: ' +username + ', pass: ' + password);
         return connection.userRequests.login(username, password);

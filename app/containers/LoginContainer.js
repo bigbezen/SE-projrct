@@ -14,11 +14,19 @@ var LoginContainer = React.createClass({
         router: React.PropTypes.object.isRequired,
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             username: '',
             password: '',
-
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     handleSubmitUser: function (e) {
         e.preventDefault();
@@ -34,7 +42,9 @@ var LoginContainer = React.createClass({
             if(n){
                 var answer = n;
                 if (answer.success) {
-                    var userType = answer.info;
+                    var userType = answer.info.userType;
+                    var sessionId = answer.info.sessionId;
+                    localStorage.setItem('sessionId', sessionId);
                     if(userType == 'manager')
                     {
                         context.router.push({

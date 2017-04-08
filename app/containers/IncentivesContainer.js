@@ -10,7 +10,7 @@ var encs = require('../utils/encouragmentsMock');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
 var constantsStrings = require('../utils/ConstantStrings');
-
+var userServices = require('../communication/userServices');
 
 
 var IncentivesContainer = React.createClass({
@@ -24,9 +24,18 @@ var IncentivesContainer = React.createClass({
         })
     },
     getInitialState() {
+        this.setSessionId();
         return{
             incentives: []
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateIncentives();

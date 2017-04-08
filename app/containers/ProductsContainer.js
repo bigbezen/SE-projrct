@@ -13,6 +13,7 @@ var styles = require('../styles/managerStyles/styles');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -22,7 +23,16 @@ var ProductsContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState() {
+        this.setSessionId();
         return{
             products: null
         }

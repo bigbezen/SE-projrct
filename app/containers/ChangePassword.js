@@ -14,12 +14,21 @@ var ChangePassContainer = React.createClass({
         router: React.PropTypes.object.isRequired,
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             prevPass: '',
             newPass1: '',
             newPass2: '',
 
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentDidMount() {
         this.retPath = this.props.location.query;

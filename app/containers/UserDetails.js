@@ -13,18 +13,29 @@ var paths = require('../utils/Paths');
 var DropDownInput = ReactBootstrap.DropdownButton;
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
+var userServices = require('../communication/userServices');
 
 var UserDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             editing: false,
             gender: '',
             role: '',
             prevUsername:''
         }
+    },
+
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
 
     checkDropDowns: function() {

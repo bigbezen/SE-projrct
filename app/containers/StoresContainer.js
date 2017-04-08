@@ -10,6 +10,7 @@ var styles = require('../styles/managerStyles/styles');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -20,9 +21,18 @@ var StoresContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
+        this.setSessionId();
         return{
             stores: null
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateStores();

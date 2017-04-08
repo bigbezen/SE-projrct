@@ -10,20 +10,27 @@ var styles = require('../styles/managerStyles/styles');
 var encs = require('../utils/encouragmentsMock');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
-
-
-
+var userServices = require('../communication/userServices');
 
 var IncentiveDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             productsForIncentive: [1],
             products: [],
             editedIncentive: undefined
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentDidMount() {
         this.updateProducts();

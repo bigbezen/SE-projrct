@@ -11,6 +11,7 @@ var moment = require('moment');
 var NotificationSystem = require('react-notification-system');
 var EditIcon = require('react-icons/lib/md/edit');
 var salesChart = undefined;
+var userServices = require('../communication/userServices');
 
 import ReactDOM from 'react-dom';
 import fusioncharts from 'fusioncharts';
@@ -33,7 +34,16 @@ var ReportsContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
 
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState() {
+        this.setSessionId();
         return{
             salesmen: undefined,
             shifts: [],

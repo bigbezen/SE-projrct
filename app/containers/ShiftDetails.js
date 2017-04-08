@@ -13,12 +13,22 @@ var paths = require('../utils/Paths');
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
 var DropDownInput = ReactBootstrap.DropdownButton;
+var userServices = require('../communication/userServices');
 
 var ShiftDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState: function () {
+        this.setSessionId();
         return {
             editing: false,
             storeId: '',

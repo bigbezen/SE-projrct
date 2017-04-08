@@ -5,6 +5,7 @@
 var React                   = require('react');
 var constantStrings         = require('../utils/ConstantStrings');
 var salesmanServices        = require('../communication/salesmanServices');
+var userServices            = require('../communication/userServices');
 
 
 var ShiftEncouragementsContainer = React.createClass({
@@ -12,12 +13,21 @@ var ShiftEncouragementsContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState(){
+        this.setSessionId();
         return{
             shift: null,
         }
     },
     componentDidMount() {
         this.updateShift();
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     updateShift(){
         var self = this;

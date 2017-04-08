@@ -9,19 +9,28 @@ var productInfo = require('../models/product');
 var paths = require('../utils/Paths');
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
+var userServices = require('../communication/userServices');
 
 var ProductDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             editing: false,
             category:'',
             subCategory:''
         }
     },
-
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     componentDidMount() {
         console.log('check props');
         var isEmptyVar = !(this.isEmpty(this.props.location.query));

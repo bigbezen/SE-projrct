@@ -14,13 +14,23 @@ var styles                  = require('../styles/salesmanStyles/addSaleStyles');
 var salesmanServices        = require('../communication/salesmanServices');
 var StartShiftIcon          = require('react-icons/lib/fa/angle-double-left');
 var PlusIcon                = require('react-icons/lib/fa/plus');
+var userServices            = require('../communication/userServices');
 
 
 var AddSaleContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState(){
+        this.setSessionId();
         return{
             shift: null,
             products: [],

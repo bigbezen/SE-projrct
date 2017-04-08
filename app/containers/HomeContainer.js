@@ -5,6 +5,7 @@
 var React = require('react');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
+var userServices = require('../communication/userServices');
 var constantStrings = require('../utils/ConstantStrings');
 var styles = require('../styles/managerStyles/homeStyles');
 var NotificationSystem = require('react-notification-system');
@@ -14,12 +15,20 @@ var HomeContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
+        this.setSessionId();
         return{
             salesmenNum: 0,
             productsNum: 0,
-            storesNum: 0,
-
+            storesNum: 0
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateStatistics();

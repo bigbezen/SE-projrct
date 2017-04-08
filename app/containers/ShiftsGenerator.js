@@ -13,17 +13,24 @@ var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var constantStrings = require('../utils/ConstantStrings');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var ShiftDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
         }
     },
-
-    componentDidMount() {
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
 
     handleSubmitShift: function (e) {

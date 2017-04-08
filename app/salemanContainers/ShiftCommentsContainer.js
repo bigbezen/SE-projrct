@@ -45,6 +45,13 @@ var ShiftComments = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     changeStateToAddMode: function(){
@@ -68,6 +75,13 @@ var ShiftComments = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     renderEachComment: function(comment, i) {

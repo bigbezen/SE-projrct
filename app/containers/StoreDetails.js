@@ -120,6 +120,13 @@ var StoreDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managerServices.addStore(newStore).then(function (n) {
@@ -154,6 +161,13 @@ var StoreDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },

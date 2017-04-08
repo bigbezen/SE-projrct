@@ -67,6 +67,13 @@ var RetrievePassContainer = React.createClass({
             else{
                 console.log("error in retrieving password: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onReturn: function() {

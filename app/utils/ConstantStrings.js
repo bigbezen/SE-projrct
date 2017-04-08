@@ -125,8 +125,8 @@ class ConstantStrings extends React.Component {
     static defaultShiftDropDown_string = 'בחר/י משמרת';
     static noShifts_string = 'לא קיימות משמרות להצגה';
     static editReport_string = 'עריכת דוח';
-    static reportsNumberOfProductsSold_string = 'כמות הבקבוקים שנמכרו';
-    static reportsNumberOfProductsOpened_string = 'כמות הבקבוקים שנפתחו';
+    static reportsNumberOfProductsSold_string = 'נמכרו';
+    static reportsNumberOfProductsOpened_string = 'נפתחו';
     static reportsSalesReportTitle_string = 'דוח טעימות';
     static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
 

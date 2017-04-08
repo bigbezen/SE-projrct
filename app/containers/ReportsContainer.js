@@ -64,13 +64,11 @@ var ReportsContainer = React.createClass({
             });
     },
 
+
+
     salesmanChanged: function(event) {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        var salesChart = FusionCharts('sales_report_chart');
-        if(salesChart){
-            salesChart.dispose();
-        }
         this.setState({
             chosenShift: undefined,
             shifts: []
@@ -107,83 +105,82 @@ var ReportsContainer = React.createClass({
     shiftChanged: function(event) {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
+        var selectedIndex = event.target.selectedIndex;
+        if(selectedIndex > 0) {
+            var chosenShift = this.state.shifts[selectedIndex - 1];
 
-        var chosenShift = this.state.shifts[event.target.selectedIndex - 1];
 
-        this.renderChart(chosenShift);
-
-        this.setState({
-            chosenShift: chosenShift
-        });
-
-    },
-
-    renderChart: function(shift) {
-        var chartData = shift.salesReport
-            .filter(function(product) {
-                return product.sold > 0;
-            })
-            .map(function(product,i) {
-                return {
-                    label: product.name,
-                    value: product.sold
-                }});
-
-        FusionCharts.ready(function () {
-
-            var myDataSource = {
-                chart: {
-                    caption: constantStrings.reportsSalesReportTitle_string,
-                    subCaption: constantStrings.reportsSalesReportSubTitle_string + moment(shift.startTime).format('YYYY-MM-DD'),
-                    theme: "zune"
-                },
-                data: chartData
-            };
-
-            salesChart = {
-                id: "sales_report_chart",
-                type: "column2d",
-                width: "80%",
-                height: 400,
-                dataFormat: "json",
-                dataSource: myDataSource
-            };
-
-            ReactDOM.render( < ReactFC {...salesChart }/>,
-                document.getElementById('chart-container')
-            );
-        });
-    },
-
-    renderSalesReportList: function(){
-        if(this.state.chosenShift != undefined){
-            var report = this.state.chosenShift.salesReport.sort(function(a, b){
-                if(a.name < b.name)
-                    return -1;
-                else if(a.name > b.name)
-                    return 1;
-                return 0;
+            this.setState({
+                chosenShift: chosenShift
             });
-            return (
-                <div className="w3-container">
-                    <h1>{constantStrings.editReport_string}</h1>
-                    <div className="row col-sm-8 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
-                        <p className="col-sm-3" style={styles.listHeader}>{constantStrings.productName_string}</p>
-                        <p className="col-sm-3" style={styles.listHeader}>{constantStrings.reportsNumberOfProductsSold_string}</p>
-                        <p className="col-sm-3" style={styles.listHeader}>{constantStrings.reportsNumberOfProductsOpened_string}</p>
-                        <p className="col-sm-1"></p>
-                    </div>
-                    {report.map(this.renderSalesProducts)}
-                </div>
-            )
+        }
+        else{
+            this.setState({
+                chosenShift: undefined
+            })
+        }
+
+    },
+    productSortingMethod: function(a, b){
+        if(a.subCategory < b.subCategory)
+            return -1;
+        else if(a.subCategory > b.subCategory)
+            return 1;
+        else{
+            if(a.name < b.name)
+                return -1;
+            else if(a.name > b.name)
+                return 1;
+            return 0;
         }
     },
 
 
+
+
+    renderSalesReportList: function(){
+        if(this.state.chosenShift != undefined){
+            var productsByCategory = [];
+            var categories = new Set(this.state.chosenShift.salesReport.map((x) => x.category));
+            for(var cat of categories) {
+                productsByCategory.push({
+                    cat: cat,
+                    products: this.state.chosenShift.salesReport.filter((x) => x.category == cat).sort(this.productSortingMethod)
+                });
+            }
+
+            return (
+                <div>
+                    <h1 className="w3-xxlarge text-center">{constantStrings.reportsSalesReportTitle_string}</h1>
+                    {productsByCategory.map(this.renderCategoriesProducts)}
+                </div>
+            )
+
+        }
+    },
+
+    renderCategoriesProducts: function(productsOfOneCategory){
+
+        return (
+            <div className="w3-container col-sm-6">
+                <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
+                <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
+                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
+                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
+                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
+                    <p className="col-sm-1"></p>
+                </div>
+                {productsOfOneCategory.products.map(this.renderSalesProducts)}
+            </div>
+        )
+    },
+
     renderSalesProducts: function(product, i){
         return (
-            <div className="row col-sm-8 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
-                 style={{marginTop: '10px', height: '40px'}}>
+            <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
+                 style={{marginTop: '10px', height: '45px'}}>
+                <p className="col-sm-2"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editSold" + i} defaultValue={product.sold} />
                 <p className="col-sm-1"></p>
@@ -220,32 +217,24 @@ var ReportsContainer = React.createClass({
 
     getSalesmenOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option disabled selected key="defaultSalesman">{constantStrings.defaultSalesmanDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round-large" key="defaultSalesman">{constantStrings.defaultSalesmanDropDown_string}</option>);
         var salesmen = this.state.salesmen;
         for(var i=0; i<salesmen.length; i++){
-            optionsForDropdown.push(<option key={"salesman" + i}>{salesmen[i].personal.firstName + " " + salesmen[i].personal.lastName}</option>)
+            optionsForDropdown.push(<option className="w3-round-large" key={"salesman" + i}>{salesmen[i].personal.firstName + " " + salesmen[i].personal.lastName}</option>)
         }
         return optionsForDropdown;
     },
 
     getShiftsOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option disabled selected key="defaultShift">{constantStrings.defaultShiftDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round-large" key="defaultShift">{constantStrings.defaultShiftDropDown_string}</option>);
         var shifts = this.state.shifts;
         for(var i=0; i<shifts.length; i++){
-            optionsForDropdown.push(<option key={"shift" + i}>{moment(shifts[i].startTime).format('YYYY-MM-DD')}</option>)
+            optionsForDropdown.push(<option className="w3-round-large" key={"shift" + i}>{moment(shifts[i].startTime).format('YYYY-MM-DD')}</option>)
         }
         return optionsForDropdown;
     },
 
-    renderSalesGraph: function() {
-        return (
-
-            <div>
-                <div style={{fontSize: '40px'}} id="chart-container"></div>
-            </div>
-        )
-    },
 
     renderLoading:function () {
         return(
@@ -273,9 +262,7 @@ var ReportsContainer = React.createClass({
                             </select>
                         </div>
                     </div>
-                    <div className="">
-                        {this.renderSalesGraph()}
-                    </div>
+
                     <div style={{marginBottom: '30px'}}>
                         {this.renderSalesReportList()}
                     </div>

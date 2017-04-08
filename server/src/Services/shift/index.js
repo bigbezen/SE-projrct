@@ -182,7 +182,7 @@ let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
     let productsDict = {};
     let products = await dal.getAllProducts();
     for(let product of products)
-        productsDict[product._id.toString()] = product.name;
+        productsDict[product._id.toString()] = product;
 
     finishedShifts = finishedShifts.filter(function(shift){
         return shift.status == 'FINISHED';
@@ -195,8 +195,10 @@ let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
         //currentShift = currentShift.toObject();
         currentShift.store = (await dal.getStoresByIds([currentShift.storeId]))[0];
         for(let product of currentShift.salesReport) {
-            console.log('bla');
-            product.name = productsDict[product.productId.toString()];
+            let productDetails = productsDict[product.productId.toString()];
+            product.name = productDetails.name;
+            product.category = productDetails.category;
+            product.subCategory = productDetails.subCategory;
         }
     }
     console.log('bla');

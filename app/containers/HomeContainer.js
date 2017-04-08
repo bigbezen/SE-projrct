@@ -54,6 +54,7 @@ var HomeContainer = React.createClass({
             } else {
                 console.log("error in home: " + n);
             }
+        }).catch(function (errMess) {
         })
         managementServices.getAllUsers().then(function (n) {
             if (n) {
@@ -73,6 +74,7 @@ var HomeContainer = React.createClass({
             } else {
                 console.log("error in home: " + n);
             }
+        }).catch(function (errMess) {
         })
         managementServices.getAllStores().then(function (n) {
             if (n) {
@@ -92,6 +94,7 @@ var HomeContainer = React.createClass({
             } else {
                 console.log("error in home: " + n);
             }
+        }).catch(function (errMess) {
         })
     },
     handleSelectUsers: function () {

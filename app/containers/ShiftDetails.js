@@ -115,7 +115,9 @@ var ShiftDetails = React.createClass({
                     optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
                     for (var i = 0; i < arrayOfObjects.length; i++) {
                         var currOption = arrayOfObjects[i];
-                        optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
+                        if (currOption.jobDetails.userType == "salesman") {
+                            optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
+                        }
                     }
                     self.setState({salesmenForDropDown: optionsForDropDown});
                 } else {
@@ -203,6 +205,13 @@ var ShiftDetails = React.createClass({
                                     position: 'tc'
                                 });
                             }
+                        }).catch(function (errMess) {
+                            notificationSystem.addNotification({
+                                message: errMess,
+                                level: 'error',
+                                autoDismiss: 5,
+                                position: 'tc'
+                            });
                         })
                     } else {
                         notificationSystem.addNotification({
@@ -221,6 +230,13 @@ var ShiftDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addShift(newShift).then(function (n) {
@@ -252,6 +268,13 @@ var ShiftDetails = React.createClass({
                                     position: 'tc'
                                 });
                             }
+                        }).catch(function (errMess) {
+                            notificationSystem.addNotification({
+                                message: errMess,
+                                level: 'error',
+                                autoDismiss: 5,
+                                position: 'tc'
+                            });
                         })
                     } else {
                         notificationSystem.addNotification({
@@ -270,6 +293,13 @@ var ShiftDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },

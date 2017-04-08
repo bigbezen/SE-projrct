@@ -83,6 +83,13 @@ var UsersContainer = React.createClass({
             } else {
                 console.log("error in userContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEditButton: function(cell, row, rowIndex){
@@ -145,6 +152,13 @@ var UsersContainer = React.createClass({
             } else {
                 console.log("error in deleteUser: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickAddButton: function(){
@@ -176,6 +190,13 @@ var UsersContainer = React.createClass({
             } else {
                 console.log("error in getSalesmanListXL: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {

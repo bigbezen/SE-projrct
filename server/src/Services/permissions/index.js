@@ -51,6 +51,7 @@ let funcNameToPermission = {
     'genarateMonthAnalysisReport': ['manager'],
     'getSalesmanListXL': ['manager'],
     'editSale': ['salesman'],
+    'getMonthAnalysisReportXL': ['manager'],
     'getSaleReportXl': ['manager']
 };
 

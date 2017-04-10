@@ -664,6 +664,203 @@ let genarateMonthAnalysisReport = async function() {
     return {'code':200};
 };
 
+let getMonthAnalysisReportXL = async function(sessionId, year){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getMonthAnalysisReportXL');
+    if(user == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let report = await dal.getMonthAnalysisReport(year);
+    if(report == null)
+        return {'code': 404, 'err': 'report still not genarated'};
+
+    let workbook = new Excel.Workbook();
+    workbook.xlsx.readFile('monthAnalysisReport.xlsx')
+        .then(async function() {
+            let worksheet = workbook.getWorksheet(1);
+            let row = worksheet.getRow(2);
+            row.getCell(3).value = 'ניתוח כללי' + year;
+           /* row.getCell(2).value = report.month + 1; // B1's value
+            row.getCell(4).value = report.year; // D1's value
+            row.commit();
+
+            //write the head of the table
+            row = worksheet.getRow(3);
+            row.getCell(1).value = 'דיילים';
+            row.getCell(1).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(1).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
+
+            //write total hours of shift
+            row.getCell(2).value = 'שעות דיול';
+            row.getCell(2).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(2).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
+
+            //write total sales and opened
+            row.getCell(3).value = 'מכירות';
+            row.getCell(3).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(3).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
+
+            row.getCell(4).value = 'מכירות לשעה';
+            row.getCell(4).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(4).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
+
+            row.getCell(5).value = 'בקבוקים שנפתחו';
+            row.getCell(5).fill = {
+                type: 'pattern',
+                pattern:'solid',
+                fgColor:{argb:'99CCF0FF'},
+                bgColor:{argb:'99CCF0FF'}
+            };
+            row.getCell(5).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
+
+            let rowNum = 4;
+            for(let userData of report.salesmansData){
+                let col = 1;
+                row = worksheet.getRow(rowNum);
+                let userDB = await dal.getUserByobjectId(userData.user);
+                row.getCell(col).value = userDB.personal.firstName + ' ' + userDB.personal.lastName;
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
+                //add shift hours
+                row.getCell(col).value = userData.numOfHours;
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
+                //add user sales
+                row.getCell(col).value = userData.sales;
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
+                if(userData.numOfHours > 0){
+                    row.getCell(col).value = (userData.sales/userData.numOfHours);
+                }else{
+                    row.getCell(col).value = 0;
+                }
+
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
+                //add user battle opened
+                row.getCell(col).value = userData.opened;
+                row.getCell(col).border = {
+                    top: {style:'medium'},
+                    left: {style:'medium'},
+                    bottom: {style:'medium'},
+                    right: {style:'medium'}
+                };
+                col = col + 1;
+
+                rowNum++;
+            }
+
+            //add total row
+            let col = 1;
+            row = worksheet.getRow(rowNum);
+            row.getCell(col).font = {'bold':true, 'size':13};
+            row.getCell(col).value = 'סה"כ';
+            row.getCell(col).border = {
+                top: {style:'medium'},
+                left: {style:'medium'},
+                bottom: {style:'medium'},
+                right: {style:'medium'}
+            };
+            col = col + 1;
+
+            for(let j = col; j < 6; j++) {
+                let count = 0;
+                let rowCount;
+                for (let t = 5; t < rowNum; t++) {
+                    rowCount = worksheet.getRow(t);
+                    count += rowCount.getCell(j).value;
+                }
+
+                rowCount = worksheet.getRow(rowNum);
+                rowCount.getCell(j).font = {'bold':true, 'size':13};
+                rowCount.getCell(j).value = count;
+                if(j == 4){
+                    rowCount.getCell(j).value = count/(rowNum - 4);
+                }
+
+                rowCount.getCell(j).border = {
+                    top: {style: 'medium'},
+                    left: {style: 'medium'},
+                    bottom: {style: 'medium'},
+                    right: {style: 'medium'}
+                };
+            }*/
+            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+        });
+
+    //let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
+    //mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    return {'code': 200};
+};
+
 
 module.exports.getSaleReportXl = getSaleReportXl;
 module.exports.getMonthlyUserHoursReport = getMonthlyUserHoursReport;
@@ -672,3 +869,4 @@ module.exports.getMonthlyHoursSalesmansReportXl = getMonthlyHoursSalesmansReport
 module.exports.genarateMonthAnalysisReport = genarateMonthAnalysisReport;
 module.exports.getSalaryForHumanResourceReport = getSalaryForHumanResourceReport;
 module.exports.getSalesmanListXL = getSalesmanListXL;
+module.exports.getMonthAnalysisReportXL = getMonthAnalysisReportXL;

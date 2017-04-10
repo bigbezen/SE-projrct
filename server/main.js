@@ -713,6 +713,11 @@ function _setapApiEndpoints() {
         res.status(result.code).send(result.err);
     });
 
+    app.get('/manager/getMonthAnalysisReportXL', async function (req, res) {
+        var result = await reportsService.getMonthAnalysisReportXL('123456',2017);//req.headers.sessionId, req.headers.year);
+        res.status(result.code).send(result.err);
+    });
+
     app.get('/manager/getMonthlyHoursSalesmansReport', async function (req, res) {
         if (!validator.getMontlyhouresSalesmanReport(req.header)) {
             res.status(404).send('invalid parameters');

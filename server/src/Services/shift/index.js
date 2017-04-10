@@ -275,6 +275,32 @@ let getActiveShift = async function(sessionId, shiftId){
     return {'code': 200, 'shift': shift.toObject()};
 };
 
+let reportExpenses = async function(sessionId, shiftId, km, parking){
+    logger.info('Services.shift.index.reportExpenses', {'session-id': sessionId});
+    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses', null);
+
+    let shift = await dal.getShiftsByIds([shiftId]);
+    shift = shift[0];
+    if(shift == null)
+        return {'code': 409, 'err': 'shift does not exist in the database'};
+
+    if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
+        return {'code': 401, 'err': 'user not authorized'};
+    }
+
+    if(km < 0 || parking < 0)
+        return {'code': 404, 'err': 'illegal km or parking cost'};
+    shift.numOfKM = km;
+    shift.parkingCost = parking;
+
+    let res = await dal.updateShift(shift);
+    if(res.ok == 0)
+        return {'shift': shift[0], 'code':400, 'err': 'cannot edit this shift'};
+
+    return {'shift': shift[0], 'code':200, 'err': null};
+
+};
+
 let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
@@ -542,7 +568,6 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     let found = false;
     let diffQuant;
     for(let sale of shift.sales){
-        console.log('bla');
         let saleDate = new Date(sale.timeOfSale).getTime();
         let getTime = new Date(time).getTime();
         if(sale.productId.toString()==(productId) &&  saleDate == getTime){
@@ -653,5 +678,6 @@ module.exports.editShift = editShift;
 module.exports.updateSalesReport = updateSalesReport;
 module.exports.editSale = editSale;
 module.exports.getSalesmanShifts = getSalesmanShifts;
+module.exports.reportExpenses = reportExpenses;
 
 

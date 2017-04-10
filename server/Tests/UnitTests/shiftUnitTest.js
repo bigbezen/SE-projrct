@@ -35,6 +35,8 @@ describe('shift unit test', function () {
     let enc2;
     let enc3;
     let enc4;
+    let km = 100;
+    let parking = 20;
 
     let shift_object_to_model = function(shiftObj){
         let shift = new shiftModel();
@@ -972,6 +974,137 @@ describe('shift unit test', function () {
             let opens = [{'productId':"invalid8shif",'quantity':quantity}];
             let result = await shiftService.reportOpened(user1.sessionId, shift._id.toString(), opens);
             expect(result).to.have.property('code', 409);
+        });
+    });
+
+    describe('test report expenses', function(){
+        it('report expenses valid', async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let result = await shiftService.reportExpenses(salesman.sessionId, shift._id.toString(), km, parking);
+            expect(result).to.have.property('code', 200);
+
+            shift = (await dal.getShiftsByIds([shift._id]))[0];
+            expect(shift).to.have.property('numOfKM', km);
+            expect(shift).to.have.property('parkingCost', parking);
+        });
+
+        it("report expenses by manager", async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportExpenses(manager.sessionId, shift._id.toString(), km, parking);
+            expect(result).to.have.property('code', 401);
+        });
+
+        it("report expenses salesman is not this shift's salesman", async function(){
+            let salesman2 = new userModel();
+            salesman2.username = 'salesman';
+            salesman2.sessionId = '1212343412';
+            salesman2.jobDetails.userType = 'salesman';
+            let res = await dal.addUser(salesman);
+
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportExpenses(salesman2.sessionId, shift._id.toString(), km, parking);
+            expect(result).to.have.property('code', 401);
+        });
+
+        it('report expenses invalid sessionid', async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportExpenses('invalid sessionid', shift._id.toString(), km, parking);
+            expect(result).to.have.property('code', 401);
+        });
+
+        it("report expenses invalid shift id", async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportExpenses(salesman.sessionId, "invalid8shif", km, parking);
+            expect(result).to.have.property('code', 409);
+        });
+
+        it("report expenses invalid km or parking", async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':"invalid8shif",'quantity':quantity}];
+            let result = await shiftService.reportExpenses(user1.sessionId, shift._id.toString(), km, -1);
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', 'illegal km or parking cost');
         });
     });
 

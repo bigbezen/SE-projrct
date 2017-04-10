@@ -274,6 +274,18 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.post('/salesman/reportExpenses', async function(req, res){
+        if(!('sessionId' in req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.km, req.body.parking);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.post('/salesman/addShiftsConstraints', function (req, res) {
         res.status(200).send('add shifts constraints');
     });

@@ -150,6 +150,10 @@ module.exports = {
         return storeModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
     },
 
+    editSalesReport: async function(shiftId, salesReport){
+        return shiftModel.update({'_id': shiftId}, {$set: {'salesReport': salesReport}}, { upsert: false })
+    },
+
     publishShifts: async function(shiftArr){
         var results = [];
         var result;

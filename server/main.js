@@ -330,6 +330,17 @@ function _setapApiEndpoints() {
         }
     });
 
+    app.post('/management/updateSalesReport', async function(req, res){
+        console.log('bla');
+        let result = await shiftService.updateSalesReport(req.body.sessionId, req.body.shiftId,
+            req.body.productId, req.body.newSold, req.body.newOpened);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+
+    });
+
     app.post('/management/deleteUser', async function (req, res) {
         if (!validator.deleteUser(req.body)) {
             res.status(404).send('invalid parameters');
@@ -622,6 +633,18 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.get('/management/getSalesmanFinishedShifts', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('salesmanId' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getSalesmanFinishedShifts(req.headers.sessionid, req.query.salesmanId);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.post('/management/editShifts', function (req, res) {
         res.status(200).send('edit user');
     });
@@ -676,6 +699,8 @@ function _setapApiEndpoints() {
     app.post('/manager/editSalesReport', function (req, res) {
         res.status(200).send('edit sales report');
     });
+
+
 
     app.get('/manager/getRecommendations', function (req, res) {
         res.status(200).send('TODO - not yet implemented');

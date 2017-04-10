@@ -5,6 +5,13 @@ var connection = require('../communication/connectionHandler')
 //var connection = require('../communication/connectionHandlerStub')
 
 var helpers = {
+    getSessionId : function() {
+        return connection.userRequests.getSessionId();
+    },
+    setSessionId : function(newSessionid) {
+        connection.userRequests.setSessionId(newSessionid);
+    },
+
     login: function(username, password){
         console.log('userServices- Login function: username: ' +username + ', pass: ' + password);
         return connection.userRequests.login(username, password);
@@ -23,9 +30,9 @@ var helpers = {
         return  connection.userRequests.salesmanIsLoggedin();
     },
 
-    retrievePassword: function(){
+    retrievePassword: function(username, email){
         console.log('userServices- retrievePassword function');
-        return connection.userRequests.retrievePassword();
+        return connection.userRequests.retrievePassword(username, email);
     },
 
     changePassword: function(oldPass, newPass){

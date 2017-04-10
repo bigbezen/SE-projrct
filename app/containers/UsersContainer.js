@@ -14,8 +14,7 @@ var styles = require('../styles/managerStyles/styles');
 var NotificationSystem = require('react-notification-system');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
-
-
+var userServices = require('../communication/userServices');
 
 function dateFormatter(cell, row) {
     return moment(cell).format('YYYY-MM-DD');
@@ -37,10 +36,19 @@ var UsersContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
+        this.setSessionId();
         return{
             users: null,
             username: null
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateUsers();
@@ -75,6 +83,13 @@ var UsersContainer = React.createClass({
             } else {
                 console.log("error in userContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEditButton: function(cell, row, rowIndex){
@@ -137,6 +152,13 @@ var UsersContainer = React.createClass({
             } else {
                 console.log("error in deleteUser: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickAddButton: function(){
@@ -168,6 +190,13 @@ var UsersContainer = React.createClass({
             } else {
                 console.log("error in getSalesmanListXL: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     editButton: function(cell, row, enumObject, rowIndex) {
@@ -195,9 +224,11 @@ var UsersContainer = React.createClass({
     renderTable: function () {
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top" onClick={this.onClickGetReportButton}> הורד דוח </button>
-                <BootstrapTable data={this.state.users} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
+                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle " onClick={this.onClickAddButton}> + </button>
+                <span className="pull-left">
+                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round" style={styles.getReportButtonStyle} onClick={this.onClickGetReportButton}> הורד דוח </button>
+                </span>
+                    <BootstrapTable data={this.state.users} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'personal.id'
                         dataAlign = 'right'

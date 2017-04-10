@@ -8,7 +8,7 @@ var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var NotificationSystem = require('react-notification-system');
 
-var LoginContainer = React.createClass({
+var RetrievePassContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired,
@@ -17,7 +17,8 @@ var LoginContainer = React.createClass({
         this.setSessionId();
         return {
             username: '',
-            password: '',
+            email: '',
+
         }
     },
     setSessionId: function() {
@@ -30,7 +31,7 @@ var LoginContainer = React.createClass({
     },
     handleSubmitUser: function (e) {
         e.preventDefault();
-        var password = this.refs.passwordTextBox.value;
+        var email = this.refs.emailTextBox.value;
         var username = this.refs.usernameTextBox.value;
         var notificationSystem = this.refs.notificationSystem;
         this.setState({
@@ -38,34 +39,33 @@ var LoginContainer = React.createClass({
             password: ''
         });
         var context = this.context;
-        userServices.login(username, password).then(function (n) {
+        var self = this;
+        userServices.retrievePassword(username, email).then(function (n) {
             if(n){
                 var answer = n;
                 if (answer.success) {
-                    var userType = answer.info.userType;
-                    var sessionId = answer.info.sessionId;
-                    localStorage.setItem('sessionId', sessionId);
-                    if(userType == 'manager')
-                    {
-                        context.router.push({
-                            pathname: paths.manager_home_path
-                        })
-                    } else{ //TODO: add all types of users
-                        context.router.push({
-                            pathname: paths.salesman_home_path
-                        })
-                    }
+                    notificationSystem.addNotification({
+                        message: constantsStrings.retrievePassSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.login_path
+                            })
+                        }
+                    });
                 }else {
                     notificationSystem.addNotification({
-                        message: constantsStrings.loginFailMessage_string,
+                        message: constantsStrings.retrievePassFailMessage_string,
                         level: 'error',
-                        autoDismiss: 5,
+                        autoDismiss: 0,
                         position: 'tc'
                     });
                 }
             }
             else{
-                console.log("error in login: " + n);
+                console.log("error in retrieving password: " + n);
             }
         }).catch(function (errMess) {
             notificationSystem.addNotification({
@@ -76,9 +76,9 @@ var LoginContainer = React.createClass({
             });
         })
     },
-    handleRetrievePass : function(e) {
-        this.context.router.push({
-            pathname: paths.member_retrievePass_path
+    onReturn: function() {
+        context.router.push({
+            pathname: paths.login_path
         })
     },
     render: function () {
@@ -88,32 +88,31 @@ var LoginContainer = React.createClass({
                     <div className="row" style={styles.topBuffer}>
                     </div>
                 </div>
-                <div className="w3-theme-l5 col-xs-offset-2 col-xs-8 text-center img-rounded" >
-                    <h1 className="h1 w3-jumbo">IBBLS</h1>
+                <div className="w3-theme-l5 col-sm-offset-2 col-sm-8 text-center img-rounded" >
+                    <h1 className="h1 w3-jumbo">{constantsStrings.retrievePassTitle_string}</h1>
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group ">
                             <input type="text"
-                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-sm-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
                                    ref="usernameTextBox"
                                    placeholder="שם משתמש"
                                    value={this.username} />
                         </div>
                         <div className="form-group">
-                            <input type="password"
-                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
-                                   ref="passwordTextBox"
-                                   placeholder="סיסמא"
-                                   value={this.password}/>
+                            <input type="email"
+                                   className="col-sm-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   ref="emailTextBox"
+                                   placeholder="אימייל"
+                                   value={this.email}/>
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 col-xs-4 col-xs-offset-4"
+                                className="w3-btn btn w3-theme-d5 col-sm-4 col-sm-offset-4"
                                 type="submit">
-                                {constantsStrings.login_string}
+                                {constantsStrings.retrievePassButton_string}
                             </button>
                         </div>
                     </form>
-                    <label onClick={this.handleRetrievePass}>{constantsStrings.retrievePass_string}</label>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
@@ -121,4 +120,4 @@ var LoginContainer = React.createClass({
     }
 });
 
-module.exports = LoginContainer;
+module.exports = RetrievePassContainer;

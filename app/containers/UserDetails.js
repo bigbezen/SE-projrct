@@ -13,24 +13,33 @@ var paths = require('../utils/Paths');
 var DropDownInput = ReactBootstrap.DropdownButton;
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
+var userServices = require('../communication/userServices');
 
 var UserDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             editing: false,
             gender: '',
             role: '',
-            area:'',
-            channel:'',
             prevUsername:''
         }
     },
 
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
+
     checkDropDowns: function() {
-        return (this.state.gender!='' && this.state.role!='' && this.state.area!='' && this.state.channel!='');
+        return (this.state.gender!='' && this.state.role!='');
     },
 
     handleGenderChange(event) {
@@ -39,14 +48,6 @@ var UserDetails = React.createClass({
 
     handleUserTypeChange(event) {
         this.setState({role: event.target.value});
-    },
-
-    handleAreaChange(event) {
-        this.setState({area: event.target.value});
-    },
-
-    handleChannelChange(event) {
-        this.setState({channel: event.target.value});
     },
 
     componentDidMount() {
@@ -122,8 +123,8 @@ var UserDetails = React.createClass({
         //jobDetails
         newUser.jobDetails = {};
         newUser.jobDetails.userType = this.state.role;
-        newUser.jobDetails.area = this.state.area;
-        newUser.jobDetails.channel = this.state.channel;
+        newUser.jobDetails.area = "area";
+        newUser.jobDetails.channel = "channel";
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
@@ -162,6 +163,13 @@ var UserDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addUser(newUser).then(function (n) {
@@ -196,6 +204,13 @@ var UserDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },
@@ -241,27 +256,6 @@ var UserDetails = React.createClass({
                         </select>
                     </div>
 
-
-                    <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.area_string}:</label>
-                    </div>
-                    <div className="form-group ">
-                        <select className="col-xs-4 col-xs-offset-2" onChange={this.handleAreaChange} ref="areaBox">
-                            {this.getOptions(constantsStrings.areaForDropdown)}
-                        </select>
-                    </div>
-
-
-                    <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.channel_string}:</label>
-                    </div>
-                    <div className="form-group ">
-                        <select className="col-xs-4 col-xs-offset-2" onChange={this.handleChannelChange} ref="channelBox">
-                            {this.getOptions(constantsStrings.channelForDropdown)}
-                        </select>
-                    </div>
-
-
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.startDate_string}:</label>
                     </div>
@@ -272,7 +266,6 @@ var UserDetails = React.createClass({
                         />
                     </div>
 
-
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.endDate_string}:</label>
                     </div>
@@ -282,7 +275,6 @@ var UserDetails = React.createClass({
                                ref="endDateBox"
                         />
                     </div>
-
 
                     <div>
                         <div className="form-group">
@@ -432,8 +424,6 @@ var UserDetails = React.createClass({
         this.state.prevUsername = this.currProduct.username;
         this.state.gender = this.currProduct.personal.sex;
         this.state.role = this.currProduct.jobDetails.userType;
-        this.state.area = this.currProduct.jobDetails.area;
-        this.state.channel = this.currProduct.jobDetails.channel;
         this.refs.usernameBox.value = this.currProduct.username;
         this.refs.startDateBox.value = moment(this.currProduct.startDate).format('YYYY-MM-DD');
         this.refs.endDateBox.value = moment(this.currProduct.endDate).format('YYYY-MM-DD');
@@ -453,8 +443,6 @@ var UserDetails = React.createClass({
         this.refs.emailBox.value = this.currProduct.contact.email;
         //jobDetails
         this.refs.userTypeBox.value = this.currProduct.jobDetails.userType;
-        this.refs.areaBox.value = this.currProduct.jobDetails.area;
-        this.refs.channelBox.value = this.currProduct.jobDetails.channel;
     },
     render: function () {
         return this.addNewUser();

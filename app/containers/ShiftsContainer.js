@@ -17,6 +17,7 @@ var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
 var DownloadIcon = require('react-icons/lib/md/file-download');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -37,7 +38,16 @@ var ShiftsContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState() {
+        this.setSessionId();
         return{
             shifts: null
         }
@@ -74,6 +84,13 @@ var ShiftsContainer = React.createClass({
                     autoDismiss: 5,
                     position: 'tc'
                 });            }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEditButton: function(cell, row, rowIndex){
@@ -108,6 +125,13 @@ var ShiftsContainer = React.createClass({
             } else {
                 console.log("error in getSaleReportXl: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
@@ -151,6 +175,13 @@ var ShiftsContainer = React.createClass({
             } else {
                 console.log("error in deleteShift: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickAddButton: function(){

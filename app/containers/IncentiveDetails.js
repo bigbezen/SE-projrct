@@ -10,23 +10,50 @@ var styles = require('../styles/managerStyles/styles');
 var encs = require('../utils/encouragmentsMock');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
-
-
-
+var userServices = require('../communication/userServices');
 
 var IncentiveDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-    componentWillMount() {
-      this.updateProducts();
-    },
     getInitialState: function () {
+        this.setSessionId();
         return {
             productsForIncentive: [1],
-            products: []
+            products: [],
+            editedIncentive: undefined
         }
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
+    componentDidMount() {
+        this.updateProducts();
+        var query = this.props.location.query;
+        var incentive = Object.keys(query).map(function(key){
+            return query[key];
+        });
+        if(incentive.length > 0){
+            incentive = JSON.parse(incentive.join(''));
+            this.state.editedIncentive = incentive;
+            this.fillIncentiveFields(incentive);
+        }
+    },
+
+    fillIncentiveFields: function(incentive){
+        this.refs.nameBox.value = incentive.name;
+        this.setState({
+            productsForIncentive: incentive.products
+        });
+        this.refs.numOfProductsBox.value = incentive.numOfProducts;
+        this.refs.rateBox.value = incentive.rate;
+    },
+
     updateProducts: function() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
@@ -49,14 +76,33 @@ var IncentiveDetails = React.createClass({
             } else {
                 console.log("error in storesContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     getOptions: function(arrayOfObjects, index) {
+        var selectedProductName = "";
+        if(this.state.editedIncentive != undefined){
+            // this means that the page is on edit mode and there are already selected products to display
+            selectedProductName = this.state.editedIncentive.products[index].name;
+        }
         var optionsForDropDown = [];
-        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        if(selectedProductName == "")
+            optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        else
+            optionsForDropDown.push(<option disabled>{constantsStrings.dropDownChooseString}</option>);
+
         for (var i = 0; i < arrayOfObjects.length; i++) {
             var currOption = arrayOfObjects[i].name;
-            optionsForDropDown.push(<option key={i + (index*10)} value={currOption}>{currOption}</option>);
+            if(currOption == selectedProductName)
+                optionsForDropDown.push(<option key={i + (index*10)} selected value={currOption}>{currOption}</option>);
+            else
+                optionsForDropDown.push(<option key={i + (index*10)} value={currOption}>{currOption}</option>);
         }
         return optionsForDropDown;
     },
@@ -88,6 +134,13 @@ var IncentiveDetails = React.createClass({
         )
     },
 
+    renderEditOrAddString: function(){
+        if(this.state.editedIncentive == undefined)
+            return constantsStrings.add_string;
+        else
+            return constantsStrings.edit_string;
+    },
+
     handleSubmitIncentive: function () {
         var incentiveName = this.refs.nameBox.value;
         var notificationSystem = this.refs.notificationSystem;
@@ -108,41 +161,87 @@ var IncentiveDetails = React.createClass({
         var numOfChosenProducts = parseInt(this.refs.numOfProductsBox.value);
         var rate = parseInt(this.refs.rateBox.value);
 
-        var newIncentive = {
-            name: incentiveName,
-            products: selectedProducts,
-            numOfProducts: numOfChosenProducts,
-            rate: rate,
-            active: true
-        };
+        if(this.state.editedIncentive == undefined){
+            var newIncentive = {
+                name: incentiveName,
+                products: selectedProducts,
+                numOfProducts: numOfChosenProducts,
+                rate: rate,
+                active: true
+            };
 
-        managementServices.addIncentive(newIncentive)
-            .then(function(result) {
-                if(result.success){
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: paths.manager_incentives_path
-                            })
-                        }
-                    });
-                }
-                else{
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 2,
-                        position: 'tc',
-                    });
-                }
+            managementServices.addIncentive(newIncentive)
+                .then(function(result) {
+                    if(result.success){
+                        notificationSystem.addNotification({
+                            message: constantsStrings.addSuccessMessage_string,
+                            level: 'success',
+                            autoDismiss: 2,
+                            position: 'tc',
+                            onRemove: function (notification) {
+                                context.router.push({
+                                    pathname: paths.manager_incentives_path
+                                })
+                            }
+                        });
+                    }
+                    else{
+                        notificationSystem.addNotification({
+                            message: constantsStrings.addFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 2,
+                            position: 'tc',
+                        });
+                    }
+                }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
-            .catch(function (err) {
-                alert(err);
-            });
+        }
+        else {
+            var editedIncentive = this.state.editedIncentive;
+            editedIncentive.name = incentiveName;
+            editedIncentive.products = selectedProducts;
+            editedIncentive.numOfProducts = numOfChosenProducts;
+            editedIncentive.rate = rate;
+
+            managementServices.editIncentive(editedIncentive)
+                .then(function(result){
+                    if(result.success){
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editSuccessMessage_string,
+                            level: 'success',
+                            autoDismiss: 2,
+                            position: 'tc',
+                            onRemove: function (notification) {
+                                context.router.push({
+                                    pathname: paths.manager_incentives_path
+                                })
+                            }
+                        });
+                    }
+                    else{
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editFailMessage_string,
+                            level: 'error',
+                            autoDismiss: 2,
+                            position: 'tc',
+                        });
+                    }
+                }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
+            })
+        }
+
 
 
         /**/
@@ -173,9 +272,10 @@ var IncentiveDetails = React.createClass({
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentivePickProducts_string}:</label>
                     </div>
-                    <div className="form-group ">
+                    <div className="form-group " ref="productsBox">
                         {this.state.productsForIncentive.map(this.renderProductChoice)}
                     </div>
+
 
                     <div className="form-group">
                         <div className="row">
@@ -212,7 +312,7 @@ var IncentiveDetails = React.createClass({
                             className="w3-button w3-card-4 btn w3-theme-d5 col-xs-4 col-xs-offset-2"
                             type="submit"
                         onClick={this.handleSubmitIncentive}>
-                            {constantsStrings.add_string}
+                            {this.renderEditOrAddString()}
                         </button>
                     </div>
                 </form>
@@ -220,6 +320,7 @@ var IncentiveDetails = React.createClass({
             </div>
         )
     },
+
     render: function () {
         return this.addNewIncentive();
     }

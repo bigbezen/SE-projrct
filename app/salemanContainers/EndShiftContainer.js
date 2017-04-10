@@ -11,6 +11,7 @@ var styles = require('../styles/salesmanStyles/startShiftStyles');
 var StartShiftIcon = require('react-icons/lib/fa/angle-double-left');
 var WineGlassIcon = require('react-icons/lib/fa/glass');
 var BackButtonIcon = require('react-icons/lib/md/arrow-forward');
+var userServices = require('../communication/userServices');
 
 
 var EndShiftContainer = React.createClass({
@@ -19,10 +20,19 @@ var EndShiftContainer = React.createClass({
     },
     getInitialState()
     {
+        this.setSessionId();
         return{
             shift:null,
             ShiftId:this.props.location.state.newShift._id
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentDidMount() {
         var self = this;
@@ -41,6 +51,13 @@ var EndShiftContainer = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     handleSubmitReport: function (e) {
@@ -62,6 +79,13 @@ var EndShiftContainer = React.createClass({
             else {
              //   alert('edit failed');
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onReturn:function(event) { //TODO: relate this method to return button

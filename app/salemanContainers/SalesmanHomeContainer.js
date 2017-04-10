@@ -54,7 +54,16 @@ var SalesmanHomeContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState(){
+        this.setSessionId();
         return({
             shift: null,
             nextScreen: null,
@@ -89,7 +98,14 @@ var SalesmanHomeContainer = React.createClass({
             else{ 
                 alert("Error while retrieving shift from the server"); 
             } 
-        });
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
+        })
      },
     handleStartShift: function () {
         this.context.router.push({
@@ -109,6 +125,19 @@ var SalesmanHomeContainer = React.createClass({
             else{
                 console.log("error");
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
+        })
+    },
+    handleChangePassword: function () {
+        console.log('BaseContainer- changePass function');
+        this.context.router.push({
+            pathname: paths.salesman_changePass_path
         })
     },
     renderShift: function () {
@@ -118,9 +147,14 @@ var SalesmanHomeContainer = React.createClass({
                 <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
                     <ul>
                         <li>
-                            <button className="w3-btn w3-xlarge w3-round-xlarge w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
-                            </button>
+                            </label>
+                        </li>
+                        <li>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
+                                {constantsStrings.changePass_string}
+                            </label>
                         </li>
                     </ul>
                 </div>
@@ -140,9 +174,14 @@ var SalesmanHomeContainer = React.createClass({
                 <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
                     <ul>
                         <li>
-                            <button className="w3-btn w3-xlarge w3-round-xlarge w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
-                            </button>
+                            </label>
+                        </li>
+                        <li>
+                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
+                                {constantsStrings.changePass_string}
+                            </label>
                         </li>
                     </ul>
                 </div>

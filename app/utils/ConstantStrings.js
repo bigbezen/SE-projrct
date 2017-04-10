@@ -13,6 +13,8 @@ class ConstantStrings extends React.Component {
     static stores_string = 'חנויות';
     static products_string = 'מוצרים';
     static shifts_string = ' משמרות';
+    static reports_string = ' דוחות';
+    static saleReport_string = 'טעימות';
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';
@@ -21,6 +23,12 @@ class ConstantStrings extends React.Component {
     static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
     static save_string = 'שמירה';
     static storeStatus_string = 'מצב המלאי בחנות:';
+    static retrievePassButton_string = 'שלח סיסמא חדשה';
+    static changePassButton_string = 'עדכן סיסמא';
+    static changePass_string = 'שינוי סיסמא';
+    static changePassTitle_string = 'עדכון סיסמא';
+    static retrievePassTitle_string = 'שחזור סיסמא';
+    static retrievePass_string = 'שחזור סיסמא';
 
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';
@@ -47,6 +55,7 @@ class ConstantStrings extends React.Component {
     static incentiveRate_string ='גודל התמריץ';
     static incentivePickProducts_string = 'בחר מוצרים';
     static incentiveProducts_string = 'מוצרים בתמריץ';
+    static incentiveIncentives_string = 'תמריצים';
 
     //filter strings
     static enterProductName_string = 'הכנס שם מוצר..';
@@ -112,6 +121,16 @@ class ConstantStrings extends React.Component {
     static getReport_string = 'הורד דוח';
     static shiftType_string = 'סוג משמרת';
 
+    //reports
+    static defaultSalesmanDropDown_string = 'בחר/י דייל';
+    static defaultShiftDropDown_string = 'בחר/י משמרת';
+    static noShifts_string = 'לא קיימות משמרות להצגה';
+    static editReport_string = 'עריכת דוח';
+    static reportsNumberOfProductsSold_string = 'נמכרו';
+    static reportsNumberOfProductsOpened_string = 'נפתחו';
+    static reportsSalesReportTitle_string = 'דוח טעימות';
+    static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
+
     static reportSale_string = 'דווח מכירה';
     static reportOpen_string = 'דווח פתיחה';
 
@@ -123,15 +142,26 @@ class ConstantStrings extends React.Component {
 
     static product_subCategory =
     {
-        'בלנד סקוטי': 'בלנד סקוטי',
+        'בלנד ויסקי סקוטי': 'בלנד ויסקי סקוטי',
         'סינגל מאלט סקוטי': 'סינגל מאלט סקוטי',
         'וויסקי אמריקאי/קנדי': 'וויסקי אמריקאי/קנדי',
-        'ארבעת הלבנים': 'ארבעת הלבנים',
-        'אפרטיף/דגסטיף': 'אפרטיף/דגסטיף',
-        'תבור הר/פנינים' : 'תבור הר/פנינים',
-        'תבור אדמה' : 'תבור אדמה',
-        'תבור אדמה 2' : 'תבור אדמה 2',
-        'L.E' : 'L.E',
+        'ויסקי אירי': 'ויסקי אירי',
+        'ג\'ין': 'ג\'ין',
+        'וודקה': 'וודקה',
+        'רום': 'רום',
+        'טקילה': 'טקילה',
+        'קוניאק': 'קוניאק',
+        'אפרטיף-אניס': 'אפרטיף-אניס',
+        'אפרטיף-ביטר': 'אפרטיף-ביטר',
+        'אפרטיף-וורמוט': 'אפרטיף-וורמוט',
+        'מונין': 'מונין',
+        'פיבר טרי' : 'פיבר טרי',
+        'אדמה' : 'אדמה',
+        'פנינים' : 'פנינים',
+        'הר' : 'הר',
+        'פרמיום' : 'פרמיום',
+        'סינגל וויניארד' : 'סינגל וויניארד',
+        'L.E/מלכיה' : 'L.E/מלכיה'
     };
 
     static user_gender =
@@ -151,13 +181,16 @@ class ConstantStrings extends React.Component {
     {
         'צפון': 'צפון',
         'דרום': 'דרום',
-        'מרכז': 'מרכז'
+        'מרכז': 'מרכז',
+        'שפלה': 'שפלה',
+        'ירושלים': 'ירושלים'
     };
 
     static store_channel =
      {
-         'מסחרי': 'מסחרי',
-         'קלאסי': 'קלאסי'
+         'תדמית יום': 'תדמית יום',
+         'מסורתי - חם': 'מסורתי - חם',
+         'מסורתי - מאורגן': 'מסורתי - מאורגן'
      };
 
     //salesman
@@ -166,13 +199,20 @@ class ConstantStrings extends React.Component {
     static continueShift_string = 'המשך משמרת';
     static genderForDropdown = ["נקבה", "זכר"];
 
-    static channelForDropdown = ["מסחרי", "קלאסי"];
+    static channelForDropdown = ["מסורתי - חם", "מסורתי - מאורגן", "תדמית יום"];
 
-    static areaForDropdown = ["צפון", "דרום", "מרכז"];
+    static areaForDropdown = ["צפון", "דרום", "מרכז", "שפלה", "ירושלים"];
 
     static categoryForDropdown = ["ספיריט", "יין"];
 
-    static subCategoryForDropdown = ["בלנד סקוטי", "סינגל מאלט סקוטי", "וויסקי אמריקאי/קנדי", "ארבעת הלבנים", "אפרטיף/דגסטיף", "תבור הר/פנינים", "תבור אדמה", "תבור אדמה 2", "L.E"];
+    static subCategoryForDropdown = ["בלנד ויסקי סקוטי", "סינגל מאלט סקוטי", "וויסקי אמריקאי/קנדי", "ויסקי אירי",
+        "ג'ין", "וודקה","רום", "טקילה", "קוניאק", "אפרטיף-אניס", "אפרטיף-ביטר","אפרטיף-וורמוט", "מונין", "פיבר טרי",
+        "אדמה", "הר", "פנינים", "פרמיום","סינגל וויניארד" , "L.E/מלכיה"];
+
+    static subCategoryForDropdown_wine =  ["אדמה", "הר", "פנינים", "פרמיום","סינגל וויניארד" , "L.E/מלכיה"];
+
+    static subCategoryForDropdown_spirit =["בלנד ויסקי סקוטי", "סינגל מאלט סקוטי", "וויסקי אמריקאי/קנדי", "ויסקי אירי",
+    "ג'ין", "וודקה","רום", "טקילה", "קוניאק", "אפרטיף-אניס", "אפרטיף-ביטר","אפרטיף-וורמוט", "מונין", "פיבר טרי"];
 
     static userRoleForDropDown =
         [
@@ -181,15 +221,17 @@ class ConstantStrings extends React.Component {
             ['manager', 'מנהל']
         ];
 
+    static shiftType = ['טעימה', 'הדרכה'] ;
 
-  //  static userRoleForDropDown = ["דייל", "סוכן שטח"];
+
+    //  static userRoleForDropDown = ["דייל", "סוכן שטח"];
 
     static dropDownChooseString = 'בחר...';
 
     static email_string = 'אימייל';
 
     static select_product_for_sale = 'בחר מוצר אשר נמכר/נפתח:'
-
+    static press_quantity_for_edit = 'לחץ על כמות על מנת לערוך אותה:';
     //popups
     static errorMessage_string = 'אירעה שגיאה בשרת, אנא נסה שוב מאוחר יותר';
     static errorTitle_string = 'שגיאה';
@@ -211,6 +253,12 @@ class ConstantStrings extends React.Component {
     static mailSentSuccess_string = 'הדוח נשלח לאימייל בהצלחה!';
     static close_string = "סגירה";
     static yes_string = 'כן';
+    static retrievePassFailMessage_string = 'שם המשתמש וכתובת האימייל אינם תואמים';
+    static changePassNotEqualFailedMessage_string = 'אי התאמה בין הסיסמאות החדשות שהוקלדו';
+    static changePassNotValidMessage_string = 'סיסמא לא חוקית. אנא נסה שנית';
+    static retrievePassSuccessMessage_string = 'סיסמא חדשה נשלחה אליכם בזה הרגע לדואר האלקטרוני';
+    static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
+    static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
 
      //salesman menu
     static addSale_string = 'מכירות';

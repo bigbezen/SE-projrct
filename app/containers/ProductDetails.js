@@ -9,19 +9,28 @@ var productInfo = require('../models/product');
 var paths = require('../utils/Paths');
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
+var userServices = require('../communication/userServices');
 
 var ProductDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
         return {
             editing: false,
             category:'',
             subCategory:''
         }
     },
-
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     componentDidMount() {
         console.log('check props');
         var isEmptyVar = !(this.isEmpty(this.props.location.query));
@@ -59,6 +68,23 @@ var ProductDetails = React.createClass({
         return optionsForDropDown;
     },
 
+
+    getSubCategoryDropDown: function() {
+        var arrayOfObjects = [];
+        var optionsForDropDown = [];
+        if (this.state.category == "יין") {
+            arrayOfObjects = constantsStrings.subCategoryForDropdown_wine;
+        } else if (this.state.category == "ספיריט") {
+            arrayOfObjects = constantsStrings.subCategoryForDropdown_spirit;
+        }
+        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        for (var i = 0; i < arrayOfObjects.length; i++) {
+            var currOption = arrayOfObjects[i];
+            optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
+        }
+        return optionsForDropDown;
+    },
+
     handleSubmitUser: function (e) {
         e.preventDefault();
         /*if (!this.checkDropDowns()) {
@@ -69,7 +95,7 @@ var ProductDetails = React.createClass({
         var newProduct = new productInfo();
         newProduct.name = this.refs.nameBox.value;
         newProduct.retailPrice =  parseInt(this.refs.retailBox.value);
-        //newProduct.salePrice =  parseInt(this.refs.saleBox.value);
+        newProduct.salePrice = 0;
         newProduct.category = this.state.category;
         newProduct.subCategory = this.state.subCategory;
         newProduct.minRequiredAmount =  parseInt(this.refs.minAmountBox.value);
@@ -110,6 +136,13 @@ var ProductDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addProduct(newProduct).then(function (n) {
@@ -144,6 +177,13 @@ var ProductDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },
@@ -206,7 +246,7 @@ var ProductDetails = React.createClass({
                     </div>
                     <div className="form-group ">
                         <select className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange} ref="subCategoryBox" data="" >
-                            {this.getOptions(constantsStrings.subCategoryForDropdown)}
+                            {this.getSubCategoryDropDown()}
                         </select>
                     </div>
 

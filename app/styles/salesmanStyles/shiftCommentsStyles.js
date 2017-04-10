@@ -6,7 +6,7 @@ var styles = {
     commentsStyle: {
         'marginTop': '10px',
         'background': 'white',
-        'word-wrap': 'break-word'
+        'wordWrap': 'break-word'
     },
     commentsMargin: {
         'marginTop': '10px',

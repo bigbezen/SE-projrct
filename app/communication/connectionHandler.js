@@ -23,6 +23,14 @@ function returnVal(isOk, info) {
 }
 
 var userRequests = {
+    getSessionId : function() {
+      return sessionId;
+    },
+
+    setSessionId : function(newSessionid) {
+        sessionId = newSessionid;
+    },
+
     login: function(username, password) {
         return axios.post(serverUrl + 'user/login', {
             username:username,
@@ -32,10 +40,10 @@ var userRequests = {
             name = username;
             userType = info.data.userType;
             console.log('the user ' + username + ' Was logged in. user type: ' + info.data.userType);
-            return returnVal(true ,info.data.userType);
+            return returnVal(true ,info.data);
         }).catch(function (err) {
-            errorMessage('Error in login', err);
-            return returnVal(false, err);
+            errorMessage('Error in login', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -57,18 +65,21 @@ var userRequests = {
             userType = null;
             return returnVal(true, '');
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
-    retrievePassword: function(){ //TODO: doesn't
+    retrievePassword: function(username, email){ //TODO: doesn't
         return axios.post(serverUrl + 'user/retrievePassword', {
-            sessionId:sessionId
+            username:username,
+            email:email
         }).then(function (info) {
             console.log('the user ' + name + ' retrievePassword.');
             return returnVal(true, info);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -81,7 +92,8 @@ var userRequests = {
             console.log('the user ' + name + ' changePassword.');
             return returnVal(true, info);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -92,7 +104,8 @@ var userRequests = {
             console.log('the user ' + name + ' getProfile.');
             return returnVal(true, info);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
     getUsername: function () {
@@ -108,7 +121,29 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    updateSalesReport: function(shiftId, productId, newSold, newOpened){
+        return axios.post(serverUrl + 'management/updateSalesReport', {
+            sessionId:sessionId,
+            shiftId: shiftId,
+            productId: productId,
+            newSold: newSold,
+            newOpened: newOpened
+        }).then(function (info) {
+            if(info.status == 200) {
+                return "";
+            }
+            else {
+                errorMessage('Error:', err.response.data);
+                throw err.response.data;
+            }
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -120,7 +155,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -131,7 +167,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -144,7 +181,8 @@ var managementRequests = {
             return returnVal(true, info.data);
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -155,7 +193,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -166,7 +205,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -177,7 +217,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -190,7 +231,8 @@ var managementRequests = {
             return returnVal(true, info.data);
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -202,7 +244,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -214,7 +257,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -225,7 +269,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -238,7 +283,8 @@ var managementRequests = {
             return returnVal(true, info.data);
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -251,7 +297,22 @@ var managementRequests = {
             return returnVal(true, info.data);
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    editIncentive: function(incentive) {
+        console.log('add incentive');
+        return axios.post(serverUrl + 'management/editEncouragement', {
+            sessionId:sessionId,
+            encouragementDetails: incentive
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            console.log(err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -264,7 +325,8 @@ var managementRequests = {
             return returnVal(true, info.data);
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -280,7 +342,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -292,7 +355,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -304,7 +368,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -318,7 +383,24 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getSalesmanFinishedShifts: function(salesmanId){
+        console.log('get finshed shifts of salesman');
+        return axios.get(serverUrl + 'management/getSalesmanFinishedShifts?salesmanId=' + salesmanId, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            if(info.status == 200)
+                return returnVal(true, info.data);
+            else throw returnVal(false, info);
+        }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -332,7 +414,8 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -344,9 +427,12 @@ var managementRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
-    }
+    },
+
+
 };
 
 var managerRequests = {
@@ -372,6 +458,7 @@ var managerRequests = {
 
     editSalesReport: function(){
         errorMessage('editSalesReport', 'Not implemented yet');
+        //DEPRECATED - NOT USED
     },
 
     getRecommendations: function(){
@@ -395,7 +482,8 @@ var managerRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -407,7 +495,8 @@ var managerRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     }
 
@@ -423,7 +512,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -434,7 +524,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -446,7 +537,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -459,7 +551,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -471,7 +564,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -483,7 +577,23 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    editSale: function(shiftId,productId, saleTime, quantity){
+        return axios.post(serverUrl + 'salesman/editSale', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            productId:productId,
+            saleTime:saleTime,
+            quantity:quantity
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -496,7 +606,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -506,7 +617,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {
-            errorMessage('getShiftNotes', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -516,7 +628,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {
-            errorMessage('encouragements', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -526,7 +639,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {
-            errorMessage('shifts', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -536,7 +650,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {
-            errorMessage('addShiftsConstraints', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -546,7 +661,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {
-            errorMessage('salesHistory', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -556,7 +672,8 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {
-            errorMessage('getBroadcastMessages', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -566,9 +683,12 @@ var salesmanRequests = {
         }).then(function (info) {
             return returnVal(info);
         }).catch(function (err) {
-            errorMessage('shiftRegister', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     }
+
+
 };
 
 module.exports.managerRequests = managerRequests;

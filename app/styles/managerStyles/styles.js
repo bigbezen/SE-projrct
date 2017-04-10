@@ -44,6 +44,13 @@ var styles = {
     },
     productSelect: {
         marginBottom: '10px'
+    },
+    listHeader: {
+        fontSize: '20px',
+        padding: 0
+    },
+    getReportButtonStyle:{
+        marginLeft: '10px'
     }
 
 };

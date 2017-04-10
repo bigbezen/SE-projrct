@@ -7,16 +7,26 @@ var salesmanServices = require('../communication/salesmanServices');
 var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var styles = require('../styles/salesmanStyles/shiftCommentsStyles');
+var userServices = require('../communication/userServices');
 
 var ShiftComments = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState(){
-      return{
-          shift: null,
-          viewMode: true
-      }
+        this.setSessionId();
+        return{
+            shift: null,
+            viewMode: true
+        }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentDidMount() {
         this.updateShift();
@@ -35,6 +45,13 @@ var ShiftComments = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     changeStateToAddMode: function(){
@@ -58,6 +75,13 @@ var ShiftComments = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     renderEachComment: function(comment, i) {

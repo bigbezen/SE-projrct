@@ -10,7 +10,7 @@ var encs = require('../utils/encouragmentsMock');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
 var constantsStrings = require('../utils/ConstantStrings');
-
+var userServices = require('../communication/userServices');
 
 
 var IncentivesContainer = React.createClass({
@@ -24,9 +24,18 @@ var IncentivesContainer = React.createClass({
         })
     },
     getInitialState() {
+        this.setSessionId();
         return{
             incentives: []
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateIncentives();
@@ -57,11 +66,24 @@ var IncentivesContainer = React.createClass({
             } else {
                 console.log("error in storesContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
+        })
+    },
+    onClickEdit: function(encouragement){
+        this.context.router.push({
+            pathname: paths.manager_incentiveDetails_path,
+            query: JSON.stringify(encouragement)
         })
     },
     renderProductRow: function(product, i) {
         return (
-            <p>{product.name}</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;{product.name}</p>
         )
 
     },
@@ -73,13 +95,13 @@ var IncentivesContainer = React.createClass({
                 </header>
 
                 <div className="w3-container" style={styles.incentiveCardDivider}>
-                    <p><u>{constantsStrings.incentiveProducts_string}</u></p>
+                    <p><b>{constantsStrings.incentiveProducts_string}</b></p>
                     {encouragement.products.map(this.renderProductRow)}
-                    <p><u>{constantsStrings.incentiveNumOfProducts_string}</u> - {encouragement.numOfProducts}</p>
-                    <p><u>{constantsStrings.incentiveRate_string}</u> - {encouragement.rate}</p>
+                    <p><b>{constantsStrings.incentiveNumOfProducts_string}</b>: {encouragement.numOfProducts}</p>
+                    <p><b>{constantsStrings.incentiveRate_string}</b>: {encouragement.rate}</p>
                 </div>
 
-                <button className="w3-button w3-block w3-theme-l1">
+                <button className="w3-button w3-block w3-theme-l1" onClick={() => this.onClickEdit(encouragement)}>
                     + Edit
                 </button>
             </div>

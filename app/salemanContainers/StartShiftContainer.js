@@ -10,13 +10,23 @@ var styles = require('../styles/salesmanStyles/startShiftStyles');
 var WineGlassIcon = require('react-icons/lib/fa/glass');
 var StartShiftIcon = require('react-icons/lib/fa/angle-double-left');
 var BackButtonIcon = require('react-icons/lib/md/arrow-forward');
+var userServices = require('../communication/userServices');
 
 var StartShiftContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState()
     {
+        this.setSessionId();
         return{
             shift:this.props.location.state.newShift
         }
@@ -40,6 +50,13 @@ var StartShiftContainer = React.createClass({
             else {
                // alert('edit failed');
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onReturn:function(event) { //TODO: relate this method to return button

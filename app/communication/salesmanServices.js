@@ -36,6 +36,11 @@ var helpers = {
         return connection.salesmanRequests.reportOpen(shiftId, products);
     },
 
+    editSale: function(shiftId,productId, saleTime, quantity){
+        console.log('salesmanServices- editSale');
+        return connection.salesmanRequests.editSale(shiftId,productId, saleTime, quantity);
+    },
+
     addShiftComment: function(shiftId, content){
         console.log('salesmanServices- addShiftComment');
         return connection.salesmanRequests.addShiftComment(shiftId, content);

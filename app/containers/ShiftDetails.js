@@ -13,12 +13,22 @@ var paths = require('../utils/Paths');
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
 var DropDownInput = ReactBootstrap.DropdownButton;
+var userServices = require('../communication/userServices');
 
 var ShiftDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     getInitialState: function () {
+        this.setSessionId();
         return {
             editing: false,
             storeId: '',
@@ -105,7 +115,9 @@ var ShiftDetails = React.createClass({
                     optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
                     for (var i = 0; i < arrayOfObjects.length; i++) {
                         var currOption = arrayOfObjects[i];
-                        optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
+                        if (currOption.jobDetails.userType == "salesman") {
+                            optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
+                        }
                     }
                     self.setState({salesmenForDropDown: optionsForDropDown});
                 } else {
@@ -129,7 +141,7 @@ var ShiftDetails = React.createClass({
     },
 
     getOptionsForShiftType: function() {
-        var arrayOfObjects = ['רגילה','טעימות']; // todo: remove to constants
+        var arrayOfObjects = constantsStrings.shiftType;
         var optionsForDropDown = [];
         optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
         for (var i = 0; i < arrayOfObjects.length; i++) {
@@ -193,6 +205,13 @@ var ShiftDetails = React.createClass({
                                     position: 'tc'
                                 });
                             }
+                        }).catch(function (errMess) {
+                            notificationSystem.addNotification({
+                                message: errMess,
+                                level: 'error',
+                                autoDismiss: 5,
+                                position: 'tc'
+                            });
                         })
                     } else {
                         notificationSystem.addNotification({
@@ -211,6 +230,13 @@ var ShiftDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addShift(newShift).then(function (n) {
@@ -242,6 +268,13 @@ var ShiftDetails = React.createClass({
                                     position: 'tc'
                                 });
                             }
+                        }).catch(function (errMess) {
+                            notificationSystem.addNotification({
+                                message: errMess,
+                                level: 'error',
+                                autoDismiss: 5,
+                                position: 'tc'
+                            });
                         })
                     } else {
                         notificationSystem.addNotification({
@@ -260,6 +293,13 @@ var ShiftDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },

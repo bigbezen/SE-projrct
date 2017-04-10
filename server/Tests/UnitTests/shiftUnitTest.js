@@ -396,6 +396,32 @@ describe('shift unit test', function () {
         });
     });
 
+    describe('test get salesman shifts', function(){
+        it('get salesman shifts by salesman', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[1].status = "CREATED";
+
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+
+            let result = await shiftService.getSalesmanShifts(salesman.sessionId);
+            expect(result).to.have.property('code', 200);
+            assert.equal(result.shifts.length, 2);
+        });
+    });
+
     describe('test publish shifts', function(){
         it('publish shifts valid', async function(){
             shifts[0].status = "CREATED";

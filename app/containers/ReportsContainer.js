@@ -13,11 +13,7 @@ var EditIcon = require('react-icons/lib/md/edit');
 var salesChart = undefined;
 var userServices = require('../communication/userServices');
 
-import ReactDOM from 'react-dom';
-import fusioncharts from 'fusioncharts';
-// Load the charts module
-import charts from 'fusioncharts/fusioncharts.charts';
-import ReactFC  from 'react-fusioncharts';
+
 
 
 

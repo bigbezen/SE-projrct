@@ -566,6 +566,17 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
 
 };
 
+let reportExpenses = async function(sessionId, shiftId, expenses) {
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses');
+    let shifts = await dal.getShiftsByIds([shiftId]);
+    if(shifts.length == 0)
+        return {'code': 401, 'err': 'permission denied - shift does not exist'};
+    let result = await dal.setShiftExpenses(shiftId, expenses);
+    if(result.ok == 0)
+        return {'code': 401, 'err': 'could not save expenses'};
+    return {'code': 200};
+};
+
 let updateSalesReport = async function(sessionId, shiftId, productId, newSold, newOpened){
     logger.info('Services.shift.index.updateSalesReport', {'session-id': sessionId, 'shiftId': shiftId});
     console.log('debug');
@@ -653,5 +664,6 @@ module.exports.editShift = editShift;
 module.exports.updateSalesReport = updateSalesReport;
 module.exports.editSale = editSale;
 module.exports.getSalesmanShifts = getSalesmanShifts;
+module.exports.reportExpenses = reportExpenses;
 
 

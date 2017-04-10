@@ -538,17 +538,17 @@ let editShift = async function (sessionId, shiftDetails) {
     logger.info('Services.shift.index.editShift', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editShift');
     if(user == null)
-        return {'shift': null, 'code': 401, 'err': 'permission denied'};
+        return {'code': 401, 'err': 'user not authorized'};
 
     let shift = await dal.getShiftsByIds([shiftDetails._id]);
     if(shift[0] != null && shift[0].status == "STARTED")
-        return {'shift': null, 'code': 401, 'err': 'permission denied shift already started'};
+        return {'code': 401, 'err': 'permission denied shift already started'};
 
     let res = await dal.editShift(shiftDetails);
     if(res.ok == 0)
-        return {'shift': shift[0], 'code':400, 'err': 'cannot edit this shift'};
+        return {'code':400, 'err': 'cannot edit this shift'};
 
-    return {'shift': shift[0], 'code':200, 'err': null};
+    return {'code':200, 'err': null};
 };
 
 let editSale = async function(sessionId, shiftId, productId, time, quantity){

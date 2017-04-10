@@ -657,8 +657,16 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.post('/management/editShifts', function (req, res) {
-        res.status(200).send('edit user');
+    app.post('/management/editShifts', async function (req, res) {
+        if (!validator.editShift(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.editShift(req.body.sessionId, req.body.shiftDetails);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.post('/management/deleteShift', async function (req, res) {

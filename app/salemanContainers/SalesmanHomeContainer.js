@@ -98,7 +98,14 @@ var SalesmanHomeContainer = React.createClass({
             else{ 
                 alert("Error while retrieving shift from the server"); 
             } 
-        });
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
+        })
      },
     handleStartShift: function () {
         this.context.router.push({
@@ -118,6 +125,13 @@ var SalesmanHomeContainer = React.createClass({
             else{
                 console.log("error");
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     handleChangePassword: function () {

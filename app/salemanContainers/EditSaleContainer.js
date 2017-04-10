@@ -90,6 +90,13 @@ var EditSaleContainer = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onUpdateAmount: function (row, amount) {
@@ -105,6 +112,13 @@ var EditSaleContainer = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
         console.log("onUpdateAmount");
         console.log(amount);

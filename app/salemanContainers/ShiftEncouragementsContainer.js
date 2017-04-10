@@ -46,6 +46,13 @@ var ShiftEncouragementsContainer = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
 

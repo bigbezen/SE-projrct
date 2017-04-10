@@ -66,7 +66,6 @@ var ReportsContainer = React.createClass({
                 }
             })
             .catch(function(err) {
-
             });
     },
 
@@ -91,21 +90,20 @@ var ReportsContainer = React.createClass({
                         autoDismiss: 2,
                         position: 'tc',
                     });
-
                 }
                 else{
                     self.setState({
                         shifts: result.info
                     });
                 }
-            }).catch(function (err) {
-                notificationSystem.addNotification({
-                    message: constantStrings.errorMessage_string,
-                    level: 'error',
-                    autoDismiss: 2,
-                    position: 'tc',
-                });
-            })
+            }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
+        })
     },
 
     shiftChanged: function(event) {

@@ -31,6 +31,13 @@ var BaseContainer = React.createClass({
             else{
                 console.log("error");
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
 

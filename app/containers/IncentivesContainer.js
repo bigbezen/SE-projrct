@@ -66,6 +66,13 @@ var IncentivesContainer = React.createClass({
             } else {
                 console.log("error in storesContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEdit: function(encouragement){

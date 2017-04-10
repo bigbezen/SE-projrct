@@ -51,6 +51,13 @@ var EndShiftContainer = React.createClass({
             }
             else {
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     handleSubmitReport: function (e) {
@@ -72,6 +79,13 @@ var EndShiftContainer = React.createClass({
             else {
              //   alert('edit failed');
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onReturn:function(event) { //TODO: relate this method to return button

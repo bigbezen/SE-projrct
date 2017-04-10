@@ -205,6 +205,13 @@ var ShiftDetails = React.createClass({
                                     position: 'tc'
                                 });
                             }
+                        }).catch(function (errMess) {
+                            notificationSystem.addNotification({
+                                message: errMess,
+                                level: 'error',
+                                autoDismiss: 5,
+                                position: 'tc'
+                            });
                         })
                     } else {
                         notificationSystem.addNotification({
@@ -223,6 +230,13 @@ var ShiftDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addShift(newShift).then(function (n) {
@@ -254,6 +268,13 @@ var ShiftDetails = React.createClass({
                                     position: 'tc'
                                 });
                             }
+                        }).catch(function (errMess) {
+                            notificationSystem.addNotification({
+                                message: errMess,
+                                level: 'error',
+                                autoDismiss: 5,
+                                position: 'tc'
+                            });
                         })
                     } else {
                         notificationSystem.addNotification({
@@ -272,6 +293,13 @@ var ShiftDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },

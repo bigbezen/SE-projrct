@@ -84,6 +84,13 @@ var ShiftsContainer = React.createClass({
                     autoDismiss: 5,
                     position: 'tc'
                 });            }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEditButton: function(cell, row, rowIndex){
@@ -118,6 +125,13 @@ var ShiftsContainer = React.createClass({
             } else {
                 console.log("error in getSaleReportXl: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickDeleteButton: function(cell, row, rowIndex){
@@ -161,6 +175,13 @@ var ShiftsContainer = React.createClass({
             } else {
                 console.log("error in deleteShift: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickAddButton: function(){

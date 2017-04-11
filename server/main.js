@@ -772,4 +772,16 @@ function _setapApiEndpoints() {
         else
             res.status(result.code).send(result.err);
     });
+
+    app.get('/manager/getMonthlyAnalysisReport', async function (req, res) {
+        if (!validator.getMonthlyAnalysisReport(req.header)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await reportsService.getMonthlyAnalysisReport(req.header.sessionId, req.header.year);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
 }

@@ -35,12 +35,13 @@ var ShiftsExpensesContainer = React.createClass({
     },
     updateShifts(){
         var self = this;
-        managementServices.getSalesmanFinishedShifts("58e76aea46a8a1f930f1ae9a").then(function (n) {
+        salesmanServices.getAllShifts().then(function (n) {
             if (n) {
                 var val = n;
                 if (val.success) {
                     var shifts = val.info;
                     self.setState({shifts: shifts});
+                    console.log(shifts);
                 }
                 else {
                 }

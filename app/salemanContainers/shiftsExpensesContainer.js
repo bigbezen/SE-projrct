@@ -51,13 +51,16 @@ var ShiftsExpensesContainer = React.createClass({
         })
     },
     onClickEditButton: function(shift, index){
-        var newSold = this.refs["numOfKM" + index].value;
-        var newOpened = this.refs["parkingCost" + index].value;
+        var numOfKM = this.refs["numOfKM" + index].value;
+        var parkingCost = this.refs["parkingCost" + index].value;
         var shiftId = shift.shiftId;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
+        var expenses = { numOfKM: numOfKM,
+                         parkingCost: parkingCost}
 
-        /*managementServices.updateSalesReport(shiftId, productId, newSold, newOpened)
+
+        salesmanServices.reportExpenses(shiftId,expenses)
             .then(function(result) {
                 console.log('updated sales report');
 
@@ -70,7 +73,7 @@ var ShiftsExpensesContainer = React.createClass({
                     autoDismiss: 1,
                     position: 'tc',
                 });
-            })*/
+            })
     },
     renderEachShift: function(shift, i){
         var shiftDate = new Date(shift.startTime) ;

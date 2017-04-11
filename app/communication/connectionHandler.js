@@ -582,6 +582,19 @@ var salesmanRequests = {
         })
     },
 
+    reportExpenses: function(shiftId, expenses){
+        return axios.post(serverUrl + 'salesman/reportExpenses', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            expenses:expenses
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     editSale: function(shiftId,productId, saleTime, quantity){
         return axios.post(serverUrl + 'salesman/editSale', {
             sessionId:sessionId,

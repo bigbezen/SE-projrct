@@ -53,7 +53,8 @@ let funcNameToPermission = {
     'getSalesmanListXL': ['manager'],
     'editSale': ['salesman'],
     'getSaleReportXl': ['manager'],
-    'updateSalesReport': ['manager']
+    'updateSalesReport': ['manager'],
+    'reportExpenses': ['manager', 'salesman']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

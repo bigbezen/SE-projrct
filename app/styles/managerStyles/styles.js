@@ -51,6 +51,9 @@ var styles = {
     },
     getReportButtonStyle:{
         marginLeft: '10px'
+    },
+    marginTop: {
+        marginTop: '100px'
     }
 
 };

@@ -147,7 +147,11 @@ module.exports = {
     },
 
     editShift: async function(shiftDetails){
-        return storeModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
+        return shiftModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
+    },
+
+    setShiftExpenses: async function(shiftId, expenses) {
+        return shiftModel.update({'_id': mongoose.Types.ObjectId(shiftId)}, {$set: {'expenses': expenses}});
     },
 
     editSalesReport: async function(shiftId, salesReport){

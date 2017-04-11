@@ -250,7 +250,6 @@ let getSalesmanShifts = async function(sessionId){
     let products = await dal.getAllProducts();
     for(let product of products)
         productsDict[product._id] = product.name;
-
     for(let currentShift of currShifts){
         currentShift = currentShift.toObject();
         currentShift.store = (await dal.getStoresByIds([currentShift.storeId]))[0];

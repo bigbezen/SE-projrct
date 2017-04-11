@@ -253,7 +253,7 @@ function _setapApiEndpoints() {
         }
         let result = await shiftService.getSalesmanShifts(req.headers.sessionid);
         if(result.code == 200)
-            res.status(200).send(result.shift);
+            res.status(200).send(result.shifts);
         else
             res.status(result.code).send(result.err);
     });

@@ -13,9 +13,6 @@ var EditIcon = require('react-icons/lib/md/edit');
 var salesChart = undefined;
 var userServices = require('../communication/userServices');
 
-
-
-
 var options = {
     noDataText: constantStrings.NoDataText_string
 };

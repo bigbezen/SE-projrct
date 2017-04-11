@@ -207,6 +207,10 @@ module.exports = {
         return monthAnalysisReportModel.update({'_id': report._id}, report, { upsert: false});
     },
 
+    editMonthlyUserHoursReport(report){
+        return monthlySalesmanHoursReportModel.update({'_id': report._id}, report, { upsert: false});
+    },
+
     getMonthlyUserHoursReport: async function(year, month){
         return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]});
     },

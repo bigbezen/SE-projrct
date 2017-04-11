@@ -805,7 +805,7 @@ let updateMonthlySalesmanHoursReport = async function(sessionId, year, month, re
         return {'code': 404, 'err': 'report still not genarated'};
 
     report._id = reportDB._id;
-    let res = await dal.editMonthAnalysisReport(report);
+    let res = await dal.editMonthlyUserHoursReport(report);
     if(res.ok == 0)
         return {'code':400, 'err': 'cannot edit this report'};
 

@@ -53,7 +53,7 @@ var ShiftsExpensesContainer = React.createClass({
     onClickEditButton: function(shift, index){
         var numOfKM = this.refs["numOfKM" + index].value;
         var parkingCost = this.refs["parkingCost" + index].value;
-        var shiftId = shift.shiftId;
+        var shiftId = shift._id;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var expenses = { numOfKM: numOfKM,
@@ -81,7 +81,7 @@ var ShiftsExpensesContainer = React.createClass({
         return (
             <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
                  style={styles.rowStyle}>
-                <p className="col-sm-2"><b>{shift.store.name}</b></p>
+                <p className="col-sm-2"><b>{shift.storeId}</b></p>
                 <p className="col-sm-3">{ShiftDateFormated}</p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"numOfKM" + i} defaultValue={shift.numOfKM} />
                 <p className="col-sm-1"></p>

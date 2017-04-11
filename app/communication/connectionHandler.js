@@ -639,7 +639,7 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/encouragements', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -652,7 +652,7 @@ var salesmanRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(info);
+            return returnVal(true, info.data);
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;

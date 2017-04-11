@@ -17,8 +17,7 @@ var userServices = require('../communication/userServices');
 
 
 
-// Pass fusioncharts as a dependency of charts
-charts(FusionCharts);
+
 
 
 var options = {

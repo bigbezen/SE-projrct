@@ -76,6 +76,13 @@ var IncentiveDetails = React.createClass({
             } else {
                 console.log("error in storesContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     getOptions: function(arrayOfObjects, index) {
@@ -186,10 +193,14 @@ var IncentiveDetails = React.createClass({
                             position: 'tc',
                         });
                     }
-                })
-                .catch(function (err) {
-                    alert(err);
+                }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
                 });
+            })
         }
         else {
             var editedIncentive = this.state.editedIncentive;
@@ -221,10 +232,14 @@ var IncentiveDetails = React.createClass({
                             position: 'tc',
                         });
                     }
-                })
-                .catch(function(err){
-                    console.log('err failed, ' + err);
-                })
+                }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
+            })
         }
 
 

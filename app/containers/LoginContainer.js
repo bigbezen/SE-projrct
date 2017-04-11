@@ -67,6 +67,13 @@ var LoginContainer = React.createClass({
             else{
                 console.log("error in login: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     handleRetrievePass : function(e) {

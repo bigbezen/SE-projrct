@@ -96,8 +96,6 @@ var UserDetails = React.createClass({
         var newUser = new userInfo();
         newUser.username = this.refs.usernameBox.value;
         newUser.startDate = this.refs.startDateBox.value;
-        newUser.endDate = this.refs.endDateBox.value;
-
         //personal
         newUser.personal = {};
         console.log(this.refs.idBox.value);
@@ -125,6 +123,7 @@ var UserDetails = React.createClass({
         newUser.jobDetails.userType = this.state.role;
         newUser.jobDetails.area = "area";
         newUser.jobDetails.channel = "channel";
+        newUser.jobDetails.salary = this.refs.salaryBox.value;
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
@@ -267,12 +266,12 @@ var UserDetails = React.createClass({
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.endDate_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.salary_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <input type="date" min={0}
+                        <input type="number" min={0} default={25}
                                className="col-xs-4 col-xs-offset-2"
-                               ref="endDateBox"
+                               ref="salaryBox"
                         />
                     </div>
 
@@ -426,7 +425,7 @@ var UserDetails = React.createClass({
         this.state.role = this.currProduct.jobDetails.userType;
         this.refs.usernameBox.value = this.currProduct.username;
         this.refs.startDateBox.value = moment(this.currProduct.startDate).format('YYYY-MM-DD');
-        this.refs.endDateBox.value = moment(this.currProduct.endDate).format('YYYY-MM-DD');
+        this.refs.salaryBox.value = this.currProduct.jobDetails.salary;
         //personal
         this.refs.idBox.value = this.currProduct.personal.id;
         this.refs.firstNameBox.value = this.currProduct.personal.firstName;

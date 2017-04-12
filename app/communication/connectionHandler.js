@@ -348,10 +348,10 @@ var managementRequests = {
     },
 
     editShift: function(shift) {
-        console.log('add shift');
+        console.log('edit shift');
         return axios.post(serverUrl + 'management/editShifts', {
             sessionId:sessionId,
-            shiftsArr:shift
+            shiftDetails:shift
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

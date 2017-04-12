@@ -52,9 +52,12 @@ let funcNameToPermission = {
     'genarateMonthAnalysisReport': ['manager'],
     'getSalesmanListXL': ['manager'],
     'editSale': ['salesman'],
+    'getMonthAnalysisReportXL': ['manager'],
     'getSaleReportXl': ['manager'],
     'updateSalesReport': ['manager'],
-    'reportExpenses': ['manager', 'salesman']
+    'reportExpenses': ['salesman'],
+    'getMonthlyAnalysisReport': ['manager'],
+    'updateMonthlySalesmanHoursReport': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

@@ -253,7 +253,7 @@ function _setapApiEndpoints() {
         }
         let result = await shiftService.getSalesmanShifts(req.headers.sessionid);
         if(result.code == 200)
-            res.status(200).send(result.shift);
+            res.status(200).send(result.shifts);
         else
             res.status(result.code).send(result.err);
     });
@@ -276,6 +276,18 @@ function _setapApiEndpoints() {
             return;
         }
         let result = await shiftService.getActiveShift(req.headers.sessionid, req.query.shiftId);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/salesman/reportExpenses', async function(req, res){
+        if(!('sessionId' in req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.km, req.body.parking);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else
@@ -653,8 +665,16 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.post('/management/editShifts', function (req, res) {
-        res.status(200).send('edit user');
+    app.post('/management/editShifts', async function (req, res) {
+        if (!validator.editShift(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.editShift(req.body.sessionId, req.body.shiftDetails);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.post('/management/deleteShift', async function (req, res) {
@@ -708,8 +728,6 @@ function _setapApiEndpoints() {
         res.status(200).send('edit sales report');
     });
 
-
-
     app.get('/manager/getRecommendations', function (req, res) {
         res.status(200).send('TODO - not yet implemented');
     });
@@ -746,12 +764,29 @@ function _setapApiEndpoints() {
         res.status(result.code).send(result.err);
     });
 
+    app.get('/manager/getMonthAnalysisReportXL', async function (req, res) {
+        var result = await reportsService.getMonthAnalysisReportXL('123456',2017);//req.headers.sessionId, req.headers.year);
+        res.status(result.code).send(result.err);
+    });
+
     app.get('/manager/getMonthlyHoursSalesmansReport', async function (req, res) {
         if (!validator.getMontlyhouresSalesmanReport(req.header)) {
             res.status(404).send('invalid parameters');
             return;
         }
         let result = await reportsService.getMonthlyUserHoursReport(req.header.sessionId, req.header.year, req.header.month);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.get('/manager/getMonthlyAnalysisReport', async function (req, res) {
+        if (!validator.getMonthlyAnalysisReport(req.header)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await reportsService.getMonthlyAnalysisReport(req.header.sessionId, req.header.year);
         if(result.code == 200)
             res.status(200).send(result.report);
         else

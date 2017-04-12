@@ -274,7 +274,7 @@ let getActiveShift = async function(sessionId, shiftId){
 
     return {'code': 200, 'shift': shift.toObject()};
 };
-
+/*
 let reportExpenses = async function(sessionId, shiftId, km, parking){
     logger.info('Services.shift.index.reportExpenses', {'session-id': sessionId});
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses', null);
@@ -300,7 +300,7 @@ let reportExpenses = async function(sessionId, shiftId, km, parking){
     return {'shift': shift[0], 'code':200, 'err': null};
 
 };
-
+*/
 let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 

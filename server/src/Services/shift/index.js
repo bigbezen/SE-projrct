@@ -274,7 +274,7 @@ let getActiveShift = async function(sessionId, shiftId){
 
     return {'code': 200, 'shift': shift.toObject()};
 };
-/*
+
 let reportExpenses = async function(sessionId, shiftId, km, parking){
     logger.info('Services.shift.index.reportExpenses', {'session-id': sessionId});
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses', null);
@@ -300,7 +300,7 @@ let reportExpenses = async function(sessionId, shiftId, km, parking){
     return {'shift': shift[0], 'code':200, 'err': null};
 
 };
-*/
+
 let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
@@ -590,7 +590,7 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     return ({'code': 200});
 
 };
-
+/*
 let reportExpenses = async function(sessionId, shiftId, expenses) {
     let user = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses');
     let shifts = await dal.getShiftsByIds([shiftId]);
@@ -602,7 +602,7 @@ let reportExpenses = async function(sessionId, shiftId, expenses) {
     if(result.ok == 0)
         return {'code': 401, 'err': 'could not save expenses'};
     return {'code': 200};
-};
+};*/
 
 let updateSalesReport = async function(sessionId, shiftId, productId, newSold, newOpened){
     logger.info('Services.shift.index.updateSalesReport', {'session-id': sessionId, 'shiftId': shiftId});

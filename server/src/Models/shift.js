@@ -7,10 +7,8 @@ var shiftSchema = new Schema({
     'endTime': Date,
     'status': String,
     'type': String,
-    'expenses': {
-        'numOfKM': Number,
-        'parkingCost': Number
-    },
+    'numOfKM': Number,
+    'parkingCost': Number,
     'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'users'},
     'constraints': [
         {

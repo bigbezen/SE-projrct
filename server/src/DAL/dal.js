@@ -231,7 +231,6 @@ module.exports = {
         return shift.save();
     },
 
-
     cleanDb: async function () {
         var products = await productModel.find({});
         products.map(x => x.remove());

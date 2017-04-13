@@ -198,14 +198,6 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.post('/salesman/reportExpenses', async function (req, res){
-        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.expenses);
-        if(result.code == 200)
-            res.status(200).send();
-        else
-            res.status(result.code).send(result.err);
-    });
-
     app.post('/salesman/reportOpened', async function (req, res) {
         if(!validator.reportSaleOrOpened(req.body)) {
             res.status(404).send('invalid parameters');

@@ -109,10 +109,6 @@ module.exports = {
             [stringT, stringT]);
     },
 
-    rideReport: function(params){
-        return checkParams(params, ['sessionId', 'shiftId', 'numOfKM', 'parkingCost'], [stringT, objectT, numberT, numberT]);
-    },
-
     addOrEditEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encouragementDetails'],
                 [stringT, objectT]) &&
@@ -127,7 +123,6 @@ module.exports = {
                 ['boolean', 'Number', 'Number', 'object']);
     },
 
-
     deleteEncouragement: function(params){
         return checkParams(params, ['sessionId', 'encouragementId'], [stringT, stringT]);
     },
@@ -140,12 +135,21 @@ module.exports = {
         return checkParams(params, ['sessionId', 'year', 'month'], [stringT, numberT, numberT])
     },
 
+    getMonthlyAnalysisReport: function(params){
+        return checkParams(params, ['sessionId', 'year'], [stringT, numberT])
+    },
+
     addOrPublishShifts: function(params){
         var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
         for(let shift of params.shiftArr){
             if(res)
                 res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], [stringT, stringT, stringT, stringT])
         }
+        return res;
+    },
+
+    editShift: function(params){
+        var res = checkParams(params, ['sessionId', 'shiftDetails'], [stringT, objectT]);
         return res;
     },
 

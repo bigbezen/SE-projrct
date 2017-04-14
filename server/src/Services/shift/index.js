@@ -274,6 +274,32 @@ let getActiveShift = async function(sessionId, shiftId){
     return {'code': 200, 'shift': shift.toObject()};
 };
 
+let reportExpenses = async function(sessionId, shiftId, km, parking){
+    logger.info('Services.shift.index.reportExpenses', {'session-id': sessionId});
+    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses', null);
+
+    let shift = await dal.getShiftsByIds([shiftId]);
+    shift = shift[0];
+    if(shift == null)
+        return {'code': 409, 'err': 'shift does not exist in the database'};
+
+    if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
+        return {'code': 401, 'err': 'user not authorized'};
+    }
+
+    if(km < 0 || parking < 0)
+        return {'code': 404, 'err': 'illegal km or parking cost'};
+    shift.numOfKM = km;
+    shift.parkingCost = parking;
+
+    let res = await dal.updateShift(shift);
+    if(res.ok == 0)
+        return {'shift': shift[0], 'code':400, 'err': 'cannot edit this shift'};
+
+    return {'shift': shift[0], 'code':200, 'err': null};
+
+};
+
 let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
@@ -511,17 +537,17 @@ let editShift = async function (sessionId, shiftDetails) {
     logger.info('Services.shift.index.editShift', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editShift');
     if(user == null)
-        return {'shift': null, 'code': 401, 'err': 'permission denied'};
+        return {'code': 401, 'err': 'user not authorized'};
 
     let shift = await dal.getShiftsByIds([shiftDetails._id]);
     if(shift[0] != null && shift[0].status == "STARTED")
-        return {'shift': null, 'code': 401, 'err': 'permission denied shift already started'};
+        return {'code': 401, 'err': 'permission denied shift already started'};
 
     let res = await dal.editShift(shiftDetails);
     if(res.ok == 0)
-        return {'shift': shift[0], 'code':400, 'err': 'cannot edit this shift'};
+        return {'code':400, 'err': 'cannot edit this shift'};
 
-    return {'shift': shift[0], 'code':200, 'err': null};
+    return {'code':200, 'err': null};
 };
 
 let editSale = async function(sessionId, shiftId, productId, time, quantity){
@@ -541,7 +567,6 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     let found = false;
     let diffQuant;
     for(let sale of shift.sales){
-        console.log('bla');
         let saleDate = new Date(sale.timeOfSale).getTime();
         let getTime = new Date(time).getTime();
         if(sale.productId.toString()==(productId) &&  saleDate == getTime){
@@ -564,7 +589,7 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     return ({'code': 200});
 
 };
-
+/*
 let reportExpenses = async function(sessionId, shiftId, expenses) {
     let user = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses');
     let shifts = await dal.getShiftsByIds([shiftId]);
@@ -576,7 +601,7 @@ let reportExpenses = async function(sessionId, shiftId, expenses) {
     if(result.ok == 0)
         return {'code': 401, 'err': 'could not save expenses'};
     return {'code': 200};
-};
+};*/
 
 let updateSalesReport = async function(sessionId, shiftId, productId, newSold, newOpened){
     logger.info('Services.shift.index.updateSalesReport', {'session-id': sessionId, 'shiftId': shiftId});

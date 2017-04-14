@@ -180,39 +180,17 @@ var ShiftDetails = React.createClass({
                 if(n){
                     var val1 = n;
                     if (val1.success) {
-                        newShift._id = val1.info[0]._id;
-                        managementServices.publishShifts(newShift).then(function (n) {
-                            if (n) {
-                                var val2 = n;
-                                if (val2.success) {
-                                    notificationSystem.addNotification({
-                                        message: constantsStrings.editSuccessMessage_string,
-                                        level: 'success',
-                                        autoDismiss: 2,
-                                        position: 'tc',
-                                        onRemove: function (notification) {
-                                            context.router.push({
-                                                pathname: paths.manager_home_path
-                                            })
-                                        }
-                                    });
-                                }
-                            } else {
-                                notificationSystem.addNotification({
-                                    message: constantsStrings.editFailMessage_string,
-                                    level: 'error',
-                                    autoDismiss: 5,
-                                    position: 'tc'
-                                });
+                        notificationSystem.addNotification({
+                            message: constantsStrings.editSuccessMessage_string,
+                            level: 'success',
+                            autoDismiss: 2,
+                            position: 'tc',
+                            onRemove: function (notification) {
+                                context.router.push({
+                                    pathname: paths.manager_home_path
+                                })
                             }
-                        }).catch(function (errMess) {
-                            notificationSystem.addNotification({
-                                message: errMess,
-                                level: 'error',
-                                autoDismiss: 5,
-                                position: 'tc'
-                            });
-                        })
+                        });
                     } else {
                         notificationSystem.addNotification({
                             message: constantsStrings.editFailMessage_string,
@@ -406,16 +384,12 @@ var ShiftDetails = React.createClass({
 
         console.log(this.currShift);
 
-        this.state.shishiftType =  this.currShift.type;
+        this.state.shiftType =  this.currShift.type;
         this.state.storeId = this.currShift.store._id;
         this.state.salesmanId = this.currShift.salesman._id;
 
-        this.refs.dateBox.type = "datetime";
-        this.refs.startTimeBox.type = "datetime";
-        this.refs.endTimeBox.type = "datetime";
-
-        this.refs.storeBox.value = this.currShift.store._id; //TODO- fix this
-        this.refs.userBox.value = this.currShift.salesman._id;  //TODO- fix this
+        this.refs.storeBox.value = this.currShift.store._id;
+        this.refs.userBox.value = this.currShift.salesman._id;
         this.refs.shiftTypeBox.value =  this.currShift.type;
         this.refs.dateBox.value =  moment(this.currShift.startTime).format('YYYY-MM-DD');
         this.refs.startTimeBox.value = moment(this.currShift.startTime).format('HH:mm');

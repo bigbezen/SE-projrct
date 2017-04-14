@@ -36,9 +36,9 @@ var helpers = {
         return connection.salesmanRequests.reportOpen(shiftId, products);
     },
 
-    reportExpenses: function(shiftId, expenses){
+    reportExpenses: function(shiftId, km, parking){
         console.log('salesmanServices- reportExpenses');
-        return connection.salesmanRequests.reportExpenses(shiftId, expenses);
+        return connection.salesmanRequests.reportExpenses(shiftId, km, parking);
     },
 
     editSale: function(shiftId,productId, saleTime, quantity){

@@ -582,11 +582,12 @@ var salesmanRequests = {
         })
     },
 
-    reportExpenses: function(shiftId, expenses){
+    reportExpenses: function(shiftId, km, parking){
         return axios.post(serverUrl + 'salesman/reportExpenses', {
             sessionId:sessionId,
             shiftId:shiftId,
-            expenses:expenses
+            km:km,
+            parking:parking
         }).then(function (info) {
             return returnVal(true, info.data);
         }).catch(function (err) {

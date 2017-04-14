@@ -56,11 +56,8 @@ var ShiftsExpensesContainer = React.createClass({
         var shiftId = shift._id;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        var expenses = { numOfKM: numOfKM,
-                         parkingCost: parkingCost}
 
-
-        salesmanServices.reportExpenses(shiftId,expenses)
+        salesmanServices.reportExpenses(shiftId,numOfKM,parkingCost)
             .then(function(result) {
                 console.log('updated sales report');
 

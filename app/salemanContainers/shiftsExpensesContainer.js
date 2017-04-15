@@ -11,6 +11,8 @@ var styles = require('../styles/salesmanStyles/shiftExpensesStyles');
 var userServices = require('../communication/userServices');
 var managementServices = require('../communication/managementServices'); //delete when getAllShifts is fixed
 var EditIcon = require('react-icons/lib/md/edit');
+var NotificationSystem = require('react-notification-system');
+
 
 var ShiftsExpensesContainer = React.createClass({
     contextTypes: {
@@ -35,6 +37,7 @@ var ShiftsExpensesContainer = React.createClass({
     },
     updateShifts(){
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getAllShifts().then(function (n) {
             if (n) {
                 var val = n;
@@ -43,11 +46,16 @@ var ShiftsExpensesContainer = React.createClass({
                     self.setState({shifts: shifts});
                     console.log(shifts);
                 }
-                else {
-                }
+            } else {
+
             }
-            else {
-            }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEditButton: function(shift, index){
@@ -56,49 +64,50 @@ var ShiftsExpensesContainer = React.createClass({
         var shiftId = shift._id;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-
         salesmanServices.reportExpenses(shiftId,numOfKM,parkingCost)
             .then(function(result) {
-                console.log('updated sales report');
+                if(result) {
+                    console.log('updated sales report');
+                } else {
 
+                }
             })
             .catch(function(err) {
-                console.log('error');
                 notificationSystem.addNotification({
-                    message: constantsStrings.editFailMessage_string,
+                    message: err,
                     level: 'error',
                     autoDismiss: 1,
                     position: 'tc',
                 });
             })
     },
-    renderEachShift: function(shift, i){
+    renderEachShift: function(shift, i){ //TODO: shift.type should be changed to shift.store.name once we have it
         var shiftDate = new Date(shift.startTime) ;
-        var ShiftDateFormated = shiftDate.toLocaleDateString();
+        var ShiftDateFormated = shiftDate.toLocaleDateString('en-GB');
         return (
-            <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
+            <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
                  style={styles.rowStyle}>
-                <p className="col-sm-2"><b>{shift.storeId}</b></p>
+                <p className="col-sm-3"><b>{shift.type}</b></p>
                 <p className="col-sm-3">{ShiftDateFormated}</p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"numOfKM" + i} defaultValue={shift.numOfKM} />
                 <p className="col-sm-1"></p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"parkingCost" + i} defaultValue={shift.parkingCost} />
                 <p className="col-sm-1"></p>
-                <p className="w3-xlarge" onClick={() => this.onClickEditButton(shift, i)}><EditIcon/></p>
+                <p className="w3-xlarge" onClick={() => this.onClickEditButton(shift, i)}><EditIcon style={{marginRight: '20px'}}/></p>
             </div>
         )
     },
     renderList: function(){
         return (
             <div className="w3-container col-sm-12" style={styles.bodyStyle}>
-                <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black" style={styles.rowStyle}>
-                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.store_string}</b></p>
+                <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black" style={styles.rowStyle}>
+                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.store_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.date_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.km_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.parking_string}</b></p>
-                    <p className="col-sm-1"></p>
                 </div>
                 {this.state.shifts.map(this.renderEachShift)}
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

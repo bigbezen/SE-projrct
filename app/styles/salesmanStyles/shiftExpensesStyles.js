@@ -4,12 +4,14 @@
 
 var styles = {
     bodyStyle: {
-        'fontSize': '30px'
+        'fontSize': '25px',
+        'marginBottom': '120px'
     },
     rowStyle: {
         'height': '65px',
-        'marginTop': '10px'
-    }
+        'marginTop': '10px',
+        'marginRight': '2px'
+    },
 };
 
 module.exports = styles;

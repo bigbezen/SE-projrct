@@ -243,184 +243,70 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
     let workbook = new Excel.Workbook();
     workbook.xlsx.readFile('monthAnalysisReport.xlsx')
         .then(async function() {
+            let formArr = ['SUM(M5:M16)','SUM(N5:N16)','SUM(O5:O16)','SUM(P5:P16)','SUM(Q5:Q16)','SUM(R5:R16)','SUM(S5:S16)','SUM(T5:T16)','SUM(U5:U16)','SUM(V5:V16)','SUM(W5:W16)','SUM(X5:X16)','SUM(Y5:Y16)','SUM(Z5:Z16)','SUM(AA5:AA16)','SUM(AB5:AB16)','SUM(AC5:AC16)','SUM(AD5:AD16)'];
             let worksheet = workbook.getWorksheet(1);
+            worksheet.name = year;
             let row = worksheet.getRow(2);
-            row.getCell(3).value = 'ניתוח כללי' + year;
-            /* row.getCell(2).value = report.month + 1; // B1's value
-             row.getCell(4).value = report.year; // D1's value
-             row.commit();
+            row.getCell(3).value = 'ניתוח כללי ' + year;
 
-             //write the head of the table
-             row = worksheet.getRow(3);
-             row.getCell(1).value = 'דיילים';
-             row.getCell(1).fill = {
-             type: 'pattern',
-             pattern:'solid',
-             fgColor:{argb:'99CCF0FF'},
-             bgColor:{argb:'99CCF0FF'}
-             };
-             row.getCell(1).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
+            let monthRow = 4;
+            let monthCol;
+            for(let monthData of report.monthData){
+                monthCol =  13;
+                row = worksheet.getRow(monthRow + monthData.month);
+                //row.getCell(monthCol).value = 1;
 
-             //write total hours of shift
-             row.getCell(2).value = 'שעות דיול';
-             row.getCell(2).fill = {
-             type: 'pattern',
-             pattern:'solid',
-             fgColor:{argb:'99CCF0FF'},
-             bgColor:{argb:'99CCF0FF'}
-             };
-             row.getCell(2).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
+                //total hours
+                row.getCell(monthCol).value = monthData.totalHours.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.totalHours.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.totalHours.traditionalOrganized;
+                monthCol++;
+                //shifts Count
+                row.getCell(monthCol).value = monthData.shiftsCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.shiftsCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.shiftsCount.traditionalOrganized;
+                monthCol++;
+                //unique Count
+                row.getCell(monthCol).value = monthData.uniqueCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.uniqueCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.uniqueCount.traditionalOrganized;
+                monthCol++;
+                //opened Count
+                row.getCell(monthCol).value = monthData.openedCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.openedCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.openedCount.traditionalOrganized;
+                monthCol++;
+                //sale Bottles Count
+                row.getCell(monthCol).value = monthData.saleBottlesCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleBottlesCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleBottlesCount.traditionalOrganized;
+                monthCol++;
+                //sale Average
+                row.getCell(monthCol).value = monthData.saleAverage.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleAverage.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleAverage.traditionalOrganized;
 
-             //write total sales and opened
-             row.getCell(3).value = 'מכירות';
-             row.getCell(3).fill = {
-             type: 'pattern',
-             pattern:'solid',
-             fgColor:{argb:'99CCF0FF'},
-             bgColor:{argb:'99CCF0FF'}
-             };
-             row.getCell(3).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-
-             row.getCell(4).value = 'מכירות לשעה';
-             row.getCell(4).fill = {
-             type: 'pattern',
-             pattern:'solid',
-             fgColor:{argb:'99CCF0FF'},
-             bgColor:{argb:'99CCF0FF'}
-             };
-             row.getCell(4).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-
-             row.getCell(5).value = 'בקבוקים שנפתחו';
-             row.getCell(5).fill = {
-             type: 'pattern',
-             pattern:'solid',
-             fgColor:{argb:'99CCF0FF'},
-             bgColor:{argb:'99CCF0FF'}
-             };
-             row.getCell(5).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-
-             let rowNum = 4;
-             for(let userData of report.salesmansData){
-             let col = 1;
-             row = worksheet.getRow(rowNum);
-             let userDB = await dal.getUserByobjectId(userData.user);
-             row.getCell(col).value = userDB.personal.firstName + ' ' + userDB.personal.lastName;
-             row.getCell(col).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-             col = col + 1;
-
-             //add shift hours
-             row.getCell(col).value = userData.numOfHours;
-             row.getCell(col).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-             col = col + 1;
-
-             //add user sales
-             row.getCell(col).value = userData.sales;
-             row.getCell(col).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-             col = col + 1;
-
-             if(userData.numOfHours > 0){
-             row.getCell(col).value = (userData.sales/userData.numOfHours);
-             }else{
-             row.getCell(col).value = 0;
-             }
-
-             row.getCell(col).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-             col = col + 1;
-
-             //add user battle opened
-             row.getCell(col).value = userData.opened;
-             row.getCell(col).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-             col = col + 1;
-
-             rowNum++;
-             }
-
-             //add total row
-             let col = 1;
-             row = worksheet.getRow(rowNum);
-             row.getCell(col).font = {'bold':true, 'size':13};
-             row.getCell(col).value = 'סה"כ';
-             row.getCell(col).border = {
-             top: {style:'medium'},
-             left: {style:'medium'},
-             bottom: {style:'medium'},
-             right: {style:'medium'}
-             };
-             col = col + 1;
-
-             for(let j = col; j < 6; j++) {
-             let count = 0;
-             let rowCount;
-             for (let t = 5; t < rowNum; t++) {
-             rowCount = worksheet.getRow(t);
-             count += rowCount.getCell(j).value;
-             }
-
-             rowCount = worksheet.getRow(rowNum);
-             rowCount.getCell(j).font = {'bold':true, 'size':13};
-             rowCount.getCell(j).value = count;
-             if(j == 4){
-             rowCount.getCell(j).value = count/(rowNum - 4);
-             }
-
-             rowCount.getCell(j).border = {
-             top: {style: 'medium'},
-             left: {style: 'medium'},
-             bottom: {style: 'medium'},
-             right: {style: 'medium'}
-             };
-             }*/
-            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+                row.commit();
+            }
+            row = worksheet.getRow(monthRow + 13);
+            monthCol =  13;
+            for (let i = 0; i < 18;i++){
+                row.getCell(monthCol).value = {'formula':formArr[i]};
+                monthCol++;
+            }
+            return workbook.xlsx.writeFile('monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
         });
 
     //let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
@@ -430,7 +316,7 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
 
 let genarateMonthAnalysisReport = async function() {
     let year = new Date().getFullYear();
-    let month = new Date().getMonth();
+    let month = 2;//new Date().getMonth();
 
     let yearReport = await dal.getMonthAnalysisReport(year);
     if(yearReport == null){
@@ -440,31 +326,38 @@ let genarateMonthAnalysisReport = async function() {
         for(let i = 0; i < 12; i++){
             let monthReport = {'month': (i + 1),
                 'salesmanCost':{
-                    'traditional': 0,
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
                     'organized': 0
                 },
                 'totalHours': {
-                    'traditional': 0,
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
                     'organized': 0
                 },
                 'shiftsCount': {
-                    'traditional': 0,
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
                     'organized': 0
                 },
                 'uniqueCount': {
-                    'traditional': 0,
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
                     'organized': 0
                 },
                 'saleBottlesCount': {
-                    'traditional': 0,
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
                     'organized': 0
                 },
                 'openedCount': {
-                    'traditional': 0,
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
                     'organized': 0
                 },
                 'saleAverage': {
-                    'traditional': 0,
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
                     'organized': 0
                 },
                 'monthlyEncoragement': []
@@ -483,23 +376,27 @@ let genarateMonthAnalysisReport = async function() {
     for(let currentShift of monthShifts){
         let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
         let duration = (currentShift.endTime - currentShift.startTime)/36e5;
-        if(currentShift.type == 'traditional'){
-            yearReport.monthData[month].totalHours.traditional += duration;
-            yearReport.monthData[month].salesmanCost.traditional += duration*salesman.jobDetails.salary;
-            yearReport.monthData[month].shiftsCount.traditional += 1;
-            yearReport.monthData[month].saleBottlesCount.traditional += currentShift.sales.length;
+        let store = await dal.getStoresByIds([currentShift.storeId]);
+        store = store[0];
+        if(store.channel == 'מסורתי-חם'){
+            yearReport.monthData[month].totalHours.traditionalHot += duration;
+            yearReport.monthData[month].salesmanCost.traditionalHot += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.traditionalHot += 1;
+            yearReport.monthData[month].saleBottlesCount.traditionalHot += currentShift.sales.length;
             for(let sale of currentShift.salesReport){
-                yearReport.monthData[month].openedCount.traditional+= sale.opened;
-            }
-            for(let shiftEnc of currentShift.encouragements){
-                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
-                    if(encReport._id.equals(shiftEnc._id)){
-                        encReport.amount += 1;
-                    }
-                }
+                yearReport.monthData[month].openedCount.traditionalHot+= sale.opened;
             }
         }
-        else{//organized
+        else if(store.channel == 'מסורתי-מאורגן'){//organized
+            yearReport.monthData[month].totalHours.traditionalOrganized += duration;
+            yearReport.monthData[month].salesmanCost.traditionalOrganized += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.traditionalOrganized += 1;
+            yearReport.monthData[month].saleBottlesCount.traditionalOrganized += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.traditionalOrganized+= sale.opened;
+            }
+        }
+        else {//תדמית יום
             yearReport.monthData[month].totalHours.organized += duration;
             yearReport.monthData[month].salesmanCost.organized += duration*salesman.jobDetails.salary;
             yearReport.monthData[month].shiftsCount.organized += 1;
@@ -507,20 +404,24 @@ let genarateMonthAnalysisReport = async function() {
             for(let sale of currentShift.salesReport){
                 yearReport.monthData[month].openedCount.organized+= sale.opened;
             }
-            for(let shiftEnc of currentShift.encouragements){
-                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
-                    if(encReport._id.equals(shiftEnc._id)){
-                        encReport.amount += 1;
-                    }
+
+        }
+        for(let shiftEnc of currentShift.encouragements){
+            for(let encReport of yearReport.monthData[month].monthlyEncoragement){
+                if(encReport._id.equals(shiftEnc._id)){
+                    encReport.amount += 1;
                 }
             }
         }
     }
-    if(yearReport.monthData[month].totalHours.traditional > 0){
-        yearReport.monthData[month].saleAverage.traditional = yearReport.monthData[month].saleBottlesCount.traditional/yearReport.monthData[month].totalHours.traditional;
-    }
     if(yearReport.monthData[month].totalHours.organized > 0){
         yearReport.monthData[month].saleAverage.organized = yearReport.monthData[month].saleBottlesCount.organized/yearReport.monthData[month].totalHours.organized;
+    }
+    if(yearReport.monthData[month].totalHours.traditionalOrganized > 0){
+        yearReport.monthData[month].saleAverage.traditionalOrganized = yearReport.monthData[month].saleBottlesCount.traditionalOrganized/yearReport.monthData[month].totalHours.traditionalOrganized;
+    }
+    if(yearReport.monthData[month].totalHours.traditionalHot > 0){
+        yearReport.monthData[month].saleAverage.traditionalHot = yearReport.monthData[month].saleBottlesCount.traditionalHot/yearReport.monthData[month].totalHours.traditionalHot;
     }
 
     let res = await dal.editMonthAnalysisReport(yearReport);
@@ -537,6 +438,23 @@ let getMonthlyAnalysisReport = async function(sessionId, year){
         return {'code': 404, 'err': 'report still not genarated'};
 
     return {'code':200, 'report': report};
+};
+
+let updateMonthlyAnalysisReport = async function(sessionId, year, report){
+    let aut = await permissions.validatePermissionForSessionId(sessionId, 'updateMonthlyAnalysisReport');
+    if(aut == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let reportDB = await dal.getMonthAnalysisReport(year);
+    if(reportDB == null)
+        return {'code': 404, 'err': 'report still not genarated'};
+
+    report._id = reportDB._id;
+    let res = await dal.editMonthAnalysisReport(report);
+    if(res.ok == 0)
+        return {'code':400, 'err': 'cannot edit this report'};
+
+    return {'code': 200};
 };
 
 let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
@@ -900,3 +818,4 @@ module.exports.getSalaryForHumanResourceReport = getSalaryForHumanResourceReport
 module.exports.getSalesmanListXL = getSalesmanListXL;
 module.exports.getMonthAnalysisReportXL = getMonthAnalysisReportXL;
 module.exports.updateMonthlySalesmanHoursReport = updateMonthlySalesmanHoursReport;
+module.exports.updateMonthlyAnalysisReport = updateMonthlyAnalysisReport;

@@ -57,11 +57,9 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('40 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('5 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
-
-
 function _connectToDb(){
     mongoose.Promise = global.Promise;
     mongoose.connect(app.locals.mongourl);
@@ -82,8 +80,8 @@ async function _genarateMonthlyReport(){
     res = await reportsService.genarateMonthAnalysisReport();
 }
 
-function _setapApiEndpoints() {
 
+function _setapApiEndpoints() {
     app.use('/scripts', express.static(path.join(__dirname, '/../scripts')));
 
     app.get('/', function (req, res) {
@@ -757,7 +755,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getMonthAnalysisReportXL', async function (req, res) {
-        var result = await reportsService.getMonthAnalysisReportXL('123456',2017);//req.headers.sessionId, req.headers.year);
+        var result = await reportsService.getMonthAnalysisReportXL(req.headers.sessionId, req.headers.year);
         res.status(result.code).send(result.err);
     });
 

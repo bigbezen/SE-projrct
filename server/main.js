@@ -740,7 +740,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getSalaryForHumanResourceReport', async function (req, res) {
-        var result = await reportsService.getSalaryForHumanResourceReport(req.headers.sessionid ,req.headers.year,req.headers.month);
+        var result = await reportsService.getSalaryForHumanResourceReport('123456',2017,2);//req.headers.sessionid ,req.headers.year,req.headers.month);
         res.status(result.code).send(result.err);
     });
 

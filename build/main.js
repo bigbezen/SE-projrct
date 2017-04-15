@@ -575,7 +575,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context14.next = 5;
-                            return shiftService.getSalesmanShifts(req.headers.sessionid);
+                            return shiftService.getSalesmanShifts('111111');
 
                         case 5:
                             result = _context14.sent;

@@ -257,7 +257,7 @@ describe('reports unit test', function () {
     });
 
     describe('test genarate monthly salesman hours report', function () {
-        it('test get monthly salesman hours report valid', async function () {
+        it('test genarate monthly salesman hours report valid', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -290,7 +290,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
         });
 
-        it('test get monthly salesman hours report with not finish shift', async function () {
+        it('test genarate monthly salesman hours report with not finish shift', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "PUBLISHED";
@@ -324,7 +324,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 0);
         });
 
-        it('test get monthly salesman hours report with FINISH and PUBLISH shift', async function () {
+        it('test genarate monthly salesman hours report with FINISH and PUBLISH shift', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "PUBLISHED";
@@ -357,7 +357,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 6);
         });
 
-        it('test get monthly salesman hours report with shift at the first day of the month', async function () {
+        it('test genarate monthly salesman hours report with shift at the first day of the month', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -400,7 +400,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
         });
 
-        it('test get monthly salesman hours report with shift at the last day of the month', async function () {
+        it('test genarate monthly salesman hours report with shift at the last day of the month', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";

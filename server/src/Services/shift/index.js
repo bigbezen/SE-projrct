@@ -250,10 +250,11 @@ let getSalesmanShifts = async function(sessionId){
     let products = await dal.getAllProducts();
     for(let product of products)
         productsDict[product._id] = product.name;
-    for(let currentShift of currShifts){
-        currentShift = currentShift.toObject();
-        currentShift.store = (await dal.getStoresByIds([currentShift.storeId]))[0];
-        for(let product of currentShift.salesReport) {
+
+    for(let i = 0; i < currShifts.length; i++){
+        currShifts[i] = currShifts[i].toObject();
+        currShifts[i].store = (await dal.getStoresByIds([currShifts[i].storeId]))[0].toObject();
+        for(let product of currShifts[i].salesReport) {
             product.name = productsDict[product.productId.toString()];
         }
     }
@@ -589,19 +590,6 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     return ({'code': 200});
 
 };
-/*
-let reportExpenses = async function(sessionId, shiftId, expenses) {
-    let user = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses');
-    let shifts = await dal.getShiftsByIds([shiftId]);
-    if(shifts.length == 0)
-        return {'code': 401, 'err': 'permission denied - shift does not exist'};
-    if(shifts[0].salesmanId != user._id && user.jobDetails.userType != 'manager')
-        return {'code': 401, 'err': 'permission denied'};
-    let result = await dal.setShiftExpenses(shiftId, expenses);
-    if(result.ok == 0)
-        return {'code': 401, 'err': 'could not save expenses'};
-    return {'code': 200};
-};*/
 
 let updateSalesReport = async function(sessionId, shiftId, productId, newSold, newOpened){
     logger.info('Services.shift.index.updateSalesReport', {'session-id': sessionId, 'shiftId': shiftId});

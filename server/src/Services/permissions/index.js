@@ -57,6 +57,7 @@ let funcNameToPermission = {
     'updateSalesReport': ['manager'],
     'reportExpenses': ['salesman'],
     'getMonthlyAnalysisReport': ['manager'],
+    'updateMonthlyAnalysisReport': ['manager'],
     'updateMonthlySalesmanHoursReport': ['manager']
 };
 

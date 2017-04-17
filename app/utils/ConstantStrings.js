@@ -267,7 +267,7 @@ class ConstantStrings extends React.Component {
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';
     static encouragements_string = 'תמריצים';
-
+    static updateExpenses_string = 'עדכן נסיעות';
     //shift expenses
     static km_string = 'ק"מ';
     static parking_string = 'חנייה';

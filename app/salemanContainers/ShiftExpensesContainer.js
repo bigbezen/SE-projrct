@@ -12,6 +12,7 @@ var userServices = require('../communication/userServices');
 var managementServices = require('../communication/managementServices'); //delete when getAllShifts is fixed
 var EditIcon = require('react-icons/lib/md/edit');
 var NotificationSystem = require('react-notification-system');
+var BackButtonIcon = require('react-icons/lib/md/arrow-forward');
 
 
 var ShiftsExpensesContainer = React.createClass({
@@ -81,13 +82,18 @@ var ShiftsExpensesContainer = React.createClass({
                 });
             })
     },
+    onBackButtonClick: function () {
+        this.context.router.push({
+            pathname: paths.salesman_home_path
+        })
+    },
     renderEachShift: function(shift, i){ //TODO: shift.type should be changed to shift.store.name once we have it
         var shiftDate = new Date(shift.startTime) ;
         var ShiftDateFormated = shiftDate.toLocaleDateString('en-GB');
         return (
             <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
                  style={styles.rowStyle}>
-                <p className="col-sm-3"><b>{shift.type}</b></p>
+                <p className="col-sm-3"><b>{shift.store.name}</b></p>
                 <p className="col-sm-3">{ShiftDateFormated}</p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"numOfKM" + i} defaultValue={shift.numOfKM} />
                 <p className="col-sm-1"></p>
@@ -100,6 +106,7 @@ var ShiftsExpensesContainer = React.createClass({
     renderList: function(){
         return (
             <div className="w3-container col-sm-12" style={styles.bodyStyle}>
+                <button className="w3-xxlarge" onClick={this.onBackButtonClick}><BackButtonIcon/> </button>
                 <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black" style={styles.rowStyle}>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.store_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.date_string}</b></p>
@@ -115,6 +122,7 @@ var ShiftsExpensesContainer = React.createClass({
         return(
             <div>
                 <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

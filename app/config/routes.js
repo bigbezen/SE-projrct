@@ -32,7 +32,7 @@ var ShiftEncouragements = require('../salemanContainers/ShiftEncouragementsConta
 var IncentivesContainer = require('../containers/IncentivesContainer');
 var Incentive = require('../containers/IncentiveDetails');
 var Reports = require('../containers/ReportsContainer');
-var SalesmanShiftsExpenses = require('../salemanContainers/shiftsExpensesContainer');
+var SalesmanShiftsExpenses = require('../salemanContainers/shiftExpensesContainer');
 
 var routes = (
     <Router history={hashHistory}>

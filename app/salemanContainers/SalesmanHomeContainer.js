@@ -166,11 +166,11 @@ var SalesmanHomeContainer = React.createClass({
                 <div style={styles.centerAlign}>
                     <span style={styles.title}>IBBLS</span>
                 </div>
-                <div style={styles.centerAlign}>
+                <div style={styles.buttonsStyle}>
                     <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
                 </div>
-                <div>
-                    <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleExpensesUpdate}>עדכן נסיעות</button>
+                <div style={styles.buttonsStyle}>
+                    <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleExpensesUpdate}>{constantsStrings.updateExpenses_string} </button>
                 </div>
             </div>
 
@@ -195,6 +195,9 @@ var SalesmanHomeContainer = React.createClass({
                 </div>
                 <div className="text-center">
                     <h1>אין לך משמרות היום, סע לים!!! (:</h1>
+                    <div style={styles.buttonsStyle}>
+                        <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleExpensesUpdate}>{constantsStrings.updateExpenses_string} </button>
+                    </div>
                 </div>
             </div>
         )

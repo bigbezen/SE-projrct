@@ -37,10 +37,19 @@ var UsersContainer = React.createClass({
     },
     getInitialState() {
         this.setSessionId();
+        this.setUserType();
         return{
             users: null,
             username: null
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');

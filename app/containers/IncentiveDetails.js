@@ -18,11 +18,20 @@ var IncentiveDetails = React.createClass({
     },
     getInitialState: function () {
         this.setSessionId();
+        this.setUserType();
         return {
             productsForIncentive: [1],
             products: [],
             editedIncentive: undefined
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');

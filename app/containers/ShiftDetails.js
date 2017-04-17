@@ -27,8 +27,17 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     getInitialState: function () {
         this.setSessionId();
+        this.setUserType();
         return {
             editing: false,
             storeId: '',

@@ -31,6 +31,14 @@ var userRequests = {
         sessionId = newSessionid;
     },
 
+    getUserType : function() {
+        return userType;
+    },
+
+    setUserType : function(newUserType) {
+        userType = newUserType;
+    },
+
     login: function(username, password) {
         return axios.post(serverUrl + 'user/login', {
             username:username,

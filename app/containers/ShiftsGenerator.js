@@ -21,6 +21,7 @@ var ShiftDetails = React.createClass({
     },
     getInitialState: function () {
         this.setSessionId();
+        this.setUserType();
         return {
         }
     },
@@ -32,7 +33,14 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
-
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     handleSubmitShift: function (e) {
         e.preventDefault();
         var startTime = this.refs.startTimeBox.value;

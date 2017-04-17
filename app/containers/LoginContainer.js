@@ -15,9 +15,26 @@ var LoginContainer = React.createClass({
     },
     getInitialState: function () {
         this.setSessionId();
-        return {
-            username: '',
-            password: '',
+        this.setUserType();
+        console.log('user type:');
+        console.log(userServices.getUsername());
+        console.log('sessionId:');
+        console.log(userServices.setSessionId());
+        console.log(userServices.managerIsLoggedin());
+        console.log(userServices.salesmanIsLoggedin());
+        if (userServices.managerIsLoggedin()) {
+            this.context.router.push({
+                pathname: paths.manager_home_path
+            })
+        } else if (userServices.salesmanIsLoggedin()) {
+            this.context.router.push({
+                pathname: paths.salesman_home_path
+            })
+        }else {
+            return {
+                username: '',
+                password: '',
+            }
         }
     },
     setSessionId: function() {
@@ -27,6 +44,14 @@ var LoginContainer = React.createClass({
         }
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     handleSubmitUser: function (e) {
         e.preventDefault();

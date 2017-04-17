@@ -14,9 +14,18 @@ var ShiftEncouragementsContainer = React.createClass({
     },
     getInitialState(){
         this.setSessionId();
+        this.setUserType();
         return{
             shift: null,
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     componentDidMount() {
         this.updateShift();

@@ -21,6 +21,7 @@ var UserDetails = React.createClass({
     },
     getInitialState: function () {
         this.setSessionId();
+        this.setUserType();
         return {
             editing: false,
             gender: '',
@@ -28,7 +29,14 @@ var UserDetails = React.createClass({
             prevUsername:''
         }
     },
-
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {

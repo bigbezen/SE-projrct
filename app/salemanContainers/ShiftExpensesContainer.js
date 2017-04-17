@@ -21,9 +21,18 @@ var ShiftsExpensesContainer = React.createClass({
     },
     getInitialState(){
         this.setSessionId();
+        this.setUserType();
         return{
             shifts: null,
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');

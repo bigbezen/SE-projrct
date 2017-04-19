@@ -166,6 +166,15 @@ var IncentiveDetails = React.createClass({
             if(chosenProduct != constantsStrings.dropDownChooseString)
                 selectedProducts.push(productsAsDict[chosenProduct]);
         }
+        if(selectedProducts.length == 0){
+            notificationSystem.addNotification({
+                message: constantsStrings.incentiveMissingProducts_string,
+                level: 'error',
+                autoDismiss: 2,
+                position: 'tc',
+            });
+            return;
+        }
 
         var numOfChosenProducts = parseInt(this.refs.numOfProductsBox.value);
         var rate = parseInt(this.refs.rateBox.value);

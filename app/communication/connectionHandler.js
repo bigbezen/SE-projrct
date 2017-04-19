@@ -324,6 +324,20 @@ var managementRequests = {
         })
     },
 
+    deleteIncentive: function(incentive) {
+        console.log('delete incentive');
+        return axios.post(serverUrl + 'management/deleteEncouragement', {
+            sessionId: sessionId,
+            encouragementId: incentive._id
+        }).then(function(info) {
+            return returnVal(true, info.data);
+        }).catch(function (err){
+            console.log(err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     getAllIncentives: function() {
         return axios.get(serverUrl + 'management/getAllEncouragements', {
             headers: {

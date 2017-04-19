@@ -575,7 +575,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context14.next = 5;
-                            return shiftService.getSalesmanShifts('111111');
+                            return shiftService.getSalesmanShifts(req.headers.sessionid);
 
                         case 5:
                             result = _context14.sent;
@@ -1947,11 +1947,11 @@ function _setapApiEndpoints() {
                     switch (_context48.prev = _context48.next) {
                         case 0:
                             _context48.next = 2;
-                            return reportsService.getSalaryForHumanResourceReport(req.headers.sessionid, req.headers.year, req.headers.month);
+                            return reportsService.getSalaryForHumanResourceReport('123456', 2017, 2);
 
                         case 2:
                             result = _context48.sent;
-
+                            //req.headers.sessionid ,req.headers.year,req.headers.month);
                             res.status(result.code).send(result.err);
 
                         case 4:
@@ -2031,11 +2031,11 @@ function _setapApiEndpoints() {
                     switch (_context51.prev = _context51.next) {
                         case 0:
                             _context51.next = 2;
-                            return reportsService.getMonthAnalysisReportXL('123456', 2017);
+                            return reportsService.getMonthAnalysisReportXL(req.headers.sessionId, req.headers.year);
 
                         case 2:
                             result = _context51.sent;
-                            //req.headers.sessionId, req.headers.year);
+
                             res.status(result.code).send(result.err);
 
                         case 4:

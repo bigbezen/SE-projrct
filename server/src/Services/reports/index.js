@@ -775,6 +775,7 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                 let salesmanShifts = await dal.getSalesmanMonthShifts(user._id, year, month);
                 for(let j  = 0; j < salesmanShifts.length + 0; j++){
                     let currentShift = salesmanShifts[j];
+                    let rowCountFormula = 8 + j;
                     row = worksheet.getRow(j + 8);
                     row.getCell(1).value = new Date(currentShift.startTime).getDate() + '.' + (new Date(currentShift.startTime).getMonth() + 1) + '.' + new Date(currentShift.startTime).getFullYear();
                     row.getCell(2).value = days[new Date(currentShift.startTime).getDay()];
@@ -785,6 +786,14 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                     row.getCell(6).value = new Date(currentShift.startTime);
                     row.getCell(7).value = new Date(currentShift.endTime);
                     row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+                    //add formulas
+                    row.getCell(8).value = {'formula': 'IF((G' + rowCountFormula + '-F' + rowCountFormula + ')<0,(1-F' + rowCountFormula + '+G' + rowCountFormula +'),(G' + rowCountFormula + '-F' + rowCountFormula +'))'};//'=IF((G8-F8)<0,(1-F8+G8),(G8-F8))'
+                    row.getCell(9).value = {'formula': 'H' + rowCountFormula + '*24'};
+                    row.getCell(10).value = {'formula': 'IF(I' + rowCountFormula +'<9,I' + rowCountFormula + ',9)'};
+                    row.getCell(11).value = {'formula': 'IF(I' + rowCountFormula + '>9,I' + rowCountFormula +'-9,0)'};
+                    row.getCell(12).value = {'formula': 'IF(K' + rowCountFormula + '>2,2,K' + rowCountFormula + ')'};
+                    row.getCell(13).value = {'formula': 'IF(K' + rowCountFormula + '>2,K' + rowCountFormula + '-2,0)'};
+                    row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
 
                     for(let enc of currentShift.encouragements){
                         let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc));
@@ -795,7 +804,22 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                         }
                     }
 
+                    row = worksheet.getRow(23);
+                    rowCountFormula = 73;
+                    for (let cell = 0; cell < 16; cell++){
+                        if(cell != 5)
+                            row.getCell(9 + cell).value = {'formula': 'SUM(' + String.fromCharCode(rowCountFormula + cell) +'8:' + String.fromCharCode(rowCountFormula + cell) + '22)'};
+                    }
+
+                    row = worksheet.getRow(27);
+                    row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G27,$I$8:$I$22)'};
+                    row.getCell(9).value = {'formula': '+I23-H27-H28'};
+                    row = worksheet.getRow(28);
+                    row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G28,$I$8:$I$22)'};
+
+
                     row.commit();
+
                 }
 
                 sheetNum = sheetNum + 1;

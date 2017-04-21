@@ -62,7 +62,8 @@ var styles = {
         paddingLeft: '10px',
         marginLeft: '5px',
         marginTop: '10px',
-        marginBottom: '10px'
+        marginBottom: '10px',
+        width: '12%',
     }
 
 };

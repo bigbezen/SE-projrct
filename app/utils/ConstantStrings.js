@@ -289,8 +289,11 @@ class ConstantStrings extends React.Component {
         '10': 'אוקטובר',
         '11': 'נובמבר',
         '12': 'דצמבר',
-
-
+    }
+    static dictionary = {
+        'organized': 'תדמית - יום',
+        'traditionalHot': 'ערוץ מסורתי',
+        'traditionalOrganized': 'ערוץ מאורגן'
     }
 }
 

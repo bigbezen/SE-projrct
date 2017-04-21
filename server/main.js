@@ -57,7 +57,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('42 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('6 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
 function _connectToDb(){
@@ -76,6 +76,7 @@ function _connectToDb(){
 }
 
 async function _genarateMonthlyReport(){
+    console.log("gen");
     let res = await reportsService.genarateMonthlyUserHoursReport();
     res = await reportsService.genarateMonthAnalysisReport();
 }

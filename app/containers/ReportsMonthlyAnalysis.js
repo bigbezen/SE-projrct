@@ -75,9 +75,24 @@ var ReportsMonthlyAnalysis = React.createClass({
 
     renderMonthSections: function(sectionData, index){
         return (
-            <div style={styles.col} className="w3-theme-l5 w3-round-large">
+            <div style={styles.col} className="w3-theme-l5 w3-round-large ">
                 <p>{sectionData['section']}</p>
-                <input type="number" className="w3-round-large" style={{width: '100px'}} />
+                <div className="col-sm-10" style={{padding: '0'}}>
+                    <p className="col-sm-8">{constantStrings.dictionary["traditionalHot"]}</p>
+                    <input type="number" className="w3-round-large col-sm-4" style={{width: '60px'}}
+                        defaultValue={sectionData.traditionalHot}/>
+                </div>
+                <div className="col-sm-10" style={{padding: '0'}}>
+                    <p className="col-sm-8">{constantStrings.dictionary["traditionalOrganized"]}</p>
+                    <input type="number" className="w3-round-large col-sm-4" style={{width: '60px'}}
+                        defaultValue={sectionData.traditionalOrganized}/>
+                </div>
+                <div className="col-sm-10" style={{padding: '0'}}>
+                    <p className="col-sm-8">{constantStrings.dictionary["organized"]}</p>
+                    <input type="number" className="w3-round-large col-sm-4" style={{width: '60px'}}
+                        defaultValue={sectionData.organized}/>
+                </div>
+
             </div>
         )
     },
@@ -92,7 +107,7 @@ var ReportsMonthlyAnalysis = React.createClass({
             }
         }
         return (
-            <div className="w3-container w3-theme-d5 w3-round-large" style={{marginTop: '20px'}}>
+            <div className="w3-container w3-theme-d5 w3-round-large w3-card-4" style={{marginTop: '30px'}}>
                 <h3 className="col-sm-1">{constantStrings.numberToMonth[monthData.month]}</h3>
                 <div className="row">
                     {dataAsArray.map(this.renderMonthSections)}
@@ -124,7 +139,7 @@ var ReportsMonthlyAnalysis = React.createClass({
         var year = (new Date).getFullYear();
         return (
             <div className="w3-container">
-                <div className="col-sm-offset-1 col=sm-10">
+                <div className="col=sm-12">
                     <div className="row">
                         <input className="col-sm-1 w3-card-4 w3-round-xlarge" ref="datepicker" type="number" min="2000" max="2099"
                                defaultValue={year}/>

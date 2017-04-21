@@ -94,12 +94,7 @@ var ShiftsContainer = React.createClass({
                     position: 'tc'
                 });            }
         }).catch(function (errMess) {
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 5,
-                position: 'tc'
-            });
+            // notification should be here
         })
     },
     onClickEditButton: function(cell, row, rowIndex){

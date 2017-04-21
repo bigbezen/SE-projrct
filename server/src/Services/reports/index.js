@@ -316,7 +316,7 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
 
 let genarateMonthAnalysisReport = async function() {
     let year = new Date().getFullYear();
-    let month = 2;//new Date().getMonth();
+    let month = new Date().getMonth();
 
     let yearReport = await dal.getMonthAnalysisReport(year);
     if(yearReport == null){

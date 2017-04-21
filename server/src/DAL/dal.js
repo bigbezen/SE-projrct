@@ -200,7 +200,7 @@ module.exports = {
     },
 
     getMonthAnalysisReport(year){
-        return monthAnalysisReportModel.findOne({'year': year});
+        return monthAnalysisReportModel.findOne({'year': year}).populate('monthData.monthlyEncoragement.encouragemant');
     },
 
     editMonthAnalysisReport(report){

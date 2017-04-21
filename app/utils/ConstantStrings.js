@@ -53,6 +53,8 @@ class ConstantStrings extends React.Component {
     static incentiveName_string = 'שם התמריץ';
     static incentiveNumOfProducts_string = 'כמות הבקבוקים למכירה בתמריץ';
     static incentiveRate_string ='גודל התמריץ';
+    static incentiveRateSalesman_string ='תגמול';
+
     static incentivePickProducts_string = 'בחר מוצרים';
     static incentiveProducts_string = 'מוצרים בתמריץ';
     static incentiveIncentives_string = 'תמריצים';
@@ -272,6 +274,9 @@ class ConstantStrings extends React.Component {
     static km_string = 'ק"מ';
     static parking_string = 'חנייה';
     static store_string = 'חנות';
+
+    static ils_string = 'ש"ח';
+    static encouragementsStatus_string ='מצב תגמול נוכחי';
 }
 
 module.exports = ConstantStrings;

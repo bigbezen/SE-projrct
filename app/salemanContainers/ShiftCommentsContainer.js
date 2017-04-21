@@ -44,13 +44,8 @@ var ShiftComments = React.createClass({
         var self = this;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    self.setState({shift: currShift});
-                }
-                else {
-                }
+                var currShift = n;
+                self.setState({shift: currShift});
             }
             else {
             }
@@ -74,13 +69,8 @@ var ShiftComments = React.createClass({
         var self = this;
         salesmanServices.addShiftComment(this.state.shift._id,content).then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    self.updateShift()
-                    self.changeStateToViewMode()
-                }
-                else {
-                }
+                self.updateShift()
+                self.changeStateToViewMode()
             }
             else {
             }

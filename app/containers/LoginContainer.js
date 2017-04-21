@@ -16,20 +16,16 @@ var LoginContainer = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
-        console.log('user type:');
-        console.log(userServices.getUsername());
-        console.log('sessionId:');
-        console.log(userServices.setSessionId());
-        console.log(userServices.managerIsLoggedin());
-        console.log(userServices.salesmanIsLoggedin());
         if (userServices.managerIsLoggedin()) {
             this.context.router.push({
                 pathname: paths.manager_home_path
-            })
+            });
+            return null;
         } else if (userServices.salesmanIsLoggedin()) {
             this.context.router.push({
                 pathname: paths.salesman_home_path
-            })
+            });
+            return null;
         }else {
             return {
                 username: '',
@@ -66,27 +62,19 @@ var LoginContainer = React.createClass({
         userServices.login(username, password).then(function (n) {
             if(n){
                 var answer = n;
-                if (answer.success) {
-                    var userType = answer.info.userType;
-                    var sessionId = answer.info.sessionId;
-                    localStorage.setItem('sessionId', sessionId);
-                    if(userType == 'manager')
-                    {
-                        context.router.push({
-                            pathname: paths.manager_home_path
-                        })
-                    } else{ //TODO: add all types of users
-                        context.router.push({
-                            pathname: paths.salesman_home_path
-                        })
-                    }
-                }else {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.loginFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
+                var userType = answer.userType;
+                var sessionId = answer.sessionId;
+                localStorage.setItem('sessionId', sessionId);
+                localStorage.setItem('userType', userType);
+                if(userType == 'manager')
+                {
+                    context.router.push({
+                        pathname: paths.manager_home_path
+                    })
+                } else{ //TODO: add all types of users
+                    context.router.push({
+                        pathname: paths.salesman_home_path
+                    })
                 }
             }
             else{

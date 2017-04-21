@@ -46,15 +46,10 @@ var StartShiftContainer = React.createClass({
         salesmanServices.startShift(this.state.shift).then(function (n) {
             if (n) {
                 var val = n;
-                if (val.success) {
-                    self.context.router.push({
-                        pathname: paths.salesman_sale_path,
-                        state: {newShift: self.state.shift}
-                    })
-                }
-                else {
-                 //   alert('edit failed');
-                }
+                self.context.router.push({
+                    pathname: paths.salesman_sale_path,
+                    state: {newShift: self.state.shift}
+                })
             }
             else {
                // alert('edit failed');

@@ -86,23 +86,20 @@ var SalesmanHomeContainer = React.createClass({
         var self = this; 
         salesmanService.getCurrentShift().then(function (n) { 
             if (n) { 
-                var result = n; 
-                if (result.success) { 
-                    var currShift = result.info 
-                    if (currShift.status == "STARTED") {
-                        self.setState({
-                            shift: result.info ,
-                            nextScreen: paths.salesman_sale_path,
-                            buttonTitle: constantsStrings.continueShift_string
-                        });
-                    } else {
-                        self.setState({
-                            shift: result.info ,
-                            nextScreen: paths.salesman_startShift_path,
-                            buttonTitle: constantsStrings.startShift_string
-                        });
-                    }
-                } 
+                var currShift = n
+                if (currShift.status == "STARTED") {
+                    self.setState({
+                        shift: result.info ,
+                        nextScreen: paths.salesman_sale_path,
+                        buttonTitle: constantsStrings.continueShift_string
+                    });
+                } else {
+                    self.setState({
+                        shift: result.info ,
+                        nextScreen: paths.salesman_startShift_path,
+                        buttonTitle: constantsStrings.startShift_string
+                    });
+                }
             } 
             else{ 
                 alert("Error while retrieving shift from the server"); 

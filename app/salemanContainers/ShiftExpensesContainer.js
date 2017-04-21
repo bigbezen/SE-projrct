@@ -50,12 +50,9 @@ var ShiftsExpensesContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getAllShifts().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var shifts = val.info;
-                    self.setState({shifts: shifts});
-                    console.log(shifts);
-                }
+                var shifts = n;
+                self.setState({shifts: shifts});
+                console.log(shifts);
             } else {
 
             }

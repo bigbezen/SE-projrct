@@ -42,16 +42,11 @@ var ShiftEncouragementsContainer = React.createClass({
         var self = this;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    self.setState(
-                        {shift: currShift,
-                            products: currShift.salesReport
-                        });
-                }
-                else {
-                }
+                var currShift = n;
+                self.setState(
+                    {shift: currShift,
+                        products: currShift.salesReport
+                    });
             }
             else {
             }

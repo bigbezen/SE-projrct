@@ -13,13 +13,6 @@ var EditIcon = require('react-icons/lib/md/edit');
 var salesChart = undefined;
 var userServices = require('../communication/userServices');
 
-
-
-
-
-
-
-
 var options = {
     noDataText: constantStrings.NoDataText_string
 };
@@ -64,14 +57,12 @@ var ReportsContainer = React.createClass({
         console.log('fetching salesmen');
         managementServices.getAllUsers()
             .then(function(result) {
-                if(result.success){
-                    var salesmen = result.info.filter(function(user){
-                        return user.jobDetails.userType == 'salesman'
-                    });
-                    self.setState({
-                            salesmen: salesmen
-                        });
-                }
+                var salesmen = result.filter(function(user){
+                    return user.jobDetails.userType == 'salesman'
+                });
+                self.setState({
+                    salesmen: salesmen
+                });
             })
             .catch(function(err) {
             });
@@ -91,7 +82,7 @@ var ReportsContainer = React.createClass({
         console.log('fetching shifts of ' + salesman.username);
         managementServices.getSalesmanFinishedShifts(salesman._id)
             .then(function(result) {
-                if(result.info.length == 0){
+                if(result.length == 0){
                     notificationSystem.addNotification({
                         message: constantStrings.noShifts_string,
                         level: 'error',
@@ -101,7 +92,7 @@ var ReportsContainer = React.createClass({
                 }
                 else{
                     self.setState({
-                        shifts: result.info
+                        shifts: result
                     });
                 }
             }).catch(function (errMess) {

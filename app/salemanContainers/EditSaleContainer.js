@@ -86,16 +86,11 @@ var EditSaleContainer = React.createClass({
         var self = this;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    self.setState(
-                        {shift: currShift,
-                            sales: currShift.sales
-                        });
-                }
-                else {
-                }
+                var currShift = n;
+                self.setState(
+                    {shift: currShift,
+                        sales: currShift.sales
+                    });
             }
             else {
             }
@@ -112,12 +107,7 @@ var EditSaleContainer = React.createClass({
         var self = this;
         salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount).then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    self.updateShift()
-                }
-                else {
-                }
+                self.updateShift();
             }
             else {
             }

@@ -115,27 +115,18 @@ var ProductDetails = React.createClass({
             newProduct._id = this.props.location.query._id;
             managementServices.editProduct(newProduct).then(function (n) {
                 if(n){
-                        var val = n;
-                        if (val.success) {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.editSuccessMessage_string,
-                                level: 'success',
-                                autoDismiss: 2,
-                                position: 'tc',
-                                onRemove: function (notification) {
-                                    context.router.push({
-                                        pathname: paths.manager_products_path
-                                    })
-                                }
-                            });
-                        } else {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.editFailMessage_string,
-                                level: 'error',
-                                autoDismiss: 5,
-                                position: 'tc'
-                            });
+                    var val = n;
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_products_path
+                            })
                         }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({
@@ -156,27 +147,18 @@ var ProductDetails = React.createClass({
         }else {
             managementServices.addProduct(newProduct).then(function (n) {
                 if(n){
-                        var val = n;
-                        if (val.success) {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.addSuccessMessage_string,
-                                level: 'success',
-                                autoDismiss: 2,
-                                position: 'tc',
-                                onRemove: function (notification) {
-                                    context.router.push({
-                                        pathname: paths.manager_products_path
-                                    })
-                                }
-                            });
-                        } else {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.addFailMessage_string,
-                                level: 'error',
-                                autoDismiss: 5,
-                                position: 'tc'
-                            });
+                    var val = n;
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_products_path
+                            })
                         }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({

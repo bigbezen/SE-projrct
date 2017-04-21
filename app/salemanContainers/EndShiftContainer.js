@@ -47,16 +47,11 @@ var EndShiftContainer = React.createClass({
         var self = this;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    for (var product of currShift.salesReport) {
-                        product.stockEndShift = product.stockStartShift
-                    }
-                    self.setState({shift: currShift});
+                var currShift = n;
+                for (var product of currShift.salesReport) {
+                    product.stockEndShift = product.stockStartShift
                 }
-                else {
-                }
+                self.setState({shift: currShift});
             }
             else {
             }
@@ -74,16 +69,10 @@ var EndShiftContainer = React.createClass({
         var self = this;
         salesmanServices.finishShift(this.state.shift).then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    self.context.router.push({
-                        pathname: '/salesman/Home',
-                        state: {newShift: self.state.shift}
-                    })
-                }
-                else {
-                   // alert('edit failed');
-                }
+                self.context.router.push({
+                    pathname: '/salesman/Home',
+                    state: {newShift: self.state.shift}
+                })
             }
             else {
              //   alert('edit failed');

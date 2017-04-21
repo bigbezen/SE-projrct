@@ -99,27 +99,17 @@ var StoreDetails = React.createClass({
             newStore._id = this.props.location.query._id;
             managerServices.editStore(newStore).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_stores_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_stores_path
+                            })
+                        }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({
@@ -140,27 +130,17 @@ var StoreDetails = React.createClass({
         }else {
             managerServices.addStore(newStore).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_stores_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_stores_path
+                            })
+                        }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({

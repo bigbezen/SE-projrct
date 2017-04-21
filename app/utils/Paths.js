@@ -1,6 +1,4 @@
-/**
- * Created by lihiverchik on 14/01/2017.
- */
+
 
 var React = require('react');
 
@@ -29,8 +27,10 @@ class Paths extends React.Component {
     static salesman_editShift_path = '/salesman/shift/editSale';
     static salesman_shift_encouragements_path = '/salesman/shift/encouragements';
     static manager_incentives_path = '/manager/incentives';
-    static manager_incentiveDetails_path = 'manager/incentive';
-    static manager_reports_path = 'manager/reports';
+    static manager_incentiveDetails_path = '/manager/incentive';
+    static manager_reports_path = '/manager/reports';
+    static manager_salesReport_path = '/manager/salesReport';
+    static manager_monthlyAnalysisReport_path = '/manager/monthlyAnalysisReport';
 
 }
 

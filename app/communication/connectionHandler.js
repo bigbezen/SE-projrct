@@ -520,6 +520,19 @@ var managerRequests = {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
+    },
+
+    getMonthlyAnalysisReport: function(year){
+        return axios.get(serverUrl + 'manager/getMonthlyAnalysisReport?year=' + year, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
     }
 
 };

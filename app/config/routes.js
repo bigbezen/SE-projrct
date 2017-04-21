@@ -31,8 +31,10 @@ var shiftComments = require('../salemanContainers/ShiftCommentsContainer');
 var ShiftEncouragements = require('../salemanContainers/ShiftEncouragementsContainer');
 var IncentivesContainer = require('../containers/IncentivesContainer');
 var Incentive = require('../containers/IncentiveDetails');
-var Reports = require('../containers/ReportsContainer');
+var Reports = require('../containers/ReportsBase');
+var SalesReport = require('../containers/ReportsSalesReport');
 var SalesmanShiftsExpenses = require('../salemanContainers/shiftExpensesContainer');
+var MonthlyAnalysisReport = require('../containers/ReportsMonthlyAnalysis');
 
 var routes = (
     <Router history={hashHistory}>
@@ -51,7 +53,9 @@ var routes = (
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
             <Route path='changePassword' component={ChangePass}/>
-            <Route path='reports' component={Reports} />
+            <Route path='reports' component={MonthlyAnalysisReport} />
+            <Route path='salesReport' componenet={SalesReport} />
+            <Route path='monthlyAnalysisReport' componenet={MonthlyAnalysisReport} />
         </Route>
         <Route path='/member/'>
             <Route path='retrievePassword' component={RetrievePass}/>

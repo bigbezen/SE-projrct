@@ -53,7 +53,16 @@ var styles = {
         marginLeft: '10px'
     },
     marginTop: {
-        marginTop: '100px'
+        marginTop: '50px'
+    },
+    col: {
+        position: 'relative',
+        float: 'right',
+        paddingRight: '10px',
+        paddingLeft: '10px',
+        marginLeft: '5px',
+        marginTop: '10px',
+        marginBottom: '10px'
     }
 
 };

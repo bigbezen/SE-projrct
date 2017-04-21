@@ -136,7 +136,8 @@ module.exports = {
     },
 
     getMonthlyAnalysisReport: function(params){
-        return checkParams(params, ['sessionId', 'year'], [stringT, numberT])
+        console.log('bla');
+        return checkParams(params, ['year'], [stringT])
     },
 
     addOrPublishShifts: function(params){

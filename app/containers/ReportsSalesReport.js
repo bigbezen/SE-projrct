@@ -6,17 +6,12 @@ var constantStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var managementServices = require('../communication/managementServices');
+var managerServices = require('../communication/managerServices');
 
 var moment = require('moment');
 var NotificationSystem = require('react-notification-system');
 var EditIcon = require('react-icons/lib/md/edit');
-var salesChart = undefined;
 var userServices = require('../communication/userServices');
-
-
-
-
-
 
 
 
@@ -24,7 +19,7 @@ var options = {
     noDataText: constantStrings.NoDataText_string
 };
 
-var ReportsContainer = React.createClass({
+var ReportsSalesReport = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
@@ -54,7 +49,7 @@ var ReportsContainer = React.createClass({
             chosenShift: undefined
         }
     },
-    componentWillMount() {
+    componentDidMount() {
         this.updateSalesmen();
     },
 
@@ -148,8 +143,6 @@ var ReportsContainer = React.createClass({
     },
 
 
-
-
     renderSalesReportList: function(){
         if(this.state.chosenShift != undefined){
             var productsByCategory = [];
@@ -163,7 +156,12 @@ var ReportsContainer = React.createClass({
 
             return (
                 <div>
-                    <h1 className="w3-xxlarge text-center">{constantStrings.reportsSalesReportTitle_string}</h1>
+                    <div className="text-center">
+                        <h1 className="w3-xxlarge">{constantStrings.reportsSalesReportTitle_string}</h1>
+                        <button className="w3-btn w3-round-xlarge w3-theme-d5 w3-card-4" onClick={this.onClickExportReport}>
+                            {constantStrings.getReport_string}
+                        </button>
+                    </div>
                     {productsByCategory.map(this.renderCategoriesProducts)}
                 </div>
             )
@@ -172,16 +170,14 @@ var ReportsContainer = React.createClass({
     },
 
     renderCategoriesProducts: function(productsOfOneCategory){
-
         return (
             <div className="w3-container col-sm-6">
                 <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
                 <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
-                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
+                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
-                    <p className="col-sm-1"></p>
                 </div>
                 {productsOfOneCategory.products.map(this.renderSalesProducts)}
             </div>
@@ -192,15 +188,35 @@ var ReportsContainer = React.createClass({
         return (
             <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
                  style={{marginTop: '10px', height: '45px'}}>
-                <p className="col-sm-2"><b>{product.subCategory}</b></p>
+                <p className="col-sm-3"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editSold" + i} defaultValue={product.sold} />
                 <p className="col-sm-1"></p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editOpened" + i} defaultValue={product.opened} />
-                <p className="col-sm-1"></p>
-                <p className="w3-xlarge" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
+                <p className="w3-xlarge col-sm-1" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
             </div>
         )
+    },
+
+    onClickExportReport: function(){
+        var notificationSystem = this.refs.notificationSystem;
+        managerServices.getSaleReportXl(this.state.chosenShift)
+            .then(function(data) {
+                notificationSystem.addNotification({
+                    message: constantsStrings.mailSentSuccess_string,
+                    level: 'success',
+                    autoDismiss: 1,
+                    position: 'tc',
+                });
+            })
+            .catch(function(err){
+                notificationSystem.addNotification({
+                    message: err,
+                    level: 'error',
+                    autoDismiss: 1,
+                    position: 'tc',
+                });
+            });
     },
 
     onClickEditButton: function(product, index){
@@ -285,4 +301,4 @@ var ReportsContainer = React.createClass({
     }
 });
 
-module.exports = ReportsContainer;
+module.exports = ReportsSalesReport;

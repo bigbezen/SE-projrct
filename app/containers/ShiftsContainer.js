@@ -61,7 +61,7 @@ var ShiftsContainer = React.createClass({
             shifts: null
         }
     },
-    componentWillMount() {
+    componentDidMount() {
         this.updateShifts();
     },
     updateShifts() {

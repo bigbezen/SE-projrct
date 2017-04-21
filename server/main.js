@@ -57,7 +57,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('5 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('42 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
 function _connectToDb(){
@@ -772,11 +772,12 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getMonthlyAnalysisReport', async function (req, res) {
-        if (!validator.getMonthlyAnalysisReport(req.header)) {
-            res.status(404).send('invalid parameters');
-            return;
-        }
-        let result = await reportsService.getMonthlyAnalysisReport(req.header.sessionId, req.header.year);
+        console.log('bla');
+        // if ((!('sessionid' in req.headers)) || (!validator.getMonthlyAnalysisReport(req.query))) {
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
         if(result.code == 200)
             res.status(200).send(result.report);
         else

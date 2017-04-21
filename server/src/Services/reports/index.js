@@ -378,7 +378,7 @@ let genarateMonthAnalysisReport = async function() {
         let duration = (currentShift.endTime - currentShift.startTime)/36e5;
         let store = await dal.getStoresByIds([currentShift.storeId]);
         store = store[0];
-        if(store.channel == 'מסורתי-חם'){
+        if(store.channel == 'מסורתי - חם'){
             yearReport.monthData[month].totalHours.traditionalHot += duration;
             yearReport.monthData[month].salesmanCost.traditionalHot += duration*salesman.jobDetails.salary;
             yearReport.monthData[month].shiftsCount.traditionalHot += 1;
@@ -387,7 +387,7 @@ let genarateMonthAnalysisReport = async function() {
                 yearReport.monthData[month].openedCount.traditionalHot+= sale.opened;
             }
         }
-        else if(store.channel == 'מסורתי-מאורגן'){//organized
+        else if(store.channel == 'מסורתי - מאורגן'){//organized
             yearReport.monthData[month].totalHours.traditionalOrganized += duration;
             yearReport.monthData[month].salesmanCost.traditionalOrganized += duration*salesman.jobDetails.salary;
             yearReport.monthData[month].shiftsCount.traditionalOrganized += 1;
@@ -430,6 +430,7 @@ let genarateMonthAnalysisReport = async function() {
 
 let getMonthlyAnalysisReport = async function(sessionId, year){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getMonthlyAnalysisReport');
+    console.log('bla');
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 
@@ -840,6 +841,7 @@ module.exports.getMonthlyHoursSalesmansReportXl = getMonthlyHoursSalesmansReport
 module.exports.genarateMonthAnalysisReport = genarateMonthAnalysisReport;
 module.exports.getSalaryForHumanResourceReport = getSalaryForHumanResourceReport;
 module.exports.getSalesmanListXL = getSalesmanListXL;
+module.exports.getMonthlyAnalysisReport = getMonthlyAnalysisReport;
 module.exports.getMonthAnalysisReportXL = getMonthAnalysisReportXL;
 module.exports.updateMonthlySalesmanHoursReport = updateMonthlySalesmanHoursReport;
 module.exports.updateMonthlyAnalysisReport = updateMonthlyAnalysisReport;

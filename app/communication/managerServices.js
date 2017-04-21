@@ -57,6 +57,11 @@ var helpers = {
     getSalesmanListXL: function () {
         console.log('managerServices- getSalesmanReports');
         return connection.managerRequests.getSalesmanListXL();
+    },
+
+    getMonthlyAnalysisReportData: function(year) {
+        console.log('managerServices - getMonthlyAnalysisReport');
+        return connection.managerRequests.getMonthlyAnalysisReport(year);
     }
 };
 

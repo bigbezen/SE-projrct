@@ -131,6 +131,8 @@ class ConstantStrings extends React.Component {
     static reportsNumberOfProductsOpened_string = 'נפתחו';
     static reportsSalesReportTitle_string = 'דוח טעימות';
     static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
+    static reportsMonthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+    static reportsMonthlyUserHoursReportTitle = 'גאנט דיול ערוץ חודשי';
 
     static reportSale_string = 'דווח מכירה';
     static reportOpen_string = 'דווח פתיחה';
@@ -273,6 +275,23 @@ class ConstantStrings extends React.Component {
     static km_string = 'ק"מ';
     static parking_string = 'חנייה';
     static store_string = 'חנות';
+
+    static numberToMonth = {
+        '1': 'ינואר',
+        '2': 'פברואר',
+        '3': 'מרץ',
+        '4': 'אפריל',
+        '5': 'מאי',
+        '6': 'יוני',
+        '7': 'יולי',
+        '8': 'אוגוסט',
+        '9': 'ספטמבר',
+        '10': 'אוקטובר',
+        '11': 'נובמבר',
+        '12': 'דצמבר',
+
+
+    }
 }
 
 module.exports = ConstantStrings;

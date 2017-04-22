@@ -9,6 +9,8 @@ var userServices = require('../communication/userServices');
 var Chart1 = require('react-icons/lib/ti/chart-bar-outline');
 var Chart2 = require('react-icons/lib/ti/chart-area-outline');
 var Chart3 = require('react-icons/lib/ti/chart-pie-outline');
+var NotificationSystem = require('react-notification-system');
+
 
 
 var options = {
@@ -58,6 +60,19 @@ var ReportsBase = React.createClass({
         })
     },
 
+    onClickMonthlyHoursReport: function() {
+        // this.context.router.push({
+        //     pathname: paths.manager_monthlyHoursReport_path
+        // })
+        var notificationSystem = this.refs.notificationSystem;
+        notificationSystem.addNotification({
+            message: "Not Yet Implemented",
+            level: 'success',
+            autoDismiss: 2,
+            position: 'tc',
+        });
+    },
+
     render: function () {
         return (
             <div className="w3-container" style={styles.marginTop}>
@@ -66,13 +81,15 @@ var ReportsBase = React.createClass({
                 onClick={this.onClickSalesReport}>
                     {constantStrings.reportsSalesReportTitle_string}<Chart1/>
                 </button>
-                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge">
-                    {constantStrings.reportsMonthlyUserHoursReportTitle}<Chart2/>
+                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
+                        onClick={this.onClickMonthlyHoursReport}>
+                    {constantStrings.reportsMonthlyUserHoursReportTitle_string}<Chart2/>
                 </button>
                 <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
                         onClick={this.onClickMonthlyAnalysisReport}>
                     {constantStrings.reportsMonthlyAnalysisReportTitle_string}<Chart3/>
                 </button>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     }

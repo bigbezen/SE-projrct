@@ -212,7 +212,8 @@ module.exports = {
     },
 
     getMonthlyUserHoursReport: async function(year, month){
-        return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]});
+        return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]})
+            .populate('salesmansData.user');
     },
 
     getSalesmanShifts: async function(salesmanId){

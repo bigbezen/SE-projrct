@@ -760,11 +760,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getMonthlyHoursSalesmansReport', async function (req, res) {
-        if (!validator.getMontlyhouresSalesmanReport(req.header)) {
-            res.status(404).send('invalid parameters');
-            return;
-        }
-        let result = await reportsService.getMonthlyUserHoursReport(req.header.sessionId, req.header.year, req.header.month);
+        // if (!validator.getMontlyhouresSalesmanReport(req.header)) {
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getMonthlyUserHoursReport(req.headers.sessionid, req.query.year, req.query.month);
         if(result.code == 200)
             res.status(200).send(result.report);
         else

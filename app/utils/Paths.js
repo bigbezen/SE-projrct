@@ -31,6 +31,7 @@ class Paths extends React.Component {
     static manager_reports_path = '/manager/reports';
     static manager_salesReport_path = '/manager/salesReport';
     static manager_monthlyAnalysisReport_path = '/manager/monthlyAnalysisReport';
+    static manager_monthlyHoursReport_path = '/manager/monthlyHoursReport';
 
 }
 

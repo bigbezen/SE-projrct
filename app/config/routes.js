@@ -33,8 +33,9 @@ var IncentivesContainer = require('../containers/IncentivesContainer');
 var Incentive = require('../containers/IncentiveDetails');
 var Reports = require('../containers/ReportsBase');
 var SalesReport = require('../containers/ReportsSalesReport');
-var SalesmanShiftsExpenses = require('../salemanContainers/shiftExpensesContainer');
 var MonthlyAnalysisReport = require('../containers/ReportsMonthlyAnalysis');
+var MonthlyHoursReport = require('../containers/ReportsMonthlyHours');
+var SalesmanShiftsExpenses = require('../salemanContainers/shiftExpensesContainer');
 
 var routes = (
     <Router history={hashHistory}>
@@ -56,6 +57,7 @@ var routes = (
             <Route path='reports' component={Reports} />
             <Route path='salesReport' component={SalesReport} />
             <Route path='monthlyAnalysisReport' component={MonthlyAnalysisReport} />
+            <Route path='monthlyHoursReport' component={MonthlyHoursReport} />
 
         </Route>
         <Route path='/member/'>

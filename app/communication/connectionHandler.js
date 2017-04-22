@@ -558,6 +558,19 @@ var managerRequests = {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
+    },
+
+    getMonthlyHoursReport: function(year, month){
+        return axios.get(serverUrl + 'manager/getMonthlyHoursSalesmansReport?year=' + year + "&month=" + month, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
     }
 
 };

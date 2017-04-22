@@ -72,7 +72,7 @@ var EndShiftContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.finishShift(this.state.shift).then(function (n) {
                 self.context.router.push({
-                    pathname: '/salesman/Home',
+                    pathname: paths.salesman_home_path,
                     state: {newShift: self.state.shift}
                 })
         }).catch(function (errMess) {

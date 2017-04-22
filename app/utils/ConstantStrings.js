@@ -276,8 +276,15 @@ class ConstantStrings extends React.Component {
     static parking_string = 'חנייה';
     static store_string = 'חנות';
 
+    //encouragements
     static ils_string = 'ש"ח';
     static encouragementsStatus_string ='מצב תגמול נוכחי';
+
+    //salesman base
+    static currentShift_string = 'משמרת נוכחית';
+    static profile_string ='פרופיל';
+    static shiftSchedule_string ='לוח משמרות';
+    static expenses_string ='הוצאות';
 }
 
 module.exports = ConstantStrings;

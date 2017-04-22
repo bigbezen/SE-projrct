@@ -112,7 +112,6 @@ var ShiftsExpensesContainer = React.createClass({
     renderList: function(){
         return (
             <div className="w3-container col-sm-12" style={styles.bodyStyle}>
-                <button className="w3-xxlarge" onClick={this.onBackButtonClick}><BackButtonIcon/> </button>
                 <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black" style={styles.rowStyle}>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.store_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.date_string}</b></p>

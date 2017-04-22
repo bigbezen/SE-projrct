@@ -14,14 +14,6 @@ function errorMessage(funcName, mess) {
     console.warn('Error in function:' + funcName + ': ' + mess);
 }
 
-function returnVal(isOk, info) {
-    var retVal = {
-        'success': isOk,
-        'info': info
-    };
-    return retVal;
-}
-
 var userRequests = {
     getSessionId : function() {
       return sessionId;
@@ -48,7 +40,7 @@ var userRequests = {
             name = username;
             userType = info.data.userType;
             console.log('the user ' + username + ' Was logged in. user type: ' + info.data.userType);
-            return returnVal(true ,info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error in login', err.response.data);
             throw err.response.data;
@@ -71,20 +63,20 @@ var userRequests = {
             sessionId = null;
             name = null;
             userType = null;
-            return returnVal(true, '');
+            return '';
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
     },
 
-    retrievePassword: function(username, email){ //TODO: doesn't
+    retrievePassword: function(username, email){
         return axios.post(serverUrl + 'user/retrievePassword', {
             username:username,
             email:email
         }).then(function (info) {
             console.log('the user ' + name + ' retrievePassword.');
-            return returnVal(true, info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -98,7 +90,7 @@ var userRequests = {
             newPass:newPass
         }).then(function (info) {
             console.log('the user ' + name + ' changePassword.');
-            return returnVal(true, info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -110,7 +102,7 @@ var userRequests = {
             sessionId:sessionId
         }).then(function (info) {
             console.log('the user ' + name + ' getProfile.');
-            return returnVal(true, info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -127,7 +119,7 @@ var managementRequests = {
             sessionId:sessionId,
             userDetails:user
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -142,13 +134,7 @@ var managementRequests = {
             newSold: newSold,
             newOpened: newOpened
         }).then(function (info) {
-            if(info.status == 200) {
-                return "";
-            }
-            else {
-                errorMessage('Error:', err.response.data);
-                throw err.response.data;
-            }
+            return "";
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -161,7 +147,7 @@ var managementRequests = {
             username:name,
             userDetails:user
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -173,7 +159,7 @@ var managementRequests = {
             sessionId:sessionId,
             username:user.username
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -186,7 +172,7 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
             errorMessage('Error:', err.response.data);
@@ -199,7 +185,7 @@ var managementRequests = {
             sessionId:sessionId,
             storeDetails:store
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -211,7 +197,7 @@ var managementRequests = {
             sessionId:sessionId,
             storeDetails:store
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -223,7 +209,7 @@ var managementRequests = {
             sessionId:sessionId,
             storeId:store._id
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -236,7 +222,7 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
             errorMessage('Error:', err.response.data);
@@ -250,7 +236,7 @@ var managementRequests = {
             sessionId:sessionId,
             productDetails:product
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -263,7 +249,7 @@ var managementRequests = {
             sessionId:sessionId,
             productDetails:product
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -275,7 +261,7 @@ var managementRequests = {
             sessionId:sessionId,
             productId:product._id
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -288,7 +274,7 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
             errorMessage('Error:', err.response.data);
@@ -302,7 +288,7 @@ var managementRequests = {
             sessionId:sessionId,
             encouragementDetails: incentive
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
             errorMessage('Error:', err.response.data);
@@ -316,7 +302,7 @@ var managementRequests = {
             sessionId:sessionId,
             encouragementDetails: incentive
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
             errorMessage('Error:', err.response.data);
@@ -330,7 +316,7 @@ var managementRequests = {
             sessionId: sessionId,
             encouragementId: incentive._id
         }).then(function(info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err){
             console.log(err);
             errorMessage('Error:', err.response.data);
@@ -344,7 +330,7 @@ var managementRequests = {
                 sessionId: sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
             errorMessage('Error:', err.response.data);
@@ -362,7 +348,7 @@ var managementRequests = {
             sessionId:sessionId,
             shiftArr:shiftArr
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -375,7 +361,7 @@ var managementRequests = {
             sessionId:sessionId,
             shiftDetails:shift
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -388,7 +374,7 @@ var managementRequests = {
             sessionId:sessionId,
             shiftId:shift._id
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -403,7 +389,7 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -417,9 +403,7 @@ var managementRequests = {
                 sessionId: sessionId
             }
         }).then(function(info) {
-            if(info.status == 200)
-                return returnVal(true, info.data);
-            else throw returnVal(false, info);
+            return info.data;
         }).catch(function (err){
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -434,7 +418,7 @@ var managementRequests = {
             sessionId:sessionId,
             shiftArr:shiftArr
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -447,14 +431,12 @@ var managementRequests = {
             startTime:startTime,
             endTime:endTime
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
     },
-
-
 };
 
 var managerRequests = {
@@ -502,7 +484,7 @@ var managerRequests = {
                 shiftId:shift._id
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -515,7 +497,7 @@ var managerRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -528,7 +510,7 @@ var managerRequests = {
                 sessionId: sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -541,7 +523,7 @@ var managerRequests = {
             year: year,
             report: report
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -553,7 +535,7 @@ var managerRequests = {
             sessionId: sessionId,
             year: year
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -566,7 +548,7 @@ var managerRequests = {
                 sessionId: sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -583,7 +565,7 @@ var salesmanRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -595,7 +577,7 @@ var salesmanRequests = {
             sessionId:sessionId,
             shift:shift
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -608,7 +590,7 @@ var salesmanRequests = {
             sessionId:sessionId,
             shift:shift
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -622,7 +604,7 @@ var salesmanRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -635,7 +617,7 @@ var salesmanRequests = {
             shiftId:shiftId,
             sales:products
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -648,7 +630,7 @@ var salesmanRequests = {
             shiftId:shiftId,
             opens:products
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -662,7 +644,7 @@ var salesmanRequests = {
             km:km,
             parking:parking
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -677,7 +659,7 @@ var salesmanRequests = {
             saleTime:saleTime,
             quantity:quantity
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -691,7 +673,7 @@ var salesmanRequests = {
             shiftId:shiftId,
             content:content
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -702,7 +684,7 @@ var salesmanRequests = {
         return axios.get(serverUrl + 'salesman/getShiftNotes', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -713,7 +695,7 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/encouragements', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -726,7 +708,7 @@ var salesmanRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -737,7 +719,7 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/addShiftsConstraints', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -748,7 +730,7 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/salesHistory', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -759,7 +741,7 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/getBroadcastMessages', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
@@ -770,14 +752,12 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/shiftRegister', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
     }
-
-
 };
 
 module.exports.managerRequests = managerRequests;

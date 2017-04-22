@@ -73,33 +73,23 @@ var ChangePassContainer = React.createClass({
         });
         var context = this.context;
         var self = this;
-        userServices.changePassword(prevPass, newPass1).then(function (n) {
-            if(n){
-                var answer = n;
-                if (answer.success) {
-                    var nextPage = self.getNextPage();
-                    notificationSystem.addNotification({
-                        message: constantsStrings.changePassSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: nextPage
-                            })
-                        }
-                    });
-                }else {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.changePassServerFailedMessage_string,
-                        level: 'error',
-                        autoDismiss: 0,
-                        position: 'tc'
-                    });
-                }
+        userServices.changePassword(prevPass, newPass1).then(function (answer) {
+            if(answer){
+                var nextPage = self.getNextPage();
+                notificationSystem.addNotification({
+                    message: constantsStrings.changePassSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                    onRemove: function (notification) {
+                        context.router.push({
+                            pathname: nextPage
+                        })
+                    }
+                });
             }
             else{
-                console.log("error in retrieving password: " + n);
+                console.log("error in retrieving password: " + answer);
             }
         }).catch(function (errMess) {
             notificationSystem.addNotification({

@@ -59,22 +59,12 @@ var IncentivesContainer = React.createClass({
         managementServices.getAllIncentives().then(function (n) {
             if (n) {
                 var result = n;
-                if (result.success) {
-                    result.info.sort(function(a, b){
-                        return a.products.length - b.products.length;
-                    });
-                    self.setState({
-                        incentives: result.info
-                    });
-                } else {
-                    console.log("error in getAllIncentives: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                result.sort(function(a, b){
+                    return a.products.length - b.products.length;
+                });
+                self.setState({
+                    incentives: result
+                });
             } else {
                 console.log("error in storesContainers: " + n);
             }

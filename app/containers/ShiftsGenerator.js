@@ -51,28 +51,18 @@ var ShiftDetails = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.AddAllShifts(startTime, endTime).then(function (n) {
             if(n){
-                var val = n;
-                if (val.success) {
-                    shifts = val.info;
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: paths.manager_home_path
-                            })
-                        }
-                    });
-                } else {
-                    notificationSystem.addNotification({
-                        message: constantStrings.addFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                shifts = n;
+                notificationSystem.addNotification({
+                    message: constantsStrings.addSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                    onRemove: function (notification) {
+                        context.router.push({
+                            pathname: paths.manager_home_path
+                        })
+                    }
+                });
             }
             else{
                 notificationSystem.addNotification({

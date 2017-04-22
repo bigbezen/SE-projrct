@@ -11,6 +11,7 @@ var salesmanServices        = require('../communication/salesmanServices');
 var styles                  = require('../styles/salesmanStyles/editSaleStyles');
 var moment                  = require('moment');
 var userServices            = require('../communication/userServices');
+var NotificationSystem      = require('react-notification-system');
 
 
 const cellEditProp = {
@@ -84,18 +85,14 @@ var EditSaleContainer = React.createClass({
     },
     updateShift(){
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    self.setState(
-                        {shift: currShift,
-                            sales: currShift.sales
-                        });
-                }
-                else {
-                }
+                var currShift = n;
+                self.setState(
+                    {shift: currShift,
+                        sales: currShift.sales
+                    });
             }
             else {
             }
@@ -110,14 +107,10 @@ var EditSaleContainer = React.createClass({
     },
     onUpdateAmount: function (row, amount) {
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount).then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    self.updateShift()
-                }
-                else {
-                }
+                self.updateShift();
             }
             else {
             }
@@ -162,6 +155,7 @@ var EditSaleContainer = React.createClass({
                         </TableHeaderColumn>
                     </BootstrapTable>
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     }

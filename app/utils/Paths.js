@@ -14,9 +14,9 @@ class Paths extends React.Component {
     static manager_userDetails_path = '/manager/user';
     static manager_shiftDetails_path = '/manager/shift';
     static manager_createShifts_path = '/manager/createShifts';
-    static salesman_home_path = '/salesman/home';
+    static salesman_home_path = '/salesman/home/home';
     static salesman_startShift_path = '/salesman/startShift';
-    static salesman_shiftExpenses_path = '/salesman/shiftsExpenses'
+    static salesman_shiftExpenses_path = '/salesman/home/shiftsExpenses';
     static salesman_sale_path = '/salesman/shift/sale';
     static salesman_shift_comments_path = '/salesman/shift/comments';
     static salesman_shift_path = '/salesman/shift';
@@ -27,6 +27,10 @@ class Paths extends React.Component {
     static salesman_editShift_path = '/salesman/shift/editSale';
     static salesman_shift_encouragements_path = '/salesman/shift/encouragements';
     static manager_incentives_path = '/manager/incentives';
+    static manager_incentiveDetails_path = 'manager/incentive';
+    static manager_reports_path = 'manager/reports';
+    static salesman_profile_path = '/salesman/home/profile';
+    static salesman_shiftSchedule_path = '/salesman/home/shiftSchedule';
     static manager_incentiveDetails_path = '/manager/incentive';
     static manager_reports_path = '/manager/reports';
     static manager_salesReport_path = '/manager/salesReport';

@@ -13,6 +13,7 @@ var Stores = require('react-icons/lib/md/store');
 var Shifts = require('react-icons/lib/fa/calendar');
 var Reports = require('react-icons/lib/go/graph');
 var styles = require('../styles/managerStyles/baseStyles');
+var NotificationSystem = require('react-notification-system');
 
 var BaseContainer = React.createClass({
     contextTypes: {
@@ -22,15 +23,13 @@ var BaseContainer = React.createClass({
     handleLogoutUser: function () {
         console.log('BaseContainer- Logout function');
         var context = this.context;
+        var notificationSystem = this.refs.notificationSystem;
         userServices.logout().then(function (n) {
-            if(n){
+                localStorage.setItem('sessionId', 0);
+                localStorage.setItem('userType', 0);
                 context.router.push({
                     pathname: paths.login_path
                 })
-            }
-            else{
-                console.log("error");
-            }
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -89,7 +88,7 @@ var BaseContainer = React.createClass({
                 </div>
                 <div style={styles.space} className="w3-theme-l5" />
                 {this.props.children}
-
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     }

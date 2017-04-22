@@ -77,7 +77,7 @@ var ReportsMonthlyAnalysis = React.createClass({
         var chosenYear = this.refs.datepicker.value;
         managerServices.getMonthlyAnalysisReportData(chosenYear)
             .then(function(data){
-                var report = data.info;
+                var report = data;
                 self.setState({
                     report: report
                 })

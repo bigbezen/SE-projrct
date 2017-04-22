@@ -546,6 +546,18 @@ var managerRequests = {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
+    },
+
+    exportMonthlyAnalysisReport: function(year){
+        return axios.post(serverUrl + 'manager/getMonthAnalysisReportXL', {
+            sessionId: sessionId,
+            year: year
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
     }
 
 };

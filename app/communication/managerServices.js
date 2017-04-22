@@ -67,7 +67,12 @@ var helpers = {
     updateMonthlyAnalysisReport: function(year, report){
         console.log('managerService - updateMonthlyAnalysisReport');
         return connection.managerRequests.updateMonthlyAnalysisReport(year, report);
-    }
+    },
+
+    exportMonthlyAnalysisReport: function(year){
+        console.log('managerService - exportMonthlyAnalysisReport');
+        return connection.managerRequests.exportMonthlyAnalysisReport(year);
+    },
 };
 
 module.exports = helpers;

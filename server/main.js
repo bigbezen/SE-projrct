@@ -754,8 +754,8 @@ function _setapApiEndpoints() {
         res.status(result.code).send(result.err);
     });
 
-    app.get('/manager/getMonthAnalysisReportXL', async function (req, res) {
-        var result = await reportsService.getMonthAnalysisReportXL(req.headers.sessionId, req.headers.year);
+    app.post('/manager/getMonthAnalysisReportXL', async function (req, res) {
+        var result = await reportsService.getMonthAnalysisReportXL(req.body.sessionId, req.body.year);
         res.status(result.code).send(result.err);
     });
 

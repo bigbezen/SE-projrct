@@ -203,9 +203,9 @@ var ReportsSalesReport = React.createClass({
         managerServices.getSaleReportXl(this.state.chosenShift)
             .then(function(data) {
                 notificationSystem.addNotification({
-                    message: constantsStrings.mailSentSuccess_string,
+                    message: constantStrings.mailSentSuccess_string,
                     level: 'success',
-                    autoDismiss: 1,
+                    autoDismiss: 2,
                     position: 'tc',
                 });
             })

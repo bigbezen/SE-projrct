@@ -48,6 +48,29 @@ var ReportsMonthlyAnalysis = React.createClass({
     componentWillMount() {
     },
 
+    onClickExportReport: function() {
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
+        var chosenYear = this.refs.datepicker.value;
+        managerServices.exportMonthlyAnalysisReport(chosenYear)
+            .then(function(data){
+                notificationSystem.addNotification({
+                    message: constantStrings.mailSentSuccess_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                });
+            })
+            .catch(function(err){
+                notificationSystem.addNotification({
+                    message: err,
+                    level: 'error',
+                    autoDismiss: 1,
+                    position: 'tc',
+                });
+            });
+    },
+
     onClickGetReport: function(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
@@ -202,6 +225,8 @@ var ReportsMonthlyAnalysis = React.createClass({
                                defaultValue={year}/>
                         <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickGetReport}>{constantStrings.reportsShowReport_string}</button>
                         <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickEditReport}>{constantStrings.editReport_string}</button>
+                        <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
+
                     </div>
                     {this.renderReport()}
                 </div>

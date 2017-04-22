@@ -14,23 +14,22 @@ var LoginContainer = React.createClass({
         router: React.PropTypes.object.isRequired,
     },
     getInitialState: function () {
-        this.setSessionId();
-        this.setUserType();
-        if (userServices.managerIsLoggedin()) {
-            this.context.router.push({
-                pathname: paths.manager_home_path
-            });
-            return null;
-        } else if (userServices.salesmanIsLoggedin()) {
-            this.context.router.push({
-                pathname: paths.salesman_home_path
-            });
-            return null;
-        }else {
-            return {
-                username: '',
-                password: '',
-            }
+        // this.setSessionId();
+        // this.setUserType();
+        // if (userServices.managerIsLoggedin()) {
+        //     this.context.router.push({
+        //         pathname: paths.manager_home_path
+        //     });
+        //     return null;
+        // } else if (userServices.salesmanIsLoggedin()) {
+        //     this.context.router.push({
+        //         pathname: paths.salesman_home_path
+        //     });
+        //     return null;
+        // }
+        return {
+            username: '',
+            password: '',
         }
     },
     setSessionId: function() {

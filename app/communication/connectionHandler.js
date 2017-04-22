@@ -533,6 +533,19 @@ var managerRequests = {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
+    },
+
+    updateMonthlyAnalysisReport: function(year, report){
+        return axios.post(serverUrl + 'manager/updateMonthlyAnalysisReport', {
+            sessionId: sessionId,
+            year: year,
+            report: report
+        }).then(function (info) {
+            return returnVal(true, info.data);
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
     }
 
 };

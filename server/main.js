@@ -772,12 +772,23 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getMonthlyAnalysisReport', async function (req, res) {
-        console.log('bla');
         // if ((!('sessionid' in req.headers)) || (!validator.getMonthlyAnalysisReport(req.query))) {
         //     res.status(404).send('invalid parameters');
         //     return;
         // }
         let result = await reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/manager/updateMonthlyAnalysisReport', async function(req, res) {
+        if(!validator.updateMonthlyAnalysisReport(req.body)){
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await reportsService.updateMonthlyAnalysisReport(req.body.sessionId, req.body.year, req.body.report);
         if(result.code == 200)
             res.status(200).send(result.report);
         else

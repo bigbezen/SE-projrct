@@ -126,13 +126,16 @@ class ConstantStrings extends React.Component {
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
     static defaultShiftDropDown_string = 'בחר/י משמרת';
     static noShifts_string = 'לא קיימות משמרות להצגה';
-    static editReport_string = 'עריכת דוח';
+    static editReport_string = 'ערוך דוח';
     static reportsNumberOfProductsSold_string = 'נמכרו';
     static reportsNumberOfProductsOpened_string = 'נפתחו';
     static reportsSalesReportTitle_string = 'דוח טעימות';
     static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
     static reportsMonthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
     static reportsMonthlyUserHoursReportTitle = 'גאנט דיול ערוץ חודשי';
+    static reportsShowReport_string = 'הצג דוח';
+    static monthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+
 
     static reportSale_string = 'דווח מכירה';
     static reportOpen_string = 'דווח פתיחה';
@@ -289,12 +292,19 @@ class ConstantStrings extends React.Component {
         '10': 'אוקטובר',
         '11': 'נובמבר',
         '12': 'דצמבר',
-    }
+    };
     static dictionary = {
         'organized': 'תדמית - יום',
         'traditionalHot': 'ערוץ מסורתי',
-        'traditionalOrganized': 'ערוץ מאורגן'
-    }
+        'traditionalOrganized': 'ערוץ מאורגן',
+        'totalHours': 'שעות דיול',
+        'salesmanCost': 'ללא תמריצי תקציב דיול',
+        'shiftsCount': 'כמות דיולים בחנויות',
+        'uniqueCount': 'מס נק דיול',
+        'saleBottlesCount': 'כמות בק שנמכרו',
+        'openedCount': 'כמות בק שנפתחו',
+        'saleAverage': 'ממוצע מכירות בק לשעה'
+    };
 }
 
 module.exports = ConstantStrings;

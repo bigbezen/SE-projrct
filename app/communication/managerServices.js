@@ -62,6 +62,11 @@ var helpers = {
     getMonthlyAnalysisReportData: function(year) {
         console.log('managerServices - getMonthlyAnalysisReport');
         return connection.managerRequests.getMonthlyAnalysisReport(year);
+    },
+
+    updateMonthlyAnalysisReport: function(year, report){
+        console.log('managerService - updateMonthlyAnalysisReport');
+        return connection.managerRequests.updateMonthlyAnalysisReport(year, report);
     }
 };
 

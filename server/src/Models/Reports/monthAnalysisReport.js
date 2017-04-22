@@ -41,7 +41,7 @@ var monthAnalysisReport = new Schema({
             'organized': Number
         },
         'monthlyEncoragement': [{
-            'encouragemant':{type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'},
+            'encouragement':{type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'},
             'amount': Number}]
     }]
 });

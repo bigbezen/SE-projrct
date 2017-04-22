@@ -53,9 +53,10 @@ var routes = (
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
             <Route path='changePassword' component={ChangePass}/>
-            <Route path='reports' component={MonthlyAnalysisReport} />
-            <Route path='salesReport' componenet={SalesReport} />
-            <Route path='monthlyAnalysisReport' componenet={MonthlyAnalysisReport} />
+            <Route path='reports' component={Reports} />
+            <Route path='salesReport' component={SalesReport} />
+            <Route path='monthlyAnalysisReport' component={MonthlyAnalysisReport} />
+
         </Route>
         <Route path='/member/'>
             <Route path='retrievePassword' component={RetrievePass}/>

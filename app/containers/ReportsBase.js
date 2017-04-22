@@ -3,14 +3,12 @@ var React = require('react');
 var constantStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
-var managementServices = require('../communication/managementServices');
-var managerServices = require('../communication/managerServices');
 
-var moment = require('moment');
-var NotificationSystem = require('react-notification-system');
-var EditIcon = require('react-icons/lib/md/edit');
+
 var userServices = require('../communication/userServices');
-
+var Chart1 = require('react-icons/lib/ti/chart-bar-outline');
+var Chart2 = require('react-icons/lib/ti/chart-area-outline');
+var Chart3 = require('react-icons/lib/ti/chart-pie-outline');
 
 
 var options = {
@@ -62,18 +60,18 @@ var ReportsBase = React.createClass({
 
     render: function () {
         return (
-            <div className="w3-container">
-                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-3 col-sm-offset-1 w3-round-xlarge w3-xxlarge"
+            <div className="w3-container" style={styles.marginTop}>
+                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
                 style={{marginRight: '13%'}}
                 onClick={this.onClickSalesReport}>
-                    {constantStrings.reportsSalesReportTitle_string}
+                    {constantStrings.reportsSalesReportTitle_string}<Chart1/>
                 </button>
-                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-3 w3-round-xlarge w3-xxlarge">
-                    {constantStrings.reportsMonthlyUserHoursReportTitle}
+                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge">
+                    {constantStrings.reportsMonthlyUserHoursReportTitle}<Chart2/>
                 </button>
-                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-3 w3-round-xlarge w3-xxlarge"
+                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
                         onClick={this.onClickMonthlyAnalysisReport}>
-                    {constantStrings.reportsMonthlyAnalysisReportTitle_string}
+                    {constantStrings.reportsMonthlyAnalysisReportTitle_string}<Chart3/>
                 </button>
             </div>
         )

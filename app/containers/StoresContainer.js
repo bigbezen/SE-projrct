@@ -10,6 +10,7 @@ var styles = require('../styles/managerStyles/styles');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -20,9 +21,27 @@ var StoresContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
+        this.setSessionId();
+        this.setUserType();
         return{
             stores: null
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateStores();
@@ -32,24 +51,19 @@ var StoresContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllStores().then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    self.setState({
-                        stores: result.info
-                    });
-                    console.log("works!!");
-                } else {
-                    console.log("error in getAllStores: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.setState({
+                    stores: n
+                });
             } else {
                 console.log("error in storesContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEditButton: function(cell, row, rowIndex){
@@ -85,22 +99,17 @@ var StoresContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteStore(row).then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    self.updateStores();
-                    console.log("works!!");
-                } else {
-                    console.log("error in deleteStore: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.deleteFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.updateStores();
             } else {
                 console.log("error in deleteStore: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickAddButton: function(){

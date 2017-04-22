@@ -30,7 +30,7 @@ var userSchema = new Schema({
         'area': String,
         'channel': String
     },
-    'inbox': [{type: mongoose.Schema.Types.ObjectId, ref: 'messages'}]
+    'inbox': [{type: mongoose.Schema.Types.ObjectId, ref: 'message'}]
     // {
 //     'type': String,
 //     'sender': String,

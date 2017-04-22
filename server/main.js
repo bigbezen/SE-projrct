@@ -59,11 +59,9 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('40 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('42 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
-
-
 function _connectToDb(){
     mongoose.Promise = global.Promise;
     mongoose.connect(app.locals.mongourl);
@@ -85,8 +83,8 @@ async function _genarateMonthlyReport(){
     res = await reportsService.genarateMonthAnalysisReport();
 }
 
-function _setapApiEndpoints() {
 
+function _setapApiEndpoints() {
     app.use('/scripts', express.static(path.join(__dirname, '/../scripts')));
 
     app.get('/', function (req, res) {
@@ -193,6 +191,14 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.post('/salesman/editSale', async function (req, res) {
+        let result = await shiftService.editSale(req.body.sessionId, req.body.shiftId, req.body.productId, req.body.saleTime, req.body.quantity);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.post('/salesman/reportOpened', async function (req, res) {
         if(!validator.reportSaleOrOpened(req.body)) {
             res.status(404).send('invalid parameters');
@@ -240,7 +246,7 @@ function _setapApiEndpoints() {
         }
         let result = await shiftService.getSalesmanShifts(req.headers.sessionid);
         if(result.code == 200)
-            res.status(200).send(result.shift);
+            res.status(200).send(result.shifts);
         else
             res.status(result.code).send(result.err);
     });
@@ -263,6 +269,18 @@ function _setapApiEndpoints() {
             return;
         }
         let result = await shiftService.getActiveShift(req.headers.sessionid, req.query.shiftId);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/salesman/reportExpenses', async function(req, res){
+        if(!('sessionId' in req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.km, req.body.parking);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else
@@ -323,6 +341,17 @@ function _setapApiEndpoints() {
         else{
             res.status(result.code).send(result.err);
         }
+    });
+
+    app.post('/management/updateSalesReport', async function(req, res){
+        console.log('bla');
+        let result = await shiftService.updateSalesReport(req.body.sessionId, req.body.shiftId,
+            req.body.productId, req.body.newSold, req.body.newOpened);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+
     });
 
     app.post('/management/deleteUser', async function (req, res) {
@@ -617,8 +646,28 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.post('/management/editShifts', function (req, res) {
-        res.status(200).send('edit user');
+    app.get('/management/getSalesmanFinishedShifts', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('salesmanId' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getSalesmanFinishedShifts(req.headers.sessionid, req.query.salesmanId);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/management/editShifts', async function (req, res) {
+        if (!validator.editShift(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.editShift(req.body.sessionId, req.body.shiftDetails);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.post('/management/deleteShift', async function (req, res) {
@@ -708,12 +757,41 @@ function _setapApiEndpoints() {
         res.status(result.code).send(result.err);
     });
 
+    app.post('/manager/getMonthAnalysisReportXL', async function (req, res) {
+        var result = await reportsService.getMonthAnalysisReportXL(req.body.sessionId, req.body.year);
+        res.status(result.code).send(result.err);
+    });
+
     app.get('/manager/getMonthlyHoursSalesmansReport', async function (req, res) {
-        if (!validator.getMontlyhouresSalesmanReport(req.header)) {
+        // if (!validator.getMontlyhouresSalesmanReport(req.header)) {
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getMonthlyUserHoursReport(req.headers.sessionid, req.query.year, req.query.month);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.get('/manager/getMonthlyAnalysisReport', async function (req, res) {
+        // if ((!('sessionid' in req.headers)) || (!validator.getMonthlyAnalysisReport(req.query))) {
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/manager/updateMonthlyAnalysisReport', async function(req, res) {
+        if(!validator.updateMonthlyAnalysisReport(req.body)){
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await reportsService.getMonthlyUserHoursReport(req.header.sessionId, req.header.year, req.header.month);
+        let result = await reportsService.updateMonthlyAnalysisReport(req.body.sessionId, req.body.year, req.body.report);
         if(result.code == 200)
             res.status(200).send(result.report);
         else

@@ -257,7 +257,7 @@ describe('reports unit test', function () {
     });
 
     describe('test genarate monthly salesman hours report', function () {
-        it('test get XL monthly salesman hours report valid', async function () {
+        it('test genarate monthly salesman hours report valid', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -290,7 +290,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
         });
 
-        it('test get XL monthly salesman hours report with not finish shift', async function () {
+        it('test genarate monthly salesman hours report with not finish shift', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "PUBLISHED";
@@ -324,7 +324,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 0);
         });
 
-        it('test get XL monthly salesman hours report with FINISH and PUBLISH shift', async function () {
+        it('test genarate monthly salesman hours report with FINISH and PUBLISH shift', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "PUBLISHED";
@@ -357,7 +357,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 6);
         });
 
-        it('test get XL monthly salesman hours report with shift at the first day of the month', async function () {
+        it('test genarate monthly salesman hours report with shift at the first day of the month', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -400,7 +400,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
         });
 
-        it('test get XL monthly salesman hours report with shift at the last day of the month', async function () {
+        it('test genarate monthly salesman hours report with shift at the last day of the month', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -446,7 +446,7 @@ describe('reports unit test', function () {
     });
 
     describe('test get monthly salesman hours report', function () {
-        it('test get XL monthly salesman hours report valid', async function () {
+        it('test get monthly salesman hours report valid', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -482,7 +482,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
         });
 
-        it('test get XL monthly salesman hours report with not finish shift', async function () {
+        it('test get monthly salesman hours report with not finish shift', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "PUBLISHED";
@@ -518,7 +518,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 0);
         });
 
-        it('test get XL monthly salesman hours report with FINISH and PUBLISH shift', async function () {
+        it('test get monthly salesman hours report with FINISH and PUBLISH shift', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "PUBLISHED";
@@ -554,7 +554,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 6);
         });
 
-        it('test get XL monthly salesman hours report with shift at the first day of the month', async function () {
+        it('test get monthly salesman hours report with shift at the first day of the month', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -600,7 +600,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
         });
 
-        it('test get XL monthly salesman hours report with shift at the last day of the month', async function () {
+        it('test get monthly salesman hours report with shift at the last day of the month', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -647,7 +647,7 @@ describe('reports unit test', function () {
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
         });
 
-        it('test get XL monthly salesman hours report not by manager', async function () {
+        it('test get monthly salesman hours report not by manager', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -692,7 +692,7 @@ describe('reports unit test', function () {
             expect(result).to.have.property('err', 'user not authorized');
         });
 
-        it('test get XL monthly salesman hours report still not genarate', async function () {
+        it('test get monthly salesman hours report still not genarate', async function () {
             shifts.push(shift4);
             shifts.push(shift3);
             shifts[0].status = "FINISHED";
@@ -733,6 +733,147 @@ describe('reports unit test', function () {
 
             let date  = new Date();
             let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', 'report still not genarated');
+        });
+    });
+
+    describe('test edit monthly salesman hours report', function () {
+        it('test edit monthly salesman hours report valid', async function () {
+            shifts.push(shift4);
+            shifts.push(shift3);
+            shifts[0].status = "FINISHED";
+            shifts[1].status = "FINISHED";
+            shifts[2].status = "FINISHED";
+            shifts[3].status = "FINISHED";
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[2] = shift_object_to_model(shifts[2]);
+            shifts[3] = shift_object_to_model(shifts[3]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            let user2 = await dal.getUserByUsername('bigbezen');
+
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+            shifts[2].salesmanId = user2._id.toString();
+            shifts[3].salesmanId = user2._id.toString();
+
+            let res = await dal.updateUser(user1);
+            res = await dal.updateUser(user2);
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+            shifts[2] = (await dal.addShift(shifts[2])).toObject();
+            shifts[3] = (await dal.addShift(shifts[3])).toObject();
+
+            let date  = new Date();
+            let result = await repoetService.genarateMonthlyUserHoursReport();
+            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            expect(result).to.have.property('code', 200);
+            assert.equal(result.report.salesmansData[0].numOfHours, 12);
+            assert.equal(result.report.salesmansData[1].numOfHours, 12);
+
+            let report = result.report;
+            report.salesmansData[0].numOfHours = 8;
+            report.salesmansData[1].numOfHours = 8;
+
+            result = await repoetService.updateMonthlySalesmanHoursReport(manager.sessionId, date.getFullYear(), date.getMonth(), report);
+            expect(result).to.have.property('code', 200);
+
+            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            expect(result).to.have.property('code', 200);
+            assert.equal(result.report.salesmansData[0].numOfHours, 8);
+            assert.equal(result.report.salesmansData[1].numOfHours, 8);
+
+        });
+
+        it('test edit monthly salesman hours report not by manager', async function () {
+            shifts.push(shift4);
+            shifts.push(shift3);
+            shifts[0].status = "FINISHED";
+            shifts[1].status = "FINISHED";
+            shifts[2].status = "FINISHED";
+            shifts[3].status = "FINISHED";
+
+            shifts[0].startTime = new Date(new Date(shifts[0].startTime).getFullYear(), new Date(shifts[0].startTime).getMonth() + 1, 0);
+            shifts[0].startTime.setHours(16);
+            shifts[0].endTime = new Date(shifts[0].startTime );
+            shifts[0].endTime.setHours(22);
+            shifts[2].startTime = new Date(new Date(shifts[2].startTime).getFullYear(), new Date(shifts[2].startTime).getMonth() + 1, 0);
+            shifts[2].startTime.setHours(16);
+            shifts[2].endTime = new Date( shifts[2].startTime );
+            shifts[2].endTime.setHours(22);
+
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[2] = shift_object_to_model(shifts[2]);
+            shifts[3] = shift_object_to_model(shifts[3]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            let user2 = await dal.getUserByUsername('bigbezen');
+
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+            shifts[2].salesmanId = user2._id.toString();
+            shifts[3].salesmanId = user2._id.toString();
+            let res = await dal.updateUser(user1);
+            res = await dal.updateUser(user2);
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+            shifts[2] = (await dal.addShift(shifts[2])).toObject();
+            shifts[3] = (await dal.addShift(shifts[3])).toObject();
+
+            let date  = new Date();
+            let result = await repoetService.genarateMonthlyUserHoursReport();
+            result = await repoetService.updateMonthlySalesmanHoursReport(salesman.sessionId, date.getFullYear(), date.getMonth(), result.report);
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', 'user not authorized');
+        });
+
+        it('test edit monthly salesman hours report still not genarate', async function () {
+            shifts.push(shift4);
+            shifts.push(shift3);
+            shifts[0].status = "FINISHED";
+            shifts[1].status = "FINISHED";
+            shifts[2].status = "FINISHED";
+            shifts[3].status = "FINISHED";
+
+            shifts[0].startTime = new Date(new Date(shifts[0].startTime).getFullYear(), new Date(shifts[0].startTime).getMonth() + 1, 0);
+            shifts[0].startTime.setHours(16);
+            shifts[0].endTime = new Date(shifts[0].startTime );
+            shifts[0].endTime.setHours(22);
+            shifts[2].startTime = new Date(new Date(shifts[2].startTime).getFullYear(), new Date(shifts[2].startTime).getMonth() + 1, 0);
+            shifts[2].startTime.setHours(16);
+            shifts[2].endTime = new Date( shifts[2].startTime );
+            shifts[2].endTime.setHours(22);
+
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+            shifts[2] = shift_object_to_model(shifts[2]);
+            shifts[3] = shift_object_to_model(shifts[3]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            let user2 = await dal.getUserByUsername('bigbezen');
+
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+            shifts[2].salesmanId = user2._id.toString();
+            shifts[3].salesmanId = user2._id.toString();
+
+            let res = await dal.updateUser(user1);
+            res = await dal.updateUser(user2);
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+            shifts[1] = (await dal.addShift(shifts[1])).toObject();
+            shifts[2] = (await dal.addShift(shifts[2])).toObject();
+            shifts[3] = (await dal.addShift(shifts[3])).toObject();
+
+            let date  = new Date();
+            let result = await repoetService.updateMonthlySalesmanHoursReport(manager.sessionId, date.getFullYear(), date.getMonth(), "still not genarate");
             expect(result).to.have.property('code', 404);
             expect(result).to.have.property('err', 'report still not genarated');
         });

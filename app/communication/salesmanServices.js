@@ -36,6 +36,16 @@ var helpers = {
         return connection.salesmanRequests.reportOpen(shiftId, products);
     },
 
+    reportExpenses: function(shiftId, km, parking){
+        console.log('salesmanServices- reportExpenses');
+        return connection.salesmanRequests.reportExpenses(shiftId, km, parking);
+    },
+
+    editSale: function(shiftId,productId, saleTime, quantity){
+        console.log('salesmanServices- editSale');
+        return connection.salesmanRequests.editSale(shiftId,productId, saleTime, quantity);
+    },
+
     addShiftComment: function(shiftId, content){
         console.log('salesmanServices- addShiftComment');
         return connection.salesmanRequests.addShiftComment(shiftId, content);
@@ -51,9 +61,9 @@ var helpers = {
         return connection.salesmanRequests.encouragements();
     },
 
-    shifts: function(){
+    getAllShifts: function(){
         console.log('salesmanServices- shifts');
-        return connection.salesmanRequests.shifts();
+        return connection.salesmanRequests.getAllShifts();
     },
 
     addShiftsConstraints: function(){

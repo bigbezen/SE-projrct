@@ -57,6 +57,26 @@ var helpers = {
     getSalesmanListXL: function () {
         console.log('managerServices- getSalesmanReports');
         return connection.managerRequests.getSalesmanListXL();
+    },
+
+    getMonthlyAnalysisReportData: function(year) {
+        console.log('managerServices - getMonthlyAnalysisReport');
+        return connection.managerRequests.getMonthlyAnalysisReport(year);
+    },
+
+    updateMonthlyAnalysisReport: function(year, report){
+        console.log('managerService - updateMonthlyAnalysisReport');
+        return connection.managerRequests.updateMonthlyAnalysisReport(year, report);
+    },
+
+    exportMonthlyAnalysisReport: function(year){
+        console.log('managerService - exportMonthlyAnalysisReport');
+        return connection.managerRequests.exportMonthlyAnalysisReport(year);
+    },
+
+    getMonthlyHoursReportData: function(year, month) {
+        console.log('managerService - getMonthlyHoursReportData');
+        return connection.managerRequests.getMonthlyHoursReport(year, month);
     }
 };
 

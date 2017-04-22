@@ -2,24 +2,24 @@ var mongoose    = require('mongoose');
 var Schema      = mongoose.Schema;
 
 var shiftSchema = new Schema({
-    'storeId': {type: mongoose.Schema.Types.ObjectId, ref: 'stores'},
+    'storeId': {type: mongoose.Schema.Types.ObjectId, ref: 'store'},
     'startTime': Date,
     'endTime': Date,
     'status': String,
     'type': String,
     'numOfKM': Number,
     'parkingCost': Number,
-    'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'users'},
+    'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     'constraints': [
         {
-            'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'users'},
+            'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
             'isAvailable': Boolean,
             'comment': String
         }
     ],
     'salesReport': [
         {
-            'productId': {type: mongoose.Schema.Types.ObjectId, ref: 'products'},
+            'productId': {type: mongoose.Schema.Types.ObjectId, ref: 'product'},
             'stockStartShift': Number,
             'stockEndShift': Number,
             'sold': Number,
@@ -28,7 +28,7 @@ var shiftSchema = new Schema({
     ],
     'sales': [
         {
-            'productId': {type: mongoose.Schema.Types.ObjectId, ref: 'products'},
+            'productId': {type: mongoose.Schema.Types.ObjectId, ref: 'product'},
             'timeOfSale': Date,
             'quantity': Number
         }

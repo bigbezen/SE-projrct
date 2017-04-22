@@ -13,12 +13,31 @@ var paths = require('../utils/Paths');
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
 var DropDownInput = ReactBootstrap.DropdownButton;
+var userServices = require('../communication/userServices');
 
 var ShiftDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     getInitialState: function () {
+        this.setSessionId();
+        this.setUserType();
         return {
             editing: false,
             storeId: '',
@@ -61,25 +80,16 @@ var ShiftDetails = React.createClass({
         managementServices.getAllStores().then(function (n) {
             if (n) {
                 var val = n;
-                if (val.success) {
-                    var arrayOfObjects = val.info;
-                    optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
-                    for (var i = 0; i < arrayOfObjects.length; i++) {
-                        var currOption = arrayOfObjects[i];
-                        optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
-                    }
-                    self.setState({storesForDropDown: optionsForDropDown});
-                    if (self.state.editing) {
-                        self.refs.storeBox.value = self.state.storeId;
-                        self.refs.userBox.value = self.state.salesmanId;
-                    }
-                } else {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
+                var arrayOfObjects = val;
+                optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+                for (var i = 0; i < arrayOfObjects.length; i++) {
+                    var currOption = arrayOfObjects[i];
+                    optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
+                }
+                self.setState({storesForDropDown: optionsForDropDown});
+                if (self.state.editing) {
+                    self.refs.storeBox.value = self.state.storeId;
+                    self.refs.userBox.value = self.state.salesmanId;
                 }
             }
             else {
@@ -100,22 +110,15 @@ var ShiftDetails = React.createClass({
         managementServices.getAllUsers().then(function (n) {
             if (n) {
                 var val = n;
-                if (val.success) {
-                    var arrayOfObjects = val.info;
-                    optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
-                    for (var i = 0; i < arrayOfObjects.length; i++) {
-                        var currOption = arrayOfObjects[i];
+                var arrayOfObjects = val;
+                optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
+                for (var i = 0; i < arrayOfObjects.length; i++) {
+                    var currOption = arrayOfObjects[i];
+                    if (currOption.jobDetails.userType == "salesman") {
                         optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
                     }
-                    self.setState({salesmenForDropDown: optionsForDropDown});
-                } else {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
                 }
+                self.setState({salesmenForDropDown: optionsForDropDown});
             }
             else {
                 notificationSystem.addNotification({
@@ -165,92 +168,51 @@ var ShiftDetails = React.createClass({
         if (this.state.editing) {
             newShift._id = this.props.location.query._id;
             managementServices.editShift(newShift).then(function (n) {
-                if(n){
                     var val1 = n;
-                    if (val1.success) {
-                        newShift._id = val1.info[0]._id;
-                        managementServices.publishShifts(newShift).then(function (n) {
-                            if (n) {
-                                var val2 = n;
-                                if (val2.success) {
-                                    notificationSystem.addNotification({
-                                        message: constantsStrings.editSuccessMessage_string,
-                                        level: 'success',
-                                        autoDismiss: 2,
-                                        position: 'tc',
-                                        onRemove: function (notification) {
-                                            context.router.push({
-                                                pathname: paths.manager_home_path
-                                            })
-                                        }
-                                    });
-                                }
-                            } else {
-                                notificationSystem.addNotification({
-                                    message: constantsStrings.editFailMessage_string,
-                                    level: 'error',
-                                    autoDismiss: 5,
-                                    position: 'tc'
-                                });
-                            }
-                        })
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
-                }
-                else{
                     notificationSystem.addNotification({
-                        message: constantsStrings.editFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_home_path
+                            })
+                        }
                     });
-                }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addShift(newShift).then(function (n) {
                 if(n){
                     var val1 = n;
-                    if (val1.success) {
-                        newShift._id = val1.info[0]._id;
-                        managementServices.publishShifts(newShift).then(function (n) {
-                            if (n) {
-                                var val2 = n;
-                                if (val2.success) {
-                                    notificationSystem.addNotification({
-                                        message: constantsStrings.addSuccessMessage_string,
-                                        level: 'success',
-                                        autoDismiss: 2,
-                                        position: 'tc',
-                                        onRemove: function (notification) {
-                                            context.router.push({
-                                                pathname: paths.manager_home_path
-                                            })
-                                        }
-                                    });
+                    newShift._id = val1[0]._id;
+                    managementServices.publishShifts(newShift).then(function (n) {
+                            notificationSystem.addNotification({
+                                message: constantsStrings.addSuccessMessage_string,
+                                level: 'success',
+                                autoDismiss: 2,
+                                position: 'tc',
+                                onRemove: function (notification) {
+                                    context.router.push({
+                                        pathname: paths.manager_home_path
+                                    })
                                 }
-                            } else {
-                                notificationSystem.addNotification({
-                                    message: constantsStrings.addFailMessage_string,
-                                    level: 'error',
-                                    autoDismiss: 5,
-                                    position: 'tc'
-                                });
-                            }
-                        })
-                    } else {
+                            });
+                    }).catch(function (errMess) {
                         notificationSystem.addNotification({
-                            message: constantsStrings.addFailMessage_string,
+                            message: errMess,
                             level: 'error',
                             autoDismiss: 5,
                             position: 'tc'
                         });
-                    }
+                    })
                 }
                 else{
                     notificationSystem.addNotification({
@@ -260,6 +222,13 @@ var ShiftDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },
@@ -366,16 +335,12 @@ var ShiftDetails = React.createClass({
 
         console.log(this.currShift);
 
-        this.state.shishiftType =  this.currShift.type;
+        this.state.shiftType =  this.currShift.type;
         this.state.storeId = this.currShift.store._id;
         this.state.salesmanId = this.currShift.salesman._id;
 
-        this.refs.dateBox.type = "datetime";
-        this.refs.startTimeBox.type = "datetime";
-        this.refs.endTimeBox.type = "datetime";
-
-        this.refs.storeBox.value = this.currShift.store._id; //TODO- fix this
-        this.refs.userBox.value = this.currShift.salesman._id;  //TODO- fix this
+        this.refs.storeBox.value = this.currShift.store._id;
+        this.refs.userBox.value = this.currShift.salesman._id;
         this.refs.shiftTypeBox.value =  this.currShift.type;
         this.refs.dateBox.value =  moment(this.currShift.startTime).format('YYYY-MM-DD');
         this.refs.startTimeBox.value = moment(this.currShift.startTime).format('HH:mm');

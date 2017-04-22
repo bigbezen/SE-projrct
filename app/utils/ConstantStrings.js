@@ -13,6 +13,8 @@ class ConstantStrings extends React.Component {
     static stores_string = 'חנויות';
     static products_string = 'מוצרים';
     static shifts_string = ' משמרות';
+    static reports_string = ' דוחות';
+    static saleReport_string = 'טעימות';
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';
@@ -51,9 +53,12 @@ class ConstantStrings extends React.Component {
     static incentiveName_string = 'שם התמריץ';
     static incentiveNumOfProducts_string = 'כמות הבקבוקים למכירה בתמריץ';
     static incentiveRate_string ='גודל התמריץ';
+    static incentiveRateSalesman_string ='תגמול';
+
     static incentivePickProducts_string = 'בחר מוצרים';
     static incentiveProducts_string = 'מוצרים בתמריץ';
     static incentiveIncentives_string = 'תמריצים';
+    static incentiveMissingProducts_string = 'לא ניתן לייצר תמריץ ללא מוצרים';
 
     //filter strings
     static enterProductName_string = 'הכנס שם מוצר..';
@@ -73,7 +78,7 @@ class ConstantStrings extends React.Component {
     static startDate_string = 'תאריך התחלה';
     static date_string = 'תאריך';
     static role_string = 'תפקיד';
-    static endDate_string = 'תאריך סיום';
+    static salary_string = 'שכר שעתי';
     static birthDate_string = 'תאריך לידה';
     static street_string = 'מספר בית';
     static zip_string = 'מיקוד';
@@ -118,6 +123,21 @@ class ConstantStrings extends React.Component {
     static salesman_string = 'דייל';
     static getReport_string = 'הורד דוח';
     static shiftType_string = 'סוג משמרת';
+
+    //reports
+    static defaultSalesmanDropDown_string = 'בחר/י דייל';
+    static defaultShiftDropDown_string = 'בחר/י משמרת';
+    static noShifts_string = 'לא קיימות משמרות להצגה';
+    static editReport_string = 'ערוך דוח';
+    static reportsNumberOfProductsSold_string = 'נמכרו';
+    static reportsNumberOfProductsOpened_string = 'נפתחו';
+    static reportsSalesReportTitle_string = 'דוח טעימות';
+    static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
+    static reportsMonthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+    static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
+    static reportsShowReport_string = 'הצג דוח';
+    static monthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+
 
     static reportSale_string = 'דווח מכירה';
     static reportOpen_string = 'דווח פתיחה';
@@ -219,7 +239,7 @@ class ConstantStrings extends React.Component {
     static email_string = 'אימייל';
 
     static select_product_for_sale = 'בחר מוצר אשר נמכר/נפתח:'
-
+    static press_quantity_for_edit = 'לחץ על כמות על מנת לערוך אותה:';
     //popups
     static errorMessage_string = 'אירעה שגיאה בשרת, אנא נסה שוב מאוחר יותר';
     static errorTitle_string = 'שגיאה';
@@ -255,8 +275,48 @@ class ConstantStrings extends React.Component {
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';
     static encouragements_string = 'תמריצים';
+    static updateExpenses_string = 'עדכן נסיעות';
+    //shift expenses
+    static km_string = 'ק"מ';
+    static parking_string = 'חנייה';
+    static store_string = 'חנות';
 
-    //shift comments
+    //encouragements
+    static ils_string = 'ש"ח';
+    static encouragementsStatus_string ='מצב תגמול נוכחי';
+
+    //salesman base
+    static currentShift_string = 'משמרת נוכחית';
+    static profile_string ='פרופיל';
+    static shiftSchedule_string ='לוח משמרות';
+    static expenses_string ='הוצאות';
+
+    static numberToMonth = {
+        '1': 'ינואר',
+        '2': 'פברואר',
+        '3': 'מרץ',
+        '4': 'אפריל',
+        '5': 'מאי',
+        '6': 'יוני',
+        '7': 'יולי',
+        '8': 'אוגוסט',
+        '9': 'ספטמבר',
+        '10': 'אוקטובר',
+        '11': 'נובמבר',
+        '12': 'דצמבר',
+    };
+    static dictionary = {
+        'organized': 'תדמית - יום',
+        'traditionalHot': 'ערוץ מסורתי',
+        'traditionalOrganized': 'ערוץ מאורגן',
+        'totalHours': 'שעות דיול',
+        'salesmanCost': 'ללא תמריצי תקציב דיול',
+        'shiftsCount': 'כמות דיולים בחנויות',
+        'uniqueCount': 'מס נק דיול',
+        'saleBottlesCount': 'כמות בק שנמכרו',
+        'openedCount': 'כמות בק שנפתחו',
+        'saleAverage': 'ממוצע מכירות בק לשעה'
+    };
 }
 
 module.exports = ConstantStrings;

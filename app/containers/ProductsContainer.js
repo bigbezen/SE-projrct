@@ -13,6 +13,7 @@ var styles = require('../styles/managerStyles/styles');
 var TrashIcon = require('react-icons/lib/fa/trash-o');
 var EditIcon = require('react-icons/lib/md/edit');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -22,7 +23,25 @@ var ProductsContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     getInitialState() {
+        this.setSessionId();
+        this.setUserType();
         return{
             products: null
         }
@@ -36,22 +55,19 @@ var ProductsContainer = React.createClass({
         managementServices.getAllProducts().then(function (n) {
             if (n) {
                 var result = n;
-                if (result.success) {
-                    self.setState({
-                        products: result.info
-                    });
-                } else {
-                    console.log("error in getAllProducts: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.setState({
+                    products: result
+                });
             } else {
                 console.log("error in storesContainers: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickEditButton: function(cell, row, rowIndex){
@@ -87,22 +103,17 @@ var ProductsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteProduct(row).then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    self.updateProducts();
-                    console.log("works!!");
-                } else {
-                    console.log("error in deleteProduct: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.deleteFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.updateProducts();
             } else {
                 console.log("error in deleteProduct: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     onClickAddButton: function(){

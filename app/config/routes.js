@@ -18,7 +18,7 @@ var User = require('../containers/UserDetails');
 var Shifts = require('../containers/ShiftsContainer');
 var Shift = require('../containers/ShiftDetails');
 var CreateShifts = require('../containers/ShiftsGenerator');
-var SalesmanBase = require('../salemanContainers/SalesmanBaseContainer');
+var SalesmanHomeBase = require('../salemanContainers/SalesmanHomeBaseContainer');
 var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
 var SalesmanStartShift = require('../salemanContainers/StartShiftContainer');
 var SalesmanEndShift = require('../salemanContainers/EndShiftContainer');
@@ -31,6 +31,14 @@ var shiftComments = require('../salemanContainers/ShiftCommentsContainer');
 var ShiftEncouragements = require('../salemanContainers/ShiftEncouragementsContainer');
 var IncentivesContainer = require('../containers/IncentivesContainer');
 var Incentive = require('../containers/IncentiveDetails');
+var Reports = require('../containers/ReportsBase');
+var SalesReport = require('../containers/ReportsSalesReport');
+var MonthlyAnalysisReport = require('../containers/ReportsMonthlyAnalysis');
+var MonthlyHoursReport = require('../containers/ReportsMonthlyHours');
+var SalesmanShiftsExpenses = require('../salemanContainers/shiftExpensesContainer');
+var SalesmanProfile = require('../salemanContainers/SalesmanProfileContainer');
+var SalesmanShiftSchedule = require('../salemanContainers/SalesmanShiftsScheduleContainer');
+var SalesmanBase = require('../salemanContainers/SalesmanBaseContainer');
 
 
 var routes = (
@@ -50,15 +58,27 @@ var routes = (
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
             <Route path='changePassword' component={ChangePass}/>
+            <Route path='reports' component={Reports} />
+            <Route path='salesReport' component={SalesReport} />
+            <Route path='monthlyAnalysisReport' component={MonthlyAnalysisReport} />
+            <Route path='monthlyHoursReport' component={MonthlyHoursReport} />
+
         </Route>
         <Route path='/member/'>
             <Route path='retrievePassword' component={RetrievePass}/>
+            <Route path='reports' component={Reports} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='changePassword' component={ChangePass}/>
-            <Route path='home' component={SalesmanHome}/>
             <Route path='startShift' component={SalesmanStartShift}/>
             <Route path='endShift' component={SalesmanEndShift}/>
+        </Route>
+
+        <Route path='/salesman/home/' component={SalesmanHomeBase}>
+            <Route path='home' component={SalesmanHome}/>
+            <Route path='profile' component={SalesmanProfile}/>
+            <Route path='shiftSchedule' component={SalesmanShiftSchedule}/>
+            <Route path='shiftsExpenses' component={SalesmanShiftsExpenses}/>
         </Route>
 
         <Route path='/salesman/shift/' component={ShiftBaseContainer}>

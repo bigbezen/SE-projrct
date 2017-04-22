@@ -9,19 +9,37 @@ var productInfo = require('../models/product');
 var paths = require('../utils/Paths');
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
+var userServices = require('../communication/userServices');
 
 var ProductDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
+        this.setUserType();
         return {
             editing: false,
             category:'',
             subCategory:''
         }
     },
-
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     componentDidMount() {
         console.log('check props');
         var isEmptyVar = !(this.isEmpty(this.props.location.query));
@@ -97,27 +115,18 @@ var ProductDetails = React.createClass({
             newProduct._id = this.props.location.query._id;
             managementServices.editProduct(newProduct).then(function (n) {
                 if(n){
-                        var val = n;
-                        if (val.success) {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.editSuccessMessage_string,
-                                level: 'success',
-                                autoDismiss: 2,
-                                position: 'tc',
-                                onRemove: function (notification) {
-                                    context.router.push({
-                                        pathname: paths.manager_products_path
-                                    })
-                                }
-                            });
-                        } else {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.editFailMessage_string,
-                                level: 'error',
-                                autoDismiss: 5,
-                                position: 'tc'
-                            });
+                    var val = n;
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_products_path
+                            })
                         }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({
@@ -127,31 +136,29 @@ var ProductDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addProduct(newProduct).then(function (n) {
                 if(n){
-                        var val = n;
-                        if (val.success) {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.addSuccessMessage_string,
-                                level: 'success',
-                                autoDismiss: 2,
-                                position: 'tc',
-                                onRemove: function (notification) {
-                                    context.router.push({
-                                        pathname: paths.manager_products_path
-                                    })
-                                }
-                            });
-                        } else {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.addFailMessage_string,
-                                level: 'error',
-                                autoDismiss: 5,
-                                position: 'tc'
-                            });
+                    var val = n;
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_products_path
+                            })
                         }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({
@@ -161,6 +168,13 @@ var ProductDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },

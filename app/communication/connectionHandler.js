@@ -14,15 +14,23 @@ function errorMessage(funcName, mess) {
     console.warn('Error in function:' + funcName + ': ' + mess);
 }
 
-function returnVal(isOk, info) {
-    var retVal = {
-        'success': isOk,
-        'info': info
-    };
-    return retVal;
-}
-
 var userRequests = {
+    getSessionId : function() {
+      return sessionId;
+    },
+
+    setSessionId : function(newSessionid) {
+        sessionId = newSessionid;
+    },
+
+    getUserType : function() {
+        return userType;
+    },
+
+    setUserType : function(newUserType) {
+        userType = newUserType;
+    },
+
     login: function(username, password) {
         return axios.post(serverUrl + 'user/login', {
             username:username,
@@ -32,10 +40,10 @@ var userRequests = {
             name = username;
             userType = info.data.userType;
             console.log('the user ' + username + ' Was logged in. user type: ' + info.data.userType);
-            return returnVal(true ,info.data.userType);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('Error in login', err);
-            return returnVal(false, err);
+            errorMessage('Error in login', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -55,21 +63,23 @@ var userRequests = {
             sessionId = null;
             name = null;
             userType = null;
-            return returnVal(true, '');
+            return '';
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
-    retrievePassword: function(username, email){ //TODO: doesn't
+    retrievePassword: function(username, email){
         return axios.post(serverUrl + 'user/retrievePassword', {
             username:username,
             email:email
         }).then(function (info) {
             console.log('the user ' + name + ' retrievePassword.');
-            return returnVal(true, info);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -80,9 +90,10 @@ var userRequests = {
             newPass:newPass
         }).then(function (info) {
             console.log('the user ' + name + ' changePassword.');
-            return returnVal(true, info);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -91,9 +102,10 @@ var userRequests = {
             sessionId:sessionId
         }).then(function (info) {
             console.log('the user ' + name + ' getProfile.');
-            return returnVal(true, info);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
     getUsername: function () {
@@ -107,9 +119,25 @@ var managementRequests = {
             sessionId:sessionId,
             userDetails:user
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    updateSalesReport: function(shiftId, productId, newSold, newOpened){
+        return axios.post(serverUrl + 'management/updateSalesReport', {
+            sessionId:sessionId,
+            shiftId: shiftId,
+            productId: productId,
+            newSold: newSold,
+            newOpened: newOpened
+        }).then(function (info) {
+            return "";
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -119,9 +147,10 @@ var managementRequests = {
             username:name,
             userDetails:user
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -130,9 +159,10 @@ var managementRequests = {
             sessionId:sessionId,
             username:user.username
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -142,10 +172,11 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -154,9 +185,10 @@ var managementRequests = {
             sessionId:sessionId,
             storeDetails:store
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -165,9 +197,10 @@ var managementRequests = {
             sessionId:sessionId,
             storeDetails:store
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -176,9 +209,10 @@ var managementRequests = {
             sessionId:sessionId,
             storeId:store._id
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -188,10 +222,11 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -201,9 +236,10 @@ var managementRequests = {
             sessionId:sessionId,
             productDetails:product
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -213,9 +249,10 @@ var managementRequests = {
             sessionId:sessionId,
             productDetails:product
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -224,9 +261,10 @@ var managementRequests = {
             sessionId:sessionId,
             productId:product._id
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -236,10 +274,11 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -249,10 +288,11 @@ var managementRequests = {
             sessionId:sessionId,
             encouragementDetails: incentive
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -262,10 +302,25 @@ var managementRequests = {
             sessionId:sessionId,
             encouragementDetails: incentive
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    deleteIncentive: function(incentive) {
+        console.log('delete incentive');
+        return axios.post(serverUrl + 'management/deleteEncouragement', {
+            sessionId: sessionId,
+            encouragementId: incentive._id
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
+            console.log(err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -275,10 +330,11 @@ var managementRequests = {
                 sessionId: sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
             console.log(err);
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -292,21 +348,23 @@ var managementRequests = {
             sessionId:sessionId,
             shiftArr:shiftArr
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
     editShift: function(shift) {
-        console.log('add shift');
+        console.log('edit shift');
         return axios.post(serverUrl + 'management/editShifts', {
             sessionId:sessionId,
-            shiftsArr:shift
+            shiftDetails:shift
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -316,9 +374,10 @@ var managementRequests = {
             sessionId:sessionId,
             shiftId:shift._id
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -330,9 +389,24 @@ var managementRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getSalesmanFinishedShifts: function(salesmanId){
+        console.log('get finshed shifts of salesman');
+        return axios.get(serverUrl + 'management/getSalesmanFinishedShifts?salesmanId=' + salesmanId, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -344,9 +418,10 @@ var managementRequests = {
             sessionId:sessionId,
             shiftArr:shiftArr
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -356,11 +431,12 @@ var managementRequests = {
             startTime:startTime,
             endTime:endTime
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
-    }
+    },
 };
 
 var managerRequests = {
@@ -386,6 +462,7 @@ var managerRequests = {
 
     editSalesReport: function(){
         errorMessage('editSalesReport', 'Not implemented yet');
+        //DEPRECATED - NOT USED
     },
 
     getRecommendations: function(){
@@ -407,9 +484,10 @@ var managerRequests = {
                 shiftId:shift._id
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -419,9 +497,61 @@ var managerRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getMonthlyAnalysisReport: function(year){
+        return axios.get(serverUrl + 'manager/getMonthlyAnalysisReport?year=' + year, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    updateMonthlyAnalysisReport: function(year, report){
+        return axios.post(serverUrl + 'manager/updateMonthlyAnalysisReport', {
+            sessionId: sessionId,
+            year: year,
+            report: report
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    exportMonthlyAnalysisReport: function(year){
+        return axios.post(serverUrl + 'manager/getMonthAnalysisReportXL', {
+            sessionId: sessionId,
+            year: year
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getMonthlyHoursReport: function(year, month){
+        return axios.get(serverUrl + 'manager/getMonthlyHoursSalesmansReport?year=' + year + "&month=" + month, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     }
 
@@ -435,9 +565,10 @@ var salesmanRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -446,9 +577,10 @@ var salesmanRequests = {
             sessionId:sessionId,
             shift:shift
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -458,9 +590,10 @@ var salesmanRequests = {
             sessionId:sessionId,
             shift:shift
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -471,9 +604,10 @@ var salesmanRequests = {
                 sessionId:sessionId
             }
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -483,9 +617,10 @@ var salesmanRequests = {
             shiftId:shiftId,
             sales:products
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -495,9 +630,39 @@ var salesmanRequests = {
             shiftId:shiftId,
             opens:products
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    reportExpenses: function(shiftId, km, parking){
+        return axios.post(serverUrl + 'salesman/reportExpenses', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            km:km,
+            parking:parking
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    editSale: function(shiftId,productId, saleTime, quantity){
+        return axios.post(serverUrl + 'salesman/editSale', {
+            sessionId:sessionId,
+            shiftId:shiftId,
+            productId:productId,
+            saleTime:saleTime,
+            quantity:quantity
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -508,9 +673,10 @@ var salesmanRequests = {
             shiftId:shiftId,
             content:content
         }).then(function (info) {
-            return returnVal(true, info.data);
+            return info.data;
         }).catch(function (err) {
-            return returnVal(false, err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -518,9 +684,10 @@ var salesmanRequests = {
         return axios.get(serverUrl + 'salesman/getShiftNotes', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('getShiftNotes', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -528,19 +695,23 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/encouragements', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('encouragements', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
-    shifts: function(){
-        return axios.post(serverUrl + 'salesman/shifts', {
-            sessionId:sessionId
+    getAllShifts: function(){
+        return axios.get(serverUrl + 'salesman/getAllShifts', {
+            headers:{
+                sessionId:sessionId
+            }
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('shifts', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -548,9 +719,10 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/addShiftsConstraints', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('addShiftsConstraints', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -558,9 +730,10 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/salesHistory', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('salesHistory', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -568,9 +741,10 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/getBroadcastMessages', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('getBroadcastMessages', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     },
 
@@ -578,9 +752,10 @@ var salesmanRequests = {
         return axios.post(serverUrl + 'salesman/shiftRegister', {
             sessionId:sessionId
         }).then(function (info) {
-            return returnVal(info);
+            return info.data;
         }).catch(function (err) {
-            errorMessage('shiftRegister', err);
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
         })
     }
 };

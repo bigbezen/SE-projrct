@@ -13,18 +13,37 @@ var paths = require('../utils/Paths');
 var DropDownInput = ReactBootstrap.DropdownButton;
 var NotificationSystem = require('react-notification-system');
 var styles = require('../styles/managerStyles/styles');
+var userServices = require('../communication/userServices');
 
 var UserDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
+        this.setUserType();
         return {
             editing: false,
             gender: '',
             role: '',
             prevUsername:''
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
 
     checkDropDowns: function() {
@@ -85,8 +104,6 @@ var UserDetails = React.createClass({
         var newUser = new userInfo();
         newUser.username = this.refs.usernameBox.value;
         newUser.startDate = this.refs.startDateBox.value;
-        newUser.endDate = this.refs.endDateBox.value;
-
         //personal
         newUser.personal = {};
         console.log(this.refs.idBox.value);
@@ -114,6 +131,7 @@ var UserDetails = React.createClass({
         newUser.jobDetails.userType = this.state.role;
         newUser.jobDetails.area = "area";
         newUser.jobDetails.channel = "channel";
+        newUser.jobDetails.salary = this.refs.salaryBox.value;
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
@@ -121,62 +139,39 @@ var UserDetails = React.createClass({
             newUser._id = this.props.location.query._id;
             var prevName = this.state.prevUsername;
             managementServices.editUser(prevName, newUser).then(function (n) {
-                if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_users_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
-                }
-                else{
                     notificationSystem.addNotification({
-                        message: constantsStrings.editFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_users_path
+                            })
+                        }
                     });
-                }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managementServices.addUser(newUser).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_users_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_users_path
+                            })
+                        }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({
@@ -186,6 +181,13 @@ var UserDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },
@@ -242,12 +244,12 @@ var UserDetails = React.createClass({
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.endDate_string}:</label>
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.salary_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <input type="date" min={0}
+                        <input type="number" min={0} default={25}
                                className="col-xs-4 col-xs-offset-2"
-                               ref="endDateBox"
+                               ref="salaryBox"
                         />
                     </div>
 
@@ -401,7 +403,7 @@ var UserDetails = React.createClass({
         this.state.role = this.currProduct.jobDetails.userType;
         this.refs.usernameBox.value = this.currProduct.username;
         this.refs.startDateBox.value = moment(this.currProduct.startDate).format('YYYY-MM-DD');
-        this.refs.endDateBox.value = moment(this.currProduct.endDate).format('YYYY-MM-DD');
+        this.refs.salaryBox.value = this.currProduct.jobDetails.salary;
         //personal
         this.refs.idBox.value = this.currProduct.personal.id;
         this.refs.firstNameBox.value = this.currProduct.personal.firstName;

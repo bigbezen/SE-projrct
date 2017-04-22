@@ -11,6 +11,10 @@ var styles = {
     centerAlign: {
         'textAlign': 'center'
     },
+    buttonsStyle: {
+        'textAlign': 'center',
+        'marginTop': '10px'
+    },
     space: {
         height: '50px'
     },

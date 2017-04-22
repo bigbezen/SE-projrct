@@ -14,12 +14,30 @@ var ChangePassContainer = React.createClass({
         router: React.PropTypes.object.isRequired,
     },
     getInitialState: function () {
+        this.setSessionId();
+        this.setUserType();
         return {
             prevPass: '',
             newPass1: '',
             newPass2: '',
 
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentDidMount() {
         this.retPath = this.props.location.query;
@@ -55,34 +73,31 @@ var ChangePassContainer = React.createClass({
         });
         var context = this.context;
         var self = this;
-        userServices.changePassword(prevPass, newPass1).then(function (n) {
-            if(n){
-                var answer = n;
-                if (answer.success) {
-                    var nextPage = self.getNextPage();
-                    notificationSystem.addNotification({
-                        message: constantsStrings.changePassSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: nextPage
-                            })
-                        }
-                    });
-                }else {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.changePassServerFailedMessage_string,
-                        level: 'error',
-                        autoDismiss: 0,
-                        position: 'tc'
-                    });
-                }
+        userServices.changePassword(prevPass, newPass1).then(function (answer) {
+            if(answer){
+                var nextPage = self.getNextPage();
+                notificationSystem.addNotification({
+                    message: constantsStrings.changePassSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                    onRemove: function (notification) {
+                        context.router.push({
+                            pathname: nextPage
+                        })
+                    }
+                });
             }
             else{
-                console.log("error in retrieving password: " + n);
+                console.log("error in retrieving password: " + answer);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     getNextPage: function() {

@@ -11,7 +11,9 @@ var Products = require('react-icons/lib/fa/glass');
 var Incentives = require('react-icons/lib/md/attach-money');
 var Stores = require('react-icons/lib/md/store');
 var Shifts = require('react-icons/lib/fa/calendar');
+var Reports = require('react-icons/lib/go/graph');
 var styles = require('../styles/managerStyles/baseStyles');
+var NotificationSystem = require('react-notification-system');
 
 var BaseContainer = React.createClass({
     contextTypes: {
@@ -21,15 +23,20 @@ var BaseContainer = React.createClass({
     handleLogoutUser: function () {
         console.log('BaseContainer- Logout function');
         var context = this.context;
+        var notificationSystem = this.refs.notificationSystem;
         userServices.logout().then(function (n) {
-            if(n){
+                localStorage.setItem('sessionId', 0);
+                localStorage.setItem('userType', 0);
                 context.router.push({
                     pathname: paths.login_path
                 })
-            }
-            else{
-                console.log("error");
-            }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
 
@@ -62,7 +69,8 @@ var BaseContainer = React.createClass({
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
-                    <li className="w3-hide-small w3-right" ><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
+                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
+                    <li className="w3-hide-small w3-right"><a className="w3-hover-none" href={'/#'+paths.manager_reports_path}><Reports/>{constantsStrings.reports_string}</a></li>
                     <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a></li>
                     <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleChangePassword}>{constantsStrings.changePass_string}</a></li>
                 </ul>
@@ -80,7 +88,7 @@ var BaseContainer = React.createClass({
                 </div>
                 <div style={styles.space} className="w3-theme-l5" />
                 {this.props.children}
-
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     }

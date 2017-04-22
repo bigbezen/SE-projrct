@@ -84,6 +84,7 @@ var helpers = {
 
     deleteIncentive(incentive){
         console.log('managementervices- deleteIncentive');
+        return connection.managementRequests.deleteIncentive(incentive)
     },
 
 
@@ -113,8 +114,20 @@ var helpers = {
     },
 
     getShiftsFromDate:function(fromDate) {
-        console.log('managementervices- getShiftsFromDate');
+        console.log('managementServices- getShiftsFromDate');
         return connection.managementRequests.getShiftsFromDate(fromDate);
+    },
+
+    getSalesmanFinishedShifts: function(salesmanId) {
+        console.log('managementServices - getSalesmanFinishedShifts');
+        return connection.managementRequests.getSalesmanFinishedShifts(salesmanId);
+    },
+
+    updateSalesReport: function(shiftId, productId, newSold, newOpened){
+        console.log('managementServices - updateSaleReport');
+        var result = connection.managementRequests.updateSalesReport(shiftId, productId, newSold, newOpened);
+        console.log(result);
+        return result;
     }
 };
 

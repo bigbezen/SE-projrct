@@ -133,84 +133,6 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     return {'code': 200};
 };
 
-let getSalaryForHumanResourceReport = async function(sessionId, year, month){
-    let user = await permissions.validatePermissionForSessionId(sessionId, 'getSalaryForHumanResourceReport');
-    if(user == null)
-        return {'code': 401, 'err': 'user not authorized'};
-
-    let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('salaryForHumanResourceReport.xlsx')
-        .then(async function() {
-            let salesman = await dal.getAllSalesman();
-            let sheetNum = 1;
-            let user;
-            for(user of salesman){
-                let worksheet = workbook.getWorksheet(sheetNum);
-                worksheet.name = user.personal.firstName + ' ' + user.personal.lastName;
-                worksheet.properties = {tabColor :{argb : 'FFC0000'}};
-
-                //write the year and month
-                let row = worksheet.getRow(1);
-                row.getCell(3).value = month + ' - ' + year; //C1
-
-                //write the salesman name
-                row = worksheet.getRow(3);
-                row.getCell(3).value = user.contact.address.street + ' ' + user.contact.address.number + ' ' + user.contact.address.city; //C3
-
-                //write the salesman address
-                row = worksheet.getRow(2);
-                row.getCell(3).value = user.personal.firstName + ' ' + user.personal.lastName; //C2
-
-                //write the salesman salary per hour
-                row = worksheet.getRow(4);
-                row.getCell(3).value = user.jobDetails.salary;//C4
-
-                let maxEncCol;
-                //write the encouragements names
-                let allEnc = await dal.getAllEncouragements();
-                for(let i = 0; i < allEnc.length; i++){
-                    row = worksheet.getRow(7);
-                    row.getCell(17 + i).value = allEnc[i].name;//R+i7
-                    maxEncCol = 17 + i;
-                }
-
-                //add all the shifts and the encouragements
-                let salesmanShifts = await dal.getSalesmanMonthShifts(user._id, year, month);
-                for(let j  = 0; j < salesmanShifts.length + 0; j++){
-                    let currentShift = salesmanShifts[j];
-                    row = worksheet.getRow(j + 8);
-                    row.getCell(1).value = new Date(currentShift.startTime).getDate() + '.' + (new Date(currentShift.startTime).getMonth() + 1) + '.' + new Date(currentShift.startTime).getFullYear();
-                    row.getCell(2).value = days[new Date(currentShift.startTime).getDay()];
-                    let shiftStore = (await dal.getStoresByIds([currentShift.storeId]))[0];
-                    row.getCell(3).value = shiftStore.name;
-                    row.getCell(4).value = shiftStore.city;
-                    row.getCell(5).value = currentShift.type;
-                    row.getCell(6).value = new Date(currentShift.startTime);
-                    row.getCell(7).value = new Date(currentShift.endTime);
-                    row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
-
-                    for(let enc of currentShift.encouragements){
-                        let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc));
-                        for(let k = 18; k <= maxEncCol; k++){
-                            if(worksheet.getRow(7).getCell(k).value == encName.name){
-                                row.getCell(k).value = encName.rate;
-                            }
-                        }
-                    }
-
-                    row.commit();
-                }
-
-                sheetNum = sheetNum + 1;
-            }
-            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
-        });
-
-    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
-    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
-    return {'code': 200};
-};
-
 let getSalesmanListXL = async function(sessionId){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanListXL');
     if(user == null)
@@ -307,6 +229,233 @@ let getSalesmanListXL = async function(sessionId){
     mailer.sendMailWithFile([user.contact.email], 'IBBLS - רשימת דיילים ', content, 'salesReports/salesmanListReport.xlsx');
     return {'code': 200};
 
+};
+
+let getMonthAnalysisReportXL = async function(sessionId, year){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getMonthAnalysisReportXL');
+    if(user == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let report = await dal.getMonthAnalysisReport(year);
+    if(report == null)
+        return {'code': 404, 'err': 'report still not genarated'};
+
+    let workbook = new Excel.Workbook();
+    workbook.xlsx.readFile('monthAnalysisReport.xlsx')
+        .then(async function() {
+            let formArr = ['SUM(M5:M16)','SUM(N5:N16)','SUM(O5:O16)','SUM(P5:P16)','SUM(Q5:Q16)','SUM(R5:R16)','SUM(S5:S16)','SUM(T5:T16)','SUM(U5:U16)','SUM(V5:V16)','SUM(W5:W16)','SUM(X5:X16)','SUM(Y5:Y16)','SUM(Z5:Z16)','SUM(AA5:AA16)','SUM(AB5:AB16)','SUM(AC5:AC16)','SUM(AD5:AD16)'];
+            let worksheet = workbook.getWorksheet(1);
+            worksheet.name = year;
+            let row = worksheet.getRow(2);
+            row.getCell(3).value = 'ניתוח כללי ' + year;
+
+            let monthRow = 4;
+            let monthCol;
+            for(let monthData of report.monthData){
+                monthCol =  13;
+                row = worksheet.getRow(monthRow + monthData.month);
+                //row.getCell(monthCol).value = 1;
+
+                //total hours
+                row.getCell(monthCol).value = monthData.totalHours.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.totalHours.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.totalHours.traditionalOrganized;
+                monthCol++;
+                //shifts Count
+                row.getCell(monthCol).value = monthData.shiftsCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.shiftsCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.shiftsCount.traditionalOrganized;
+                monthCol++;
+                //unique Count
+                row.getCell(monthCol).value = monthData.uniqueCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.uniqueCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.uniqueCount.traditionalOrganized;
+                monthCol++;
+                //opened Count
+                row.getCell(monthCol).value = monthData.openedCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.openedCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.openedCount.traditionalOrganized;
+                monthCol++;
+                //sale Bottles Count
+                row.getCell(monthCol).value = monthData.saleBottlesCount.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleBottlesCount.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleBottlesCount.traditionalOrganized;
+                monthCol++;
+                //sale Average
+                row.getCell(monthCol).value = monthData.saleAverage.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleAverage.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.saleAverage.traditionalOrganized;
+
+                row.commit();
+            }
+            row = worksheet.getRow(monthRow + 13);
+            monthCol =  13;
+            for (let i = 0; i < 18;i++){
+                row.getCell(monthCol).value = {'formula':formArr[i]};
+                monthCol++;
+            }
+            return workbook.xlsx.writeFile('monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
+        });
+
+    let content = ' מצורף דוח ניתוח ערוץ דיול חודשי:' + year;
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח ניתוח ערוץ דיול חודשי ' + ' ' + year, content, 'monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
+    return {'code': 200};
+};
+
+let genarateMonthAnalysisReport = async function() {
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
+
+    let yearReport = await dal.getMonthAnalysisReport(year);
+    if(yearReport == null){
+        yearReport = new monthAnalysisReportModel();
+        yearReport.monthData = [];
+        yearReport.year = year;
+        for(let i = 0; i < 12; i++){
+            let monthReport = {'month': (i + 1),
+                'salesmanCost':{
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
+                    'organized': 0
+                },
+                'totalHours': {
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
+                    'organized': 0
+                },
+                'shiftsCount': {
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
+                    'organized': 0
+                },
+                'uniqueCount': {
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
+                    'organized': 0
+                },
+                'saleBottlesCount': {
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
+                    'organized': 0
+                },
+                'openedCount': {
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
+                    'organized': 0
+                },
+                'saleAverage': {
+                    'traditionalHot': 0,
+                    'traditionalOrganized': 0,
+                    'organized': 0
+                },
+                'monthlyEncoragement': []
+            };
+            let allEnc = await dal.getAllEncouragements();
+            for(let enc of allEnc){
+                monthReport.monthlyEncoragement.push({'encouragement': enc, 'amount': 0});
+            }
+            yearReport.monthData.push(monthReport);
+        }
+
+        yearReport = await dal.addMonthAnalysisReport(yearReport);
+    }
+
+    let monthShifts = await dal.getMonthShifts(year, month);
+    for(let currentShift of monthShifts){
+        let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
+        let duration = (currentShift.endTime - currentShift.startTime)/36e5;
+        let store = await dal.getStoresByIds([currentShift.storeId]);
+        store = store[0];
+        if(store.channel == 'מסורתי - חם'){
+            yearReport.monthData[month].totalHours.traditionalHot += duration;
+            yearReport.monthData[month].salesmanCost.traditionalHot += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.traditionalHot += 1;
+            yearReport.monthData[month].saleBottlesCount.traditionalHot += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.traditionalHot+= sale.opened;
+            }
+        }
+        else if(store.channel == 'מסורתי - מאורגן'){//organized
+            yearReport.monthData[month].totalHours.traditionalOrganized += duration;
+            yearReport.monthData[month].salesmanCost.traditionalOrganized += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.traditionalOrganized += 1;
+            yearReport.monthData[month].saleBottlesCount.traditionalOrganized += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.traditionalOrganized+= sale.opened;
+            }
+        }
+        else {//תדמית יום
+            yearReport.monthData[month].totalHours.organized += duration;
+            yearReport.monthData[month].salesmanCost.organized += duration*salesman.jobDetails.salary;
+            yearReport.monthData[month].shiftsCount.organized += 1;
+            yearReport.monthData[month].saleBottlesCount.organized += currentShift.sales.length;
+            for(let sale of currentShift.salesReport){
+                yearReport.monthData[month].openedCount.organized+= sale.opened;
+            }
+
+        }
+        for(let shiftEnc of currentShift.encouragements){
+            for(let encReport of yearReport.monthData[month].monthlyEncoragement){
+                if(encReport._id.equals(shiftEnc._id)){
+                    encReport.amount += 1;
+                }
+            }
+        }
+    }
+    if(yearReport.monthData[month].totalHours.organized > 0){
+        yearReport.monthData[month].saleAverage.organized = yearReport.monthData[month].saleBottlesCount.organized/yearReport.monthData[month].totalHours.organized;
+    }
+    if(yearReport.monthData[month].totalHours.traditionalOrganized > 0){
+        yearReport.monthData[month].saleAverage.traditionalOrganized = yearReport.monthData[month].saleBottlesCount.traditionalOrganized/yearReport.monthData[month].totalHours.traditionalOrganized;
+    }
+    if(yearReport.monthData[month].totalHours.traditionalHot > 0){
+        yearReport.monthData[month].saleAverage.traditionalHot = yearReport.monthData[month].saleBottlesCount.traditionalHot/yearReport.monthData[month].totalHours.traditionalHot;
+    }
+
+    let res = await dal.editMonthAnalysisReport(yearReport);
+    return {'code':200};
+};
+
+let getMonthlyAnalysisReport = async function(sessionId, year){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getMonthlyAnalysisReport');
+    console.log('bla');
+    if(user == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let report = await dal.getMonthAnalysisReport(year);
+    if(report == null)
+        return {'code': 404, 'err': 'report still not genarated'};
+
+    return {'code':200, 'report': report};
+};
+
+let updateMonthlyAnalysisReport = async function(sessionId, year, report){
+    let aut = await permissions.validatePermissionForSessionId(sessionId, 'updateMonthlyAnalysisReport');
+    if(aut == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let reportDB = await dal.getMonthAnalysisReport(year);
+    if(reportDB == null)
+        return {'code': 404, 'err': 'report still not genarated'};
+
+    report._id = reportDB._id;
+    let res = await dal.editMonthAnalysisReport(report);
+    if(res.ok == 0)
+        return {'code':400, 'err': 'cannot edit this report'};
+
+    return {'code': 200};
 };
 
 let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
@@ -507,24 +656,6 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
     return {'code': 200};
 };
 
-let getMonthlyUserHoursReport = async function(sessionId, year, month){
-    let aut = await permissions.validatePermissionForSessionId(sessionId, 'getMonthlyUserHoursReport');
-    if(aut == null)
-        return {'code': 401, 'err': 'user not authorized'};
-
-    let report = await dal.getMonthlyUserHoursReport(year, month);
-    if(report == null)
-        return {'code': 404, 'err': 'report still not genarated'};
-
-    report = report.toObject();
-    for(let userData of report.salesmansData){
-       let user = await dal.getUserByobjectId(userData.user);
-        userData.user = user.personal.firstName + ' ' + user.personal.lastName;
-    }
-
-    return {'report': report, 'code': 200, 'err': null};
-};
-
 let genarateMonthlyUserHoursReport = async function() {
     let date = new Date();
     let report = new monthlyUserHoursReportModel();
@@ -565,103 +696,144 @@ let genarateMonthlyUserHoursReport = async function() {
     return {'report': res ,'code': 200 ,'err': null};
 };
 
-let genarateMonthAnalysisReport = async function() {
-    let year = new Date().getFullYear();
-    let month = new Date().getMonth();
+let getMonthlyUserHoursReport = async function(sessionId, year, month){
+    console.log('bla');
+    let aut = await permissions.validatePermissionForSessionId(sessionId, 'getMonthlyUserHoursReport');
+    if(aut == null)
+        return {'code': 401, 'err': 'user not authorized'};
 
-    let yearReport = await dal.getMonthAnalysisReport(year);
-    if(yearReport == null){
-        yearReport = new monthAnalysisReportModel();
-        yearReport.monthData = [];
-        yearReport.year = year;
-        for(let i = 0; i < 12; i++){
-            let monthReport = {'month': (i + 1),
-                'salesmanCost':{
-                'traditional': 0,
-                    'organized': 0
-            },
-            'totalHours': {
-                'traditional': 0,
-                    'organized': 0
-            },
-            'shiftsCount': {
-                'traditional': 0,
-                    'organized': 0
-            },
-            'uniqueCount': {
-                'traditional': 0,
-                    'organized': 0
-            },
-            'saleBottlesCount': {
-                'traditional': 0,
-                    'organized': 0
-            },
-            'openedCount': {
-                'traditional': 0,
-                    'organized': 0
-            },
-            'saleAverage': {
-                'traditional': 0,
-                    'organized': 0
-            },
-            'monthlyEncoragement': []
-        };
-            let allEnc = await dal.getAllEncouragements();
-            for(let enc of allEnc){
-                monthReport.monthlyEncoragement.push({'encouragement': enc, 'amount': 0});
-            }
-            yearReport.monthData.push(monthReport);
-        }
+    console.log('bla');
+    let report = await dal.getMonthlyUserHoursReport(year, month);
+    console.log('bla');
+    if(report == null)
+        return {'code': 404, 'err': 'report still not genarated'};
 
-        yearReport = await dal.addMonthAnalysisReport(yearReport);
+    report = report.toObject();
+    for(let userData of report.salesmansData){
+        let user = await dal.getUserByobjectId(userData.user);
+        userData.name = user.personal.firstName + ' ' + user.personal.lastName;
     }
 
-    let monthShifts = await dal.getMonthShifts(year, month);
-    for(let currentShift of monthShifts){
-        let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
-        let duration = (currentShift.endTime - currentShift.startTime)/36e5;
-        if(currentShift.type == 'traditional'){
-            yearReport.monthData[month].totalHours.traditional += duration;
-            yearReport.monthData[month].salesmanCost.traditional += duration*salesman.jobDetails.salary;
-            yearReport.monthData[month].shiftsCount.traditional += 1;
-            yearReport.monthData[month].saleBottlesCount.traditional += currentShift.sales.length;
-            for(let sale of currentShift.salesReport){
-                yearReport.monthData[month].openedCount.traditional+= sale.opened;
-            }
-            for(let shiftEnc of currentShift.encouragements){
-                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
-                    if(encReport._id.equals(shiftEnc._id)){
-                        encReport.amount += 1;
-                    }
+    return {'report': report, 'code': 200, 'err': null};
+};
+
+let updateMonthlySalesmanHoursReport = async function(sessionId, year, month, report){
+    let aut = await permissions.validatePermissionForSessionId(sessionId, 'updateMonthlySalesmanHoursReport');
+    if(aut == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let reportDB = await dal.getMonthlyUserHoursReport(year, month);
+    if(reportDB == null)
+        return {'code': 404, 'err': 'report still not genarated'};
+
+    report._id = reportDB._id;
+    let res = await dal.editMonthlyUserHoursReport(report);
+    if(res.ok == 0)
+        return {'code':400, 'err': 'cannot edit this report'};
+
+    return {'code': 200};
+};
+
+let getSalaryForHumanResourceReport = async function(sessionId, year, month){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getSalaryForHumanResourceReport');
+    if(user == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let workbook = new Excel.Workbook();
+    workbook.xlsx.readFile('salaryForHumanResourceReport.xlsx')
+        .then(async function() {
+            let salesman = await dal.getAllSalesman();
+            let sheetNum = 1;
+            let user;
+            for(user of salesman){
+                let worksheet = workbook.getWorksheet(sheetNum);
+                worksheet.name = user.personal.firstName + ' ' + user.personal.lastName;
+                worksheet.properties = {tabColor :{argb : 'FFC0000'}};
+
+                //write the year and month
+                let row = worksheet.getRow(1);
+                row.getCell(3).value = month + ' - ' + year; //C1
+
+                //write the salesman name
+                row = worksheet.getRow(3);
+                row.getCell(3).value = user.contact.address.street + ' ' + user.contact.address.number + ' ' + user.contact.address.city; //C3
+
+                //write the salesman address
+                row = worksheet.getRow(2);
+                row.getCell(3).value = user.personal.firstName + ' ' + user.personal.lastName; //C2
+
+                //write the salesman salary per hour
+                row = worksheet.getRow(4);
+                row.getCell(3).value = user.jobDetails.salary;//C4
+
+                let maxEncCol;
+                //write the encouragements names
+                let allEnc = await dal.getAllEncouragements();
+                for(let i = 0; i < allEnc.length; i++){
+                    row = worksheet.getRow(7);
+                    row.getCell(17 + i).value = allEnc[i].name;//R+i7
+                    maxEncCol = 17 + i;
                 }
-            }
-        }
-        else{//organized
-            yearReport.monthData[month].totalHours.organized += duration;
-            yearReport.monthData[month].salesmanCost.organized += duration*salesman.jobDetails.salary;
-            yearReport.monthData[month].shiftsCount.organized += 1;
-            yearReport.monthData[month].saleBottlesCount.organized += currentShift.sales.length;
-            for(let sale of currentShift.salesReport){
-                yearReport.monthData[month].openedCount.organized+= sale.opened;
-            }
-            for(let shiftEnc of currentShift.encouragements){
-                for(let encReport of yearReport.monthData[month].monthlyEncoragement){
-                    if(encReport._id.equals(shiftEnc._id)){
-                        encReport.amount += 1;
-                    }
-                }
-            }
-        }
-    }
-    if(yearReport.monthData[month].totalHours.traditional > 0){
-        yearReport.monthData[month].saleAverage.traditional = yearReport.monthData[month].saleBottlesCount.traditional/yearReport.monthData[month].totalHours.traditional;
-    }
-    if(yearReport.monthData[month].totalHours.organized > 0){
-        yearReport.monthData[month].saleAverage.organized = yearReport.monthData[month].saleBottlesCount.organized/yearReport.monthData[month].totalHours.organized;
-    }
 
-    let res = await dal.editMonthAnalysisReport(yearReport);
-    return {'code':200};
+                //add all the shifts and the encouragements
+                let salesmanShifts = await dal.getSalesmanMonthShifts(user._id, year, month);
+                for(let j  = 0; j < salesmanShifts.length + 0; j++){
+                    let currentShift = salesmanShifts[j];
+                    let rowCountFormula = 8 + j;
+                    row = worksheet.getRow(j + 8);
+                    row.getCell(1).value = new Date(currentShift.startTime).getDate() + '.' + (new Date(currentShift.startTime).getMonth() + 1) + '.' + new Date(currentShift.startTime).getFullYear();
+                    row.getCell(2).value = days[new Date(currentShift.startTime).getDay()];
+                    let shiftStore = (await dal.getStoresByIds([currentShift.storeId]))[0];
+                    row.getCell(3).value = shiftStore.name;
+                    row.getCell(4).value = shiftStore.city;
+                    row.getCell(5).value = currentShift.type;
+                    row.getCell(6).value = new Date(currentShift.startTime);
+                    row.getCell(7).value = new Date(currentShift.endTime);
+                    row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+                    //add formulas
+                    row.getCell(8).value = {'formula': 'IF((G' + rowCountFormula + '-F' + rowCountFormula + ')<0,(1-F' + rowCountFormula + '+G' + rowCountFormula +'),(G' + rowCountFormula + '-F' + rowCountFormula +'))'};//'=IF((G8-F8)<0,(1-F8+G8),(G8-F8))'
+                    row.getCell(9).value = {'formula': 'H' + rowCountFormula + '*24'};
+                    row.getCell(10).value = {'formula': 'IF(I' + rowCountFormula +'<9,I' + rowCountFormula + ',9)'};
+                    row.getCell(11).value = {'formula': 'IF(I' + rowCountFormula + '>9,I' + rowCountFormula +'-9,0)'};
+                    row.getCell(12).value = {'formula': 'IF(K' + rowCountFormula + '>2,2,K' + rowCountFormula + ')'};
+                    row.getCell(13).value = {'formula': 'IF(K' + rowCountFormula + '>2,K' + rowCountFormula + '-2,0)'};
+                    row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
+
+                    for(let enc of currentShift.encouragements){
+                        let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc));
+                        for(let k = 18; k <= maxEncCol; k++){
+                            if(worksheet.getRow(7).getCell(k).value == encName.name){
+                                row.getCell(k).value = encName.rate;
+                            }
+                        }
+                    }
+
+                    row = worksheet.getRow(23);
+                    rowCountFormula = 73;
+                    for (let cell = 0; cell < 16; cell++){
+                        if(cell != 5)
+                            row.getCell(9 + cell).value = {'formula': 'SUM(' + String.fromCharCode(rowCountFormula + cell) +'8:' + String.fromCharCode(rowCountFormula + cell) + '22)'};
+                    }
+
+                    row = worksheet.getRow(27);
+                    row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G27,$I$8:$I$22)'};
+                    row.getCell(9).value = {'formula': '+I23-H27-H28'};
+                    row = worksheet.getRow(28);
+                    row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G28,$I$8:$I$22)'};
+
+
+                    row.commit();
+
+                }
+
+                sheetNum = sheetNum + 1;
+            }
+            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+        });
+
+    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    return {'code': 200};
 };
 
 
@@ -672,3 +844,7 @@ module.exports.getMonthlyHoursSalesmansReportXl = getMonthlyHoursSalesmansReport
 module.exports.genarateMonthAnalysisReport = genarateMonthAnalysisReport;
 module.exports.getSalaryForHumanResourceReport = getSalaryForHumanResourceReport;
 module.exports.getSalesmanListXL = getSalesmanListXL;
+module.exports.getMonthlyAnalysisReport = getMonthlyAnalysisReport;
+module.exports.getMonthAnalysisReportXL = getMonthAnalysisReportXL;
+module.exports.updateMonthlySalesmanHoursReport = updateMonthlySalesmanHoursReport;
+module.exports.updateMonthlyAnalysisReport = updateMonthlyAnalysisReport;

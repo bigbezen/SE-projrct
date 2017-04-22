@@ -139,15 +139,15 @@ module.exports = {
     },
 
     updateShift: async function(shift){
-        // shift.salesReport = shift.salesReport.map(function(product){
-        //     product.productId = mongoose.Types.ObjectId(product.productId);
-        //     return product;
-        // });
         return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },
 
     editShift: async function(shiftDetails){
-        return storeModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
+        return shiftModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
+    },
+
+    editSalesReport: async function(shiftId, salesReport){
+        return shiftModel.update({'_id': shiftId}, {$set: {'salesReport': salesReport}}, { upsert: false })
     },
 
     publishShifts: async function(shiftArr){
@@ -200,15 +200,20 @@ module.exports = {
     },
 
     getMonthAnalysisReport(year){
-        return monthAnalysisReportModel.findOne({'year': year});
+        return monthAnalysisReportModel.findOne({'year': year}).populate('monthData.monthlyEncoragement.encouragement');
     },
 
     editMonthAnalysisReport(report){
         return monthAnalysisReportModel.update({'_id': report._id}, report, { upsert: false});
     },
 
+    editMonthlyUserHoursReport(report){
+        return monthlySalesmanHoursReportModel.update({'_id': report._id}, report, { upsert: false});
+    },
+
     getMonthlyUserHoursReport: async function(year, month){
-        return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]});
+        return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]})
+            .populate('salesmansData.user');
     },
 
     getSalesmanShifts: async function(salesmanId){
@@ -226,7 +231,6 @@ module.exports = {
     addShift: async function(shift){
         return shift.save();
     },
-
 
     cleanDb: async function () {
         var products = await productModel.find({});

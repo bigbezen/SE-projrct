@@ -6,35 +6,42 @@ var monthAnalysisReport = new Schema({
     'monthData': [{
         'month': Number,
         'salesmanCost':{
-            'traditional': Number,
+            'traditionalHot': Number,
+            'traditionalOrganized': Number,
             'organized': Number
         },
         'totalHours': {
-            'traditional': Number,
+            'traditionalHot': Number,
+            'traditionalOrganized': Number,
             'organized': Number
         },
         'shiftsCount': {
-            'traditional': Number,
+            'traditionalHot': Number,
+            'traditionalOrganized': Number,
             'organized': Number
         },
         'uniqueCount': {
-            'traditional': Number,
+            'traditionalHot': Number,
+            'traditionalOrganized': Number,
             'organized': Number
         },
         'saleBottlesCount': {
-            'traditional': Number,
+            'traditionalHot': Number,
+            'traditionalOrganized': Number,
             'organized': Number
         },
         'openedCount': {
-            'traditional': Number,
+            'traditionalHot': Number,
+            'traditionalOrganized': Number,
             'organized': Number
         },
         'saleAverage': {
-            'traditional': Number,
+            'traditionalHot': Number,
+            'traditionalOrganized': Number,
             'organized': Number
         },
         'monthlyEncoragement': [{
-            'encouragemant':{type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'},
+            'encouragement':{type: mongoose.Schema.Types.ObjectId, ref: 'encouragement'},
             'amount': Number}]
     }]
 });

@@ -10,20 +10,36 @@ var styles = require('../styles/managerStyles/styles');
 var encs = require('../utils/encouragmentsMock');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
-
-
-
+var userServices = require('../communication/userServices');
 
 var IncentiveDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
+        this.setUserType();
         return {
             productsForIncentive: [1],
             products: [],
             editedIncentive: undefined
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentDidMount() {
         this.updateProducts();
@@ -53,22 +69,19 @@ var IncentiveDetails = React.createClass({
 
         managementServices.getAllProducts().then(function (result) {
             if (result) {
-                if (result.success) {
-                    self.setState({
-                        products: result.info
-                    });
-                } else {
-                    console.log("error in getAllProducts: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.setState({
+                    products: result
+                });
             } else {
-                console.log("error in storesContainers: " + n);
+                console.log("error in storesContainers: " + result);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     getOptions: function(arrayOfObjects, index) {
@@ -143,6 +156,15 @@ var IncentiveDetails = React.createClass({
             if(chosenProduct != constantsStrings.dropDownChooseString)
                 selectedProducts.push(productsAsDict[chosenProduct]);
         }
+        if(selectedProducts.length == 0){
+            notificationSystem.addNotification({
+                message: constantsStrings.incentiveMissingProducts_string,
+                level: 'error',
+                autoDismiss: 2,
+                position: 'tc',
+            });
+            return;
+        }
 
         var numOfChosenProducts = parseInt(this.refs.numOfProductsBox.value);
         var rate = parseInt(this.refs.rateBox.value);
@@ -158,31 +180,25 @@ var IncentiveDetails = React.createClass({
 
             managementServices.addIncentive(newIncentive)
                 .then(function(result) {
-                    if(result.success){
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_incentives_path
-                                })
-                            }
-                        });
-                    }
-                    else{
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 2,
-                            position: 'tc',
-                        });
-                    }
-                })
-                .catch(function (err) {
-                    alert(err);
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_incentives_path
+                            })
+                        }
+                    });
+                }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
                 });
+            })
         }
         else {
             var editedIncentive = this.state.editedIncentive;
@@ -193,31 +209,25 @@ var IncentiveDetails = React.createClass({
 
             managementServices.editIncentive(editedIncentive)
                 .then(function(result){
-                    if(result.success){
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_incentives_path
-                                })
-                            }
-                        });
-                    }
-                    else{
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 2,
-                            position: 'tc',
-                        });
-                    }
-                })
-                .catch(function(err){
-                    console.log('err failed, ' + err);
-                })
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_incentives_path
+                            })
+                        }
+                    });
+                }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
+            })
         }
 
 

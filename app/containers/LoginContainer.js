@@ -14,11 +14,39 @@ var LoginContainer = React.createClass({
         router: React.PropTypes.object.isRequired,
     },
     getInitialState: function () {
+        // this.setSessionId();
+        // this.setUserType();
+        // if (userServices.managerIsLoggedin()) {
+        //     this.context.router.push({
+        //         pathname: paths.manager_home_path
+        //     });
+        //     return null;
+        // } else if (userServices.salesmanIsLoggedin()) {
+        //     this.context.router.push({
+        //         pathname: paths.salesman_home_path
+        //     });
+        //     return null;
+        // }
         return {
             username: '',
             password: '',
-
         }
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     handleSubmitUser: function (e) {
         e.preventDefault();
@@ -33,30 +61,31 @@ var LoginContainer = React.createClass({
         userServices.login(username, password).then(function (n) {
             if(n){
                 var answer = n;
-                if (answer.success) {
-                    var userType = answer.info;
-                    if(userType == 'manager')
-                    {
-                        context.router.push({
-                            pathname: paths.manager_home_path
-                        })
-                    } else{ //TODO: add all types of users
-                        context.router.push({
-                            pathname: paths.salesman_home_path
-                        })
-                    }
-                }else {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.loginFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
+                var userType = answer.userType;
+                var sessionId = answer.sessionId;
+                localStorage.setItem('sessionId', sessionId);
+                localStorage.setItem('userType', userType);
+                if(userType == 'manager')
+                {
+                    context.router.push({
+                        pathname: paths.manager_home_path
+                    })
+                } else{ //TODO: add all types of users
+                    context.router.push({
+                        pathname: paths.salesman_home_path
+                    })
                 }
             }
             else{
                 console.log("error in login: " + n);
             }
+        }).catch(function (errMess) {
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 5,
+                position: 'tc'
+            });
         })
     },
     handleRetrievePass : function(e) {
@@ -68,11 +97,12 @@ var LoginContainer = React.createClass({
         return (
             <div className="container">
                 <div className="container">
-                    <div className="row" style={styles.topBuffer}>
+                    <div className="row text-center" style={styles.marginTop}>
+                        <img src="http://www.panelsfeedback.co.il/media/logos/ibbls.png" style={{marginRight: '-20px'}}/>
                     </div>
+
                 </div>
-                <div className="w3-theme-l5 col-xs-offset-2 col-xs-8 text-center img-rounded" >
-                    <h1 className="h1 w3-jumbo">IBBLS</h1>
+                <div className="w3-theme-l5 col-xs-offset-2 col-xs-8 text-center img-rounded" style={styles.marginTop} >
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group ">
                             <input type="text"
@@ -90,13 +120,23 @@ var LoginContainer = React.createClass({
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 col-xs-4 col-xs-offset-4"
+                                className="w3-btn btn w3-theme-d5 col-lg-4 col-lg-offset-4
+                                    col-xs-8 col-xs-offset-2 w3-xxlarge w3-round-xlarge w3-card-4"
                                 type="submit">
                                 {constantsStrings.login_string}
                             </button>
                         </div>
+                        <div className="form-group" style={styles.marginTop}>
+                            <p
+                                className="w3-xxxlarge w3-hover-text-blue col-sm-8 col-lg-6 col-lg-offset-3
+                                                col-sm-offset-2"
+                                onClick={this.handleRetrievePass}>
+                                <u>
+                                    {constantsStrings.retrievePass_string}
+                                </u>
+                            </p>
+                        </div>
                     </form>
-                    <label onClick={this.handleRetrievePass}>{constantsStrings.retrievePass_string}</label>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

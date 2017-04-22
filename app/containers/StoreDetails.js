@@ -9,19 +9,37 @@ var storeInfo = require('../models/store');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var NotificationSystem = require('react-notification-system');
+var userServices = require('../communication/userServices');
 
 var StoreDetails = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     getInitialState: function () {
+        this.setSessionId();
+        this.setUserType();
         return {
             editing: false,
             area:'',
             channel:''
         }
     },
-
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
+    },
     handleAreaChange(event) {
         this.setState({area: event.target.value});
     },
@@ -81,27 +99,17 @@ var StoreDetails = React.createClass({
             newStore._id = this.props.location.query._id;
             managerServices.editStore(newStore).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_stores_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
+                    notificationSystem.addNotification({
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_stores_path
+                            })
+                        }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({
@@ -111,31 +119,28 @@ var StoreDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }else {
             managerServices.addStore(newStore).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_stores_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_stores_path
+                            })
+                        }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({
@@ -145,6 +150,13 @@ var StoreDetails = React.createClass({
                         position: 'tc'
                     });
                 }
+            }).catch(function (errMess) {
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
             })
         }
     },

@@ -5,6 +5,7 @@
 var React = require('react');
 var paths = require('../utils/Paths');
 var managementServices = require('../communication/managementServices');
+var userServices = require('../communication/userServices');
 var constantStrings = require('../utils/ConstantStrings');
 var styles = require('../styles/managerStyles/homeStyles');
 var NotificationSystem = require('react-notification-system');
@@ -14,12 +15,29 @@ var HomeContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
+        this.setSessionId();
+        this.setUserType();
         return{
             salesmenNum: 0,
             productsNum: 0,
-            storesNum: 0,
-
+            storesNum: 0
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
+        }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
     componentWillMount() {
         this.updateStatistics();
@@ -27,62 +45,37 @@ var HomeContainer = React.createClass({
     updateStatistics() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        managementServices.getAllProducts().then(function (n) {
-            if (n) {
-                var result = n;
-                if (result.success) {
-                    self.setState({
-                        productsNum: result.info.length
-                    });
-                } else {
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+        managementServices.getAllProducts().then(function (result) {
+            if (result) {
+                self.setState({
+                    productsNum: result.length
+                });
             } else {
-                console.log("error in home: " + n);
+                console.log("error in home: " + result);
             }
+        }).catch(function (errMess) {
         })
         managementServices.getAllUsers().then(function (n) {
             if (n) {
                 var result = n;
-                if (result.success) {
-                    self.setState({
-                        salesmenNum: result.info.length
-                    });
-                } else {
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.setState({
+                    salesmenNum: result.length
+                });
             } else {
                 console.log("error in home: " + n);
             }
+        }).catch(function (errMess) {
         })
         managementServices.getAllStores().then(function (n) {
             if (n) {
                 var result = n;
-                if (result.success) {
-                    self.setState({
-                        storesNum: result.info.length
-                    });
-                } else {
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.setState({
+                    storesNum: result.length
+                });
             } else {
                 console.log("error in home: " + n);
             }
+        }).catch(function (errMess) {
         })
     },
     handleSelectUsers: function () {

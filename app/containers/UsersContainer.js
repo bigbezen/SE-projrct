@@ -37,10 +37,19 @@ var UsersContainer = React.createClass({
     },
     getInitialState() {
         this.setSessionId();
+        this.setUserType();
         return{
             users: null,
             username: null
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
@@ -65,21 +74,10 @@ var UsersContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllUsers().then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    var flatUsers = flatList(result.info);
-                    self.setState({
-                        users: flatUsers
-                    });
-                    console.log("works!!");
-                } else {
-                    console.log("error in getAllUsers: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });                }
+                var flatUsers = flatList(n);
+                self.setState({
+                    users: flatUsers
+                });
             } else {
                 console.log("error in userContainers: " + n);
             }
@@ -137,18 +135,7 @@ var UsersContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteUser(row).then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    self.updateUsers();
-                    console.log("works!!");
-                } else {
-                    console.log("error in deleteUser: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.deleteFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });                   }
+                self.updateUsers();
             } else {
                 console.log("error in deleteUser: " + n);
             }
@@ -170,23 +157,12 @@ var UsersContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managerServices.getSalesmanListXL().then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    console.log("works!!");
-                    notificationSystem.addNotification({
-                        message: constantStrings.mailSentSuccess_string,
-                        level: 'success',
-                        autoDismiss: 3,
-                        position: 'tc'
-                    });
-                } else {
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                notificationSystem.addNotification({
+                    message: constantStrings.mailSentSuccess_string,
+                    level: 'success',
+                    autoDismiss: 3,
+                    position: 'tc'
+                });
             } else {
                 console.log("error in getSalesmanListXL: " + n);
             }

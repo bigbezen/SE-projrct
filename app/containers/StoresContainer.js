@@ -22,9 +22,18 @@ var StoresContainer = React.createClass({
     },
     getInitialState() {
         this.setSessionId();
+        this.setUserType();
         return{
             stores: null
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
@@ -42,21 +51,9 @@ var StoresContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllStores().then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    self.setState({
-                        stores: result.info
-                    });
-                    console.log("works!!");
-                } else {
-                    console.log("error in getAllStores: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.setState({
+                    stores: n
+                });
             } else {
                 console.log("error in storesContainers: " + n);
             }
@@ -102,19 +99,7 @@ var StoresContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteStore(row).then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    self.updateStores();
-                    console.log("works!!");
-                } else {
-                    console.log("error in deleteStore: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.deleteFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.updateStores();
             } else {
                 console.log("error in deleteStore: " + n);
             }

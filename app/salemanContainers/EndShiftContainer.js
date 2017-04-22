@@ -12,6 +12,7 @@ var StartShiftIcon = require('react-icons/lib/fa/angle-double-left');
 var WineGlassIcon = require('react-icons/lib/fa/glass');
 var BackButtonIcon = require('react-icons/lib/md/arrow-forward');
 var userServices = require('../communication/userServices');
+var NotificationSystem      = require('react-notification-system');
 
 
 var EndShiftContainer = React.createClass({
@@ -21,10 +22,19 @@ var EndShiftContainer = React.createClass({
     getInitialState()
     {
         this.setSessionId();
+        this.setUserType();
         return{
             shift:null,
             ShiftId:this.props.location.state.newShift._id
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
@@ -36,18 +46,14 @@ var EndShiftContainer = React.createClass({
     },
     componentDidMount() {
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    for (var product of currShift.salesReport) {
-                        product.stockEndShift = product.stockStartShift
-                    }
-                    self.setState({shift: currShift});
+                var currShift = n;
+                for (var product of currShift.salesReport) {
+                    product.stockEndShift = product.stockStartShift
                 }
-                else {
-                }
+                self.setState({shift: currShift});
             }
             else {
             }
@@ -63,22 +69,12 @@ var EndShiftContainer = React.createClass({
     handleSubmitReport: function (e) {
         e.preventDefault();
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.finishShift(this.state.shift).then(function (n) {
-            if (n) {
-                var val = n;
-                if (val.success) {
-                    self.context.router.push({
-                        pathname: '/salesman/Home',
-                        state: {newShift: self.state.shift}
-                    })
-                }
-                else {
-                   // alert('edit failed');
-                }
-            }
-            else {
-             //   alert('edit failed');
-            }
+                self.context.router.push({
+                    pathname: '/salesman/Home',
+                    state: {newShift: self.state.shift}
+                })
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -151,6 +147,7 @@ var EndShiftContainer = React.createClass({
                         {this.state.shift.salesReport.map(this.renderEachProduct)}
                     </ul>
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },
@@ -159,6 +156,7 @@ var EndShiftContainer = React.createClass({
         return(
             <div>
                 <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

@@ -8,6 +8,7 @@ var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var styles = require('../styles/salesmanStyles/shiftCommentsStyles');
 var userServices = require('../communication/userServices');
+var NotificationSystem      = require('react-notification-system');
 
 var ShiftComments = React.createClass({
     contextTypes: {
@@ -15,10 +16,19 @@ var ShiftComments = React.createClass({
     },
     getInitialState(){
         this.setSessionId();
+        this.setUserType();
         return{
             shift: null,
             viewMode: true
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
@@ -33,15 +43,11 @@ var ShiftComments = React.createClass({
     },
     updateShift(){
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    self.setState({shift: currShift});
-                }
-                else {
-                }
+                var currShift = n;
+                self.setState({shift: currShift});
             }
             else {
             }
@@ -63,18 +69,10 @@ var ShiftComments = React.createClass({
     handleAddComment(){
         var content = this.refs.commentContent.value;
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.addShiftComment(this.state.shift._id,content).then(function (n) {
-            if (n) {
-                var val = n;
-                if (val.success) {
-                    self.updateShift()
-                    self.changeStateToViewMode()
-                }
-                else {
-                }
-            }
-            else {
-            }
+                self.updateShift()
+                self.changeStateToViewMode()
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -105,6 +103,7 @@ var ShiftComments = React.createClass({
                     </div>
                     {this.state.shift.shiftComments.map(this.renderEachComment)}
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },
@@ -117,6 +116,7 @@ var ShiftComments = React.createClass({
                     </div>
                     {this.state.shift.shiftComments.map(this.renderEachComment)}
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },
@@ -124,6 +124,7 @@ var ShiftComments = React.createClass({
         return(
             <div>
                 <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

@@ -17,10 +17,19 @@ var ShiftEncouragementsContainer = React.createClass({
     },
     getInitialState(){
         this.setSessionId();
+        this.setUserType();
         return{
             encouragementsStatus: null,
             totalEncouragementsStatus: null
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     componentDidMount() {
         this.updateShift();
@@ -38,12 +47,7 @@ var ShiftEncouragementsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    self.updateEncouragements(val.info);
-                }
-                else {
-                }
+                self.updateEncouragements(n);
             }
             else {
             }
@@ -61,12 +65,7 @@ var ShiftEncouragementsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllIncentives().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    self.updateEncouragementsStatus(shift, val.info);
-                }
-                else {
-                }
+                self.updateEncouragementsStatus(shift, n);
             }
             else {
             }
@@ -145,6 +144,7 @@ var ShiftEncouragementsContainer = React.createClass({
                 <div className="w3-container" style={styles.bodyStyle}>
                     {this.state.encouragementsStatus.map(this.renderEachEncouragement)}
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

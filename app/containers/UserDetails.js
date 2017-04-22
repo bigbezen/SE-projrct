@@ -21,6 +21,7 @@ var UserDetails = React.createClass({
     },
     getInitialState: function () {
         this.setSessionId();
+        this.setUserType();
         return {
             editing: false,
             gender: '',
@@ -28,7 +29,14 @@ var UserDetails = React.createClass({
             prevUsername:''
         }
     },
-
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -131,37 +139,17 @@ var UserDetails = React.createClass({
             newUser._id = this.props.location.query._id;
             var prevName = this.state.prevUsername;
             managementServices.editUser(prevName, newUser).then(function (n) {
-                if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_users_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.editFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
-                }
-                else{
                     notificationSystem.addNotification({
-                        message: constantsStrings.editFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
+                        message: constantsStrings.editSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_users_path
+                            })
+                        }
                     });
-                }
             }).catch(function (errMess) {
                 notificationSystem.addNotification({
                     message: errMess,
@@ -173,27 +161,17 @@ var UserDetails = React.createClass({
         }else {
             managementServices.addUser(newUser).then(function (n) {
                 if(n){
-                    var val = n;
-                    if (val.success) {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addSuccessMessage_string,
-                            level: 'success',
-                            autoDismiss: 2,
-                            position: 'tc',
-                            onRemove: function (notification) {
-                                context.router.push({
-                                    pathname: paths.manager_users_path
-                                })
-                            }
-                        });
-                    } else {
-                        notificationSystem.addNotification({
-                            message: constantsStrings.addFailMessage_string,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    }
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_users_path
+                            })
+                        }
+                    });
                 }
                 else{
                     notificationSystem.addNotification({

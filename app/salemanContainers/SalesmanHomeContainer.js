@@ -4,6 +4,7 @@ var paths = require('../utils/Paths');
 var salesmanService = require('../communication/salesmanServices');
 var styles = require('../styles/salesmanStyles/homeStyles');
 var userServices = require('../communication/userServices');
+var NotificationSystem      = require('react-notification-system');
 
 var shift = {
     storeId: '1',
@@ -62,49 +63,58 @@ var SalesmanHomeContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     getInitialState(){
         this.setSessionId();
+        this.setUserType();
         return({
             shift: null,
             nextScreen: null,
             buttonTitle: null
         })
     },
-    componentWillMount() {
+    componentDidMount() {
         this.updateShifts();
     },
     updateShifts() { 
-        var self = this; 
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanService.getCurrentShift().then(function (n) { 
             if (n) { 
-                var result = n; 
-                if (result.success) { 
-                    var currShift = result.info 
-                    if (currShift.status == "STARTED") {
-                        self.setState({
-                            shift: result.info ,
-                            nextScreen: paths.salesman_sale_path,
-                            buttonTitle: constantsStrings.continueShift_string
-                        });
-                    } else {
-                        self.setState({
-                            shift: result.info ,
-                            nextScreen: paths.salesman_startShift_path,
-                            buttonTitle: constantsStrings.startShift_string
-                        });
-                    }
-                } 
+                var currShift = n
+                if (currShift.status == "STARTED") {
+                    self.setState({
+                        shift: currShift,
+                        nextScreen: paths.salesman_sale_path,
+                        buttonTitle: constantsStrings.continueShift_string
+                    });
+                } else {
+                    self.setState({
+                        shift: currShift,
+                        nextScreen: paths.salesman_startShift_path,
+                        buttonTitle: constantsStrings.startShift_string
+                    });
+                }
             } 
             else{ 
                 alert("Error while retrieving shift from the server"); 
             } 
         }).catch(function (errMess) {
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 5,
-                position: 'tc'
-            });
+            if(errMess != "user does not have a shift today"){
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 5,
+                    position: 'tc'
+                });
+            }
         })
      },
     handleStartShift: function () {
@@ -116,15 +126,13 @@ var SalesmanHomeContainer = React.createClass({
     handleLogoutUser: function () {
         console.log('SalesmanBaseContainer- Logout function');
         var context = this.context;
+        var notificationSystem = this.refs.notificationSystem;
         userServices.logout().then(function(n) {
-            if(n){
+                localStorage.setItem('sessionId', 0);
+                localStorage.setItem('userType', 0);
                 context.router.push({
                     pathname: paths.login_path
                 })
-            }
-            else{
-                console.log("error");
-            }
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -172,6 +180,7 @@ var SalesmanHomeContainer = React.createClass({
                 <div style={styles.buttonsStyle}>
                     <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleExpensesUpdate}>{constantsStrings.updateExpenses_string} </button>
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
 
         )
@@ -199,6 +208,7 @@ var SalesmanHomeContainer = React.createClass({
                         <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleExpensesUpdate}>{constantsStrings.updateExpenses_string} </button>
                     </div>
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

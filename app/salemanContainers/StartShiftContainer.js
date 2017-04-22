@@ -11,6 +11,7 @@ var WineGlassIcon = require('react-icons/lib/fa/glass');
 var StartShiftIcon = require('react-icons/lib/fa/angle-double-left');
 var BackButtonIcon = require('react-icons/lib/md/arrow-forward');
 var userServices = require('../communication/userServices');
+var NotificationSystem      = require('react-notification-system');
 
 var StartShiftContainer = React.createClass({
     contextTypes: {
@@ -24,9 +25,18 @@ var StartShiftContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     getInitialState()
     {
         this.setSessionId();
+        this.setUserType();
         return{
             shift:this.props.location.state.newShift
         }
@@ -34,22 +44,12 @@ var StartShiftContainer = React.createClass({
     handleSubmitReport: function (e) {
         e.preventDefault();
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.startShift(this.state.shift).then(function (n) {
-            if (n) {
-                var val = n;
-                if (val.success) {
-                    self.context.router.push({
-                        pathname: paths.salesman_sale_path,
-                        state: {newShift: self.state.shift}
-                    })
-                }
-                else {
-                 //   alert('edit failed');
-                }
-            }
-            else {
-               // alert('edit failed');
-            }
+                self.context.router.push({
+                    pathname: paths.salesman_sale_path,
+                    state: {newShift: self.state.shift}
+                })
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -121,7 +121,7 @@ var StartShiftContainer = React.createClass({
                             {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
                     </ul>
                 </div>
-
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
 
 
            </div>
@@ -132,6 +132,7 @@ var StartShiftContainer = React.createClass({
         return(
             <div>
                 <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

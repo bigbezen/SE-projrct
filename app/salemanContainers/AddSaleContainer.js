@@ -15,7 +15,7 @@ var salesmanServices        = require('../communication/salesmanServices');
 var StartShiftIcon          = require('react-icons/lib/fa/angle-double-left');
 var PlusIcon                = require('react-icons/lib/fa/plus');
 var userServices            = require('../communication/userServices');
-
+var NotificationSystem      = require('react-notification-system');
 
 var AddSaleContainer = React.createClass({
     contextTypes: {
@@ -29,8 +29,17 @@ var AddSaleContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     getInitialState(){
         this.setSessionId();
+        this.setUserType();
         return{
             shift: null,
             products: [],
@@ -42,18 +51,14 @@ var AddSaleContainer = React.createClass({
     },
     updateShift(){
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var currShift = val.info;
-                    self.setState(
-                        {shift: currShift,
-                         products: currShift.salesReport
+                var currShift = n;
+                self.setState(
+                    {shift: currShift,
+                        products: currShift.salesReport
                     });
-                }
-                else {
-                }
             }
             else {
             }
@@ -257,6 +262,7 @@ var AddSaleContainer = React.createClass({
                         </BootstrapTable>
                     </div>
                 </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
             )
 
@@ -299,7 +305,7 @@ var AddSaleContainer = React.createClass({
                         </BootstrapTable>
                     </div>
                 </div>
-
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
             )
 

@@ -58,6 +58,7 @@ class ConstantStrings extends React.Component {
     static incentivePickProducts_string = 'בחר מוצרים';
     static incentiveProducts_string = 'מוצרים בתמריץ';
     static incentiveIncentives_string = 'תמריצים';
+    static incentiveMissingProducts_string = 'לא ניתן לייצר תמריץ ללא מוצרים';
 
     //filter strings
     static enterProductName_string = 'הכנס שם מוצר..';

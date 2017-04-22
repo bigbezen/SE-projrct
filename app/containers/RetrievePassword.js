@@ -15,11 +15,20 @@ var RetrievePassContainer = React.createClass({
     },
     getInitialState: function () {
         this.setSessionId();
+        this.setUserType();
         return {
             username: '',
             email: '',
 
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
@@ -42,27 +51,17 @@ var RetrievePassContainer = React.createClass({
         var self = this;
         userServices.retrievePassword(username, email).then(function (n) {
             if(n){
-                var answer = n;
-                if (answer.success) {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.retrievePassSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: paths.login_path
-                            })
-                        }
-                    });
-                }else {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.retrievePassFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 0,
-                        position: 'tc'
-                    });
-                }
+                notificationSystem.addNotification({
+                    message: constantsStrings.retrievePassSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                    onRemove: function (notification) {
+                        context.router.push({
+                            pathname: paths.login_path
+                        })
+                    }
+                });
             }
             else{
                 console.log("error in retrieving password: " + n);

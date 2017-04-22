@@ -12,6 +12,13 @@ var helpers = {
         connection.userRequests.setSessionId(newSessionid);
     },
 
+    getUserType: function() {
+        return connection.userRequests.getUserType();
+    },
+    setUserType : function(newUserType) {
+        connection.userRequests.setUserType(newUserType);
+    },
+
     login: function(username, password){
         console.log('userServices- Login function: username: ' +username + ', pass: ' + password);
         return connection.userRequests.login(username, password);

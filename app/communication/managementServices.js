@@ -84,6 +84,7 @@ var helpers = {
 
     deleteIncentive(incentive){
         console.log('managementervices- deleteIncentive');
+        return connection.managementRequests.deleteIncentive(incentive)
     },
 
 

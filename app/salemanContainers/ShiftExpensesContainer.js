@@ -21,9 +21,18 @@ var ShiftsExpensesContainer = React.createClass({
     },
     getInitialState(){
         this.setSessionId();
+        this.setUserType();
         return{
             shifts: null,
         }
+    },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
     },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
@@ -41,12 +50,9 @@ var ShiftsExpensesContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getAllShifts().then(function (n) {
             if (n) {
-                var val = n;
-                if (val.success) {
-                    var shifts = val.info;
-                    self.setState({shifts: shifts});
-                    console.log(shifts);
-                }
+                var shifts = n;
+                self.setState({shifts: shifts});
+                console.log(shifts);
             } else {
 
             }

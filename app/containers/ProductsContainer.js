@@ -31,8 +31,17 @@ var ProductsContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+    setUserType: function() {
+        var userType = localStorage.getItem('userType');
+        if (!userType) {
+            userType = 0;
+        }
+        localStorage.setItem('userType', userType);
+        userServices.setUserType(userType);
+    },
     getInitialState() {
         this.setSessionId();
+        this.setUserType();
         return{
             products: null
         }
@@ -46,19 +55,9 @@ var ProductsContainer = React.createClass({
         managementServices.getAllProducts().then(function (n) {
             if (n) {
                 var result = n;
-                if (result.success) {
-                    self.setState({
-                        products: result.info
-                    });
-                } else {
-                    console.log("error in getAllProducts: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.errorMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.setState({
+                    products: result
+                });
             } else {
                 console.log("error in storesContainers: " + n);
             }
@@ -104,19 +103,7 @@ var ProductsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteProduct(row).then(function (n) {
             if (n) {
-                var result = n;
-                if (result.success) {
-                    self.updateProducts();
-                    console.log("works!!");
-                } else {
-                    console.log("error in deleteProduct: " + result.info);
-                    notificationSystem.addNotification({
-                        message: constantStrings.deleteFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                self.updateProducts();
             } else {
                 console.log("error in deleteProduct: " + n);
             }

@@ -156,16 +156,12 @@ var UsersContainer = React.createClass({
     onClickGetReportButton: function(cell, row, rowIndex){
         var notificationSystem = this.refs.notificationSystem;
         managerServices.getSalesmanListXL().then(function (n) {
-            if (n) {
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
                     level: 'success',
                     autoDismiss: 3,
                     position: 'tc'
                 });
-            } else {
-                console.log("error in getSalesmanListXL: " + n);
-            }
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

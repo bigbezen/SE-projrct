@@ -124,9 +124,8 @@ var ShiftEncouragementsContainer = React.createClass({
         return (
             <div key={i} className="row w3-card-4 w3-round-large" style={styles.encouragementStyle}>
                 <header className="w3-container w3-theme-d3 w3-round-large">
-                    <p className="w3-xxxlarge">{encouragementStatus.encouragement.name} :
-                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                        {encouragementStatus.amountSold}/{encouragementStatus.encouragement.numOfProducts}</p>
+                    <p className="w3-xxxlarge" style={styles.encName}>{encouragementStatus.encouragement.name} :</p>
+                    <p className="w3-xxxlarge" style={styles.encStatus}> {encouragementStatus.amountSold}/{encouragementStatus.encouragement.numOfProducts}</p>
                 </header>
 
                 <div className="w3-container">

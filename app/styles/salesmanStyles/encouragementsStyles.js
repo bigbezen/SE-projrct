@@ -41,6 +41,14 @@ var styles = {
             },
         }
     },
+    encName: {
+        textAlign:'right',
+        float:'right'
+    },
+    encStatus: {
+        textAlign:'left',
+        float:'left'
+    }
 };
 
 module.exports = styles;

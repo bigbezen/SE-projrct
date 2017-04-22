@@ -97,7 +97,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-var monthlyJob = scheduler.scheduleJob('5 * * * *', _genarateMonthlyReport);
+var monthlyJob = scheduler.scheduleJob('21 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', { 'port': port });
 function _connectToDb() {
@@ -1947,11 +1947,11 @@ function _setapApiEndpoints() {
                     switch (_context48.prev = _context48.next) {
                         case 0:
                             _context48.next = 2;
-                            return reportsService.getSalaryForHumanResourceReport('123456', 2017, 2);
+                            return reportsService.getSalaryForHumanResourceReport(req.headers.sessionid, req.headers.year, req.headers.month);
 
                         case 2:
                             result = _context48.sent;
-                            //req.headers.sessionid ,req.headers.year,req.headers.month);
+
                             res.status(result.code).send(result.err);
 
                         case 4:
@@ -2095,24 +2095,20 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context53.prev = _context53.next) {
                         case 0:
-                            if (validator.getMonthlyAnalysisReport(req.header)) {
-                                _context53.next = 3;
-                                break;
-                            }
-
-                            res.status(404).send('invalid parameters');
-                            return _context53.abrupt('return');
+                            console.log('bla');
+                            // if ((!('sessionid' in req.headers)) || (!validator.getMonthlyAnalysisReport(req.query))) {
+                            //     res.status(404).send('invalid parameters');
+                            //     return;
+                            // }
+                            _context53.next = 3;
+                            return reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
 
                         case 3:
-                            _context53.next = 5;
-                            return reportsService.getMonthlyAnalysisReport(req.header.sessionId, req.header.year);
-
-                        case 5:
                             result = _context53.sent;
 
                             if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
 
-                        case 7:
+                        case 5:
                         case 'end':
                             return _context53.stop();
                     }

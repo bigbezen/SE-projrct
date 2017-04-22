@@ -309,8 +309,8 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
             return workbook.xlsx.writeFile('monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
         });
 
-    //let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
-    //mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    let content = ' מצורף דוח ניתוח ערוץ דיול חודשי:' + year;
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח ניתוח ערוץ דיול חודשי ' + ' ' + year, content, 'monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
     return {'code': 200};
 };
 

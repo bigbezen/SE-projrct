@@ -83,8 +83,24 @@ var IncentivesContainer = React.createClass({
             query: JSON.stringify(incentive)
         })
     },
-
     onClickDelete: function(incentive, index){
+        var notificationSystem = this.refs.notificationSystem;
+        var self = this;
+        notificationSystem.addNotification({
+            message: constantsStrings.areYouSure_string,
+            level: 'info',
+            autoDismiss: 0,
+            position: 'tc',
+            action: {
+                label: constantsStrings.yes_string,
+                callback:
+                    function(){
+                        self.handleDelete(incentive, index)
+                    }
+            }
+        });
+    },
+    handleDelete: function(incentive, index){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteIncentive(incentive)

@@ -160,27 +160,17 @@ var UserDetails = React.createClass({
             })
         }else {
             managementServices.addUser(newUser).then(function (n) {
-                if(n){
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: paths.manager_users_path
-                            })
-                        }
-                    });
-                }
-                else{
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                notificationSystem.addNotification({
+                    message: constantsStrings.addSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                    onRemove: function (notification) {
+                        context.router.push({
+                            pathname: paths.manager_users_path
+                        })
+                    }
+                });
             }).catch(function (errMess) {
                 notificationSystem.addNotification({
                     message: errMess,

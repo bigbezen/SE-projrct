@@ -77,7 +77,7 @@ var ReportsMonthlyHours = React.createClass({
         var datepickerVal = this.refs.datepicker.value.split('-');
         managerServices.getMonthlyHoursReportData(datepickerVal[0], datepickerVal[1])
             .then(function(data){
-                var report = data.info;
+                var report = data;
                 self.setState({
                     report: report
                 })

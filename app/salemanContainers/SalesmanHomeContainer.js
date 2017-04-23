@@ -87,25 +87,20 @@ var SalesmanHomeContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanService.getCurrentShift().then(function (n) { 
-            if (n) { 
-                var currShift = n
-                if (currShift.status == "STARTED") {
-                    self.setState({
-                        shift: currShift,
-                        nextScreen: paths.salesman_sale_path,
-                        buttonTitle: constantsStrings.continueShift_string
-                    });
-                } else {
-                    self.setState({
-                        shift: currShift,
-                        nextScreen: paths.salesman_startShift_path,
-                        buttonTitle: constantsStrings.startShift_string
-                    });
-                }
-            } 
-            else{ 
-                alert("Error while retrieving shift from the server"); 
-            } 
+            var currShift = n
+            if (currShift.status == "STARTED") {
+                self.setState({
+                    shift: currShift,
+                    nextScreen: paths.salesman_sale_path,
+                    buttonTitle: constantsStrings.continueShift_string
+                });
+            } else {
+                self.setState({
+                    shift: currShift,
+                    nextScreen: paths.salesman_startShift_path,
+                    buttonTitle: constantsStrings.startShift_string
+                });
+            }
         }).catch(function (errMess) {
             if(errMess != "user does not have a shift today"){
                 notificationSystem.addNotification({

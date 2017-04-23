@@ -182,12 +182,6 @@ var ProductsContainer = React.createClass({
                             {constantStrings.subCategory_string}
                         </TableHeaderColumn>
                         <TableHeaderColumn
-                            dataField = 'minRequiredAmount'
-                            dataAlign = 'right'
-                            filter = { { type: 'NumberFilter', placeholder:constantStrings.enterQuantity_string} }>
-                            {constantStrings.minRequiredAmount_string}
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
                             dataField = 'notifyManager'
                             dataAlign = 'right'>
                             {constantStrings.notifyManager_string}

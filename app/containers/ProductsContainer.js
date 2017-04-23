@@ -53,14 +53,10 @@ var ProductsContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllProducts().then(function (n) {
-            if (n) {
-                var result = n;
-                self.setState({
-                    products: result
-                });
-            } else {
-                console.log("error in storesContainers: " + n);
-            }
+            var result = n;
+            self.setState({
+                products: result
+            });
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -102,11 +98,7 @@ var ProductsContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteProduct(row).then(function (n) {
-            if (n) {
-                self.updateProducts();
-            } else {
-                console.log("error in deleteProduct: " + n);
-            }
+            self.updateProducts();
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

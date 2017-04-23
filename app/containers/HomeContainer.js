@@ -46,35 +46,23 @@ var HomeContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllProducts().then(function (result) {
-            if (result) {
-                self.setState({
-                    productsNum: result.length
-                });
-            } else {
-                console.log("error in home: " + result);
-            }
+            self.setState({
+                productsNum: result.length
+            });
         }).catch(function (errMess) {
         })
         managementServices.getAllUsers().then(function (n) {
-            if (n) {
-                var result = n;
-                self.setState({
-                    salesmenNum: result.length
-                });
-            } else {
-                console.log("error in home: " + n);
-            }
+            var result = n;
+            self.setState({
+                salesmenNum: result.length
+            });
         }).catch(function (errMess) {
         })
         managementServices.getAllStores().then(function (n) {
-            if (n) {
-                var result = n;
-                self.setState({
-                    storesNum: result.length
-                });
-            } else {
-                console.log("error in home: " + n);
-            }
+            var result = n;
+            self.setState({
+                storesNum: result.length
+            });
         }).catch(function (errMess) {
         })
     },

@@ -236,7 +236,6 @@ var ReportsSalesReport = React.createClass({
         managementServices.updateSalesReport(shiftId, productId, newSold, newOpened)
             .then(function(result) {
                 console.log('updated sales report');
-
             })
             .catch(function(err) {
                 console.log('error');

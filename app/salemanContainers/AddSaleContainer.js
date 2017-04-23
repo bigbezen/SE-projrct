@@ -53,15 +53,11 @@ var AddSaleContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
-            if (n) {
-                var currShift = n;
-                self.setState(
-                    {shift: currShift,
-                        products: currShift.salesReport
-                    });
-            }
-            else {
-            }
+            var currShift = n;
+            self.setState(
+                {shift: currShift,
+                    products: currShift.salesReport
+                });
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

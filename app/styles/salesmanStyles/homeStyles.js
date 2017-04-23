@@ -9,15 +9,26 @@ var styles = {
         'fontSize': '120px',
     },
     centerAlign: {
-        'textAlign': 'center'
+        'textAlign': 'right',
+        'fontSize' : '40px',
+        'margin': 'auto',
+        'width': '80%'
     },
     buttonsStyle: {
         'textAlign': 'center',
-        'marginTop': '10px'
+        'paddingBottom': '50px',
+        'paddingTop': '70px',
+
+        'margin': 'auto'
     },
     space: {
         height: '50px'
     },
+    bodyStyle: {
+        'width' : '80%',
+        'marginTop': '50px',
+        'margin': 'auto'
+    }
 
 };
 

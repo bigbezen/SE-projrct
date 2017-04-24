@@ -553,7 +553,34 @@ var managerRequests = {
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
-    }
+    },
+
+    updateMonthlyHoursReport: function(year, month, report){
+        return axios.post(serverUrl + 'manager/updateMonthlyHoursReport', {
+            sessionId: sessionId,
+            year: year,
+            month: month,
+            report: report
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    exportMonthlyHoursReport: function(year, month){
+        return axios.post(serverUrl + 'manager/exportMonthlyHoursReport', {
+            sessionId: sessionId,
+            year: year,
+            month: month
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
 
 };
 

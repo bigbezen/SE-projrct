@@ -45,12 +45,8 @@ var ShiftComments = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
-            if (n) {
-                var currShift = n;
-                self.setState({shift: currShift});
-            }
-            else {
-            }
+            var currShift = n;
+            self.setState({shift: currShift});
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -71,8 +67,8 @@ var ShiftComments = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.addShiftComment(this.state.shift._id,content).then(function (n) {
-                self.updateShift()
-                self.changeStateToViewMode()
+            self.updateShift()
+            self.changeStateToViewMode()
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

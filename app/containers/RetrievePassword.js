@@ -50,22 +50,17 @@ var RetrievePassContainer = React.createClass({
         var context = this.context;
         var self = this;
         userServices.retrievePassword(username, email).then(function (n) {
-            if(n){
-                notificationSystem.addNotification({
-                    message: constantsStrings.retrievePassSuccessMessage_string,
-                    level: 'success',
-                    autoDismiss: 2,
-                    position: 'tc',
-                    onRemove: function (notification) {
-                        context.router.push({
-                            pathname: paths.login_path
-                        })
-                    }
-                });
-            }
-            else{
-                console.log("error in retrieving password: " + n);
-            }
+            notificationSystem.addNotification({
+                message: constantsStrings.retrievePassSuccessMessage_string,
+                level: 'success',
+                autoDismiss: 2,
+                position: 'tc',
+                onRemove: function (notification) {
+                    context.router.push({
+                        pathname: paths.login_path
+                    })
+                }
+            });
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

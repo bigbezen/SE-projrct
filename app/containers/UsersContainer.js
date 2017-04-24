@@ -73,14 +73,10 @@ var UsersContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllUsers().then(function (n) {
-            if (n) {
-                var flatUsers = flatList(n);
-                self.setState({
-                    users: flatUsers
-                });
-            } else {
-                console.log("error in userContainers: " + n);
-            }
+            var flatUsers = flatList(n);
+            self.setState({
+                users: flatUsers
+            });
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -134,11 +130,7 @@ var UsersContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteUser(row).then(function (n) {
-            if (n) {
-                self.updateUsers();
-            } else {
-                console.log("error in deleteUser: " + n);
-            }
+            self.updateUsers();
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

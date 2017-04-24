@@ -196,9 +196,9 @@ var ReportsSalesReport = React.createClass({
                  style={{marginTop: '10px', height: '45px'}}>
                 <p className="col-sm-3"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editSold" + i} defaultValue={product.sold} />
+                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
                 <p className="col-sm-1"></p>
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"editOpened" + i} defaultValue={product.opened} />
+                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
                 <p className="w3-xlarge col-sm-1" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
             </div>
         )
@@ -226,8 +226,8 @@ var ReportsSalesReport = React.createClass({
     },
 
     onClickEditButton: function(product, index){
-        var newSold = this.refs["editSold" + index].value;
-        var newOpened = this.refs["editOpened" + index].value;
+        var newSold = this.refs[product._id + "editSold" + index].value;
+        var newOpened = this.refs[product._id + "editOpened" + index].value;
         var productId = product.productId;
         var shiftId = this.state.chosenShift._id;
         var self = this;
@@ -236,12 +236,17 @@ var ReportsSalesReport = React.createClass({
         managementServices.updateSalesReport(shiftId, productId, newSold, newOpened)
             .then(function(result) {
                 console.log('updated sales report');
-
+                notificationSystem.addNotification({
+                    message: constantStrings.editSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 1,
+                    position: 'tc',
+                });
             })
             .catch(function(err) {
                 console.log('error');
                 notificationSystem.addNotification({
-                    message: constantsStrings.editFailMessage_string,
+                    message: constantStrings.editFailMessage_string,
                     level: 'error',
                     autoDismiss: 1,
                     position: 'tc',

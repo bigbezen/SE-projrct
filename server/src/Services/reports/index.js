@@ -697,14 +697,11 @@ let genarateMonthlyUserHoursReport = async function() {
 };
 
 let getMonthlyUserHoursReport = async function(sessionId, year, month){
-    console.log('bla');
     let aut = await permissions.validatePermissionForSessionId(sessionId, 'getMonthlyUserHoursReport');
     if(aut == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    console.log('bla');
     let report = await dal.getMonthlyUserHoursReport(year, month);
-    console.log('bla');
     if(report == null)
         return {'code': 404, 'err': 'report still not genarated'};
 

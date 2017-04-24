@@ -74,6 +74,7 @@ class ConstantStrings extends React.Component {
     static editUser_string = 'עריכת משתמש קיים';
     static firstName_string = 'שם פרטי';
     static lastName_string = 'שם משפחה';
+    static fullName_string = 'שם הדייל';
     static gender_string = 'מין';
     static startDate_string = 'תאריך התחלה';
     static date_string = 'תאריך';
@@ -137,6 +138,7 @@ class ConstantStrings extends React.Component {
     static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
     static reportsShowReport_string = 'הצג דוח';
     static monthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+    static totalSalesmanHours_string = 'סך שעות דיול';
 
 
     static reportSale_string = 'דווח מכירה';

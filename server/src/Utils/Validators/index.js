@@ -144,6 +144,14 @@ module.exports = {
         return checkParams(params, ['sessionId', 'year', 'report'], [stringT, numberT, objectT])
     },
 
+    updateMonthlyHoursReport: function(params){
+        return checkParams(params, ['sessionId', 'year', 'month', 'report'], [stringT, numberT, numberT, objectT])
+    },
+
+    exportMonthlyHoursReport: function(params){
+        return checkParams(params, ['sessionId', 'year', 'month'], [stringT, numberT, numberT])
+    },
+
     addOrPublishShifts: function(params){
         var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
         for(let shift of params.shiftArr){

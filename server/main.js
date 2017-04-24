@@ -794,4 +794,30 @@ function _setapApiEndpoints() {
         else
             res.status(result.code).send(result.err);
     });
+
+    app.post('/manager/updateMonthlyHoursReport', async function(req, res){
+        if(!validator.updateMonthlyHoursReport(req.body)){
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await reportsService.updateMonthlySalesmanHoursReport(req.body.sessionId, req.body.year, req.body.month,
+            req.body.report);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/manager/exportMonthlyHoursReport', async function(req, res){
+        // if(!validator.exportMonthlyHoursReport(req.body)){
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
+        console.log('bla');
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
 }

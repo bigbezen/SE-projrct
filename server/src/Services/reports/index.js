@@ -408,8 +408,9 @@ let genarateMonthAnalysisReport = async function() {
         }
         for(let shiftEnc of currentShift.encouragements){
             for(let encReport of yearReport.monthData[month].monthlyEncoragement){
-                if(encReport._id.equals(shiftEnc._id)){
-                    encReport.amount += 1;
+                if(encReport._id.equals(shiftEnc.encouragement._id)){
+                    let enc = await dal.getEncouragement(mongoose.Types.ObjectId(shiftEnc.encouragement._id));
+                    encReport.amount += enc.rate * shiftEnc.count;
                 }
             }
         }
@@ -800,10 +801,10 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                     row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
 
                     for(let enc of currentShift.encouragements){
-                        let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc));
+                        let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc.encouragement._id));
                         for(let k = 18; k <= maxEncCol; k++){
                             if(worksheet.getRow(7).getCell(k).value == encName.name){
-                                row.getCell(k).value = encName.rate;
+                                row.getCell(k).value = encName.rate * enc.count;
                             }
                         }
                     }

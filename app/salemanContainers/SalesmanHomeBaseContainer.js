@@ -68,14 +68,14 @@ var SalesmanHomeBaseContainer = React.createClass({
                 <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
                     <ul>
                         <li>
-                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
+                            <button style={{color:'white'}} className="btn-link w3-xlarge col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
-                            </label>
+                            </button>
                         </li>
                         <li>
-                            <label className="w3-btn w3-large w3-round-large w3-theme-l1 col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
+                            <button style={{color:'white'}} className="btn-link w3-large col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
                                 {constantsStrings.changePass_string}
-                            </label>
+                            </button>
                         </li>
                     </ul>
                 </div>

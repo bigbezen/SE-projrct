@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 let logger                  = require('../../Utils/Logger/logger');
 let encouragementModel      = require('../../Models/encouragement');
@@ -95,11 +95,11 @@ let getEncouragement = async function(sessionId, encouragementId){
     return {'code': 200, 'encouragement': encouragement};
 };
 
-let calculateEncouragements = async function(saleReport){
+let calculateEncouragements = async function(salesReport){
     logger.info('Services.Encouragement.index.calculateEncouragements');
 
     let encouragements = await dal.getAllEncouragements();
-    if(encouragements.length == 0 || saleReport.length == 0)
+    if(encouragements.length == 0 || salesReport.length == 0)
         return [];
 
     encouragements = encouragements.map(function(x){
@@ -107,31 +107,22 @@ let calculateEncouragements = async function(saleReport){
         x.products = x.products.map(y => y.toString());
         return x;
     });
-    encouragements = encouragements.sort(function(a, b){
-        return b.numOfProducts - a.numOfProducts;
-    });
 
     let earnedEncs = [];
 
-    let soldProductsIds = saleReport.filter(x => x.sold > 0).map(x => x.productId.toString());
     for(let enc of encouragements){
-        // check for encouragements "baskets"
-        if(enc.products.length > 1 && enc.products.length <= soldProductsIds.length){
-            if(underscore.intersection(enc.products, soldProductsIds).length == enc.products.length)
-                earnedEncs.push({'enc': enc, 'num': 1});
-        }
-        // check for other encouragements
-        else if(enc.products.length == 1){
-            for(let product of saleReport){
-                if(product.productId.toString() == enc.products[0]){
-                    // mul is the number of times the salesman has gained the current encouragement
-                    let mul = product.sold / enc.numOfProducts;
-                    product.sold -= (mul * enc.numOfProducts);
-                    // will not add encouragement if mul == 0
-                    if(mul > 0)
-                        earnedEncs.push({'enc': enc, 'num': mul});
-                }
-            }
+        var sold = salesReport.filter(function(product){
+            return ( underscore.contains(enc.products, product.productId.toString()));
+        }).map(function(product) {
+            return product.sold;
+        }).reduce((sold1, sold2) => sold1 + sold2, 0);
+
+        var numOfAchivedEnc = parseInt(sold / enc.numOfProducts);
+        if (numOfAchivedEnc > 0){
+            earnedEncs.push({
+                'encouragement': enc._id,
+                'count': numOfAchivedEnc
+            });
         }
     }
 

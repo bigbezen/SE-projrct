@@ -68,13 +68,9 @@ var IncentiveDetails = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getAllProducts().then(function (result) {
-            if (result) {
-                self.setState({
-                    products: result
-                });
-            } else {
-                console.log("error in storesContainers: " + result);
-            }
+            self.setState({
+                products: result
+            });
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

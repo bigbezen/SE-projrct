@@ -49,13 +49,9 @@ var ShiftsExpensesContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getAllShifts().then(function (n) {
-            if (n) {
-                var shifts = n;
-                self.setState({shifts: shifts});
-                console.log(shifts);
-            } else {
-
-            }
+            var shifts = n;
+            self.setState({shifts: shifts});
+            console.log(shifts);
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -73,11 +69,7 @@ var ShiftsExpensesContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.reportExpenses(shiftId,numOfKM,parkingCost)
             .then(function(result) {
-                if(result) {
-                    console.log('updated sales report');
-                } else {
-
-                }
+                console.log('updated sales report');
             })
             .catch(function(err) {
                 notificationSystem.addNotification({

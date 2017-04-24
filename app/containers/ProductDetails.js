@@ -107,35 +107,25 @@ var ProductDetails = React.createClass({
         newProduct.salePrice = 0;
         newProduct.category = this.state.category;
         newProduct.subCategory = this.state.subCategory;
-        newProduct.minRequiredAmount =  parseInt(this.refs.minAmountBox.value);
+        newProduct.minRequiredAmount =  0;
         newProduct.notifyManager = this.refs.notifyBox.checked;
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newProduct._id = this.props.location.query._id;
             managementServices.editProduct(newProduct).then(function (n) {
-                if(n){
-                    var val = n;
-                    notificationSystem.addNotification({
-                        message: constantsStrings.editSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: paths.manager_products_path
-                            })
-                        }
-                    });
-                }
-                else{
-                    notificationSystem.addNotification({
-                        message: constantsStrings.editFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                var val = n;
+                notificationSystem.addNotification({
+                    message: constantsStrings.editSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                    onRemove: function (notification) {
+                        context.router.push({
+                            pathname: paths.manager_products_path
+                        })
+                    }
+                });
             }).catch(function (errMess) {
                 notificationSystem.addNotification({
                     message: errMess,
@@ -146,28 +136,18 @@ var ProductDetails = React.createClass({
             })
         }else {
             managementServices.addProduct(newProduct).then(function (n) {
-                if(n){
-                    var val = n;
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 2,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            context.router.push({
-                                pathname: paths.manager_products_path
-                            })
-                        }
-                    });
-                }
-                else{
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addFailMessage_string,
-                        level: 'error',
-                        autoDismiss: 5,
-                        position: 'tc'
-                    });
-                }
+                var val = n;
+                notificationSystem.addNotification({
+                    message: constantsStrings.addSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                    onRemove: function (notification) {
+                        context.router.push({
+                            pathname: paths.manager_products_path
+                        })
+                    }
+                });
             }).catch(function (errMess) {
                 notificationSystem.addNotification({
                     message: errMess,
@@ -241,17 +221,6 @@ var ProductDetails = React.createClass({
                         </select>
                     </div>
 
-
-                    <div className="form-group ">
-                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.minRequiredAmount_string}:</label>
-                    </div>
-                    <div className="form-group ">
-                        <input type="number" min={0}
-                               className="col-xs-4 col-xs-offset-2"
-                               ref="minAmountBox"
-                        />
-                    </div>
-
                     <div className="form-group ">
                         <label className="col-xs-3 col-xs-offset-2">{constantsStrings.notifyManager_string}:</label>
                         <input type="checkbox"
@@ -282,7 +251,7 @@ var ProductDetails = React.createClass({
         //this.refs.saleBox.value = this.currProduct.salePrice;
         this.refs.categoryBox.value = this.currProduct.category;
         this.refs.subCategoryBox.value = this.currProduct.subCategory;
-        this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;
+        //this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;
         this.refs.notifyBox.checked = this.currProduct.notifyManager;
     },
     render: function () {

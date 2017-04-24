@@ -7,7 +7,6 @@ var encouragementSchema = new Schema({
     'numOfProducts': Number,
     'rate': Number,
     'active': Boolean,
-    'name': String
 });
 
 var encouragement = mongoose.model('encouragement', encouragementSchema);

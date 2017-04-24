@@ -57,17 +57,13 @@ var IncentivesContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         console.log('fetching incentives');
         managementServices.getAllIncentives().then(function (n) {
-            if (n) {
-                var result = n;
-                result.sort(function(a, b){
-                    return a.products.length - b.products.length;
-                });
-                self.setState({
-                    incentives: result
-                });
-            } else {
-                console.log("error in storesContainers: " + n);
-            }
+            var result = n;
+            result.sort(function(a, b){
+                return a.products.length - b.products.length;
+            });
+            self.setState({
+                incentives: result
+            });
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -83,8 +79,24 @@ var IncentivesContainer = React.createClass({
             query: JSON.stringify(incentive)
         })
     },
-
     onClickDelete: function(incentive, index){
+        var notificationSystem = this.refs.notificationSystem;
+        var self = this;
+        notificationSystem.addNotification({
+            message: constantsStrings.areYouSure_string,
+            level: 'info',
+            autoDismiss: 0,
+            position: 'tc',
+            action: {
+                label: constantsStrings.yes_string,
+                callback:
+                    function(){
+                        self.handleDelete(incentive, index)
+                    }
+            }
+        });
+    },
+    handleDelete: function(incentive, index){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteIncentive(incentive)

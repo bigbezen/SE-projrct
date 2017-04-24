@@ -492,8 +492,7 @@ let endShift = async function(sessionId, shift){
     if(encouragements == null)
        return {'code': 500, 'err': 'unexpected error'};
 
-    for(let enc of encouragements)
-        shiftDb.encouragements.push(enc._id);
+    shiftDb.encouragements = encouragements;
 
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)

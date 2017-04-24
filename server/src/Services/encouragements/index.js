@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 let logger                  = require('../../Utils/Logger/logger');
 let encouragementModel      = require('../../Models/encouragement');
@@ -95,11 +95,11 @@ let getEncouragement = async function(sessionId, encouragementId){
     return {'code': 200, 'encouragement': encouragement};
 };
 
-let calculateEncouragements = async function(saleReport){
+let calculateEncouragements = async function(salesReport){
     logger.info('Services.Encouragement.index.calculateEncouragements');
 
     let encouragements = await dal.getAllEncouragements();
-    if(encouragements.length == 0 || saleReport.length == 0)
+    if(encouragements.length == 0 || salesReport.length == 0)
         return [];
 
     encouragements = encouragements.map(function(x){
@@ -112,12 +112,12 @@ let calculateEncouragements = async function(saleReport){
 
     for(let enc of encouragements){
         var sold = salesReport.filter(function(product){
-            return (product._id.toString() in enc.products);
+            return ( underscore.contains(enc.products, product.productId.toString()));
         }).map(function(product) {
             return product.sold;
-        }).reduce((sold1, sold2) => sold1 + sold2);
+        }).reduce((sold1, sold2) => sold1 + sold2, 0);
 
-        var numOfAchivedEnc = sold / enc.numOfProducts;
+        var numOfAchivedEnc = parseInt(sold / enc.numOfProducts);
         if (numOfAchivedEnc > 0){
             earnedEncs.push({
                 'encouragement': enc._id,

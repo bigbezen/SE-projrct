@@ -1,4 +1,5 @@
 let assert                     = require('chai').assert;
+let expect                     = require('chai').expect;
 let dal                        = require('../../src/DAL/dal');
 let encouragementServices      = require('../../src/Services/encouragements/index');
 let productServices            = require('../../src/Services/product/index');
@@ -11,6 +12,7 @@ describe('encouragements unit test', function () {
     let notManager;
     let newEncouragement;
     let editEncouragement;
+    let encouragement3;
     let product1;
     let product2;
     beforeEach(async function () {
@@ -37,9 +39,11 @@ describe('encouragements unit test', function () {
 
         newEncouragement = {'name':'vodka', 'active': true, 'numOfProducts': '2', 'rate': '100', 'products': []};
         editEncouragement = {'name':'wein', 'active': false, 'numOfProducts': '5', 'rate': '120', 'products': []};
+        encouragement3 = {'name':'wein', 'active': false, 'numOfProducts': '3', 'rate': '120', 'products': []};
         newEncouragement.products.push(product1._id);
         newEncouragement.products.push(product2._id);
         editEncouragement.products.push(product1._id);
+        encouragement3.products.push(product2._id);
     });
 
     afterEach(async function () {
@@ -301,6 +305,96 @@ describe('encouragements unit test', function () {
             let result = await encouragementServices.getEncouragement(notManager.sessionId, "notexisting1");
             assert.equal(result.code, 409, 'code 409');
             assert.equal(result.err,'no such encouragement');
+        });
+    });
+
+    describe('test calculate encouragements', function() {
+        it('calculate encouragements - empty salesReport', async function() {
+            let result = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
+            let salesReport = [];
+
+            result = await encouragementServices.calculateEncouragements(salesReport);
+
+            expect(result).to.have.length(0);
+        });
+
+        it('calculate encouragements - empty encouragements in db', async function() {
+            let salesReport = [
+                {
+                    'productId': product1._id,
+                    'sold': 2
+                },
+                {
+                    'productId': product2._id,
+                    'sold': 3
+                }
+            ] ;
+
+            let result = await encouragementServices.calculateEncouragements(salesReport);
+
+            expect(result).to.have.length(0);
+        });
+
+        it('calculate encouragements - 2 products in 1 encouragemnet - retrieve encouragemnets', async function() {
+           let result;
+           let soldProd1 = 10;
+           let soldProd2 = 4;
+           let salesReport = [
+                {
+                    'productId': product1._id,
+                    'sold': soldProd1
+                },
+                {
+                    'productId': product2._id,
+                    'sold': soldProd2
+                }
+            ] ;
+           encouragement3.products.push(product1._id);
+           editEncouragement.products = [];
+           result = await encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
+           editEncouragement = result.encouragement;
+           result = await encouragementServices.addEncouragement(manager.sessionId, encouragement3);
+           encouragement3 = result.encouragement;
+
+           result = await encouragementServices.calculateEncouragements(salesReport);
+
+           let countEnc1 = 0;
+           let countEnc2 = parseInt((soldProd1 + soldProd2) / encouragement3.numOfProducts);
+           expect(result).to.have.length(1);
+
+        });
+
+        it('calculate encouragements - 1 product at each encouragement - retrieve encouragements', async function() {
+            let result;
+            let soldProd1 = 10;
+            let soldProd2 = 4;
+            let salesReport = [
+                {
+                    'productId': product1._id,
+                    'sold': soldProd1
+                },
+                {
+                    'productId': product2._id,
+                    'sold': soldProd2
+                }
+            ] ;
+            result = await encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
+            editEncouragement = result.encouragement;
+            result = await encouragementServices.addEncouragement(manager.sessionId, encouragement3);
+            encouragement3 = result.encouragement;
+
+            result = await encouragementServices.calculateEncouragements(salesReport);
+
+            let countEnc1 = parseInt(soldProd1 / editEncouragement.numOfProducts);
+            let countEnc2 = parseInt(soldProd2 / encouragement3.numOfProducts);
+            expect(result).to.have.length(2);
+            expect(result.filter((enc) => enc.encouragement.toString() == editEncouragement._id.toString())).to.have.length(1);
+            expect(result.filter((enc) => enc.encouragement.toString() == encouragement3._id.toString())).to.have.length(1);
+
+            let resultProduct1 = result.filter((enc) => enc.encouragement.toString() == editEncouragement._id.toString());
+            let resultProduct2 = result.filter((enc) => enc.encouragement.toString() == encouragement3._id.toString());
+            expect(resultProduct1[0].count).to.be.equal(countEnc1);
+            expect(resultProduct2[0].count).to.be.equal(countEnc2);
         });
     });
 });

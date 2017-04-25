@@ -7,6 +7,9 @@ var styles = {
     },
     topBuffer: {
         marginTop: '200px'
+    },
+    marginTop: {
+        marginTop: '30px'
     }
 
 };

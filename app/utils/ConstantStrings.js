@@ -23,7 +23,7 @@ class ConstantStrings extends React.Component {
     static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
     static save_string = 'שמירה';
     static storeStatus_string = 'מצב המלאי בחנות:';
-    static retrievePassButton_string = 'שלח סיסמא חדשה';
+    static retrievePassButton_string = 'שחזר סיסמא';
     static changePassButton_string = 'עדכן סיסמא';
     static changePass_string = 'שינוי סיסמא';
     static changePassTitle_string = 'עדכון סיסמא';
@@ -269,6 +269,7 @@ class ConstantStrings extends React.Component {
     static retrievePassSuccessMessage_string = 'סיסמא חדשה נשלחה אליכם בזה הרגע לדואר האלקטרוני';
     static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
     static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
+    static cancel_string = 'ביטול';
 
      //salesman menu
     static addSale_string = 'מכירות';

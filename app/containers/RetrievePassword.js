@@ -7,6 +7,7 @@ var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var styles = require('../styles/managerStyles/styles');
 var NotificationSystem = require('react-notification-system');
+var style = require('../styles/index');
 
 var RetrievePassContainer = React.createClass({
 
@@ -71,7 +72,7 @@ var RetrievePassContainer = React.createClass({
         })
     },
     onReturn: function() {
-        context.router.push({
+        this.context.router.push({
             pathname: paths.login_path
         })
     },
@@ -101,12 +102,20 @@ var RetrievePassContainer = React.createClass({
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 col-sm-4 col-sm-offset-4"
+                                className="w3-btn btn w3-theme-d5 w3-card-4 col-sm-4 col-sm-offset-4 w3-round-large w3-xxlarge"
                                 type="submit">
                                 {constantsStrings.retrievePassButton_string}
                             </button>
                         </div>
+
                     </form>
+                    <div className="" style={styles.marginTop}>
+                        <button
+                            className="w3-btn btn w3-theme-d5 w3-card-4 col-sm-2 col-sm-offset-5 w3-round-large
+                                w3-xxlarge" onClick={this.onReturn}>
+                            {constantsStrings.cancel_string}
+                        </button>
+                    </div>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

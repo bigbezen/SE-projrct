@@ -69,7 +69,7 @@ var ProductDetails = React.createClass({
 
     getOptions: function(arrayOfObjects) {
         var optionsForDropDown = [];
-        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        optionsForDropDown.push(<option>{constantsStrings.dropDownChooseString}</option>);
         for (var i = 0; i < arrayOfObjects.length; i++) {
             var currOption = arrayOfObjects[i];
             optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
@@ -86,10 +86,16 @@ var ProductDetails = React.createClass({
         } else if (this.state.category == "ספיריט") {
             arrayOfObjects = constantsStrings.subCategoryForDropdown_spirit;
         }
-        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        if(this.state.subCategory == '')
+            optionsForDropDown.push(<option selected>{constantsStrings.dropDownChooseString}</option>);
+        else
+            optionsForDropDown.push(<option>{constantsStrings.dropDownChooseString}</option>);
         for (var i = 0; i < arrayOfObjects.length; i++) {
             var currOption = arrayOfObjects[i];
-            optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
+            if(currOption == this.state.subCategory)
+                optionsForDropDown.push(<option selected value={currOption}>{currOption}</option>);
+            else
+                optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
         }
         return optionsForDropDown;
     },
@@ -250,7 +256,7 @@ var ProductDetails = React.createClass({
         this.refs.retailBox.value = this.currProduct.retailPrice;
         //this.refs.saleBox.value = this.currProduct.salePrice;
         this.refs.categoryBox.value = this.currProduct.category;
-        this.refs.subCategoryBox.value = this.currProduct.subCategory;
+        //this.refs.subCategoryBox.value = this.currProduct.subCategory;
         //this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;
         this.refs.notifyBox.checked = this.currProduct.notifyManager;
     },

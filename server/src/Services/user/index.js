@@ -9,6 +9,7 @@ let inboxModel      = require('../../Models/message');
 
 let hashGenerator   = require('hash-generator');
 
+let ID_MIN_DIGITS_COUNT = 6;
 
 let setAdminUser = async function(){
     let user = new userModel();
@@ -99,9 +100,11 @@ let addUser = async function(sessionId, userDetails) {
     if(isExistUsername != null || isExistId != null){
         return {'code': 409, 'err': 'Username or Id already exists'}
     }
-
+    if(userDetails.personal.id.length < ID_MIN_DIGITS_COUNT){
+        return {'code': 409, 'err': 'ID must be atleast ' + ID_MIN_DIGITS_COUNT + ' digits'}
+    }
     let newUser = new userModel();
-    let generatedPassword = Math.random().toString(36).substring(2,10);
+    let generatedPassword = userDetails.personal.id; //Math.random().toString(36).substring(2,10);
     newUser.username = userDetails.username;
     newUser.password =  cypher.encrypt(generatedPassword);
     newUser.startDate = new Date(userDetails.startDate);
@@ -114,7 +117,7 @@ let addUser = async function(sessionId, userDetails) {
     if(res != null){
         newUser = newUser.toObject();
         let content = 'ברוכים הבאים\nהנה פרטי ההתחברות שלך לאפליקציה\n\nשם משתמש: ' + newUser.username;
-        content += '\n\n' + 'סיסמא: ' + cypher.decrypt(newUser.password);
+        content += '\n\n' + 'הסיסמא הינה תעודת הזהות שלך';
         mailer.sendMail([newUser.contact.email], 'Welcome To IBBLS', content);
         delete newUser.password;
         return {'code': 200, 'user': newUser};
@@ -183,6 +186,10 @@ let changePassword = async function(sessionId, oldPass, newPass) {
 
     if(user.password != cypher.encrypt(oldPass)){
         return {'code': 409, 'err': 'problem occurred with one of the parameters'};
+    }
+
+    if(newPass.length < ID_MIN_DIGITS_COUNT){
+        return {'code': 409, 'err': 'New password must be atleast 6 characters long'};
     }
 
     user.password = cypher.encrypt(newPass);

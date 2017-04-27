@@ -57,19 +57,12 @@ var ReportsBase = React.createClass({
     onClickMonthlyAnalysisReport: function() {
         this.context.router.push({
             pathname: paths.manager_monthlyAnalysisReport_path
-        })
+        });
     },
 
     onClickMonthlyHoursReport: function() {
-        // this.context.router.push({
-        //     pathname: paths.manager_monthlyHoursReport_path
-        // })
-        var notificationSystem = this.refs.notificationSystem;
-        notificationSystem.addNotification({
-            message: "Not Yet Implemented",
-            level: 'success',
-            autoDismiss: 2,
-            position: 'tc',
+        this.context.router.push({
+            pathname: paths.manager_monthlyHoursReport_path
         });
     },
 

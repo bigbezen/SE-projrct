@@ -51,8 +51,8 @@ var ReportsMonthlyHours = React.createClass({
     onClickExportReport: function() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        var chosenYear = this.refs.datepicker.value;
-        managerServices.exportMonthlyAnalysisReport(chosenYear)
+        var datepickerVal = this.refs.datepicker.value.split('-');
+        managerServices.exportMonthlyHoursReport(datepickerVal[0], datepickerVal[1])
             .then(function(data){
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
@@ -75,11 +75,10 @@ var ReportsMonthlyHours = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
-        managerServices.getMonthlyHoursReportData(datepickerVal[0], datepickerVal[1])
+        managerServices.getMonthlyHoursReportData(parseInt(datepickerVal[0]), parseInt(datepickerVal[1]))
             .then(function(data){
-                var report = data;
                 self.setState({
-                    report: report
+                    report: data
                 })
             })
             .catch(function(err){
@@ -100,7 +99,7 @@ var ReportsMonthlyHours = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         if(this.state.report != undefined) {
-            managerServices.updateMonthlyAnalysisReport(this.state.report.year, this.state.report)
+            managerServices.updateMonthlyHoursReport(this.state.report.year, this.state.report.month, this.state.report)
                 .then(function (data) {
                     notificationSystem.addNotification({
                         message: constantStrings.editSuccessMessage_string,
@@ -120,7 +119,32 @@ var ReportsMonthlyHours = React.createClass({
         }
     },
 
+    onChangeValue: function(index, refName){
+        var newVal = this.refs[index + refName].value;
+        var report = this.state.report;
+        report.salesmansData[index][refName] = newVal;
+        console.log(report.salesmansData[index][refName]);
 
+    },
+
+
+    renderSalesmanData: function(salesman, index){
+        return (
+            <div className="col-sm-offset-1 col-sm-8 w3-theme-d3 w3-card-4 w3-round-xlarge">
+                <p className="col-sm-3">{salesman.user.personal.firstName + " " + salesman.user.personal.lastName}</p>
+                <input type="number" ref={index + "numOfHours"} min="0" style={{marginTop: '3px'}}
+                       className="col-sm-2 w3-round-large w3-text-black" defaultValue={salesman.numOfHours}
+                        onChange={() => this.onChangeValue(index, "numOfHours")} />
+                <input type="number" ref={index + "sales"} min="0" style={{marginTop: '3px'}}
+                       className="col-sm-2 w3-round-large w3-text-black" defaultValue={salesman.sales}
+                       onChange={() => this.onChangeValue(index, "sales")} />
+                <input type="number" ref={index + "opened"} min="0" style={{marginTop: '3px'}}
+                       className="col-sm-2 w3-round-large w3-text-black" defaultValue={salesman.opened}
+                       onChange={() => this.onChangeValue(index, "opened")} />
+
+            </div>
+        )
+    },
 
     renderReport: function(){
         if(this.state.report == undefined){
@@ -131,8 +155,14 @@ var ReportsMonthlyHours = React.createClass({
         else {
             var report = this.state.report;
             return (
-                <div className="w3-container">
-
+                <div className="w3-container" style={styles.marginTop}>
+                    <div className="col-sm-offset-1 col-sm-8 w3-theme-d3 w3-card-4 w3-round-xlarge" style={{fontSize: '20px'}}>
+                        <p className="col-sm-3"><b>{constantStrings.fullName_string}</b></p>
+                        <p className="col-sm-2"><b>{constantStrings.totalSalesmanHours_string}</b></p>
+                        <p className="col-sm-2"><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
+                        <p className="col-sm-2"><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
+                    </div>
+                    {report.salesmansData.map(this.renderSalesmanData)}
                 </div>
             )
         }
@@ -147,7 +177,7 @@ var ReportsMonthlyHours = React.createClass({
                         <h2>{constantStrings.reportsMonthlyUserHoursReportTitle_string}</h2>
                     </div>
                     <div className="row">
-                        <input className="col-sm-1 w3-card-4 w3-round-xlarge" ref="datepicker" type="month"/>
+                        <input className="col-sm-2 w3-card-4 w3-round-xlarge" ref="datepicker" type="month"/>
                         <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickGetReport}>{constantStrings.reportsShowReport_string}</button>
                         <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickEditReport}>{constantStrings.editReport_string}</button>
                         <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>

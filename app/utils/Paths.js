@@ -23,7 +23,7 @@ class Paths extends React.Component {
     static salesman_endShift_path = '/salesman/endShift';
     static member_retrievePass_path = '/member/retrievePassword';
     static manager_changePass_path = '/manager/changePassword';
-    static salesman_changePass_path = '/salesman/changePassword';
+    static salesman_changePass_path = '/salesman/home/changePassword';
     static salesman_editShift_path = '/salesman/shift/editSale';
     static salesman_shift_encouragements_path = '/salesman/shift/encouragements';
     static manager_incentives_path = '/manager/incentives';

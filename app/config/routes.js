@@ -69,7 +69,6 @@ var routes = (
             <Route path='reports' component={Reports} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
-            <Route path='changePassword' component={ChangePass}/>
             <Route path='startShift' component={SalesmanStartShift}/>
             <Route path='endShift' component={SalesmanEndShift}/>
         </Route>
@@ -79,6 +78,7 @@ var routes = (
             <Route path='profile' component={SalesmanProfile}/>
             <Route path='shiftSchedule' component={SalesmanShiftSchedule}/>
             <Route path='shiftsExpenses' component={SalesmanShiftsExpenses}/>
+            <Route path='changePassword' component={ChangePass}/>
         </Route>
 
         <Route path='/salesman/shift/' component={ShiftBaseContainer}>

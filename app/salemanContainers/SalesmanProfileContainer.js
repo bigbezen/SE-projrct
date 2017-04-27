@@ -29,10 +29,17 @@ var SalesmanProfileContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+    handleChangePassword: function () {
+        console.log('BaseContainer- changePass function');
+        this.context.router.push({
+            pathname: paths.salesman_changePass_path
+        })
+    },
     render: function () {
         return(
             <div>
-                coming soon...
+
+                <button className="w3-theme-d5 w3-xxlarge btn w3-card-8" onClick={this.handleChangePassword}> {constantsStrings.changePassButton_string}</button>
             </div>
         )
     }

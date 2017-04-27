@@ -274,6 +274,7 @@ class ConstantStrings extends React.Component {
     static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
     static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
     static cancel_string = 'ביטול';
+    static mustChooseSalesman_string = 'עליך לבחור דייל לכל משמרת';
 
      //salesman menu
     static addSale_string = 'מכירות';

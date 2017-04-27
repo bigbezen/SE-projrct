@@ -109,30 +109,41 @@ var ShiftsCreateMultipleShifts = React.createClass({
     onClickSubmitShifts: function(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        managementServices.addMultipleShifts(this.state.newShifts)
-            .then(function(data){
-                notificationSystem.addNotification({
-                    message: constantsStrings.addSuccessMessage_string,
-                    level: 'success',
-                    autoDismiss: 1,
-                    position: 'tc',
-                    onRemove: function(notification){
-                        self.context.router.push({
-                            pathname: paths.manager_shifts_path
-                        });
-                    }
-                });
+        var missingSalesman = this.state.newShifts.filter((shift) => shift.salesmanId == "");
+        if(missingSalesman.length > 0){
+            notificationSystem.addNotification({
+                message: constantsStrings.mustChooseSalesman_string,
+                level: 'error',
+                autoDismiss: 2,
+                position: 'tc'
+            });
+        }
+        else {
+            managementServices.addMultipleShifts(this.state.newShifts)
+                .then(function (data) {
+                    notificationSystem.addNotification({
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 1,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            self.context.router.push({
+                                pathname: paths.manager_shifts_path
+                            });
+                        }
+                    });
 
 
-            })
-            .catch(function(err){
-                notificationSystem.addNotification({
-                    message: err,
-                    level: 'error',
-                    autoDismiss: 5,
-                    position: 'tc'
-                });
-            })
+                })
+                .catch(function (err) {
+                    notificationSystem.addNotification({
+                        message: err,
+                        level: 'error',
+                        autoDismiss: 5,
+                        position: 'tc'
+                    });
+                })
+        }
     },
 
     getSalesmanOptions: function(salesmanId){
@@ -158,11 +169,15 @@ var ShiftsCreateMultipleShifts = React.createClass({
     },
 
     onChangeSalesman: function(storeId){
-        var firstName = this.refs[storeId].value.split(' ')[0];
-        var lastName = this.refs[storeId].value.split(' ')[1];
-        var salesmanId = this.state.salesmen.filter((salesman) => salesman.personal.firstName == firstName &&
-                                                                    salesman.personal.lastName == lastName);
-        salesmanId = salesmanId[0]._id;
+        var salesmanId = "";
+        if(this.refs[storeId].value != constantsStrings.dropDownChooseString) {
+            var firstName = this.refs[storeId].value.split(' ')[0];
+            var lastName = this.refs[storeId].value.split(' ')[1];
+            salesmanId = this.state.salesmen.filter((salesman) => salesman.personal.firstName == firstName &&
+                                                    salesman.personal.lastName == lastName);
+            salesmanId = salesmanId[0]._id;
+        }
+
 
 
         var newShifts = this.state.newShifts;

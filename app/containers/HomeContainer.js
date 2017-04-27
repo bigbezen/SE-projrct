@@ -10,6 +10,8 @@ var constantStrings = require('../utils/ConstantStrings');
 var styles = require('../styles/managerStyles/homeStyles');
 var NotificationSystem = require('react-notification-system');
 
+import { PieChart, Pie } from 'recharts';
+
 var HomeContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -20,7 +22,8 @@ var HomeContainer = React.createClass({
         return{
             salesmenNum: 0,
             productsNum: 0,
-            storesNum: 0
+            storesNum: 0,
+            stores: undefined
         }
     },
     setUserType: function() {
@@ -61,7 +64,8 @@ var HomeContainer = React.createClass({
         managementServices.getAllStores().then(function (n) {
             var result = n;
             self.setState({
-                storesNum: result.length
+                storesNum: result.length,
+                stores: result
             });
         }).catch(function (errMess) {
         })
@@ -89,21 +93,39 @@ var HomeContainer = React.createClass({
             pathname: paths.manager_shifts_path
         })
     },
+
+    renderProducts(){
+        // var data = [];
+        // if(this.state.stores != undefined){
+        //     var storesPerArea = this.state.stores.map(function(store){
+        //         return {name: store.area, value: 1};
+        //     }).reduce((a, b) => )
+        // }
+        return (
+            <div className="w3-card-2 w3-theme-l4 col-xs-3 w3-margin">
+                <h5> {constantStrings.numberOfStores}</h5>
+                <h1>{this.state.storesNum}</h1>
+                <PieChart width={730} height={250}>
+                    <Pie data={data} cx="100%" cy="100%" innerRadius={60} outerRadius={80} fill="#82ca9d" label />
+                </PieChart>
+            </div>
+        )
+    },
+
     render: function () {
+
         return (
             <div className="w3-theme-l5" style={styles.cardsRow}>
                 <div className="w3-card-2 w3-theme-l4 col-xs-3 col-xs-offset-1 w3-margin">
-                    <h5> {constantStrings.numberOfUUsers}</h5>
+                    <h5> {constantStrings.numberOfUsers}</h5>
                     <h1>{this.state.salesmenNum}</h1>
                 </div>
                 <div className="w3-card-2 w3-theme-l4 col-xs-3 w3-margin">
                     <h5> {constantStrings.numberOfProducts}</h5>
                     <h1>{this.state.productsNum}</h1>
                 </div>
-                <div className="w3-card-2 w3-theme-l4 col-xs-3 w3-margin">
-                    <h5> {constantStrings.numberOfStores}</h5>
-                    <h1>{this.state.storesNum}</h1>
-                </div>
+                {this.renderProducts()}
+
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
 

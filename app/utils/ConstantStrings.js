@@ -31,7 +31,7 @@ class ConstantStrings extends React.Component {
     static retrievePass_string = 'שחזור סיסמא';
 
     //home page
-    static numberOfUUsers = 'סך המשתמשים בחברה';
+    static numberOfUsers = 'סך המשתמשים בחברה';
     static numberOfStores = 'סך החנויות בחברה';
     static numberOfProducts = 'סך המוצרים בחברה';
 

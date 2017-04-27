@@ -337,7 +337,7 @@ let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
-    if(isAuthorized == null)
+    if(salesman == null)
         return {'code': 401, 'err': 'user not authorized'};
 
     let allShifts = await dal.getShiftsFromDate(fromDate, salesman._id);

@@ -27,6 +27,10 @@ module.exports = {
         return store.save();
     },
 
+    setStoreDefaultUser: async function(storeId, salesmanId){
+        return storeModel.update({'_id': mongoose.Types.ObjectId(storeId)}, {$set: {'defaultSalesman': mongoose.Types.ObjectId(salesmanId)}});
+    },
+
     updateUser: async function(user){
         return userModel.update({'_id': mongoose.Types.ObjectId(user._id)}, user, { upsert: false });
     },
@@ -68,7 +72,7 @@ module.exports = {
     },
 
     getAllStores: async function(){
-        return storeModel.find({});
+        return storeModel.find({}).populate('defaultSalesman');
     },
 
     getStoresByIds: async function(ids){
@@ -189,6 +193,12 @@ module.exports = {
         var startMonth = new Date(year, month, 1);
         var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
         return shiftModel.find({$and: [{'salesmanId': salesmanId},{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
+    },
+
+    getShiftsOfRange: async function(startDate, endDate){
+        return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lt: endDate}}]})
+            .populate('salesmanId')
+            .populate('storeId');
     },
 
     addMonthlySalesmanReport: async function(report){

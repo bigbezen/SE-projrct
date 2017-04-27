@@ -52,6 +52,7 @@ let addShifts = async function(sessionId, shiftArr){
         if('salesmanId' in shift)
             newShift.salesmanId = shift.salesmanId;
         newShift.storeId = shift.storeId;
+        let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.status = "CREATED";
@@ -206,6 +207,20 @@ let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
     return {'code': 200, 'shifts': finishedShifts};
 
 
+};
+
+let getShiftsOfRange = async function(sessionId, startDate, endDate) {
+    logger.info('Services.shift.index.getShiftsOfRange', {'session-id': sessionId, 'startDate': startDate, 'endDate': endDate});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsOfRange', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let shifts = await dal.getShiftsOfRange(startDate, endDate);
+    if(shifts == null){
+        return {'code': 409, 'err': 'Something went wrong with getting the shifts'};
+    }
+
+    return {'code': 200, 'shifts': shifts};
 };
 
 let getSalesmanCurrentShift = async function(sessionId){
@@ -678,5 +693,6 @@ module.exports.updateSalesReport = updateSalesReport;
 module.exports.editSale = editSale;
 module.exports.getSalesmanShifts = getSalesmanShifts;
 module.exports.reportExpenses = reportExpenses;
+module.exports.getShiftsOfRange = getShiftsOfRange;
 
 

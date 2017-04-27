@@ -1272,6 +1272,22 @@ describe('shift unit test', function () {
         });
     });
 
+    describe('test get shifts of range', function() {
+        it('get shifts of date valid', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date(2016, 1, 1);
+            let endDate = new Date(2017,10,10);
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shifts');
+            expect(result.shifts).to.have.length(shifts.length);
+        });
+    });
+
     describe('test get shifts from date', function(){
         it('get shifts from date valid', async function(){
             for(let shift of shifts){

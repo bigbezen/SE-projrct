@@ -26,8 +26,8 @@ var styles = {
     },
     bodyStyle: {
         'width' : '80%',
-        'marginTop': '50px',
-        'margin': 'auto'
+        'margin': 'auto',
+        'marginTop': '50px'
     }
 
 };

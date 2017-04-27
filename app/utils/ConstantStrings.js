@@ -209,6 +209,7 @@ class ConstantStrings extends React.Component {
     static startShift_string = 'התחל משמרת';
     static endShift_string = 'סיים משמרת';
     static continueShift_string = 'המשך משמרת';
+    static salesmanNoShifts_string = 'אין לך משמרות היום';
     static genderForDropdown = ["נקבה", "זכר"];
 
     static channelForDropdown = ["מסורתי - חם", "מסורתי - מאורגן", "תדמית יום"];

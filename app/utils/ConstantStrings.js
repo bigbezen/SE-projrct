@@ -77,6 +77,7 @@ class ConstantStrings extends React.Component {
     static fullName_string = 'שם הדייל';
     static gender_string = 'מין';
     static startDate_string = 'תאריך התחלה';
+    static endDate_string = 'תאריך סיום';
     static date_string = 'תאריך';
     static role_string = 'תפקיד';
     static salary_string = 'שכר שעתי';

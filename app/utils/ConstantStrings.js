@@ -125,6 +125,7 @@ class ConstantStrings extends React.Component {
     static salesman_string = 'דייל';
     static getReport_string = 'הורד דוח';
     static shiftType_string = 'סוג משמרת';
+    static addMultipleShifts_string = 'הוספת מספר משמרות';
 
     //reports
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
@@ -232,6 +233,8 @@ class ConstantStrings extends React.Component {
             ['manager', 'מנהל']
         ];
 
+    static shiftType_taste = 'טעימה';
+    static shiftType_learning = 'הדרכה';
     static shiftType = ['טעימה', 'הדרכה'] ;
 
 

@@ -58,7 +58,8 @@ let funcNameToPermission = {
     'reportExpenses': ['salesman'],
     'getMonthlyAnalysisReport': ['manager'],
     'updateMonthlyAnalysisReport': ['manager'],
-    'updateMonthlySalesmanHoursReport': ['manager']
+    'updateMonthlySalesmanHoursReport': ['manager'],
+    'getShiftsOfRange': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

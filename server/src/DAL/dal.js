@@ -191,6 +191,12 @@ module.exports = {
         return shiftModel.find({$and: [{'salesmanId': salesmanId},{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
     },
 
+    getShiftsOfRange: async function(startDate, endDate){
+        return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lt: endDate}}]})
+            .populate('salesmanId')
+            .populate('storeId');
+    },
+
     addMonthlySalesmanReport: async function(report){
         return report.save()
     },

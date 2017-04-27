@@ -685,6 +685,19 @@ function _setapApiEndpoints() {
         }
     });
 
+    app.get('/management/getShiftsOfRange', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('startDate' in req.query)) || (!('endDate' in req.query))){
+            res.status(404).send('invalid parameters');
+            return;
+        }
+
+        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.startDate, req.query.endDate);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
 //Manager Services
     app.post('/manager/addNotificationRule', function (req, res) {
         res.status(200).send('add new notification rule');

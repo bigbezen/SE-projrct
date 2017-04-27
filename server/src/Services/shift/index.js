@@ -319,14 +319,14 @@ let reportExpenses = async function(sessionId, shiftId, km, parking){
 
 };
 
-let getShiftsFromDate = async function(sessionId, fromDate, salesmanId){
+let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
-    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
+    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let allShifts = await dal.getShiftsFromDate(fromDate, salesmanId);
+    let allShifts = await dal.getShiftsFromDate(fromDate, salesman._id);
 
     if(allShifts == null)
         return {'code': 500, 'err': 'something went wrong'};

@@ -18,6 +18,7 @@ var User = require('../containers/UserDetails');
 var Shifts = require('../containers/ShiftsContainer');
 var Shift = require('../containers/ShiftDetails');
 var CreateShifts = require('../containers/ShiftsGenerator');
+var MultipleShiftsCreation = require('../containers/ShiftsCreateMultipleShifts');
 var SalesmanHomeBase = require('../salemanContainers/SalesmanHomeBaseContainer');
 var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
 var SalesmanStartShift = require('../salemanContainers/StartShiftContainer');
@@ -55,6 +56,7 @@ var routes = (
             <Route path='user' component={User} />
             <Route path='shift' component={Shift}/>
             <Route path='createShifts' component={CreateShifts}/>
+            <Route path='createMultipleShifts' component={MultipleShiftsCreation}/>
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
             <Route path='changePassword' component={ChangePass}/>
@@ -69,7 +71,6 @@ var routes = (
             <Route path='reports' component={Reports} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
-            <Route path='changePassword' component={ChangePass}/>
             <Route path='startShift' component={SalesmanStartShift}/>
             <Route path='endShift' component={SalesmanEndShift}/>
         </Route>
@@ -79,6 +80,7 @@ var routes = (
             <Route path='profile' component={SalesmanProfile}/>
             <Route path='shiftSchedule' component={SalesmanShiftSchedule}/>
             <Route path='shiftsExpenses' component={SalesmanShiftsExpenses}/>
+            <Route path='changePassword' component={ChangePass}/>
         </Route>
 
         <Route path='/salesman/shift/' component={ShiftBaseContainer}>

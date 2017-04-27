@@ -14,6 +14,7 @@ class Paths extends React.Component {
     static manager_userDetails_path = '/manager/user';
     static manager_shiftDetails_path = '/manager/shift';
     static manager_createShifts_path = '/manager/createShifts';
+    static manager_createMultipleShifts_path = '/manager/createMultipleShifts';
     static salesman_home_path = '/salesman/home/home';
     static salesman_startShift_path = '/salesman/startShift';
     static salesman_shiftExpenses_path = '/salesman/home/shiftsExpenses';
@@ -23,7 +24,7 @@ class Paths extends React.Component {
     static salesman_endShift_path = '/salesman/endShift';
     static member_retrievePass_path = '/member/retrievePassword';
     static manager_changePass_path = '/manager/changePassword';
-    static salesman_changePass_path = '/salesman/changePassword';
+    static salesman_changePass_path = '/salesman/home/changePassword';
     static salesman_editShift_path = '/salesman/shift/editSale';
     static salesman_shift_encouragements_path = '/salesman/shift/encouragements';
     static manager_incentives_path = '/manager/incentives';

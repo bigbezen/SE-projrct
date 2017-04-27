@@ -45,31 +45,17 @@ var ShiftDetails = React.createClass({
         e.preventDefault();
         var startTime = this.refs.startTimeBox.value;
         var endTime = this.refs.endTimeBox.value;
-
-        var context = this.context;
-        var shifts;
         var notificationSystem = this.refs.notificationSystem;
-        managementServices.AddAllShifts(startTime, endTime).then(function (n) {
-            shifts = n;
-            notificationSystem.addNotification({
-                message: constantsStrings.addSuccessMessage_string,
-                level: 'success',
-                autoDismiss: 2,
-                position: 'tc',
-                onRemove: function (notification) {
-                    context.router.push({
-                        pathname: paths.manager_home_path
-                    })
-                }
-            });
-        }).catch(function (errMess) {
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 5,
-                position: 'tc'
-            });
+
+        this.context.router.push({
+            pathname: paths.manager_createMultipleShifts_path,
+            query: {'startTime': startTime, 'endTime': endTime}
         })
+
+    },
+
+    onChangeStarTime: function(){
+        this.refs.endTimeBox.value = this.refs.startTimeBox.value;
     },
 
     createAllShifts: function() {
@@ -83,6 +69,7 @@ var ShiftDetails = React.createClass({
                         <input type="datetime-local"
                                className="col-xs-4"
                                ref="startTimeBox"
+                               onChange={this.onChangeStarTime}
                         />
                     </div>
 

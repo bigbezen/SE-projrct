@@ -95,7 +95,7 @@ describe('reports unit test', function () {
         store.address = 'rager12';
         store.area = 'south';
         store.channel = 'hot';
-        res = await dal.addStore(store);
+        let res = await dal.addStore(store);
 
         product1 = new productModel();
         product1.name = 'absulut';

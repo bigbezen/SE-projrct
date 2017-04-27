@@ -77,6 +77,7 @@ class ConstantStrings extends React.Component {
     static fullName_string = 'שם הדייל';
     static gender_string = 'מין';
     static startDate_string = 'תאריך התחלה';
+    static endDate_string = 'תאריך סיום';
     static date_string = 'תאריך';
     static role_string = 'תפקיד';
     static salary_string = 'שכר שעתי';
@@ -122,8 +123,9 @@ class ConstantStrings extends React.Component {
     static editShift_string = 'עריכת משמרת קיימת';
     static type_string = 'סוג';
     static salesman_string = 'דייל';
-    static getReport_string = 'הורד דוח';
+    static getReport_string = 'שלח לאימייל';
     static shiftType_string = 'סוג משמרת';
+    static addMultipleShifts_string = 'הוספת מספר משמרות';
 
     //reports
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
@@ -231,6 +233,8 @@ class ConstantStrings extends React.Component {
             ['manager', 'מנהל']
         ];
 
+    static shiftType_taste = 'טעימה';
+    static shiftType_learning = 'הדרכה';
     static shiftType = ['טעימה', 'הדרכה'] ;
 
 
@@ -270,6 +274,7 @@ class ConstantStrings extends React.Component {
     static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
     static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
     static cancel_string = 'ביטול';
+    static mustChooseSalesman_string = 'עליך לבחור דייל לכל משמרת';
 
      //salesman menu
     static addSale_string = 'מכירות';

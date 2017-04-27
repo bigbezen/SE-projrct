@@ -1,23 +1,23 @@
 /**
  * Created by lihiverchik on 17/01/2017.
  */
-var React = require('react');
-var ReactBsTable = require("react-bootstrap-table");
-var BootstrapTable = ReactBsTable.BootstrapTable;
-var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
-var constantStrings = require('../utils/ConstantStrings');
-var managementServices = require('../communication/managementServices');
-var managerServices = require('../communication/managerServices');
-var helpers = require('../utils/Helpers');
-var paths = require('../utils/Paths');
-var moment = require('moment');
-var flatten = require('flat');
-var styles = require('../styles/managerStyles/styles');
-var TrashIcon = require('react-icons/lib/fa/trash-o');
-var EditIcon = require('react-icons/lib/md/edit');
-var DownloadIcon = require('react-icons/lib/md/file-download');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var ReactBsTable        = require("react-bootstrap-table");
+var BootstrapTable      = ReactBsTable.BootstrapTable;
+var TableHeaderColumn   = ReactBsTable.TableHeaderColumn;
+var constantStrings     = require('../utils/ConstantStrings');
+var managementServices  = require('../communication/managementServices');
+var managerServices     = require('../communication/managerServices');
+var helpers             = require('../utils/Helpers');
+var paths               = require('../utils/Paths');
+var moment              = require('moment');
+var flatten             = require('flat');
+var styles              = require('../styles/managerStyles/styles');
+var TrashIcon           = require('react-icons/lib/fa/trash-o');
+var EditIcon            = require('react-icons/lib/md/edit');
+var DownloadIcon        = require('react-icons/lib/md/email');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -31,8 +31,13 @@ function flatList(shifts) {
 }
 
 function dateFormatter(cell, row) {
-    return moment(cell).format('YYYY-MM-DD H:mm');
+    return moment(cell).format('DD/MM/YYYY');
 }
+
+function timeFormatter(cell, row) {
+    return moment(cell).format('H:mm');
+}
+
 
 var ShiftsContainer = React.createClass({
     contextTypes: {
@@ -57,23 +62,27 @@ var ShiftsContainer = React.createClass({
     getInitialState() {
         this.setSessionId();
         this.setUserType();
+        var currentDate = moment().format('YYYY-MM-DD');
         return{
-            shifts: null
+            shifts: null,
+            startDate: currentDate,
+            endDate:currentDate
         }
     },
-    componentDidMount() {
-        this.updateShifts();
+    componentDidMount: function() {
+        var currentDate = moment().format('YYYY-MM-DD');
+        this.updateShifts(currentDate, currentDate);
     },
-    updateShifts() {
+    updateShifts(startDate, endDate) {
         var self = this;
-        var currentDate = new Date();
         var notificationSystem = this.refs.notificationSystem;
-        currentDate.setDate(currentDate.getDate()-30);
-        managementServices.getShiftsFromDate(currentDate).then(function (n) {
+        managementServices.getShiftsOfRange(startDate,endDate).then(function (n) {
             var result = n;
             var flatShifts = flatList(result);
             self.setState({
-                shifts: flatShifts
+                shifts: flatShifts,
+                startDate: startDate,
+                endDate: endDate
             });
         }).catch(function (errMess) {
             // notification should be here
@@ -139,12 +148,11 @@ var ShiftsContainer = React.createClass({
             });
         })
     },
-    onClickAddButton: function(){
+    onClickAddShift: function(){
         this.context.router.push({
             pathname: paths.manager_shiftDetails_path
         })
     },
-
     onClickAddShiftsButton: function(){
         this.context.router.push({
             pathname: paths.manager_createShifts_path
@@ -191,13 +199,23 @@ var ShiftsContainer = React.createClass({
             )
         }
     },
+    changeDate: function () {
+        var startDateValue = this.refs.startDateBox.value;
+        var endDateValue = this.refs.endDateBox.value;
+        this.updateShifts(startDateValue,endDateValue);
+    },
     renderTable: function () {
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
-                <BootstrapTable data={this.state.shifts} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
+                <div className="col-sm-12">
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round-xlarge" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
+                    <p style={styles.dateLabel}>{constantStrings.startDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.startDate} ref="startDateBox" onChange= {this.changeDate} />
+                    <p style={styles.dateLabel}>{constantStrings.endDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.endDate} ref="endDateBox" onChange={this.changeDate} />
+                </div>
+                    <BootstrapTable data={this.state.shifts} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
-                        dataField = 'store.name'
+                        dataField = 'storeId.name'
                         dataAlign = 'right'
                         dataSort = {true}
                         filter = { {type: 'TextFilter', placeholder:constantStrings.enterStoreName_string} }
@@ -207,17 +225,21 @@ var ShiftsContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'startTime'
                         dataAlign = 'right'
-                        dataFormat={ dateFormatter }
-                        filter={ { type: 'DateFilter' ,placeholder:constantStrings.selectStartDate_string} }>
-                        {constantStrings.startDate_string}
+                        dataFormat={ dateFormatter }>
+                        {constantStrings.date_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField = 'endTime'
+                        dataField = 'startTime'
                         dataAlign = 'right'
-                        dataFormat={ dateFormatter }
-                        filter={ { type: 'DateFilter' ,placeholder:constantStrings.selectStartDate_string} }>
-                        {constantStrings.endDate_string}
+                        dataFormat={ timeFormatter }>
+                        {constantStrings.startTime_string}
                     </TableHeaderColumn>
+                        <TableHeaderColumn
+                            dataField = 'endTime'
+                            dataAlign = 'right'
+                            dataFormat={ timeFormatter }>
+                            {constantStrings.endTime_string}
+                        </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'status'
                         dataAlign = 'right'
@@ -232,7 +254,7 @@ var ShiftsContainer = React.createClass({
                         {constantStrings.type_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField = 'salesman.username'
+                        dataField = 'salesmanId.username'
                         dataAlign = 'right'
                         filter = { { type: 'TextFilter', placeholder:constantStrings.enterSalesmanName_string} }>
                         {constantStrings.salesman_string}

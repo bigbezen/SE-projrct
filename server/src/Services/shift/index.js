@@ -52,6 +52,7 @@ let addShifts = async function(sessionId, shiftArr){
         if('salesmanId' in shift)
             newShift.salesmanId = shift.salesmanId;
         newShift.storeId = shift.storeId;
+        let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.status = "CREATED";

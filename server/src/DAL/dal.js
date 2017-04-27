@@ -27,6 +27,10 @@ module.exports = {
         return store.save();
     },
 
+    setStoreDefaultUser: async function(storeId, salesmanId){
+        return storeModel.update({'_id': mongoose.Types.ObjectId(storeId)}, {$set: {'defaultSalesman': mongoose.Types.ObjectId(salesmanId)}});
+    },
+
     updateUser: async function(user){
         return userModel.update({'_id': mongoose.Types.ObjectId(user._id)}, user, { upsert: false });
     },
@@ -68,7 +72,7 @@ module.exports = {
     },
 
     getAllStores: async function(){
-        return storeModel.find({});
+        return storeModel.find({}).populate('defaultSalesman');
     },
 
     getStoresByIds: async function(ids){

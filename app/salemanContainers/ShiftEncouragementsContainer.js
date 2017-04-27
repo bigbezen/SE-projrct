@@ -46,11 +46,7 @@ var ShiftEncouragementsContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
-            if (n) {
-                self.updateEncouragements(n);
-            }
-            else {
-            }
+            self.updateEncouragements(n);
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -64,11 +60,7 @@ var ShiftEncouragementsContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllIncentives().then(function (n) {
-            if (n) {
-                self.updateEncouragementsStatus(shift, n);
-            }
-            else {
-            }
+            self.updateEncouragementsStatus(shift, n);
         }).catch(function (errMess) {
             notificationSystem.addNotification({
              message: errMess,

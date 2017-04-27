@@ -78,27 +78,17 @@ var ShiftDetails = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllStores().then(function (n) {
-            if (n) {
-                var val = n;
-                var arrayOfObjects = val;
-                optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
-                for (var i = 0; i < arrayOfObjects.length; i++) {
-                    var currOption = arrayOfObjects[i];
-                    optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
-                }
-                self.setState({storesForDropDown: optionsForDropDown});
-                if (self.state.editing) {
-                    self.refs.storeBox.value = self.state.storeId;
-                    self.refs.userBox.value = self.state.salesmanId;
-                }
+            var val = n;
+            var arrayOfObjects = val;
+            optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+            for (var i = 0; i < arrayOfObjects.length; i++) {
+                var currOption = arrayOfObjects[i];
+                optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
             }
-            else {
-                notificationSystem.addNotification({
-                    message: constantsStrings.errorMessage_string,
-                    level: 'error',
-                    autoDismiss: 5,
-                    position: 'tc'
-                });
+            self.setState({storesForDropDown: optionsForDropDown});
+            if (self.state.editing) {
+                self.refs.storeBox.value = self.state.storeId;
+                self.refs.userBox.value = self.state.salesmanId;
             }
         })
     },
@@ -108,26 +98,16 @@ var ShiftDetails = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllUsers().then(function (n) {
-            if (n) {
-                var val = n;
-                var arrayOfObjects = val;
-                optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
-                for (var i = 0; i < arrayOfObjects.length; i++) {
-                    var currOption = arrayOfObjects[i];
-                    if (currOption.jobDetails.userType == "salesman") {
-                        optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
-                    }
+            var val = n;
+            var arrayOfObjects = val;
+            optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
+            for (var i = 0; i < arrayOfObjects.length; i++) {
+                var currOption = arrayOfObjects[i];
+                if (currOption.jobDetails.userType == "salesman") {
+                    optionsForDropDown.push(<option value={currOption._id}>{currOption.username}</option>);
                 }
-                self.setState({salesmenForDropDown: optionsForDropDown});
             }
-            else {
-                notificationSystem.addNotification({
-                    message: constantsStrings.errorMessage_string,
-                    level: 'error',
-                    autoDismiss: 5,
-                    position: 'tc'
-                });
-            }
+            self.setState({salesmenForDropDown: optionsForDropDown});
         })
     },
 
@@ -160,8 +140,8 @@ var ShiftDetails = React.createClass({
         newShift.salesmanId = this.state.salesmanId;
         var startT = moment(this.refs.startTimeBox.value).format('YYYY-MM-DD hh:mm');
         var endT = moment(this.refs.endTimeBox.value).format('YYYY-MM-DD hh:mm');
-        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+02:00';
-        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+02:00';
+        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+03:00';
+        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+03:00';
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
@@ -190,38 +170,28 @@ var ShiftDetails = React.createClass({
             })
         }else {
             managementServices.addShift(newShift).then(function (n) {
-                if(n){
-                    var val1 = n;
-                    newShift._id = val1[0]._id;
-                    managementServices.publishShifts(newShift).then(function (n) {
-                            notificationSystem.addNotification({
-                                message: constantsStrings.addSuccessMessage_string,
-                                level: 'success',
-                                autoDismiss: 2,
-                                position: 'tc',
-                                onRemove: function (notification) {
-                                    context.router.push({
-                                        pathname: paths.manager_home_path
-                                    })
-                                }
-                            });
-                    }).catch(function (errMess) {
-                        notificationSystem.addNotification({
-                            message: errMess,
-                            level: 'error',
-                            autoDismiss: 5,
-                            position: 'tc'
-                        });
-                    })
-                }
-                else{
+                var val1 = n;
+                newShift._id = val1[0]._id;
+                managementServices.publishShifts(newShift).then(function (n) {
                     notificationSystem.addNotification({
-                        message: constantsStrings.addFailMessage_string,
+                        message: constantsStrings.addSuccessMessage_string,
+                        level: 'success',
+                        autoDismiss: 2,
+                        position: 'tc',
+                        onRemove: function (notification) {
+                            context.router.push({
+                                pathname: paths.manager_home_path
+                            })
+                        }
+                    });
+                }).catch(function (errMess) {
+                    notificationSystem.addNotification({
+                        message: errMess,
                         level: 'error',
                         autoDismiss: 5,
                         position: 'tc'
                     });
-                }
+                })
             }).catch(function (errMess) {
                 notificationSystem.addNotification({
                     message: errMess,

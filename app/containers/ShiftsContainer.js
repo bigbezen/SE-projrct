@@ -70,19 +70,11 @@ var ShiftsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         currentDate.setDate(currentDate.getDate()-30);
         managementServices.getShiftsFromDate(currentDate).then(function (n) {
-            if (n) {
-                var result = n;
-                var flatShifts = flatList(result);
-                self.setState({
-                    shifts: flatShifts
-                });
-            } else {
-                notificationSystem.addNotification({
-                    message: constantStrings.errorMessage_string,
-                    level: 'error',
-                    autoDismiss: 5,
-                    position: 'tc'
-                });            }
+            var result = n;
+            var flatShifts = flatList(result);
+            self.setState({
+                shifts: flatShifts
+            });
         }).catch(function (errMess) {
             // notification should be here
         })
@@ -98,16 +90,12 @@ var ShiftsContainer = React.createClass({
     onClickGetReportButton: function(cell, row, rowIndex){
         var notificationSystem = this.refs.notificationSystem;
         managerServices.getSaleReportXl(row).then(function (n) {
-            if (n) {
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
                     level: 'success',
                     autoDismiss: 3,
                     position: 'tc'
                 });
-            } else {
-                console.log("error in getSaleReportXl: " + n);
-            }
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -141,11 +129,7 @@ var ShiftsContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteShift(row).then(function (n) {
-            if (n) {
-                self.updateShifts();
-            } else {
-                console.log("error in deleteShift: " + n);
-            }
+            self.updateShifts();
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

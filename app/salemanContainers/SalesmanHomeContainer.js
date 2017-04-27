@@ -87,25 +87,20 @@ var SalesmanHomeContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanService.getCurrentShift().then(function (n) { 
-            if (n) { 
-                var currShift = n
-                if (currShift.status == "STARTED") {
-                    self.setState({
-                        shift: currShift,
-                        nextScreen: paths.salesman_sale_path,
-                        buttonTitle: constantsStrings.continueShift_string
-                    });
-                } else {
-                    self.setState({
-                        shift: currShift,
-                        nextScreen: paths.salesman_startShift_path,
-                        buttonTitle: constantsStrings.startShift_string
-                    });
-                }
-            } 
-            else{ 
-                alert("Error while retrieving shift from the server"); 
-            } 
+            var currShift = n
+            if (currShift.status == "STARTED") {
+                self.setState({
+                    shift: currShift,
+                    nextScreen: paths.salesman_sale_path,
+                    buttonTitle: constantsStrings.continueShift_string
+                });
+            } else {
+                self.setState({
+                    shift: currShift,
+                    nextScreen: paths.salesman_startShift_path,
+                    buttonTitle: constantsStrings.startShift_string
+                });
+            }
         }).catch(function (errMess) {
             if(errMess != "user does not have a shift today"){
                 notificationSystem.addNotification({
@@ -125,10 +120,18 @@ var SalesmanHomeContainer = React.createClass({
     },
     renderShift: function () {
         //TODO: present to user details about the shift or some other message if he has no shift
+        var startTime = new Date(this.state.shift.startTime);
+        var formatedStartime = startTime.toLocaleTimeString('en-GB');
+        var endTime = new Date(this.state.shift.endTime);
+        var formatedEndTime = endTime.toLocaleTimeString('en-GB');
         return (
-            <div className='main-container'>
+            <div className='main-container w3-card-4' style={styles.bodyStyle}>
                 <div style={styles.centerAlign}>
-                    <span style={styles.title}>IBBLS</span>
+                    <p>{constantsStrings.storeName_string}: {this.state.shift.store.name}</p>
+                    <p>{constantsStrings.city_string}: {this.state.shift.store.city}</p>
+                    <p>{constantsStrings.startTime_string}: {formatedStartime}</p>
+                    <p>{constantsStrings.endTime_string}: {formatedEndTime}</p>
+
                 </div>
                 <div style={styles.buttonsStyle}>
                     <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>

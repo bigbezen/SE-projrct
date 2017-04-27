@@ -5,7 +5,7 @@ var MounthlyUserHoursReport = new Schema({
     'month': Number,
     'year': Number,
     'salesmansData': [{
-        'user': [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+        'user': {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         'numOfHours': Number,
         'sales': Number,
         'opened': Number

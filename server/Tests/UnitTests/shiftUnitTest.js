@@ -1208,14 +1208,14 @@ describe('shift unit test', function () {
             expect(result).to.have.property('encouragements');
 
             for(let earnedEnc of result.encouragements){
-                if(earnedEnc.enc._id.toString() == enc1._id.toString())
-                    expect(earnedEnc.num).to.be.equal(3);
-                if(earnedEnc.enc._id.toString() == enc2._id.toString())
-                    expect(earnedEnc.num).to.be.equal(1);
-                if(earnedEnc.enc._id.toString() == enc3._id.toString())
-                    expect(earnedEnc.num).to.be.equal(1);
-                if(earnedEnc.enc._id.toString() == enc4._id.toString())
-                    expect(earnedEnc.num).to.be.equal(3);
+                if(earnedEnc.encouragement.toString() == enc1._id.toString())
+                    expect(earnedEnc.count).to.be.equal(3);
+                if(earnedEnc.encouragement.toString() == enc2._id.toString())
+                    expect(earnedEnc.count).to.be.equal(1);
+                if(earnedEnc.encouragement.toString() == enc3._id.toString())
+                    expect(earnedEnc.count).to.be.equal(1);
+                if(earnedEnc.encouragement.toString() == enc4._id.toString())
+                    expect(earnedEnc.count).to.be.equal(3);
             }
         });
 

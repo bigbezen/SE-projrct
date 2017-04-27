@@ -50,13 +50,9 @@ var StoresContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllStores().then(function (n) {
-            if (n) {
-                self.setState({
-                    stores: n
-                });
-            } else {
-                console.log("error in storesContainers: " + n);
-            }
+            self.setState({
+                stores: n
+            });
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,
@@ -98,11 +94,7 @@ var StoresContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteStore(row).then(function (n) {
-            if (n) {
-                self.updateStores();
-            } else {
-                console.log("error in deleteStore: " + n);
-            }
+            self.updateStores();
         }).catch(function (errMess) {
             notificationSystem.addNotification({
                 message: errMess,

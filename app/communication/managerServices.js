@@ -77,6 +77,16 @@ var helpers = {
     getMonthlyHoursReportData: function(year, month) {
         console.log('managerService - getMonthlyHoursReportData');
         return connection.managerRequests.getMonthlyHoursReport(year, month);
+    },
+
+    updateMonthlyHoursReport: function(year, month, report){
+        console.log('managerService - updateMonthlyHoursReport');
+        return connection.managerRequests.updateMonthlyHoursReport(year, month, report);
+    },
+
+    exportMonthlyHoursReport: function(year, month){
+        console.log('managerService - updateMonthlyHoursReport');
+        return connection.managerRequests.exportMonthlyHoursReport(year, month);
     }
 };
 

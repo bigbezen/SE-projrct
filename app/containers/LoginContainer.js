@@ -59,25 +59,21 @@ var LoginContainer = React.createClass({
         });
         var context = this.context;
         userServices.login(username, password).then(function (n) {
-            if(n){
-                var answer = n;
-                var userType = answer.userType;
-                var sessionId = answer.sessionId;
-                localStorage.setItem('sessionId', sessionId);
-                localStorage.setItem('userType', userType);
-                if(userType == 'manager')
-                {
-                    context.router.push({
-                        pathname: paths.manager_home_path
-                    })
-                } else{ //TODO: add all types of users
-                    context.router.push({
-                        pathname: paths.salesman_home_path
-                    })
-                }
+            var answer = n;
+            var userType = answer.userType;
+            var sessionId = answer.sessionId;
+            localStorage.setItem('sessionId', sessionId);
+            localStorage.setItem('userType', userType);
+            if(userType == 'manager')
+            {
+                context.router.push({
+                    pathname: paths.manager_home_path
+                })
             }
-            else{
-                console.log("error in login: " + n);
+            else{ //TODO: add all types of users
+                 context.router.push({
+                     pathname: paths.salesman_home_path
+                 })
             }
         }).catch(function (errMess) {
             notificationSystem.addNotification({

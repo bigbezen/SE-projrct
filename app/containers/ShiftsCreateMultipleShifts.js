@@ -145,11 +145,26 @@ var ShiftsCreateMultipleShifts = React.createClass({
         return optionsForDropdown;
     },
 
+    onChangeSalesman: function(shiftId, index){
+        var firstName = this.refs[index].value.split(' ')[0];
+        var lastName = this.refs[index].value.split(' ')[1];
+
+        var newShifts = this.state.newShifts;
+        for(var shiftIndex in newShifts){
+            if(newShifts[shiftIndex]._id == shiftId){
+                newShifts[shiftIndex]["salesmanId"] = salesmanId;
+            }
+        }
+        this.state.newShifts = newShifts;
+    },
+
     renderShiftsOfArea: function(shift, index) {
         return (
             <div className="col-xs-11 w3-theme-d3 w3-card-4 w3-round-large" style={{fontSize: '20px', marginTop: '5px'}}>
                 <p className="col-sm-3">{shift.store.name}</p>
-                <select style={{color: 'black', marginTop: '3px'}} className="col-sm-6 w3-round-large">{this.getSalesmanOptions(shift.salesmanId)}</select>
+                <select style={{color: 'black', marginTop: '3px'}}
+                        className="col-sm-6 w3-round-large" ref={index}
+                        onChange={() => this.onChangeSalesman(shift._id, index)}>{this.getSalesmanOptions(shift.salesmanId)}</select>
             </div>
         )
     },

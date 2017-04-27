@@ -395,9 +395,9 @@ var managementRequests = {
     },
 
     //TODO:
-    getShiftsFromDate: function(firstDate) {
+    getShiftsFromDate: function(firstDate, salesmanId) {
         console.log('get shifts from dates');
-        return axios.get(serverUrl + 'management/getShiftsFromDate?fromDate=' + firstDate, {
+        return axios.get(serverUrl + 'management/getShiftsFromDate?fromDate=' + firstDate + '&salesmanId=' + salesmanId, {
             headers:{
                 sessionId:sessionId
             }

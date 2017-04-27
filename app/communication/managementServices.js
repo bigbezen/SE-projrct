@@ -118,9 +118,9 @@ var helpers = {
         return connection.managementRequests.publishShifts(shift);
     },
 
-    getShiftsFromDate:function(fromDate) {
+    getShiftsFromDate:function(fromDate, salesmanId) {
         console.log('managementServices- getShiftsFromDate');
-        return connection.managementRequests.getShiftsFromDate(fromDate);
+        return connection.managementRequests.getShiftsFromDate(fromDate, salesmanId);
     },
 
     getSalesmanFinishedShifts: function(salesmanId) {

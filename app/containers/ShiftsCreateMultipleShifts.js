@@ -145,13 +145,17 @@ var ShiftsCreateMultipleShifts = React.createClass({
         return optionsForDropdown;
     },
 
-    onChangeSalesman: function(shiftId, index){
+    onChangeSalesman: function(storeId, index){
         var firstName = this.refs[index].value.split(' ')[0];
         var lastName = this.refs[index].value.split(' ')[1];
+        var salesmanId = this.state.salesmen.filter((salesman) => salesman.personal.firstName == firstName &&
+                                                                    salesman.personal.lastName == lastName);
+        salesmanId = salesmanId[0]._id;
+
 
         var newShifts = this.state.newShifts;
         for(var shiftIndex in newShifts){
-            if(newShifts[shiftIndex]._id == shiftId){
+            if(newShifts[shiftIndex].storeId == storeId){
                 newShifts[shiftIndex]["salesmanId"] = salesmanId;
             }
         }
@@ -164,7 +168,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 <p className="col-sm-3">{shift.store.name}</p>
                 <select style={{color: 'black', marginTop: '3px'}}
                         className="col-sm-6 w3-round-large" ref={index}
-                        onChange={() => this.onChangeSalesman(shift._id, index)}>{this.getSalesmanOptions(shift.salesmanId)}</select>
+                        onChange={() => this.onChangeSalesman(shift.storeId, index)}>{this.getSalesmanOptions(shift.salesmanId)}</select>
             </div>
         )
     },
@@ -205,11 +209,11 @@ var ShiftsCreateMultipleShifts = React.createClass({
                         <h1>{date}</h1>
                         <h2>{end}  -  {start}</h2>
                     </div>
-                    <div style={{marginTop: '150px'}} className="col-sm-12">
+                    <div style={{marginTop: '50px'}} className="col-sm-12">
                         {categoryToShifts.map(this.renderArea)}
                         <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
                     </div>
-                    <div className="text-center col-sm-12">
+                    <div className="text-center col-sm-12" style={{marginTop: '30px'}}>
                         <button className="w3-button w3-round-xlarge w3-card-4 w3-theme-d5"
                                 onClick={this.onClickSubmitShifts}>
                             {constantStrings.add_string}

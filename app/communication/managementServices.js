@@ -133,6 +133,11 @@ var helpers = {
         var result = connection.managementRequests.updateSalesReport(shiftId, productId, newSold, newOpened);
         console.log(result);
         return result;
+    },
+
+    getShiftsOfRange: function(startDate, endDate) {
+        console.log('managementServices - getShiftsOfRange');
+        return connection.managementRequests.getShiftsOfRange(startDate, endDate);
     }
 };
 

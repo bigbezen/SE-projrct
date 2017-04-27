@@ -56,25 +56,14 @@ var SalesmanHomeBaseContainer = React.createClass({
             });
         })
     },
-    handleChangePassword: function () {
-        console.log('BaseContainer- changePass function');
-        this.context.router.push({
-            pathname: paths.salesman_changePass_path
-        })
-    },
     render: function () {
         return (
             <div className='main-container'>
                 <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
                     <ul>
                         <li>
-                            <button style={{color:'white'}} className="btn-link w3-xlarge col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
+                            <button style={{color:'white'}} className="btn-link w3-xxlarge col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
                                 {constantsStrings.logout_string}
-                            </button>
-                        </li>
-                        <li>
-                            <button style={{color:'white'}} className="btn-link w3-large col-xs-2 col-xs-offset-10" onClick={this.handleChangePassword}>
-                                {constantsStrings.changePass_string}
                             </button>
                         </li>
                     </ul>

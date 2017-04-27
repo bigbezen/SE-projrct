@@ -356,7 +356,7 @@ var managementRequests = {
     },
 
     addMultipleShift: function(shifts) {
-        console.log('add shift');
+        console.log('add multiple shift');
         return axios.post(serverUrl + 'management/addShifts', {
             sessionId:sessionId,
             shiftArr:shifts
@@ -450,6 +450,21 @@ var managementRequests = {
             throw err.response.data;
         })
     },
+
+    getShiftsOfRange: function(startDate, endDate) {
+        console.log('get shifts of range');
+        return axios.get(serverUrl + 'management/getShiftsOfRange?startDate=' + startDate + '&endDate=' + endDate, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    }
+
 };
 
 var managerRequests = {

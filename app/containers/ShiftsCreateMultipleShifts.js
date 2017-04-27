@@ -109,7 +109,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementServices.addMultipleShifts(this.state.newShifts)
             .then(function(data){
+                var a = "a";
                 alert(data);
+
             })
             .catch(function(err){
                 notificationSystem.addNotification({
@@ -145,9 +147,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     renderShiftsOfArea: function(shift, index) {
         return (
-            <div className="col-xs-offset-1 col-xs-9 w3-theme-d3 w3-card-4 w3-round-large" style={{fontSize: '20px', marginTop: '5px'}}>
-                <p className="col-sm-2">{shift.store.name}</p>
-                <select style={{color: 'black', marginTop: '3px'}} className="col-sm-4 w3-round-large">{this.getSalesmanOptions(shift.salesmanId)}</select>
+            <div className="col-xs-11 w3-theme-d3 w3-card-4 w3-round-large" style={{fontSize: '20px', marginTop: '5px'}}>
+                <p className="col-sm-3">{shift.store.name}</p>
+                <select style={{color: 'black', marginTop: '3px'}} className="col-sm-6 w3-round-large">{this.getSalesmanOptions(shift.salesmanId)}</select>
             </div>
         )
     },
@@ -188,11 +190,11 @@ var ShiftsCreateMultipleShifts = React.createClass({
                         <h1>{date}</h1>
                         <h2>{end}  -  {start}</h2>
                     </div>
-                    <div style={{marginTop: '150px'}}>
+                    <div style={{marginTop: '150px'}} className="col-sm-12">
                         {categoryToShifts.map(this.renderArea)}
                         <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
                     </div>
-                    <div className="text-center">
+                    <div className="text-center col-sm-12">
                         <button className="w3-button w3-round-xlarge w3-card-4 w3-theme-d5"
                                 onClick={this.onClickSubmitShifts}>
                             {constantStrings.add_string}

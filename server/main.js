@@ -691,7 +691,7 @@ function _setapApiEndpoints() {
             return;
         }
 
-        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.startDate, req.query.endDate);
+        let result = await shiftService.getShiftsOfRange(req.headers.sessionid, req.query.startDate, req.query.endDate);
         if(result.code == 200)
             res.status(200).send(result.shifts);
         else

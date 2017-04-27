@@ -75,7 +75,7 @@ describe('management acceptance test', function(){
         salesman.password = '121234';
         salesman.username = 'matan';
         salesman.personal = {
-            id: '12342225',
+            id: '12345',
             firstName: 'israel',
             lastName: 'israeli',
             sex: 'male',

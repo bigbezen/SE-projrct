@@ -6,7 +6,7 @@ let mailer          = require('../../Utils/Mailer/index');
 let fs              = require('fs');
 let moment          = require('moment');
 let Excel           = require('exceljs');
-let userService     = require('../../Services/user');
+let userModel       = require('../../Models/user');
 let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
 let monthAnalysisReportModel = require('../../Models/Reports/monthAnalysisReport');
 let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
@@ -737,95 +737,79 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
         return {'code': 401, 'err': 'user not authorized'};
 
     let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('salaryForHumanResourceReport.xlsx')
-        .then(async function() {
-            let salesman = await dal.getAllSalesman();
-            let sheetNum = 1;
-            let user;
-            for(user of salesman){
-                let worksheet = workbook.getWorksheet(sheetNum);
-                worksheet.name = user.personal.firstName + ' ' + user.personal.lastName;
-                worksheet.properties = {tabColor :{argb : 'FFC0000'}};
-
-                //write the year and month
-                let row = worksheet.getRow(1);
-                row.getCell(3).value = month + ' - ' + year; //C1
-
-                //write the salesman name
-                row = worksheet.getRow(3);
-                row.getCell(3).value = user.contact.address.street + ' ' + user.contact.address.number + ' ' + user.contact.address.city; //C3
-
-                //write the salesman address
-                row = worksheet.getRow(2);
-                row.getCell(3).value = user.personal.firstName + ' ' + user.personal.lastName; //C2
-
-                //write the salesman salary per hour
-                row = worksheet.getRow(4);
-                row.getCell(3).value = user.jobDetails.salary;//C4
-
-                let maxEncCol;
-                //write the encouragements names
-                let allEnc = await dal.getAllEncouragements();
-                for(let i = 0; i < allEnc.length; i++){
-                    row = worksheet.getRow(7);
-                    row.getCell(17 + i).value = allEnc[i].name;//R+i7
-                    maxEncCol = 17 + i;
-                }
-
-                //add all the shifts and the encouragements
-                let salesmanShifts = await dal.getSalesmanMonthShifts(user._id, year, month);
-                for(let j  = 0; j < salesmanShifts.length + 0; j++){
-                    let currentShift = salesmanShifts[j];
-                    let rowCountFormula = 8 + j;
-                    row = worksheet.getRow(j + 8);
-                    row.getCell(1).value = new Date(currentShift.startTime).getDate() + '.' + (new Date(currentShift.startTime).getMonth() + 1) + '.' + new Date(currentShift.startTime).getFullYear();
-                    row.getCell(2).value = days[new Date(currentShift.startTime).getDay()];
-                    let shiftStore = (await dal.getStoresByIds([currentShift.storeId]))[0];
-                    row.getCell(3).value = shiftStore.name;
-                    row.getCell(4).value = shiftStore.city;
-                    row.getCell(5).value = currentShift.type;
-                    row.getCell(6).value = new Date(currentShift.startTime);
-                    row.getCell(7).value = new Date(currentShift.endTime);
-                    row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
-                    //add formulas
-                    row.getCell(8).value = {'formula': 'IF((G' + rowCountFormula + '-F' + rowCountFormula + ')<0,(1-F' + rowCountFormula + '+G' + rowCountFormula +'),(G' + rowCountFormula + '-F' + rowCountFormula +'))'};//'=IF((G8-F8)<0,(1-F8+G8),(G8-F8))'
-                    row.getCell(9).value = {'formula': 'H' + rowCountFormula + '*24'};
-                    row.getCell(10).value = {'formula': 'IF(I' + rowCountFormula +'<9,I' + rowCountFormula + ',9)'};
-                    row.getCell(11).value = {'formula': 'IF(I' + rowCountFormula + '>9,I' + rowCountFormula +'-9,0)'};
-                    row.getCell(12).value = {'formula': 'IF(K' + rowCountFormula + '>2,2,K' + rowCountFormula + ')'};
-                    row.getCell(13).value = {'formula': 'IF(K' + rowCountFormula + '>2,K' + rowCountFormula + '-2,0)'};
-                    row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
-
-                    for(let enc of currentShift.encouragements){
-                        for(let k = 18; k <= maxEncCol; k++){
-                            if(worksheet.getRow(7).getCell(k).value == enc.encouragement.name){
-                                row.getCell(k).value = enc.encouragement.rate * enc.count;
-                            }
-                        }
+    let res = await workbook.xlsx.readFile('salaryForHumanResourceReport.xlsx');
+    let salesman = await dal.getAllSalesman();
+    let sheetNum = 1;
+    for(let user of salesman){
+        let worksheet = workbook.getWorksheet(sheetNum);
+        worksheet.name = user.personal.firstName + ' ' + user.personal.lastName;
+        worksheet.properties.tabColor = {'argb' : 'FFC0000'};
+        //write the year and month
+        let row = worksheet.getRow(1);
+        row.getCell(3).value = month + ' - ' + year; //C1
+        //write the salesman name
+        row = worksheet.getRow(3);
+        row.getCell(3).value = user.contact.address.street + ' ' + user.contact.address.number + ' ' + user.contact.address.city; //C3
+        //write the salesman address
+        row = worksheet.getRow(2);
+        row.getCell(3).value = user.personal.firstName + ' ' + user.personal.lastName; //C2
+        //write the salesman salary per hour
+        row = worksheet.getRow(4);
+        row.getCell(3).value = user.jobDetails.salary;//C4
+        let maxEncCol;
+        //write the encouragements names
+        let allEnc = await dal.getAllEncouragements();
+        for(let i = 0; i < allEnc.length; i++){
+            row = worksheet.getRow(7);
+            row.getCell(17 + i).value = allEnc[i].name;//R+i7
+            maxEncCol = 17 + i;
+        }
+        //add all the shifts and the encouragements
+        let salesmanShifts = await dal.getSalesmanMonthShifts(user._id, year, month);
+        for(let j  = 0; j < salesmanShifts.length + 0; j++){
+            let currentShift = salesmanShifts[j];
+            let rowCountFormula = 8 + j;
+            row = worksheet.getRow(j + 8);
+            row.getCell(1).value = new Date(currentShift.startTime).toISOString();//.getDate() + '.' + (new Date(currentShift.startTime).getMonth() + 1) + '.' + new Date(currentShift.startTime).getFullYear();
+            row.getCell(2).value = days[new Date(currentShift.startTime).getDay()];
+            let shiftStore = (await dal.getStoresByIds([currentShift.storeId]))[0];
+            row.getCell(3).value = shiftStore.name;
+            row.getCell(4).value = shiftStore.city;
+            row.getCell(5).value = currentShift.type;
+            row.getCell(6).value = new Date(currentShift.startTime).getHours() + ":" + moment(new Date(currentShift.startTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.startTime).getSeconds()).format("ss");
+            row.getCell(7).value = new Date(currentShift.endTime).getHours() + ":" + moment(new Date(currentShift.endTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.endTime).getSeconds()).format("ss");
+            row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+            //add formulas
+            row.getCell(8).value = {'formula': 'IF((G' + rowCountFormula + '-F' + rowCountFormula + ')<0,(1-F' + rowCountFormula + '+G' + rowCountFormula +'),(G' + rowCountFormula + '-F' + rowCountFormula +'))'};//'=IF((G8-F8)<0,(1-F8+G8),(G8-F8))'
+            row.getCell(9).value = {'formula': 'H' + rowCountFormula + '*24'};
+            row.getCell(10).value = {'formula': 'IF(I' + rowCountFormula +'<9,I' + rowCountFormula + ',9)'};
+            row.getCell(11).value = {'formula': 'IF(I' + rowCountFormula + '>9,I' + rowCountFormula +'-9,0)'};
+            row.getCell(12).value = {'formula': 'IF(K' + rowCountFormula + '>2,2,K' + rowCountFormula + ')'};
+            row.getCell(13).value = {'formula': 'IF(K' + rowCountFormula + '>2,K' + rowCountFormula + '-2,0)'};
+            row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
+            for(let enc of currentShift.encouragements){
+                for(let k = 18; k <= maxEncCol; k++){
+                    if(worksheet.getRow(7).getCell(k).value == enc.encouragement.name){
+                        row.getCell(k).value = enc.encouragement.rate * enc.count;
                     }
-
-                    row = worksheet.getRow(23);
-                    rowCountFormula = 73;
-                    for (let cell = 0; cell < 16; cell++){
-                        if(cell != 5)
-                            row.getCell(9 + cell).value = {'formula': 'SUM(' + String.fromCharCode(rowCountFormula + cell) +'8:' + String.fromCharCode(rowCountFormula + cell) + '22)'};
-                    }
-
-                    row = worksheet.getRow(27);
-                    row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G27,$I$8:$I$22)'};
-                    row.getCell(9).value = {'formula': '+I23-H27-H28'};
-                    row = worksheet.getRow(28);
-                    row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G28,$I$8:$I$22)'};
-
-
-                    row.commit();
-
                 }
-
-                sheetNum = sheetNum + 1;
             }
-            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי למשאבי אנוש '+ (month + 1) + ' ' + year + '.xlsx');
-        });
+            row = worksheet.getRow(23);
+            rowCountFormula = 73;
+            for (let cell = 0; cell < 16; cell++){
+                if(cell != 5)
+                    row.getCell(9 + cell).value = {'formula': 'SUM(' + String.fromCharCode(rowCountFormula + cell) +'8:' + String.fromCharCode(rowCountFormula + cell) + '22)'};
+            }
+            row = worksheet.getRow(27);
+            row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G27,$I$8:$I$22)'};
+            row.getCell(9).value = {'formula': '+I23-H27-H28'};
+            row = worksheet.getRow(28);
+            row.getCell(8).value = {'formula': 'SUMIF($E$8:$I$22,G28,$I$8:$I$22)'};
+            row.commit();
+        }
+        sheetNum = sheetNum + 1;
+    }
+    res = await workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי למשאבי אנוש '+ (month + 1) + ' ' + year + '.xlsx');
 
     let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
     mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');

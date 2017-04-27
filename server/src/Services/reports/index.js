@@ -798,10 +798,9 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
                     row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
 
                     for(let enc of currentShift.encouragements){
-                        let encName = await dal.getEncouragement(mongoose.Types.ObjectId(enc.encouragement._id));
                         for(let k = 18; k <= maxEncCol; k++){
-                            if(worksheet.getRow(7).getCell(k).value == encName.name){
-                                row.getCell(k).value = encName.rate * enc.count;
+                            if(worksheet.getRow(7).getCell(k).value == enc.encouragement.name){
+                                row.getCell(k).value = enc.encouragement.rate * enc.count;
                             }
                         }
                     }
@@ -826,7 +825,7 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
 
                 sheetNum = sheetNum + 1;
             }
-            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי למשאבי אנוש '+ (month + 1) + ' ' + year + '.xlsx');
         });
 
     let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;

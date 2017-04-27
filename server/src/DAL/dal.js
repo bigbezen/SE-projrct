@@ -188,7 +188,7 @@ module.exports = {
     getSalesmanMonthShifts: async function(salesmanId, year, month){
         var startMonth = new Date(year, month, 1);
         var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
-        return shiftModel.find({$and: [{'salesmanId': salesmanId},{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
+        return shiftModel.find({$and: [{'salesmanId': salesmanId},{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]}).populate('encouragements.encouragement');
     },
 
     addMonthlySalesmanReport: async function(report){

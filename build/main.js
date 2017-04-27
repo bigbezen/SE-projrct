@@ -1947,11 +1947,11 @@ function _setapApiEndpoints() {
                     switch (_context48.prev = _context48.next) {
                         case 0:
                             _context48.next = 2;
-                            return reportsService.getSalaryForHumanResourceReport(req.headers.sessionid, req.headers.year, req.headers.month);
+                            return reportsService.getSalaryForHumanResourceReport("123456", "2017", "2");
 
                         case 2:
                             result = _context48.sent;
-
+                            //req.headers.sessionid ,req.headers.year,req.headers.month);
                             res.status(result.code).send(result.err);
 
                         case 4:

@@ -355,6 +355,19 @@ var managementRequests = {
         })
     },
 
+    addMultipleShift: function(shifts) {
+        console.log('add shift');
+        return axios.post(serverUrl + 'management/addShifts', {
+            sessionId:sessionId,
+            shiftArr:shifts
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     editShift: function(shift) {
         console.log('edit shift');
         return axios.post(serverUrl + 'management/editShifts', {

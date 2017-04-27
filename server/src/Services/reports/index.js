@@ -408,9 +408,8 @@ let genarateMonthAnalysisReport = async function() {
         }
         for(let shiftEnc of currentShift.encouragements){
             for(let encReport of yearReport.monthData[month].monthlyEncoragement){
-                if(encReport._id.equals(shiftEnc.encouragement._id)){
-                    let enc = await dal.getEncouragement(mongoose.Types.ObjectId(shiftEnc.encouragement._id));
-                    encReport.amount += enc.rate * shiftEnc.count;
+                if(encReport.encouragement._id.equals(shiftEnc.encouragement._id)){
+                    encReport.amount += shiftEnc.encouragement.rate * shiftEnc.count;
                 }
             }
         }

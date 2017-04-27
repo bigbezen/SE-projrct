@@ -72,10 +72,10 @@ describe('management acceptance test', function(){
 
         salesman ={};
         salesman.sessionId = '121234';
-        salesman.password = '121234';
+        salesman.password = '12345';
         salesman.username = 'matan';
         salesman.personal = {
-            id: '12345',
+            id: '123456',
             firstName: 'israel',
             lastName: 'israeli',
             sex: 'male',

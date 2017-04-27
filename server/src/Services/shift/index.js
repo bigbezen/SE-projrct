@@ -64,11 +64,8 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.constraints = [];
         newShift.shiftComments = [];
         newShift.encouragements = [];
-        console.log('bla');
         resultAddShift.push(await dal.addShift(newShift));
-        console.log('bla');
     }
-    console.log('bla');
 
     resultAddShift = resultAddShift.map(function(shift){
         shift = shift.toObject();

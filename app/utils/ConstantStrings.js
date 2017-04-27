@@ -123,7 +123,7 @@ class ConstantStrings extends React.Component {
     static editShift_string = 'עריכת משמרת קיימת';
     static type_string = 'סוג';
     static salesman_string = 'דייל';
-    static getReport_string = 'הורד דוח';
+    static getReport_string = 'שלח לאימייל';
     static shiftType_string = 'סוג משמרת';
     static addMultipleShifts_string = 'הוספת מספר משמרות';
 

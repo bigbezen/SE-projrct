@@ -632,11 +632,11 @@ function _setapApiEndpoints() {
     });
 
     app.get('/management/getShiftsFromDate', async function(req, res){
-        if(!('sessionid' in req.headers) || (!('fromDate' in req.query))) {
+        if(!('sessionid' in req.headers) || (!('fromDate' in req.query)) (!('salesmanId' in req.query))) {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.fromDate);
+        let result = await shiftService.getShiftsFromDate(req.headers.sessionid, req.query.fromDate, req.query.salesmanId);
         if(result.code == 200)
             res.status(200).send(result.shiftArr);
         else

@@ -64,8 +64,11 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.constraints = [];
         newShift.shiftComments = [];
         newShift.encouragements = [];
+        console.log('bla');
         resultAddShift.push(await dal.addShift(newShift));
+        console.log('bla');
     }
+    console.log('bla');
 
     resultAddShift = resultAddShift.map(function(shift){
         shift = shift.toObject();
@@ -316,20 +319,15 @@ let reportExpenses = async function(sessionId, shiftId, km, parking){
 
 };
 
-let getShiftsFromDate = async function(sessionId, fromDate){
+let getShiftsFromDate = async function(sessionId, fromDate, salesmanId){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let allShifts = await dal.getShiftsFromDate(fromDate);
-    allShifts = allShifts.map(x => x.toObject());
-    for(let shift of allShifts){
-        shift = await _fillUserDetails(shift);
-        shift = await _fillStoreDetails(shift);
-    }
-    console.log('bla');
+    let allShifts = await dal.getShiftsFromDate(fromDate, salesmanId);
+
     if(allShifts == null)
         return {'code': 500, 'err': 'something went wrong'};
     else

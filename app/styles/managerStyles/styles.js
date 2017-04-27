@@ -75,7 +75,8 @@ var styles = {
     },
     addButton: {
         float: 'left',
-        marginBottom: '15px'
+        marginBottom: '15px',
+        marginRight: '50px'
     }
 
 };

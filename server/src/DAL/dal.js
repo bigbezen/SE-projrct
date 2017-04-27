@@ -138,8 +138,10 @@ module.exports = {
         return shiftModel.find({'_id': {$in: shiftIds}});
     },
 
-    getShiftsFromDate: async function(fromDate){
-        return shiftModel.find({'startTime': {$gte: fromDate}});
+    getShiftsFromDate: async function(fromDate, salesmanId){
+        return shiftModel.find({$and: [{'startTime': {$gte: fromDate}}, {'salesmanId': mongoose.Types.ObjectId(salesmanId)}]})
+            .populate('salesmanId')
+            .populate('storeId');
     },
 
     updateShift: async function(shift){

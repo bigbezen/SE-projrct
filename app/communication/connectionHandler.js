@@ -356,7 +356,7 @@ var managementRequests = {
     },
 
     addMultipleShift: function(shifts) {
-        console.log('add shift');
+        console.log('add multiple shift');
         return axios.post(serverUrl + 'management/addShifts', {
             sessionId:sessionId,
             shiftArr:shifts
@@ -395,9 +395,9 @@ var managementRequests = {
     },
 
     //TODO:
-    getShiftsFromDate: function(firstDate) {
+    getShiftsFromDate: function(firstDate, salesmanId) {
         console.log('get shifts from dates');
-        return axios.get(serverUrl + 'management/getShiftsFromDate?fromDate=' + firstDate, {
+        return axios.get(serverUrl + 'management/getShiftsFromDate?fromDate=' + firstDate + '&salesmanId=' + salesmanId, {
             headers:{
                 sessionId:sessionId
             }

@@ -98,8 +98,8 @@ var SalesmanShiftsScheduleContainer = React.createClass({
     },
     renderTable: function() {
         return (
-            <div className='main-container'>
-                <div className="w3-container" style={styles.bodyStyle}>
+            <div className='main-container' style={styles.bodyStyle}>
+                <div className="w3-container">
                     {this.state.shifts.map(this.renderEachShift)}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

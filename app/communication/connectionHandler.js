@@ -99,7 +99,9 @@ var userRequests = {
 
     getProfile: function(){
         return axios.get(serverUrl + 'user/getProfile', {
-            sessionId:sessionId
+            headers: {
+                sessionId: sessionId
+            }
         }).then(function (info) {
             console.log('the user ' + name + ' getProfile.');
             return info.data;
@@ -108,6 +110,7 @@ var userRequests = {
             throw err.response.data;
         })
     },
+
     getUsername: function () {
         return name;
     }

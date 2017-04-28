@@ -209,6 +209,7 @@ class ConstantStrings extends React.Component {
     static startShift_string = 'התחל משמרת';
     static endShift_string = 'סיים משמרת';
     static continueShift_string = 'המשך משמרת';
+    static salesmanNoShifts_string = 'אין לך משמרות היום';
     static genderForDropdown = ["נקבה", "זכר"];
 
     static channelForDropdown = ["מסורתי - חם", "מסורתי - מאורגן", "תדמית יום"];
@@ -274,6 +275,7 @@ class ConstantStrings extends React.Component {
     static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
     static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
     static cancel_string = 'ביטול';
+    static mustChooseSalesman_string = 'עליך לבחור דייל לכל משמרת';
 
      //salesman menu
     static addSale_string = 'מכירות';
@@ -281,6 +283,7 @@ class ConstantStrings extends React.Component {
     static addComment_string = 'הוספת הערה';
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';
+    static commentsFromShift_string = 'הערות מהמשמרת';
     static encouragements_string = 'תמריצים';
     static updateExpenses_string = 'עדכן נסיעות';
     //shift expenses

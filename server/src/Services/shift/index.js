@@ -3,6 +3,8 @@ let us              = require('underscore');
 let logger          = require('../../Utils/Logger/logger');
 let dal             = require('../../DAL/dal');
 let permissions     = require('../permissions/index');
+let mailer          = require('../../Utils/Mailer/index');
+let moment          = require('moment');
 
 let shiftModel       = require('../../Models/shift');
 
@@ -49,8 +51,11 @@ let addShifts = async function(sessionId, shiftArr){
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
-        if('salesmanId' in shift)
+        if('salesmanId' in shift) {
             newShift.salesmanId = shift.salesmanId;
+            let salesman = await dal.getUserByobjectId(shift.salesmanId);
+            sendMailOfShift(salesman, shift, storeDict[shift.storeId].name);
+        }
         newShift.storeId = shift.storeId;
         let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         newShift.startTime = shift.startTime;
@@ -64,11 +69,8 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.constraints = [];
         newShift.shiftComments = [];
         newShift.encouragements = [];
-        console.log('bla');
         resultAddShift.push(await dal.addShift(newShift));
-        console.log('bla');
     }
-    console.log('bla');
 
     resultAddShift = resultAddShift.map(function(shift){
         shift = shift.toObject();
@@ -77,6 +79,18 @@ let addShifts = async function(sessionId, shiftArr){
     });
 
     return {'code': 200, 'shiftArr': resultAddShift};
+};
+
+let sendMailOfShift = function(salesman, shift, storeName){
+    let date = moment(shift.startTime).format('DD-MM-YY');
+    let startHour = moment(shift.startTime).format('H:mm');
+    let endHour = moment(shift.endTime).format('H:mm');
+    let content = 'שובצה עבורך משמרת חדשה לתאריך: ' + date;
+    content += '\n\n' + 'בשעה: ' + startHour;
+    content += ' עד השעה: ' + endHour + '\n\n';
+    content += 'בחנות: ' + storeName;
+
+    mailer.sendMail([salesman.contact.email], 'IBBLS - שובצה עבורך משמרת חדשה', content);
 };
 
 let automateGenerateShifts = async function (sessionId, startTime, endTime){
@@ -323,7 +337,7 @@ let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
-    if(isAuthorized == null)
+    if(salesman == null)
         return {'code': 401, 'err': 'user not authorized'};
 
     let allShifts = await dal.getShiftsFromDate(fromDate, salesman._id);

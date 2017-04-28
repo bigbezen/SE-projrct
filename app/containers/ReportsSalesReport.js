@@ -146,8 +146,11 @@ var ReportsSalesReport = React.createClass({
         }
     },
 
-
-
+    renderComment: function(comment){
+        return (
+            <p className="col-sm-10 col-sm-offset-1 w3-round-xlarge w3-theme-l4 w3-large">{comment}</p>
+        )
+    },
 
     renderSalesReportList: function(){
         if(this.state.chosenShift != undefined){
@@ -168,7 +171,13 @@ var ReportsSalesReport = React.createClass({
                             {constantStrings.getReport_string}
                         </button>
                     </div>
-                    {productsByCategory.map(this.renderCategoriesProducts)}
+                    <div className="col-sm-12">
+                        {productsByCategory.map(this.renderCategoriesProducts)}
+                    </div>
+                    <div style={styles.marginTop} className="col-sm-12">
+                        <h1 className="col-sm-offset-5 col-sm-1">{constantStrings.commentsFromShift_string}</h1>
+                        {this.state.chosenShift.shiftComments.map(this.renderComment)}
+                    </div>
                 </div>
             )
 

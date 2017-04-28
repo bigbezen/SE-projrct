@@ -94,8 +94,13 @@ var helpers = {
     },
 
     addMultipleShifts: function(shifts){
-        console.log('managementervices- addMultipleShifts');
+        console.log('managementServices- addMultipleShifts');
         return connection.managementRequests.addMultipleShift(shifts);
+    },
+
+    publishMultipleShifts: function(shifts){
+        console.log('managementServices - publishMultipleShifts');
+        return connection.managementRequests.publishMultipleShifts(shifts);
     },
 
     editShift: function(shift){

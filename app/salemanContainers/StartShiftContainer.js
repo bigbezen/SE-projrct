@@ -37,8 +37,12 @@ var StartShiftContainer = React.createClass({
     {
         this.setSessionId();
         this.setUserType();
+        var shift = this.props.location.state.newShift;
+        for(var index in shift.salesReport){
+            shift.salesReport[index].stockStartShift = 1;
+        }
         return{
-            shift:this.props.location.state.newShift
+            shift: shift
         }
     },
     handleSubmitReport: function (e) {
@@ -68,21 +72,25 @@ var StartShiftContainer = React.createClass({
     onUpdateProduct:function(event) {
         var currProductId = event.target.value;
         var isSelected = event.target.checked;
-        for (var product of this.state.shift.salesReport) {
-            if (currProductId == product.productId) {
+        var shift = this.state.shift;
+        for (var productIndex in shift.salesReport) {
+            if (currProductId == shift.salesReport[productIndex].productId) {
                 if (isSelected) {
-                    product.stockStartShift = 1;
+                    shift.salesReport[productIndex].stockStartShift = 1;
                 } else {
-                    product.stockStartShift = 0;
+                    shift.salesReport[productIndex].stockStartShift = 0;
                 }
             }
         }
+        this.setState({
+            shift: shift
+        });
     },
     renderEachProduct: function(product, i){
         return (
                 <li style={styles.product} key={i}>
                     <div style={styles.checkbox__detail}>
-                        <input type="checkbox" onChange={this.onUpdateProduct} style={styles.product__selector} value={product.productId}/>
+                        <input type="checkbox" onChange={this.onUpdateProduct} checked={product.stockStartShift == 1} style={styles.product__selector} value={product.productId}/>
                     </div>
                     <div style={styles.product__detail}>
                         <h1 className="w3-xxxlarge"><b> {product.name} </b></h1>

@@ -137,6 +137,7 @@ class ConstantStrings extends React.Component {
     static reportsSalesReportTitle_string = 'דוח טעימות';
     static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
     static reportsMonthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+    static reportsHumanResourcesReportTitle_string = 'דוח כוח אדם';
     static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
     static reportsShowReport_string = 'הצג דוח';
     static monthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';

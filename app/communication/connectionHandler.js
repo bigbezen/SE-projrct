@@ -626,6 +626,19 @@ var managerRequests = {
         })
     },
 
+    exportSalaryForHumanResourceReport: function(year, month){
+        return axios.post(serverUrl + 'manager/getSalaryForHumanResourceReport', {
+            sessionId: sessionId,
+            year: year,
+            month: month
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
 };
 
 var salesmanRequests = {

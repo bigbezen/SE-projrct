@@ -753,8 +753,8 @@ function _setapApiEndpoints() {
         res.status(result.code).send(result.err);
     });
 
-    app.get('/manager/getSalaryForHumanResourceReport', async function (req, res) {
-        var result = await reportsService.getSalaryForHumanResourceReport(req.headers.sessionid ,req.headers.year,req.headers.month);
+    app.post('/manager/getSalaryForHumanResourceReport', async function (req, res) {
+        var result = await reportsService.getSalaryForHumanResourceReport(req.body.sessionId ,req.body.year,req.body.month);
         res.status(result.code).send(result.err);
     });
 

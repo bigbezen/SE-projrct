@@ -87,6 +87,11 @@ var helpers = {
     exportMonthlyHoursReport: function(year, month){
         console.log('managerService - updateMonthlyHoursReport');
         return connection.managerRequests.exportMonthlyHoursReport(year, month);
+    },
+
+    exportSalaryForHumanResourceReport: function(year, month) {
+        console.log('managerService - exportSalaryForHumanResourceReport');
+        return connection.managerRequests.exportSalaryForHumanResourceReport(year, month)
     }
 };
 

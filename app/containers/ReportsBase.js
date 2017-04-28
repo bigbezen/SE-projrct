@@ -66,6 +66,12 @@ var ReportsBase = React.createClass({
         });
     },
 
+    onClickHumanResourcesReport: function() {
+        this.context.router.push({
+            pathname: paths.manager_humanResourcesReport_path
+        });
+    },
+
     render: function () {
         return (
             <div className="w3-container" style={styles.marginTop}>
@@ -81,6 +87,10 @@ var ReportsBase = React.createClass({
                 <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
                         onClick={this.onClickMonthlyAnalysisReport}>
                     {constantStrings.reportsMonthlyAnalysisReportTitle_string}<Chart3/>
+                </button>
+                <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
+                        onClick={this.onClickHumanResourcesReport}>
+                    {constantStrings.reportsHumanResourcesReportTitle_string}<Chart3/>
                 </button>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

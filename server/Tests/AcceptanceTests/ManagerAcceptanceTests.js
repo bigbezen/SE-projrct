@@ -193,7 +193,7 @@ describe('management acceptance test', function(){
     });
 
     describe(' test Excel reports against the system reports', function() {
-        it('getSalaryForHumanResourceReport file 1', async function () {
+     /*   it('getSalaryForHumanResourceReport file 1', async function () {
             let fileName = "reportTest1.xlsx";
             this.timeout(30000);
             let res = await readListsalesmanXl(manager.sessionId, fileName);
@@ -246,7 +246,7 @@ describe('management acceptance test', function(){
                     }
                 }
             }
-        });
+        });*/
 
         it('getSalaryForHumanResourceReport file 2', async function () {
             let fileName = "reportTest2.xlsx";
@@ -302,7 +302,7 @@ describe('management acceptance test', function(){
                 }
             }
         });
-
+/*
         it('getSalaryForHumanResourceReport file 3', async function () {
             let fileName = "reportTest3.xlsx";
             this.timeout(30000);
@@ -356,6 +356,6 @@ describe('management acceptance test', function(){
                     }
                 }
             }
-        });
+        });*/
     });
 });

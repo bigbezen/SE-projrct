@@ -174,8 +174,8 @@ var ReportsSalesReport = React.createClass({
                     <div className="col-sm-12">
                         {productsByCategory.map(this.renderCategoriesProducts)}
                     </div>
-                    <div style={styles.marginTop} className="col-sm-12">
-                        <h1 className="col-sm-offset-5 col-sm-1">{constantStrings.commentsFromShift_string}</h1>
+                    <div style={styles.marginTop} className="col-sm-12 text-center">
+                        <h1 className="">{constantStrings.commentsFromShift_string}</h1>
                         {this.state.chosenShift.shiftComments.map(this.renderComment)}
                     </div>
                 </div>

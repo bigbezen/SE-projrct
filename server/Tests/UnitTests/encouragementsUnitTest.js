@@ -270,6 +270,8 @@ describe('encouragements unit test', function () {
             assert.equal(result.encouragements.length, 1);
             result = await  encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
             result = await encouragementServices.getAllEncouragements(notManager.sessionId);//salesman
+            assert.equal(result.encouragements.length, 1);
+            result = await encouragementServices.getAllEncouragements(manager.sessionId);//salesman
             assert.equal(result.encouragements.length, 2);
         });
     });

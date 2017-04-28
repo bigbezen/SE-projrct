@@ -136,6 +136,13 @@ var IncentiveDetails = React.createClass({
             return constantsStrings.edit_string;
     },
 
+    renderEditOrAddTitle: function(){
+        if(this.state.editedIncentive == undefined)
+            return constantsStrings.addIncentive_string;
+        else
+            return constantsStrings.editIncentive_string;
+    },
+
     handleSubmitIncentive: function () {
         var incentiveName = this.refs.nameBox.value;
         var notificationSystem = this.refs.notificationSystem;
@@ -202,6 +209,7 @@ var IncentiveDetails = React.createClass({
             editedIncentive.products = selectedProducts;
             editedIncentive.numOfProducts = numOfChosenProducts;
             editedIncentive.rate = rate;
+            editedIncentive.active = this.refs.activeBox.checked;
 
             managementServices.editIncentive(editedIncentive)
                 .then(function(result){
@@ -230,6 +238,41 @@ var IncentiveDetails = React.createClass({
 
         /**/
     },
+
+    onClickActive: function(event) {
+        var isChecked = event.target.checked;
+        var incentive = this.state.editedIncentive;
+        incentive.active = isChecked;
+        this.setState({
+            editedIncentive: incentive
+        })
+    },
+
+    renderIsActiveOnEdit: function() {
+        if(this.state.editedIncentive == undefined)
+        {
+            return (
+                <div></div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <div className="form-group">
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.isActive_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <input type="checkbox" checked={this.state.editedIncentive.active}
+                               className="col-xs-4 col-xs-offset-3"
+                               ref="activeBox"
+                               onChange={this.onClickActive}
+                        />
+                    </div>
+                </div>
+            )
+        }
+    },
+
     addNewIncentive: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
@@ -238,7 +281,7 @@ var IncentiveDetails = React.createClass({
                 }}>
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
-                            <b>{constantsStrings.addIncentive_string}</b>
+                            <b>{this.renderEditOrAddTitle()}</b>
                         </h1>
                     </div>
 
@@ -290,6 +333,7 @@ var IncentiveDetails = React.createClass({
                         />
                     </div>
 
+                    {this.renderIsActiveOnEdit()}
 
                     <div className="form-group">
                         <button

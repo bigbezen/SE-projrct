@@ -77,6 +77,9 @@ let getAllEncouragements = async function (sessionId) {
         for(let encIndex in encouragements){
             encouragements[encIndex].products = await dal.getProductsById(encouragements[encIndex]);
         }
+        if(user.jobDetails.userType == 'salesman'){
+            encouragements = encouragements.filter((enc) => enc.active);
+        }
         return {'encouragements': encouragements, 'code': 200, 'err': null};
     }
     else {

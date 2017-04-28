@@ -42,7 +42,7 @@ let funcNameToPermission = {
     'endShift': ['salesman'],
     'getActiveShift': ['salesman'],
     'getActiveShiftEncouragements': ['manager', 'salesman'],
-    'getShiftsFromDate': ['salesman'],
+    'getShiftsFromDate': ['salesman', 'manager'],
     'getSalesmanFinishedShifts': ['manager', 'salesman'],
     'deleteShift': ['manager'],
     'editShift': ['manager'],

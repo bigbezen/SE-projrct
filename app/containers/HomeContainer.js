@@ -53,7 +53,7 @@ var HomeContainer = React.createClass({
                 productsNum: result.length
             });
         }).catch(function (errMess) {
-        })
+        });
         managementServices.getAllUsers().then(function (n) {
             var result = n;
             self.setState({
@@ -94,19 +94,25 @@ var HomeContainer = React.createClass({
         })
     },
 
-    renderProducts(){
-        // var data = [];
-        // if(this.state.stores != undefined){
-        //     var storesPerArea = this.state.stores.map(function(store){
-        //         return {name: store.area, value: 1};
-        //     }).reduce((a, b) => )
-        // }
+    renderStores(){
+        var data = [];
+        if(this.state.stores != undefined){
+
+            var areas = new Set(this.state.stores.map((store) => store.area));
+            for(var area of areas){
+                data.push({
+                    name: area,
+                    value: this.state.stores.filter((store) => store.area == area).length
+                });
+            }
+        }
         return (
             <div className="w3-card-2 w3-theme-l4 col-xs-3 w3-margin">
                 <h5> {constantStrings.numberOfStores}</h5>
                 <h1>{this.state.storesNum}</h1>
                 <PieChart width={730} height={250}>
-                    <Pie data={data} cx="100%" cy="100%" innerRadius={60} outerRadius={80} fill="#82ca9d" label />
+                    <Pie data={data} cx="50%" cy="50%" outerRadius={50} fill="#8884d8" label />
+                    <Pie data={[]} cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#82ca9d"  />
                 </PieChart>
             </div>
         )
@@ -124,7 +130,7 @@ var HomeContainer = React.createClass({
                     <h5> {constantStrings.numberOfProducts}</h5>
                     <h1>{this.state.productsNum}</h1>
                 </div>
-                {this.renderProducts()}
+                {this.renderStores()}
 
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

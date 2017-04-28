@@ -1,0 +1,1 @@
+changePass = "//*[@id=\"app\"]/div/ul/li[10]/a"

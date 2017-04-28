@@ -43,8 +43,8 @@ var ShiftDetails = React.createClass({
     },
     handleSubmitShift: function (e) {
         e.preventDefault();
-        var startTime = this.refs.startTimeBox.value;
-        var endTime = this.refs.endTimeBox.value;
+        var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+03:00';
+        var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+03:00';
         var notificationSystem = this.refs.notificationSystem;
 
         this.context.router.push({
@@ -66,8 +66,16 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group ">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
-                        <input type="datetime-local"
-                               className="col-xs-4"
+                        <input type="date"
+                               className="col-xs-5"
+                               ref="dateBox"
+                        />
+                    </div>
+
+                    <div className="form-group ">
+                        <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
+                        <input type="time"
+                               className="col-xs-5"
                                ref="startTimeBox"
                                onChange={this.onChangeStarTime}
                         />
@@ -75,8 +83,8 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group ">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.endDate_string}</label>
-                        <input type="datetime-local"
-                               className="col-xs-4"
+                        <input type="time"
+                               className="col-xs-5"
                                ref="endTimeBox"
                         />
                     </div>

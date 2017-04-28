@@ -90,12 +90,12 @@ var EndShiftContainer = React.createClass({
         var currProductId = event.target.value;
         var isSelected = event.target.checked;
         var currShift = this.state.shift;
-        for (var product of currShift.salesReport) {
-            if (currProductId == product.productId) {
+        for (var productIndex in currShift.salesReport) {
+            if (currProductId == currShift.salesReport[productIndex].productId) {
                 if (isSelected) {
-                    product.stockEndShift = 1;
+                    currShift.salesReport[productIndex].stockEndShift = 1;
                 } else {
-                    product.stockEndShift = 0;
+                    currShift.salesReport[productIndex].stockEndShift = 0;
                 }
             }
         }
@@ -105,7 +105,7 @@ var EndShiftContainer = React.createClass({
         return (
             <li style={styles.product} key={i}>
                 <div style={styles.checkbox__detail}>
-                    <input type="checkbox" onChange={this.onUpdateProduct} checked={product.stockEndShift} style={styles.product__selector} value={product.productId}/>
+                    <input type="checkbox" onChange={this.onUpdateProduct} checked={product.stockEndShift == 1} style={styles.product__selector} value={product.productId}/>
                 </div>
                 <div style={styles.product__detail}>
                     <h1 className="w3-xxxlarge"><b> {product.name} </b></h1>

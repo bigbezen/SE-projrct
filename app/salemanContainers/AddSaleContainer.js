@@ -218,7 +218,7 @@ var AddSaleContainer = React.createClass({
                     </div>
                 </div>
                 <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
-                    <div className="w3-margin-top">
+                    <div className="w3-margin-top" >
                         <BootstrapTable data={this.state.soldProducts} hover bordered={false}>
                             <TableHeaderColumn
                                 dataField = 'name'

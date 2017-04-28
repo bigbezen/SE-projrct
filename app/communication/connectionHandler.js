@@ -624,10 +624,10 @@ var managerRequests = {
     },
 
     exportSalaryForHumanResourceReport: function(year, month){
-        return axios.get(serverUrl + 'manager/getSalaryForHumanResourceReport?year=' + year + "&month=" + month, {
-            headers: {
-                sessionId: sessionId
-            }
+        return axios.post(serverUrl + 'manager/getSalaryForHumanResourceReport', {
+            sessionId: sessionId,
+            year: year,
+            month: month
         }).then(function (info) {
             return info.data;
         }).catch(function (err) {

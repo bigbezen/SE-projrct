@@ -2,23 +2,24 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var managementServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var shiftInfo = require('../models/shift');
-var moment = require('moment');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var constantStrings = require('../utils/ConstantStrings');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
-
+var React               = require('react');
+var managementServices  = require('../communication/managementServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var shiftInfo           = require('../models/shift');
+var moment              = require('moment');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var constantStrings     = require('../utils/ConstantStrings');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 var CloseIcon           = require('react-icons/lib/fa/close');
 
 var ShiftsCreateMultipleShifts = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
@@ -71,19 +72,21 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
                     })
                     .catch(function(err){
+                        notificationSystem.clearNotifications();
                         notificationSystem.addNotification({
                             message: err,
                             level: 'error',
-                            autoDismiss: 2,
+                            autoDismiss: 0,
                             position: 'tc'
                         });
                     });
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 2,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             });
@@ -97,6 +100,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -111,10 +115,11 @@ var ShiftsCreateMultipleShifts = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         var missingSalesman = this.state.newShifts.filter((shift) => shift.salesmanId == "");
         if(missingSalesman.length > 0){
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantsStrings.mustChooseSalesman_string,
                 level: 'error',
-                autoDismiss: 2,
+                autoDismiss: 0,
                 position: 'tc'
             });
         }
@@ -123,6 +128,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 .then(function (data) {
                     managementServices.publishMultipleShifts(data)
                         .then(function(data){
+                            notificationSystem.clearNotifications();
                             notificationSystem.addNotification({
                                 message: constantsStrings.addSuccessMessage_string,
                                 level: 'success',
@@ -140,10 +146,11 @@ var ShiftsCreateMultipleShifts = React.createClass({
                         })
                 })
                 .catch(function (err) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: err,
                         level: 'error',
-                        autoDismiss: 5,
+                        autoDismiss: 0,
                         position: 'tc'
                     });
                 })
@@ -181,9 +188,6 @@ var ShiftsCreateMultipleShifts = React.createClass({
                                                     salesman.personal.lastName == lastName);
             salesmanId = salesmanId[0]._id;
         }
-
-
-
         var newShifts = this.state.newShifts;
         for(var shiftIndex in newShifts){
             if(newShifts[shiftIndex].storeId == storeId){
@@ -196,6 +200,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
     onClickRemoveShift: function(storeId){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
+        notificationSystem.clearNotifications();
         notificationSystem.addNotification({
             message: constantStrings.areYouSure_string,
             level: 'info',

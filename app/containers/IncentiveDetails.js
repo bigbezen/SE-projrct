@@ -2,20 +2,20 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var NotificationSystem = require('react-notification-system');
-
-var constantsStrings = require('../utils/ConstantStrings');
-var styles = require('../styles/managerStyles/styles');
-var encs = require('../utils/encouragmentsMock');
-var paths = require('../utils/Paths');
-var managementServices = require('../communication/managementServices');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var NotificationSystem  = require('react-notification-system');
+var constantsStrings    = require('../utils/ConstantStrings');
+var styles              = require('../styles/managerStyles/styles');
+var paths               = require('../utils/Paths');
+var managementServices  = require('../communication/managementServices');
+var userServices        = require('../communication/userServices');
 
 var IncentiveDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
@@ -25,6 +25,7 @@ var IncentiveDetails = React.createClass({
             editedIncentive: undefined
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -33,6 +34,7 @@ var IncentiveDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -41,6 +43,7 @@ var IncentiveDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentDidMount() {
         this.updateProducts();
         var query = this.props.location.query;
@@ -72,14 +75,16 @@ var IncentiveDetails = React.createClass({
                 products: result
             });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     getOptions: function(arrayOfObjects, index) {
         var selectedProductName = "";
         if(this.state.editedIncentive != undefined){
@@ -153,6 +158,7 @@ var IncentiveDetails = React.createClass({
                 selectedProducts.push(productsAsDict[chosenProduct]);
         }
         if(selectedProducts.length == 0){
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantsStrings.incentiveMissingProducts_string,
                 level: 'error',
@@ -176,10 +182,11 @@ var IncentiveDetails = React.createClass({
 
             managementServices.addIncentive(newIncentive)
                 .then(function(result) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantsStrings.addSuccessMessage_string,
                         level: 'success',
-                        autoDismiss: 2,
+                        autoDismiss: 1,
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
@@ -188,10 +195,11 @@ var IncentiveDetails = React.createClass({
                         }
                     });
                 }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
@@ -205,10 +213,11 @@ var IncentiveDetails = React.createClass({
 
             managementServices.editIncentive(editedIncentive)
                 .then(function(result){
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantsStrings.editSuccessMessage_string,
                         level: 'success',
-                        autoDismiss: 2,
+                        autoDismiss: 1,
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
@@ -217,19 +226,17 @@ var IncentiveDetails = React.createClass({
                         }
                     });
                 }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }
-
-
-
-        /**/
     },
+
     addNewIncentive: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
@@ -252,7 +259,6 @@ var IncentiveDetails = React.createClass({
                         />
                     </div>
 
-
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentivePickProducts_string}:</label>
                     </div>
@@ -260,14 +266,12 @@ var IncentiveDetails = React.createClass({
                         {this.state.productsForIncentive.map(this.renderProductChoice)}
                     </div>
 
-
                     <div className="form-group">
                         <div className="row">
                             <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" onClick={this.addProduct}>+</button>
                             <button className="w3-card-4 w3-circle w3-button" onClick={this.deleteProduct}>-</button>
                         </div>
                     </div>
-
 
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentiveNumOfProducts_string}:</label>
@@ -279,7 +283,6 @@ var IncentiveDetails = React.createClass({
                         />
                     </div>
 
-
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentiveRate_string}:</label>
                     </div>
@@ -289,7 +292,6 @@ var IncentiveDetails = React.createClass({
                                ref="rateBox"
                         />
                     </div>
-
 
                     <div className="form-group">
                         <button

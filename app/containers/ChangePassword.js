@@ -1,18 +1,19 @@
 /**
  * Created by lihiverchik on 13/12/2016.
  */
-var React = require('react');
-var userServices = require('../communication/userServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var NotificationSystem = require('react-notification-system');
+var React               = require('react');
+var userServices        = require('../communication/userServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var NotificationSystem  = require('react-notification-system');
 
 var ChangePassContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired,
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
@@ -20,9 +21,9 @@ var ChangePassContainer = React.createClass({
             prevPass: '',
             newPass1: '',
             newPass2: '',
-
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -31,6 +32,7 @@ var ChangePassContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -39,9 +41,7 @@ var ChangePassContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
-    componentDidMount() {
-        this.retPath = this.props.location.query;
-    },
+
     handleSubmitUser: function (e) {
         e.preventDefault();
         var prevPass = this.refs.prevPasswordTextBox.value;
@@ -49,6 +49,7 @@ var ChangePassContainer = React.createClass({
         var newPass2 = this.refs.newPasswordTextBox2.value;
         var notificationSystem = this.refs.notificationSystem;
         if (newPass1 != newPass2) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantsStrings.changePassNotEqualFailedMessage_string,
                 level: 'error',
@@ -58,6 +59,7 @@ var ChangePassContainer = React.createClass({
             return;
         }
         if (newPass1 == "") {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantsStrings.changePassNotValidMessage_string,
                 level: 'error',
@@ -74,12 +76,12 @@ var ChangePassContainer = React.createClass({
         var context = this.context;
         var self = this;
         userServices.changePassword(prevPass, newPass1).then(function (answer) {
-            if(answer){
                 var nextPage = self.getNextPage();
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantsStrings.changePassSuccessMessage_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                     onRemove: function (notification) {
                         context.router.push({
@@ -87,19 +89,17 @@ var ChangePassContainer = React.createClass({
                         })
                     }
                 });
-            }
-            else{
-                console.log("error in retrieving password: " + answer);
-            }
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     getNextPage: function() {
         if (userServices.managerIsLoggedin()) {
             return paths.manager_home_path;
@@ -107,12 +107,14 @@ var ChangePassContainer = React.createClass({
             return paths.salesman_home_path;
         }
     },
+
     onReturn: function() {
         var nextPage = this.getNextPage();
         context.router.push({
             pathname: nextPage
         })
     },
+
     render: function () {
         return (
             <div className="container">

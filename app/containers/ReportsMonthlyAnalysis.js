@@ -1,23 +1,16 @@
 /**
  * Created by lihiverchik on 17/12/2016.
  */
-var React = require('react');
-var constantStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var managerServices = require('../communication/managerServices');
-
-var moment = require('moment');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
-
-
-
-var options = {
-    noDataText: constantStrings.NoDataText_string
-};
+var React               = require('react');
+var constantStrings     = require('../utils/ConstantStrings');
+var styles              = require('../styles/managerStyles/styles');
+var managerServices     = require('../communication/managerServices');
+var moment              = require('moment');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var ReportsMonthlyAnalysis = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
@@ -30,6 +23,7 @@ var ReportsMonthlyAnalysis = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -38,6 +32,7 @@ var ReportsMonthlyAnalysis = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -45,27 +40,26 @@ var ReportsMonthlyAnalysis = React.createClass({
             report: undefined
         }
     },
-    componentWillMount() {
-    },
 
     onClickExportReport: function() {
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var chosenYear = this.refs.datepicker.value;
         managerServices.exportMonthlyAnalysisReport(chosenYear)
             .then(function(data){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                 });
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 0,
                     position: 'tc',
                 });
             });
@@ -83,25 +77,25 @@ var ReportsMonthlyAnalysis = React.createClass({
                 })
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 0,
                     position: 'tc',
                 });
                 self.setState({
                     report: undefined
                 })
             })
-
     },
 
     onClickEditReport: function(){
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         if(this.state.report != undefined) {
             managerServices.updateMonthlyAnalysisReport(this.state.report.year, this.state.report)
                 .then(function (data) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantStrings.editSuccessMessage_string,
                         level: 'success',
@@ -110,10 +104,11 @@ var ReportsMonthlyAnalysis = React.createClass({
                     });
                 })
                 .catch(function (err) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: err,
                         level: 'error',
-                        autoDismiss: 1,
+                        autoDismiss: 0,
                         position: 'tc',
                     });
                 });
@@ -234,7 +229,6 @@ var ReportsMonthlyAnalysis = React.createClass({
             </div>
         )
     }
-
 });
 
 module.exports = ReportsMonthlyAnalysis;

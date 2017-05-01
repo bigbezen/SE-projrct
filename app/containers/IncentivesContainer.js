@@ -2,21 +2,17 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var NotificationSystem = require('react-notification-system');
-var TrashIcon = require('react-icons/lib/fa/trash-o');
-
-var styles = require('../styles/managerStyles/styles');
-var encs = require('../utils/encouragmentsMock');
-var paths = require('../utils/Paths');
-var managementServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var userServices = require('../communication/userServices');
-
-
-
+var React               = require('react');
+var NotificationSystem  = require('react-notification-system');
+var TrashIcon           = require('react-icons/lib/fa/trash-o');
+var styles              = require('../styles/managerStyles/styles');
+var paths               = require('../utils/Paths');
+var managementServices  = require('../communication/managementServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var userServices        = require('../communication/userServices');
 
 var IncentivesContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
@@ -26,6 +22,7 @@ var IncentivesContainer = React.createClass({
             pathname: paths.manager_incentiveDetails_path
         })
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -33,6 +30,7 @@ var IncentivesContainer = React.createClass({
             incentives: []
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -41,6 +39,7 @@ var IncentivesContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -49,15 +48,15 @@ var IncentivesContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentWillMount() {
         this.updateIncentives();
     },
+
     updateIncentives() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        console.log('fetching incentives');
-        managementServices.getAllIncentives().then(function (n) {
-            var result = n;
+        managementServices.getAllIncentives().then(function (result) {
             result.sort(function(a, b){
                 return a.products.length - b.products.length;
             });
@@ -65,10 +64,11 @@ var IncentivesContainer = React.createClass({
                 incentives: result
             });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
@@ -82,6 +82,7 @@ var IncentivesContainer = React.createClass({
     onClickDelete: function(incentive, index){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
+        notificationSystem.clearNotifications();
         notificationSystem.addNotification({
             message: constantsStrings.areYouSure_string,
             level: 'info',
@@ -106,6 +107,7 @@ var IncentivesContainer = React.createClass({
                 self.setState({
                     incentives: newIncentives
                 });
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantsStrings.deleteMessage_string,
                     level: 'success',
@@ -114,11 +116,11 @@ var IncentivesContainer = React.createClass({
                 });
             })
             .catch(function(err){
-                alert(err);
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 2,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
@@ -128,7 +130,6 @@ var IncentivesContainer = React.createClass({
         return (
             <p>&nbsp;&nbsp;&nbsp;&nbsp;{product.name}</p>
         )
-
     },
     renderCard: function(incentive, i){
         return (

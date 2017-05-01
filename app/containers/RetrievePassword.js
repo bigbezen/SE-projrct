@@ -1,28 +1,28 @@
 /**
  * Created by lihiverchik on 13/12/2016.
  */
-var React = require('react');
-var userServices = require('../communication/userServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var NotificationSystem = require('react-notification-system');
-var style = require('../styles/index');
+var React               = require('react');
+var userServices        = require('../communication/userServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var NotificationSystem  = require('react-notification-system');
 
 var RetrievePassContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired,
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
         return {
             username: '',
             email: '',
-
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -31,6 +31,7 @@ var RetrievePassContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -39,22 +40,24 @@ var RetrievePassContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     handleSubmitUser: function (e) {
         e.preventDefault();
         var email = this.refs.emailTextBox.value;
         var username = this.refs.usernameTextBox.value;
         var notificationSystem = this.refs.notificationSystem;
+
         this.setState({
             username: '',
             password: ''
         });
         var context = this.context;
-        var self = this;
         userServices.retrievePassword(username, email).then(function (n) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantsStrings.retrievePassSuccessMessage_string,
                 level: 'success',
-                autoDismiss: 2,
+                autoDismiss: 1,
                 position: 'tc',
                 onRemove: function (notification) {
                     context.router.push({
@@ -63,19 +66,22 @@ var RetrievePassContainer = React.createClass({
                 }
             });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     onReturn: function() {
         this.context.router.push({
             pathname: paths.login_path
         })
     },
+
     render: function () {
         return (
             <div className="container">

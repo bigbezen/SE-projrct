@@ -2,23 +2,23 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var managementServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var userInfo = require('../models/user');
-var flatten = require('flat');
-var ReactBootstrap = require("react-bootstrap");
-var moment = require('moment');
-var paths = require('../utils/Paths');
-var DropDownInput = ReactBootstrap.DropdownButton;
-var NotificationSystem = require('react-notification-system');
-var styles = require('../styles/managerStyles/styles');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var managementServices  = require('../communication/managementServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var userInfo            = require('../models/user');
+var flatten             = require('flat');
+var moment              = require('moment');
+var paths               = require('../utils/Paths');
+var NotificationSystem  = require('react-notification-system');
+var styles              = require('../styles/managerStyles/styles');
+var userServices        = require('../communication/userServices');
 
 var UserDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
@@ -29,6 +29,7 @@ var UserDetails = React.createClass({
             prevUsername:''
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -37,6 +38,7 @@ var UserDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -60,10 +62,8 @@ var UserDetails = React.createClass({
 
     componentDidMount() {
         var isEmptyVar = !(this.isEmpty(this.props.location.query));
-        console.log(!(this.isEmpty(this.props.location.query)));
         this.state.editing = isEmptyVar;
 
-        console.log(this.state.editing);
         if (this.state.editing) {
             this.setFields();
         }
@@ -106,8 +106,6 @@ var UserDetails = React.createClass({
         newUser.startDate = this.refs.startDateBox.value;
         //personal
         newUser.personal = {};
-        console.log(this.refs.idBox.value);
-        console.log('id');
         newUser.personal.id = this.refs.idBox.value;
         newUser.personal.firstName = this.refs.firstNameBox.value;
         newUser.personal.lastName = this.refs.lastNameBox.value;
@@ -139,10 +137,11 @@ var UserDetails = React.createClass({
             newUser._id = this.props.location.query._id;
             var prevName = this.state.prevUsername;
             managementServices.editUser(prevName, newUser).then(function (n) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantsStrings.editSuccessMessage_string,
                         level: 'success',
-                        autoDismiss: 2,
+                        autoDismiss: 1,
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
@@ -151,15 +150,17 @@ var UserDetails = React.createClass({
                         }
                     });
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }else {
             managementServices.addUser(newUser).then(function (n) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantsStrings.addSuccessMessage_string,
                     level: 'success',
@@ -172,27 +173,31 @@ var UserDetails = React.createClass({
                     }
                 });
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }
     },
+
     getTitle: function() {
         if (this.state.editing) {
             return constantsStrings.editUser_string;
         }
         return constantsStrings.addUser_string;
     },
+
     getButtonString: function() {
         if (this.state.editing) {
             return constantsStrings.edit_string;
         }
         return constantsStrings.add_string;
     },
+
     addNewUser: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
@@ -411,6 +416,7 @@ var UserDetails = React.createClass({
         //jobDetails
         this.refs.userTypeBox.value = this.currProduct.jobDetails.userType;
     },
+
     render: function () {
         return this.addNewUser();
     }

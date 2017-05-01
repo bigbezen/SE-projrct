@@ -1,18 +1,19 @@
 /**
  * Created by lihiverchik on 13/12/2016.
  */
-var React = require('react');
-var userServices = require('../communication/userServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var NotificationSystem = require('react-notification-system');
+var React               = require('react');
+var userServices        = require('../communication/userServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var NotificationSystem  = require('react-notification-system');
 
 var LoginContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired,
     },
+
     getInitialState: function () {
         // this.setSessionId();
         // this.setUserType();
@@ -32,6 +33,7 @@ var LoginContainer = React.createClass({
             password: '',
         }
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -40,6 +42,7 @@ var LoginContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -48,6 +51,7 @@ var LoginContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     handleSubmitUser: function (e) {
         e.preventDefault();
         var password = this.refs.passwordTextBox.value;
@@ -58,8 +62,7 @@ var LoginContainer = React.createClass({
             password: ''
         });
         var context = this.context;
-        userServices.login(username, password).then(function (n) {
-            var answer = n;
+        userServices.login(username, password).then(function (answer) {
             var userType = answer.userType;
             var sessionId = answer.sessionId;
             localStorage.setItem('sessionId', sessionId);
@@ -76,19 +79,22 @@ var LoginContainer = React.createClass({
                  })
             }
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     handleRetrievePass : function(e) {
         this.context.router.push({
             pathname: paths.member_retrievePass_path
         })
     },
+
     render: function () {
         return (
             <div className="container">

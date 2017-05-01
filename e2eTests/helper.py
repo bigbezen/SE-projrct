@@ -8,6 +8,7 @@ storesContainer = 'http://localhost:3000/#/manager/stores'
 usersContainer = 'http://localhost:3000/#/manager/users'
 shiftsContainer = 'http://localhost:3000/#/manager/shifts'
 reportsContainer = 'http://localhost:3000/#/manager/reports'
+incentivesContainer = 'http://localhost:3000/#/manager/incentives'
 
 adminUsername = "testAdmin"
 adminPass = "11111111"

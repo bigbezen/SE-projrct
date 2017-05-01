@@ -1,4 +1,5 @@
 import unittest
+import dbConnector
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -10,6 +11,7 @@ import containers.changePass
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 
+
 class UserService(unittest.TestCase):
     usernameField = None
     passwordField = None
@@ -17,6 +19,8 @@ class UserService(unittest.TestCase):
     retrievePass = None
 
     def setUp(self):
+        dbConnector.deleteDb()
+        dbConnector.initDb()
         self.driver = webdriver.Chrome()
         self.driver.get(helper.url)
         driver = self.driver
@@ -62,10 +66,10 @@ class UserService(unittest.TestCase):
         emailField.send_keys(helper.adminEmail)
         retrieveBtn.click()
         driver.implicitly_wait(100)
-        #driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div/div/span").click()
+        # driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div/div/span").click()
         # wait = WebDriverWait(driver, 1000)
         sleep(3)
-        #wait.until(EC.element_to_be_clickable(self.retrievePass))
+        # wait.until(EC.element_to_be_clickable(self.retrievePass))
         self.assertEqual(driver.current_url, helper.url)
 
     def test_retrievePass_wrongUsername(self):

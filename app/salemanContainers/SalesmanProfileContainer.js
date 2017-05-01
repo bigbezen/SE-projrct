@@ -5,7 +5,7 @@ var React = require('react');
 var constantsStrings = require('../utils/ConstantStrings');
 var paths = require('../utils/Paths');
 var salesmanService = require('../communication/salesmanServices');
-var styles = require('../styles/salesmanStyles/homeStyles');
+var styles = require('../styles/salesmanStyles/profileStyles');
 var userServices = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
@@ -29,19 +29,61 @@ var SalesmanProfileContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+    getInitialState() {
+      return({
+          profile: null
+      })
+    },
+    componentDidMount() {
+        this.updateProfile();
+    },
     handleChangePassword: function () {
         console.log('BaseContainer- changePass function');
         this.context.router.push({
             pathname: paths.salesman_changePass_path
         })
     },
-    render: function () {
+    updateProfile() {
+        var self = this;
+        userServices.getProfile().then(function (result) {
+            self.setState({
+                profile: result
+            });
+        }).catch(function (errMess) {
+            // notification should be here
+        })
+    },
+    renderProfile: function () {
+        return(
+        <div className="row w3-card-4 w3-round-large w3-container" style={styles.profileStyle}>
+                <p className="w3-xxlarge"><b>{constantsStrings.firstName_string}</b>: {this.state.profile.personal.firstName}</p>
+                <p className="w3-xxlarge"><b>{constantsStrings.lastName_string}</b>: {this.state.profile.personal.lastName}</p>
+                <p className="w3-xxlarge"><b>{constantsStrings.username_string}</b>: {this.state.profile.username}</p>
+                <p className="w3-xxlarge"><b>{constantsStrings.email_string}</b>: {this.state.profile.contact.email}</p>
+                <p className="w3-xxlarge"><b>{constantsStrings.phone_string}</b>: {this.state.profile.contact.phone}</p>
+            <div className="text-center">
+                <button className="w3-theme-d3 w3-xxlarge w3-round-xlarge w3-card-4" style={styles.buttonStyle} onClick={this.handleChangePassword}> {constantsStrings.changePassButton_string}</button>
+            </div>
+            <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+        </div>
+        )
+    },
+    renderLoading:function () {
         return(
             <div>
-
-                <button className="w3-theme-d5 w3-xxlarge btn w3-card-8" onClick={this.handleChangePassword}> {constantsStrings.changePassButton_string}</button>
+                <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
+    },
+    render: function () {
+        if(this.state.profile != null) {
+            return this.renderProfile();
+        }
+        else
+        {
+            return this.renderLoading();
+        }
     }
 });
 

@@ -14,7 +14,7 @@ let getUserDetails = function(){
             "startDate": "08-16-2016",
             "endDate": null,
             "personal": {
-                "id": "223455",
+                "id": "2231145",
                 "firstName": "israel",
                 "lastName": "israeli",
                 "sex": "male",
@@ -147,7 +147,6 @@ describe('user unit test', function () {
     describe('TestAddUser', function(){
         it('AddUserValid', async function(){
             let result = await userServices.addUser('sessionId', getUserDetails());
-            console.log('bla');
             let addedUserFromDb = await dal.getUserByUsername('new user');
             addedUserFromDb = addedUserFromDb.toObject();
 

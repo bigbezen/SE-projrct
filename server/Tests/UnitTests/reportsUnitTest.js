@@ -6,8 +6,10 @@ let userModel           = require('../../src/Models/user');
 let productModel        = require('../../src/Models/product');
 let storeModel          = require('../../src/Models/store');
 let shiftModel          = require('../../src/Models/shift');
+var moment              = require('moment');
 let encouragementModel  = require('../../src/Models/encouragement');
 var dal               = require('../../src/DAL/dal');
+let Excel               = require('exceljs');
 var repoetService     = require('../../src/Services/reports/index');
 
 describe('reports unit test', function () {
@@ -60,6 +62,7 @@ describe('reports unit test', function () {
         }
         return report;
     };
+
 
     beforeEach(async function () {
         shifts = [];
@@ -178,7 +181,7 @@ describe('reports unit test', function () {
         shifts.push(shift2);
     });
 
-    afterEach(async function () {
+    afterEach(async function(){
         let res = await dal.cleanDb();
     });
 

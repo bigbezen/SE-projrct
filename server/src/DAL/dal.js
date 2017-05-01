@@ -27,6 +27,10 @@ module.exports = {
         return store.save();
     },
 
+    setStoreDefaultUser: async function(storeId, salesmanId){
+        return storeModel.update({'_id': mongoose.Types.ObjectId(storeId)}, {$set: {'defaultSalesman': mongoose.Types.ObjectId(salesmanId)}});
+    },
+
     updateUser: async function(user){
         return userModel.update({'_id': mongoose.Types.ObjectId(user._id)}, user, { upsert: false });
     },
@@ -68,7 +72,7 @@ module.exports = {
     },
 
     getAllStores: async function(){
-        return storeModel.find({});
+        return storeModel.find({}).populate('defaultSalesman');
     },
 
     getStoresByIds: async function(ids){
@@ -134,8 +138,10 @@ module.exports = {
         return shiftModel.find({'_id': {$in: shiftIds}});
     },
 
-    getShiftsFromDate: async function(fromDate){
-        return shiftModel.find({'startTime': {$gte: fromDate}});
+    getShiftsFromDate: async function(fromDate, salesmanId){
+        return shiftModel.find({$and: [{'startTime': {$gte: fromDate}}, {'salesmanId': salesmanId}]})
+            .populate('salesmanId')
+            .populate('storeId');
     },
 
     updateShift: async function(shift){
@@ -182,13 +188,22 @@ module.exports = {
     getMonthShifts: async function(year, month){
         var startMonth = new Date(year, month, 1);
         var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
-        return shiftModel.find({$and: [{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
+        return shiftModel.find({$and: [{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]}).populate('encouragements.encouragement');
     },
 
     getSalesmanMonthShifts: async function(salesmanId, year, month){
         var startMonth = new Date(year, month, 1);
         var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
-        return shiftModel.find({$and: [{'salesmanId': salesmanId},{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]});
+        return shiftModel.find({$and: [{'salesmanId': salesmanId},{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}]}).populate('encouragements.encouragement');
+    },
+
+    getShiftsOfRange: async function(startDate, endDate){
+        startDate = new Date(startDate);
+        endDate = new Date(endDate);
+        endDate.setDate(endDate.getDate() + 1);
+        return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lte: new Date(endDate)}}]})
+            .populate('salesmanId')
+            .populate('storeId');
     },
 
     addMonthlySalesmanReport: async function(report){

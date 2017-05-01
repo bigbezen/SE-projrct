@@ -99,7 +99,9 @@ var userRequests = {
 
     getProfile: function(){
         return axios.get(serverUrl + 'user/getProfile', {
-            sessionId:sessionId
+            headers: {
+                sessionId: sessionId
+            }
         }).then(function (info) {
             console.log('the user ' + name + ' getProfile.');
             return info.data;
@@ -108,6 +110,7 @@ var userRequests = {
             throw err.response.data;
         })
     },
+
     getUsername: function () {
         return name;
     }
@@ -355,6 +358,32 @@ var managementRequests = {
         })
     },
 
+    addMultipleShift: function(shifts) {
+        console.log('add multiple shift');
+        return axios.post(serverUrl + 'management/addShifts', {
+            sessionId:sessionId,
+            shiftArr:shifts
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    publishMultipleShifts: function(shifts){
+        console.log('publish multiple shift');
+        return axios.post(serverUrl + 'management/publishShifts', {
+            sessionId:sessionId,
+            shiftArr:shifts
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     editShift: function(shift) {
         console.log('edit shift');
         return axios.post(serverUrl + 'management/editShifts', {
@@ -437,6 +466,21 @@ var managementRequests = {
             throw err.response.data;
         })
     },
+
+    getShiftsOfRange: function(startDate, endDate) {
+        console.log('get shifts of range');
+        return axios.get(serverUrl + 'management/getShiftsOfRange?startDate=' + startDate + '&endDate=' + endDate, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    }
+
 };
 
 var managerRequests = {
@@ -571,6 +615,19 @@ var managerRequests = {
 
     exportMonthlyHoursReport: function(year, month){
         return axios.post(serverUrl + 'manager/exportMonthlyHoursReport', {
+            sessionId: sessionId,
+            year: year,
+            month: month
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    exportSalaryForHumanResourceReport: function(year, month){
+        return axios.post(serverUrl + 'manager/getSalaryForHumanResourceReport', {
             sessionId: sessionId,
             year: year,
             month: month

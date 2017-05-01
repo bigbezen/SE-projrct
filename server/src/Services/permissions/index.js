@@ -42,7 +42,7 @@ let funcNameToPermission = {
     'endShift': ['salesman'],
     'getActiveShift': ['salesman'],
     'getActiveShiftEncouragements': ['manager', 'salesman'],
-    'getShiftsFromDate': ['manager'],
+    'getShiftsFromDate': ['salesman'],
     'getSalesmanFinishedShifts': ['manager', 'salesman'],
     'deleteShift': ['manager'],
     'editShift': ['manager'],
@@ -58,7 +58,8 @@ let funcNameToPermission = {
     'reportExpenses': ['salesman'],
     'getMonthlyAnalysisReport': ['manager'],
     'updateMonthlyAnalysisReport': ['manager'],
-    'updateMonthlySalesmanHoursReport': ['manager']
+    'updateMonthlySalesmanHoursReport': ['manager'],
+    'getShiftsOfRange': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

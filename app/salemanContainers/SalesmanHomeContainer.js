@@ -125,7 +125,7 @@ var SalesmanHomeContainer = React.createClass({
         var endTime = new Date(this.state.shift.endTime);
         var formatedEndTime = endTime.toLocaleTimeString('en-GB');
         return (
-            <div className='main-container w3-card-4' style={styles.bodyStyle}>
+            <div className='main-container w3-card-8' style={styles.bodyStyle}>
                 <div style={styles.centerAlign}>
                     <p>{constantsStrings.storeName_string}: {this.state.shift.store.name}</p>
                     <p>{constantsStrings.city_string}: {this.state.shift.store.city}</p>
@@ -145,7 +145,7 @@ var SalesmanHomeContainer = React.createClass({
         return(
             <div>
                 <div className="text-center">
-                    <h1>אין לך משמרות היום, סע לים!!! (:</h1>
+                    <h1>{constantsStrings.salesmanNoShifts_string}</h1>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

@@ -3,6 +3,8 @@ let us              = require('underscore');
 let logger          = require('../../Utils/Logger/logger');
 let dal             = require('../../DAL/dal');
 let permissions     = require('../permissions/index');
+let mailer          = require('../../Utils/Mailer/index');
+let moment          = require('moment');
 
 let shiftModel       = require('../../Models/shift');
 
@@ -49,9 +51,13 @@ let addShifts = async function(sessionId, shiftArr){
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
-        if('salesmanId' in shift)
+        if('salesmanId' in shift) {
             newShift.salesmanId = shift.salesmanId;
+            let salesman = await dal.getUserByobjectId(shift.salesmanId);
+            sendMailOfShift(salesman, shift, storeDict[shift.storeId].name);
+        }
         newShift.storeId = shift.storeId;
+        let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.status = "CREATED";
@@ -73,6 +79,18 @@ let addShifts = async function(sessionId, shiftArr){
     });
 
     return {'code': 200, 'shiftArr': resultAddShift};
+};
+
+let sendMailOfShift = function(salesman, shift, storeName){
+    let date = moment(shift.startTime).format('DD-MM-YY');
+    let startHour = moment(shift.startTime).format('H:mm');
+    let endHour = moment(shift.endTime).format('H:mm');
+    let content = 'שובצה עבורך משמרת חדשה לתאריך: ' + date;
+    content += '\n\n' + 'בשעה: ' + startHour;
+    content += ' עד השעה: ' + endHour + '\n\n';
+    content += 'בחנות: ' + storeName;
+
+    mailer.sendMail([salesman.contact.email], 'IBBLS - שובצה עבורך משמרת חדשה', content);
 };
 
 let automateGenerateShifts = async function (sessionId, startTime, endTime){
@@ -208,6 +226,20 @@ let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
 
 };
 
+let getShiftsOfRange = async function(sessionId, startDate, endDate) {
+    logger.info('Services.shift.index.getShiftsOfRange', {'session-id': sessionId, 'startDate': startDate, 'endDate': endDate});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsOfRange', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let shifts = await dal.getShiftsOfRange(startDate, endDate);
+    if(shifts == null){
+        return {'code': 409, 'err': 'Something went wrong with getting the shifts'};
+    }
+
+    return {'code': 200, 'shifts': shifts};
+};
+
 let getSalesmanCurrentShift = async function(sessionId){
     logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
 
@@ -304,17 +336,12 @@ let reportExpenses = async function(sessionId, shiftId, km, parking){
 let getShiftsFromDate = async function(sessionId, fromDate){
     logger.info('Services.shift.index.getShiftsFromDate', {'session-id': sessionId});
 
-    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
-    if(isAuthorized == null)
+    let salesman = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
+    if(salesman == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let allShifts = await dal.getShiftsFromDate(fromDate);
-    allShifts = allShifts.map(x => x.toObject());
-    for(let shift of allShifts){
-        shift = await _fillUserDetails(shift);
-        shift = await _fillStoreDetails(shift);
-    }
-    console.log('bla');
+    let allShifts = await dal.getShiftsFromDate(fromDate, salesman._id);
+
     if(allShifts == null)
         return {'code': 500, 'err': 'something went wrong'};
     else
@@ -678,5 +705,6 @@ module.exports.updateSalesReport = updateSalesReport;
 module.exports.editSale = editSale;
 module.exports.getSalesmanShifts = getSalesmanShifts;
 module.exports.reportExpenses = reportExpenses;
+module.exports.getShiftsOfRange = getShiftsOfRange;
 
 

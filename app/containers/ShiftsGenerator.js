@@ -43,33 +43,19 @@ var ShiftDetails = React.createClass({
     },
     handleSubmitShift: function (e) {
         e.preventDefault();
-        var startTime = this.refs.startTimeBox.value;
-        var endTime = this.refs.endTimeBox.value;
-
-        var context = this.context;
-        var shifts;
+        var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+03:00';
+        var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+03:00';
         var notificationSystem = this.refs.notificationSystem;
-        managementServices.AddAllShifts(startTime, endTime).then(function (n) {
-            shifts = n;
-            notificationSystem.addNotification({
-                message: constantsStrings.addSuccessMessage_string,
-                level: 'success',
-                autoDismiss: 2,
-                position: 'tc',
-                onRemove: function (notification) {
-                    context.router.push({
-                        pathname: paths.manager_home_path
-                    })
-                }
-            });
-        }).catch(function (errMess) {
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 5,
-                position: 'tc'
-            });
+
+        this.context.router.push({
+            pathname: paths.manager_createMultipleShifts_path,
+            query: {'startTime': startTime, 'endTime': endTime}
         })
+
+    },
+
+    onChangeStarTime: function(){
+        this.refs.endTimeBox.value = this.refs.startTimeBox.value;
     },
 
     createAllShifts: function() {
@@ -80,16 +66,25 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group ">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
-                        <input type="datetime-local"
-                               className="col-xs-4"
+                        <input type="date"
+                               className="col-xs-5"
+                               ref="dateBox"
+                        />
+                    </div>
+
+                    <div className="form-group ">
+                        <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
+                        <input type="time"
+                               className="col-xs-5"
                                ref="startTimeBox"
+                               onChange={this.onChangeStarTime}
                         />
                     </div>
 
                     <div className="form-group ">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.endDate_string}</label>
-                        <input type="datetime-local"
-                               className="col-xs-4"
+                        <input type="time"
+                               className="col-xs-5"
                                ref="endTimeBox"
                         />
                     </div>

@@ -146,7 +146,7 @@ var ChangePassContainer = React.createClass({
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 col-sm-4 col-sm-offset-4"
+                                className="w3-btn btn w3-theme-d5 col-sm-6 col-sm-offset-3 w3-xxlarge w3-round-xlarge"
                                 type="submit">
                                 {constantsStrings.changePassButton_string}
                             </button>

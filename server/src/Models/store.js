@@ -8,7 +8,8 @@ var storeSchema = new Schema({
     'city': String,
     'address': String,
     'area': String,
-    'channel': String
+    'channel': String,
+    'defaultSalesman': {type: mongoose.Schema.Types.ObjectId, ref: 'user'}
 });
 
 var store = mongoose.model('store', storeSchema);

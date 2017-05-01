@@ -77,6 +77,7 @@ class ConstantStrings extends React.Component {
     static fullName_string = 'שם הדייל';
     static gender_string = 'מין';
     static startDate_string = 'תאריך התחלה';
+    static endDate_string = 'תאריך סיום';
     static date_string = 'תאריך';
     static role_string = 'תפקיד';
     static salary_string = 'שכר שעתי';
@@ -122,8 +123,9 @@ class ConstantStrings extends React.Component {
     static editShift_string = 'עריכת משמרת קיימת';
     static type_string = 'סוג';
     static salesman_string = 'דייל';
-    static getReport_string = 'הורד דוח';
+    static getReport_string = 'שלח לאימייל';
     static shiftType_string = 'סוג משמרת';
+    static addMultipleShifts_string = 'הוספת מספר משמרות';
 
     //reports
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
@@ -135,6 +137,7 @@ class ConstantStrings extends React.Component {
     static reportsSalesReportTitle_string = 'דוח טעימות';
     static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
     static reportsMonthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+    static reportsHumanResourcesReportTitle_string = 'דוח כוח אדם';
     static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
     static reportsShowReport_string = 'הצג דוח';
     static monthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
@@ -207,6 +210,7 @@ class ConstantStrings extends React.Component {
     static startShift_string = 'התחל משמרת';
     static endShift_string = 'סיים משמרת';
     static continueShift_string = 'המשך משמרת';
+    static salesmanNoShifts_string = 'אין לך משמרות היום';
     static genderForDropdown = ["נקבה", "זכר"];
 
     static channelForDropdown = ["מסורתי - חם", "מסורתי - מאורגן", "תדמית יום"];
@@ -231,6 +235,8 @@ class ConstantStrings extends React.Component {
             ['manager', 'מנהל']
         ];
 
+    static shiftType_taste = 'טעימה';
+    static shiftType_learning = 'הדרכה';
     static shiftType = ['טעימה', 'הדרכה'] ;
 
 
@@ -270,6 +276,7 @@ class ConstantStrings extends React.Component {
     static changePassServerFailedMessage_string = 'סיסמא אינה נכונה. אנא נסה שנית';
     static changePassSuccessMessage_string = 'סיסמא השתנתה בהצלחה!';
     static cancel_string = 'ביטול';
+    static mustChooseSalesman_string = 'עליך לבחור דייל לכל משמרת';
 
      //salesman menu
     static addSale_string = 'מכירות';
@@ -277,6 +284,7 @@ class ConstantStrings extends React.Component {
     static addComment_string = 'הוספת הערה';
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';
+    static commentsFromShift_string = 'הערות מהמשמרת';
     static encouragements_string = 'תמריצים';
     static updateExpenses_string = 'עדכן נסיעות';
     //shift expenses

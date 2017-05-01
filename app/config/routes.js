@@ -18,6 +18,7 @@ var User = require('../containers/UserDetails');
 var Shifts = require('../containers/ShiftsContainer');
 var Shift = require('../containers/ShiftDetails');
 var CreateShifts = require('../containers/ShiftsGenerator');
+var MultipleShiftsCreation = require('../containers/ShiftsCreateMultipleShifts');
 var SalesmanHomeBase = require('../salemanContainers/SalesmanHomeBaseContainer');
 var SalesmanHome = require('../salemanContainers/SalesmanHomeContainer');
 var SalesmanStartShift = require('../salemanContainers/StartShiftContainer');
@@ -34,7 +35,8 @@ var Incentive = require('../containers/IncentiveDetails');
 var Reports = require('../containers/ReportsBase');
 var SalesReport = require('../containers/ReportsSalesReport');
 var MonthlyAnalysisReport = require('../containers/ReportsMonthlyAnalysis');
-var MonthlyHoursReport = require('../containers/ReportsMonthlyHours');
+var MonthlyHoursReport = require('../containers/ReportsMonthlyHours')
+var HumanResourcesReport = require('../containers/ReportsHumanResources');
 var SalesmanShiftsExpenses = require('../salemanContainers/shiftExpensesContainer');
 var SalesmanProfile = require('../salemanContainers/SalesmanProfileContainer');
 var SalesmanShiftSchedule = require('../salemanContainers/SalesmanShiftsScheduleContainer');
@@ -55,6 +57,7 @@ var routes = (
             <Route path='user' component={User} />
             <Route path='shift' component={Shift}/>
             <Route path='createShifts' component={CreateShifts}/>
+            <Route path='createMultipleShifts' component={MultipleShiftsCreation}/>
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
             <Route path='changePassword' component={ChangePass}/>
@@ -62,6 +65,7 @@ var routes = (
             <Route path='salesReport' component={SalesReport} />
             <Route path='monthlyAnalysisReport' component={MonthlyAnalysisReport} />
             <Route path='monthlyHoursReport' component={MonthlyHoursReport} />
+            <Route path='humanResourcesReport' component={HumanResourcesReport} />
 
         </Route>
         <Route path='/member/'>

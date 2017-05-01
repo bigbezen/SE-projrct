@@ -64,6 +64,19 @@ var styles = {
         marginTop: '10px',
         marginBottom: '10px',
         width: '12%',
+    },
+    dateLabel: {
+        float: 'right',
+        marginRight: '10px'
+    },
+    dateInput: {
+        float: 'right',
+        marginLeft:'5px'
+    },
+    addButton: {
+        float: 'left',
+        marginBottom: '15px',
+        marginRight: '50px'
     }
 
 };

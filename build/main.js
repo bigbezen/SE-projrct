@@ -97,7 +97,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-var monthlyJob = scheduler.scheduleJob('21 * * * *', _genarateMonthlyReport);
+var monthlyJob = scheduler.scheduleJob('42 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', { 'port': port });
 function _connectToDb() {
@@ -1837,6 +1837,43 @@ function _setapApiEndpoints() {
         };
     }());
 
+    app.get('/management/getShiftsOfRange', function () {
+        var _ref46 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee46(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee46$(_context46) {
+                while (1) {
+                    switch (_context46.prev = _context46.next) {
+                        case 0:
+                            if (!(!('sessionid' in req.headers) || !('startDate' in req.query) || !('endDate' in req.query))) {
+                                _context46.next = 3;
+                                break;
+                            }
+
+                            res.status(404).send('invalid parameters');
+                            return _context46.abrupt('return');
+
+                        case 3:
+                            _context46.next = 5;
+                            return shiftService.getShiftsOfRange(req.headers.sessionid, req.query.startDate, req.query.endDate);
+
+                        case 5:
+                            result = _context46.sent;
+
+                            if (result.code == 200) res.status(200).send(result.shifts);else res.status(result.code).send(result.err);
+
+                        case 7:
+                        case 'end':
+                            return _context46.stop();
+                    }
+                }
+            }, _callee46, this);
+        }));
+
+        return function (_x89, _x90) {
+            return _ref46.apply(this, arguments);
+        };
+    }());
+
     //Manager Services
     app.post('/manager/addNotificationRule', function (req, res) {
         res.status(200).send('add new notification rule');
@@ -1851,39 +1888,39 @@ function _setapApiEndpoints() {
     });
 
     app.post('/manager/sendBroadcastMessage', function () {
-        var _ref46 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee46(req, res) {
+        var _ref47 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee47(req, res) {
             var result;
-            return _regenerator2.default.wrap(function _callee46$(_context46) {
+            return _regenerator2.default.wrap(function _callee47$(_context47) {
                 while (1) {
-                    switch (_context46.prev = _context46.next) {
+                    switch (_context47.prev = _context47.next) {
                         case 0:
                             if (validator.sendBroadcastMessage(req.body)) {
-                                _context46.next = 3;
+                                _context47.next = 3;
                                 break;
                             }
 
                             res.status(404).send('invalid parameters');
-                            return _context46.abrupt('return');
+                            return _context47.abrupt('return');
 
                         case 3:
-                            _context46.next = 5;
+                            _context47.next = 5;
                             return messageService.sendBroadcast(req.body.sessionId, req.body.content, req.body.date);
 
                         case 5:
-                            result = _context46.sent;
+                            result = _context47.sent;
 
                             if (result.code == 200) res.status(200).send();else res.status(result.code).send(result.err);
 
                         case 7:
                         case 'end':
-                            return _context46.stop();
+                            return _context47.stop();
                     }
                 }
-            }, _callee46, this);
+            }, _callee47, this);
         }));
 
-        return function (_x89, _x90) {
-            return _ref46.apply(this, arguments);
+        return function (_x91, _x92) {
+            return _ref47.apply(this, arguments);
         };
     }());
 
@@ -1912,34 +1949,6 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getSaleReportXl', function () {
-        var _ref47 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee47(req, res) {
-            var result;
-            return _regenerator2.default.wrap(function _callee47$(_context47) {
-                while (1) {
-                    switch (_context47.prev = _context47.next) {
-                        case 0:
-                            _context47.next = 2;
-                            return reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
-
-                        case 2:
-                            result = _context47.sent;
-
-                            res.status(result.code).send(result.err);
-
-                        case 4:
-                        case 'end':
-                            return _context47.stop();
-                    }
-                }
-            }, _callee47, this);
-        }));
-
-        return function (_x91, _x92) {
-            return _ref47.apply(this, arguments);
-        };
-    }());
-
-    app.get('/manager/getSalaryForHumanResourceReport', function () {
         var _ref48 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee48(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee48$(_context48) {
@@ -1947,7 +1956,7 @@ function _setapApiEndpoints() {
                     switch (_context48.prev = _context48.next) {
                         case 0:
                             _context48.next = 2;
-                            return reportsService.getSalaryForHumanResourceReport(req.headers.sessionid, req.headers.year, req.headers.month);
+                            return reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
 
                         case 2:
                             result = _context48.sent;
@@ -1967,7 +1976,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getSalesmanListXL', function () {
+    app.post('/manager/getSalaryForHumanResourceReport', function () {
         var _ref49 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee49(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee49$(_context49) {
@@ -1975,7 +1984,7 @@ function _setapApiEndpoints() {
                     switch (_context49.prev = _context49.next) {
                         case 0:
                             _context49.next = 2;
-                            return reportsService.getSalesmanListXL(req.headers.sessionid);
+                            return reportsService.getSalaryForHumanResourceReport(req.body.sessionId, req.body.year, req.body.month);
 
                         case 2:
                             result = _context49.sent;
@@ -1995,7 +2004,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyHoursSalesmansReportXl', function () {
+    app.get('/manager/getSalesmanListXL', function () {
         var _ref50 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee50(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee50$(_context50) {
@@ -2003,7 +2012,7 @@ function _setapApiEndpoints() {
                     switch (_context50.prev = _context50.next) {
                         case 0:
                             _context50.next = 2;
-                            return reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, req.headers.year, req.headers.month);
+                            return reportsService.getSalesmanListXL(req.headers.sessionid);
 
                         case 2:
                             result = _context50.sent;
@@ -2023,7 +2032,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthAnalysisReportXL', function () {
+    app.get('/manager/getMonthlyHoursSalesmansReportXl', function () {
         var _ref51 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee51(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee51$(_context51) {
@@ -2031,7 +2040,7 @@ function _setapApiEndpoints() {
                     switch (_context51.prev = _context51.next) {
                         case 0:
                             _context51.next = 2;
-                            return reportsService.getMonthAnalysisReportXL(req.headers.sessionId, req.headers.year);
+                            return reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, req.headers.year, req.headers.month);
 
                         case 2:
                             result = _context51.sent;
@@ -2051,31 +2060,22 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyHoursSalesmansReport', function () {
+    app.post('/manager/getMonthAnalysisReportXL', function () {
         var _ref52 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee52(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee52$(_context52) {
                 while (1) {
                     switch (_context52.prev = _context52.next) {
                         case 0:
-                            if (validator.getMontlyhouresSalesmanReport(req.header)) {
-                                _context52.next = 3;
-                                break;
-                            }
+                            _context52.next = 2;
+                            return reportsService.getMonthAnalysisReportXL(req.body.sessionId, req.body.year);
 
-                            res.status(404).send('invalid parameters');
-                            return _context52.abrupt('return');
-
-                        case 3:
-                            _context52.next = 5;
-                            return reportsService.getMonthlyUserHoursReport(req.header.sessionId, req.header.year, req.header.month);
-
-                        case 5:
+                        case 2:
                             result = _context52.sent;
 
-                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+                            res.status(result.code).send(result.err);
 
-                        case 7:
+                        case 4:
                         case 'end':
                             return _context52.stop();
                     }
@@ -2088,27 +2088,22 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyAnalysisReport', function () {
+    app.get('/manager/getMonthlyHoursSalesmansReport', function () {
         var _ref53 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee53(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee53$(_context53) {
                 while (1) {
                     switch (_context53.prev = _context53.next) {
                         case 0:
-                            console.log('bla');
-                            // if ((!('sessionid' in req.headers)) || (!validator.getMonthlyAnalysisReport(req.query))) {
-                            //     res.status(404).send('invalid parameters');
-                            //     return;
-                            // }
-                            _context53.next = 3;
-                            return reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
+                            _context53.next = 2;
+                            return reportsService.getMonthlyUserHoursReport(req.headers.sessionid, req.query.year, req.query.month);
 
-                        case 3:
+                        case 2:
                             result = _context53.sent;
 
                             if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
 
-                        case 5:
+                        case 4:
                         case 'end':
                             return _context53.stop();
                     }
@@ -2118,6 +2113,136 @@ function _setapApiEndpoints() {
 
         return function (_x103, _x104) {
             return _ref53.apply(this, arguments);
+        };
+    }());
+
+    app.get('/manager/getMonthlyAnalysisReport', function () {
+        var _ref54 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee54(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee54$(_context54) {
+                while (1) {
+                    switch (_context54.prev = _context54.next) {
+                        case 0:
+                            _context54.next = 2;
+                            return reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
+
+                        case 2:
+                            result = _context54.sent;
+
+                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+
+                        case 4:
+                        case 'end':
+                            return _context54.stop();
+                    }
+                }
+            }, _callee54, this);
+        }));
+
+        return function (_x105, _x106) {
+            return _ref54.apply(this, arguments);
+        };
+    }());
+
+    app.post('/manager/updateMonthlyAnalysisReport', function () {
+        var _ref55 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee55(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee55$(_context55) {
+                while (1) {
+                    switch (_context55.prev = _context55.next) {
+                        case 0:
+                            if (validator.updateMonthlyAnalysisReport(req.body)) {
+                                _context55.next = 3;
+                                break;
+                            }
+
+                            res.status(404).send('invalid parameters');
+                            return _context55.abrupt('return');
+
+                        case 3:
+                            _context55.next = 5;
+                            return reportsService.updateMonthlyAnalysisReport(req.body.sessionId, req.body.year, req.body.report);
+
+                        case 5:
+                            result = _context55.sent;
+
+                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+
+                        case 7:
+                        case 'end':
+                            return _context55.stop();
+                    }
+                }
+            }, _callee55, this);
+        }));
+
+        return function (_x107, _x108) {
+            return _ref55.apply(this, arguments);
+        };
+    }());
+
+    app.post('/manager/updateMonthlyHoursReport', function () {
+        var _ref56 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee56(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee56$(_context56) {
+                while (1) {
+                    switch (_context56.prev = _context56.next) {
+                        case 0:
+                            if (validator.updateMonthlyHoursReport(req.body)) {
+                                _context56.next = 3;
+                                break;
+                            }
+
+                            res.status(404).send('invalid parameters');
+                            return _context56.abrupt('return');
+
+                        case 3:
+                            _context56.next = 5;
+                            return reportsService.updateMonthlySalesmanHoursReport(req.body.sessionId, req.body.year, req.body.month, req.body.report);
+
+                        case 5:
+                            result = _context56.sent;
+
+                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+
+                        case 7:
+                        case 'end':
+                            return _context56.stop();
+                    }
+                }
+            }, _callee56, this);
+        }));
+
+        return function (_x109, _x110) {
+            return _ref56.apply(this, arguments);
+        };
+    }());
+
+    app.post('/manager/exportMonthlyHoursReport', function () {
+        var _ref57 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee57(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee57$(_context57) {
+                while (1) {
+                    switch (_context57.prev = _context57.next) {
+                        case 0:
+                            _context57.next = 2;
+                            return reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
+
+                        case 2:
+                            result = _context57.sent;
+
+                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+
+                        case 4:
+                        case 'end':
+                            return _context57.stop();
+                    }
+                }
+            }, _callee57, this);
+        }));
+
+        return function (_x111, _x112) {
+            return _ref57.apply(this, arguments);
         };
     }());
 }

@@ -282,24 +282,26 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            if ('sessionId' in req.headers) {
-                                _context6.next = 3;
+                            console.log('bla');
+
+                            if ('sessionid' in req.headers) {
+                                _context6.next = 4;
                                 break;
                             }
 
                             res.status(404).send('invalid parameters');
                             return _context6.abrupt('return');
 
-                        case 3:
-                            _context6.next = 5;
+                        case 4:
+                            _context6.next = 6;
                             return userService.getProfile(req.headers.sessionid);
 
-                        case 5:
+                        case 6:
                             result = _context6.sent;
 
                             if (result.code == 200) res.status(200).send(result.user);else res.status(result.code).send(result.err);
 
-                        case 7:
+                        case 8:
                         case 'end':
                             return _context6.stop();
                     }
@@ -2231,9 +2233,10 @@ function _setapApiEndpoints() {
                         case 2:
                             result = _context57.sent;
 
+                            console.log('bla');
                             if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
 
-                        case 4:
+                        case 5:
                         case 'end':
                             return _context57.stop();
                     }

@@ -8,4 +8,5 @@ type = "//*[@id=\"app\"]/div/div[3]/form/div[7]/select"
 date = "//*[@id=\"app\"]/div/div[3]/form/div[9]/input"
 startTime = "//*[@id=\"app\"]/div/div[3]/form/div[11]/input"
 endTime = "//*[@id=\"app\"]/div/div[3]/form/div[13]/input"
-addBtn = "//*[@id=\"app\"]/div/div[3]/form/div[16]/button"
+addBtn = "//*[@id=\"app\"]/div/div[3]/form/div[14]/button"
+

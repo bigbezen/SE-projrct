@@ -1,3 +1,16 @@
+import datetime
+
+
+def getCurrDate():
+    return datetime.datetime.now().date().strftime("%d/%m/%Y")
+
+
+def getNextTime(n):
+    currTime = datetime.datetime.now() + datetime.timedelta(hours=n)
+    nextTime = currTime.time().replace(microsecond=0).strftime("%X")[:-3]
+    return nextTime
+
+
 url = 'http://localhost:3000/#/'
 manager_home = 'http://localhost:3000/#/manager/home'
 change_page = 'http://localhost:3000/#/manager/changePassword'
@@ -45,9 +58,16 @@ existsUsername = "shahaf"
 existsId = "9876976"
 existsEmail = "sds@dsfds.com"
 
-
 # incentives
 incentiveName = "תמריץ1"
 incentiveProduct = "קמפארי"
 incentiveQuantity = "10"
 incentiveBonus = "100"
+
+# shifts
+shiftStore = "טיב טעם"
+shiftUser = "newUser"
+shiftType = "טעימה"
+shiftDate = getCurrDate()
+shiftStartTime = getNextTime(1)
+shiftEndTime = getNextTime(2)

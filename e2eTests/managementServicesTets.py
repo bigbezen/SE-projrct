@@ -16,7 +16,9 @@ class ManagementServices(unittest.TestCase):
     def setUp(self):
         dbConnector.deleteDb()
         dbConnector.initDb()
-        self.driver = webdriver.Chrome()
+        options = webdriver.ChromeOptions()
+        options.add_argument('--lang=heb')
+        self.driver = webdriver.Chrome(chrome_options=options)
         self.driver.get(helper.url)
         driver = self.driver
         driver.find_element_by_xpath(containers.login.username).send_keys(helper.adminUsername)
@@ -333,7 +335,7 @@ class ManagementServices(unittest.TestCase):
         driver.implicitly_wait(300)
         self.assertEqual(driver.current_url, helper.productsContainer)
 
-        table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[1]/div[2]/div[2]/table/tbody")
+        table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[1]/div/div[2]/div[2]/table/tbody")
         tableSizeBefore = len(table.text.split("\n"))
 
         driver.find_element_by_xpath(containers.products.delete).click()
@@ -342,7 +344,7 @@ class ManagementServices(unittest.TestCase):
         driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div/div/div[2]/button").click()
         sleep(1)
 
-        table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[1]/div[2]/div[2]/table/tbody")
+        table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[1]/div/div[2]/div[2]/table/tbody")
         tableSizeAfter = len(table.text.split("\n"))
         self.assertTrue(tableSizeBefore > tableSizeAfter)
         self.assertEqual(driver.current_url, helper.productsContainer)
@@ -352,17 +354,47 @@ class ManagementServices(unittest.TestCase):
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
         driver.implicitly_wait(300)
         self.assertEqual(driver.current_url, helper.shiftsContainer)
+        self.addCurrShift()
+        self.assertEqual(driver.current_url, helper.manager_home)
 
     def test_editShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
         driver.implicitly_wait(300)
         self.assertEqual(driver.current_url, helper.shiftsContainer)
+        self.addCurrShift()
+        self.assertEqual(driver.current_url, helper.manager_home)
+
+        driver.find_element_by_xpath(containers.shifts.edit).click()
+        driver.implicitly_wait(300)
+        driver.find_element_by_xpath(containers.shifts.username).clear()
+        driver.find_element_by_xpath(containers.shifts.username).send_keys("avadir")
+
+        driver.find_element_by_xpath(containers.shifts.addBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertEqual(driver.current_url, helper.manager_home)
 
     def test_deleteShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
         driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.shiftsContainer)
+        self.addCurrShift()
+        self.assertEqual(driver.current_url, helper.manager_home)
+
+        table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div[2]/div[2]/table/tbody")
+        tableSizeBefore = len(table.text.split("\n"))
+
+        driver.find_element_by_xpath(containers.shifts.delete).click()
+        driver.implicitly_wait(300)
+        sleep(1)
+        driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div/div/div[2]/button").click()
+        sleep(1)
+
+        table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div[2]/div[2]/table/tbody")
+        tableSizeAfter = len(table.text.split("\n"))
+        self.assertTrue(tableSizeBefore > tableSizeAfter)
         self.assertEqual(driver.current_url, helper.shiftsContainer)
 
     def test_addIncentives_ok(self):
@@ -407,11 +439,11 @@ class ManagementServices(unittest.TestCase):
         driver.implicitly_wait(300)
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
-        driver.find_element_by_xpath(containers.Incentives.delete).click()
-        driver.implicitly_wait(300)
-        sleep(1)
-        driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div/div/div[2]/button").click()
-        sleep(1)
+        # driver.find_element_by_xpath(containers.Incentives.delete).click()
+        #  driver.implicitly_wait(300)
+        #  sleep(1)
+        #  driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div/div/div[2]/button").click()
+        #  sleep(1)
 
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
@@ -419,4 +451,18 @@ class ManagementServices(unittest.TestCase):
         self.driver.close()
 
     def addCurrShift(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.shifts.add).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.shifts.store).send_keys(helper.shiftStore)
+        driver.find_element_by_xpath(containers.shifts.username).send_keys(helper.shiftUser)
+        driver.find_element_by_xpath(containers.shifts.type).send_keys(helper.shiftType)
+        driver.find_element_by_xpath(containers.shifts.date).send_keys(helper.shiftDate)
+        driver.find_element_by_xpath(containers.shifts.startTime).send_keys(helper.shiftStartTime)
+        driver.find_element_by_xpath(containers.shifts.endTime).send_keys(helper.shiftEndTime)
+
+        driver.find_element_by_xpath(containers.shifts.addBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
         return

@@ -1,31 +1,19 @@
 /**
  * Created by lihiverchik on 17/12/2016.
  */
-var React = require('react');
-var constantStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var managementServices = require('../communication/managementServices');
-var managerServices = require('../communication/managerServices');
-
-var moment = require('moment');
-var NotificationSystem = require('react-notification-system');
-var EditIcon = require('react-icons/lib/md/edit');
-var salesChart = undefined;
-var userServices = require('../communication/userServices');
-
-
-
-
-
-
-
-
-var options = {
-    noDataText: constantStrings.NoDataText_string
-};
+var React               = require('react');
+var constantStrings     = require('../utils/ConstantStrings');
+var styles              = require('../styles/managerStyles/styles');
+var managementServices  = require('../communication/managementServices');
+var managerServices     = require('../communication/managerServices');
+var moment              = require('moment');
+var NotificationSystem  = require('react-notification-system');
+var EditIcon            = require('react-icons/lib/md/edit');
+var salesChart          = undefined;
+var userServices        = require('../communication/userServices');
 
 var ReportsSalesReport = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
@@ -38,6 +26,7 @@ var ReportsSalesReport = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -46,6 +35,7 @@ var ReportsSalesReport = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -55,6 +45,7 @@ var ReportsSalesReport = React.createClass({
             chosenShift: undefined
         }
     },
+
     componentDidMount() {
         this.updateSalesmen();
     },
@@ -62,7 +53,6 @@ var ReportsSalesReport = React.createClass({
     updateSalesmen: function() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        console.log('fetching salesmen');
         managementServices.getAllUsers()
             .then(function(result) {
                 var salesmen = result.filter(function(user){
@@ -73,10 +63,15 @@ var ReportsSalesReport = React.createClass({
                 });
             })
             .catch(function(err) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: err,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc',
+                });
             });
     },
-
-
 
     salesmanChanged: function(event) {
         var self = this;
@@ -87,14 +82,14 @@ var ReportsSalesReport = React.createClass({
         });
 
         var salesman = this.state.salesmen[event.target.selectedIndex - 1];
-        console.log('fetching shifts of ' + salesman.username);
         managementServices.getSalesmanFinishedShifts(salesman._id)
             .then(function(result) {
                 if(result.length == 0){
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantStrings.noShifts_string,
                         level: 'error',
-                        autoDismiss: 2,
+                        autoDismiss: 0,
                         position: 'tc',
                     });
                 }
@@ -104,23 +99,20 @@ var ReportsSalesReport = React.createClass({
                     });
                 }
             }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
 
     shiftChanged: function(event) {
-        var self = this;
-        var notificationSystem = this.refs.notificationSystem;
         var selectedIndex = event.target.selectedIndex;
         if(selectedIndex > 0) {
             var chosenShift = this.state.shifts[selectedIndex - 1];
-
-
             this.setState({
                 chosenShift: chosenShift
             });
@@ -130,8 +122,8 @@ var ReportsSalesReport = React.createClass({
                 chosenShift: undefined
             })
         }
-
     },
+
     productSortingMethod: function(a, b){
         if(a.subCategory < b.subCategory)
             return -1;
@@ -217,6 +209,7 @@ var ReportsSalesReport = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managerServices.getSaleReportXl(this.state.chosenShift)
             .then(function(data) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
                     level: 'success',
@@ -225,6 +218,7 @@ var ReportsSalesReport = React.createClass({
                 });
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
@@ -239,12 +233,11 @@ var ReportsSalesReport = React.createClass({
         var newOpened = this.refs[product._id + "editOpened" + index].value;
         var productId = product.productId;
         var shiftId = this.state.chosenShift._id;
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.updateSalesReport(shiftId, productId, newSold, newOpened)
             .then(function(result) {
-                console.log('updated sales report');
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantStrings.editSuccessMessage_string,
                     level: 'success',
@@ -253,7 +246,7 @@ var ReportsSalesReport = React.createClass({
                 });
             })
             .catch(function(err) {
-                console.log('error');
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantStrings.editFailMessage_string,
                     level: 'error',
@@ -283,7 +276,6 @@ var ReportsSalesReport = React.createClass({
         return optionsForDropdown;
     },
 
-
     renderLoading:function () {
         return(
             <div>
@@ -291,6 +283,7 @@ var ReportsSalesReport = React.createClass({
             </div>
         )
     },
+
     render: function () {
         if(this.state.salesmen == undefined){
             return this.renderLoading();

@@ -2,20 +2,21 @@
  * Created by USER on 17/12/2016.
  */
 
-var React = require('react');
-var userServices = require('../communication/userServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var Users = require('react-icons/lib/fa/user');
-var Products = require('react-icons/lib/fa/glass');
-var Incentives = require('react-icons/lib/md/attach-money');
-var Stores = require('react-icons/lib/md/store');
-var Shifts = require('react-icons/lib/fa/calendar');
-var Reports = require('react-icons/lib/go/graph');
-var styles = require('../styles/managerStyles/baseStyles');
-var NotificationSystem = require('react-notification-system');
+var React               = require('react');
+var userServices        = require('../communication/userServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var paths               = require('../utils/Paths');
+var Users               = require('react-icons/lib/fa/user');
+var Products            = require('react-icons/lib/fa/glass');
+var Incentives          = require('react-icons/lib/md/attach-money');
+var Stores              = require('react-icons/lib/md/store');
+var Shifts              = require('react-icons/lib/fa/calendar');
+var Reports             = require('react-icons/lib/go/graph');
+var styles              = require('../styles/managerStyles/baseStyles');
+var NotificationSystem  = require('react-notification-system');
 
 var BaseContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
@@ -31,32 +32,31 @@ var BaseContainer = React.createClass({
                     pathname: paths.login_path
                 })
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
 
     handleChangePassword: function () {
-        console.log('BaseContainer- changePass function');
         this.context.router.push({
             pathname: paths.manager_changePass_path
         })
     },
 
     handleMenuBar: function () {
-        console.log('BaseContainer- click on menu bar');
         var x = this.refs.demo;
-        console.log("BaseContainer- x " + x.className);
         if (x.className.indexOf("w3-show") == -1) {
             x.className += " w3-show";
         } else {
             x.className = x.className.replace(" w3-show", "");
         }
     },
+
     render: function () {
         return (
             <div className='main-container'>
@@ -92,14 +92,6 @@ var BaseContainer = React.createClass({
             </div>
         )
     }
- //   render: function () {
- //       this.showView();
-      //  if (userServices.managerIsLoggedin()) {
-
-    //    } else {
-     //       alert('you must be logged in as Manager');
-    //    }
- //   }
 });
 
 module.exports = BaseContainer;

@@ -2,18 +2,20 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var paths = require('../utils/Paths');
-var managementServices = require('../communication/managementServices');
-var userServices = require('../communication/userServices');
-var constantStrings = require('../utils/ConstantStrings');
-var styles = require('../styles/managerStyles/homeStyles');
-var NotificationSystem = require('react-notification-system');
+var React               = require('react');
+var paths               = require('../utils/Paths');
+var managementServices  = require('../communication/managementServices');
+var userServices        = require('../communication/userServices');
+var constantStrings     = require('../utils/ConstantStrings');
+var styles              = require('../styles/managerStyles/homeStyles');
+var NotificationSystem  = require('react-notification-system');
 
 var HomeContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -23,6 +25,7 @@ var HomeContainer = React.createClass({
             storesNum: 0
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -31,6 +34,7 @@ var HomeContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -39,9 +43,11 @@ var HomeContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentWillMount() {
         this.updateStatistics();
     },
+
     updateStatistics() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
@@ -50,22 +56,42 @@ var HomeContainer = React.createClass({
                 productsNum: result.length
             });
         }).catch(function (errMess) {
-        })
-        managementServices.getAllUsers().then(function (n) {
-            var result = n;
+            notificationSystem.clearNotifications();
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
+        });
+        managementServices.getAllUsers().then(function (result) {
             self.setState({
                 salesmenNum: result.length
             });
         }).catch(function (errMess) {
-        })
-        managementServices.getAllStores().then(function (n) {
-            var result = n;
+            notificationSystem.clearNotifications();
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
+        });
+        managementServices.getAllStores().then(function (result) {
             self.setState({
                 storesNum: result.length
             });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
         })
     },
+
     handleSelectUsers: function () {
         this.context.router.push({
            pathname: paths.manager_users_path
@@ -89,6 +115,7 @@ var HomeContainer = React.createClass({
             pathname: paths.manager_shifts_path
         })
     },
+
     render: function () {
         return (
             <div className="w3-theme-l5" style={styles.cardsRow}>
@@ -106,7 +133,6 @@ var HomeContainer = React.createClass({
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
-
         )
     }
 });

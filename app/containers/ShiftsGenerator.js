@@ -2,29 +2,26 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var managementServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var shiftInfo = require('../models/shift');
-var flatten = require('flat');
-var ReactBootstrap = require("react-bootstrap");
-var moment = require('moment');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var constantStrings = require('../utils/ConstantStrings');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var constantsStrings    = require('../utils/ConstantStrings');
+var moment              = require('moment');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var ShiftDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
-        return {
-        }
+        return {}
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -33,6 +30,7 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -41,17 +39,16 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     handleSubmitShift: function (e) {
         e.preventDefault();
         var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+03:00';
         var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+03:00';
-        var notificationSystem = this.refs.notificationSystem;
 
         this.context.router.push({
             pathname: paths.manager_createMultipleShifts_path,
             query: {'startTime': startTime, 'endTime': endTime}
         })
-
     },
 
     onChangeStarTime: function(){

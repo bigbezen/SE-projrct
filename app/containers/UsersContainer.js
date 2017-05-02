@@ -1,20 +1,19 @@
-var React = require('react');
-var ReactBsTable = require("react-bootstrap-table");
-var BootstrapTable = ReactBsTable.BootstrapTable;
-var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
-var constantStrings = require('../utils/ConstantStrings');
-var helpers = require('../utils/Helpers');
-var managementServices = require('../communication/managementServices');
-var managerServices = require('../communication/managerServices');
-var userServices = require('../communication/userServices');
-var flatten = require('flat');
-var moment = require('moment');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var NotificationSystem = require('react-notification-system');
-var TrashIcon = require('react-icons/lib/fa/trash-o');
-var EditIcon = require('react-icons/lib/md/edit');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var ReactBsTable        = require("react-bootstrap-table");
+var BootstrapTable      = ReactBsTable.BootstrapTable;
+var TableHeaderColumn   = ReactBsTable.TableHeaderColumn;
+var constantStrings     = require('../utils/ConstantStrings');
+var helpers             = require('../utils/Helpers');
+var managementServices  = require('../communication/managementServices');
+var managerServices     = require('../communication/managerServices');
+var flatten             = require('flat');
+var moment              = require('moment');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var NotificationSystem  = require('react-notification-system');
+var TrashIcon           = require('react-icons/lib/fa/trash-o');
+var EditIcon            = require('react-icons/lib/md/edit');
+var userServices        = require('../communication/userServices');
 
 function dateFormatter(cell, row) {
     return moment(cell).format('YYYY-MM-DD');
@@ -32,9 +31,11 @@ var options = {
 };
 
 var UsersContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -43,6 +44,7 @@ var UsersContainer = React.createClass({
             username: null
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -51,6 +53,7 @@ var UsersContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -59,16 +62,19 @@ var UsersContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentWillMount() {
         this.updateUsers();
         this.updateUsername();
     },
+
     updateUsername(){
         var name = userServices.getUsername();
         this.setState({
             username : name
         })
     },
+
     updateUsers() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
@@ -78,17 +84,17 @@ var UsersContainer = React.createClass({
                 users: flatUsers
             });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     onClickEditButton: function(cell, row, rowIndex){
-        console.log('User #', rowIndex);
-        console.log(row);
         this.context.router.push({
             pathname: paths.manager_userDetails_path,
             query: row
@@ -98,6 +104,7 @@ var UsersContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
         if(row.username==this.state.username){
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantStrings.cannotDeleteSelf_string,
                 level: 'info',
@@ -108,6 +115,7 @@ var UsersContainer = React.createClass({
                 }
             });
         }else{
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantStrings.areYouSure_string,
                 level: 'info',
@@ -132,37 +140,43 @@ var UsersContainer = React.createClass({
         managementServices.deleteUser(row).then(function (n) {
             self.updateUsers();
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     onClickAddButton: function(){
         this.context.router.push({
             pathname: paths.manager_userDetails_path
         })
     },
-    onClickGetReportButton: function(cell, row, rowIndex){
+
+    onClickGetReportButton: function(){
         var notificationSystem = this.refs.notificationSystem;
         managerServices.getSalesmanListXL().then(function (n) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
                     level: 'success',
-                    autoDismiss: 3,
+                    autoDismiss: 1,
                     position: 'tc'
                 });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
@@ -174,6 +188,7 @@ var UsersContainer = React.createClass({
             </button>
         )
     },
+
     deleteButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
@@ -185,6 +200,7 @@ var UsersContainer = React.createClass({
             </button>
         )
     },
+
     renderTable: function () {
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
@@ -235,8 +251,6 @@ var UsersContainer = React.createClass({
                         filter={ { type: 'SelectFilter', placeholder:constantStrings.selectRole_string, options: constantStrings.user_role } }>
                         {constantStrings.role_string}
                     </TableHeaderColumn>
-
-
                     <TableHeaderColumn
                         dataField = 'startDate'
                         dataAlign = 'right'
@@ -244,9 +258,6 @@ var UsersContainer = React.createClass({
                         filter={ { type: 'DateFilter' ,placeholder:constantStrings.selectStartDate_string} }>
                         {constantStrings.startDate_string}
                     </TableHeaderColumn>
-
-
-
                     <TableHeaderColumn
                         dataAlign = 'right'
                         dataField = 'button'
@@ -264,15 +275,6 @@ var UsersContainer = React.createClass({
             </div>
         )
     },
-    /*
-     <TableHeaderColumn
-     dataField = 'startDate'
-     dataAlign = 'right'
-     dataFormat={ dateFormatter }
-     filter={ { type: 'DateFilter' ,placeholder:constantStrings.selectStartDate_string} }>
-     {constantStrings.startDate_string}
-     </TableHeaderColumn>
-   * */
 
     renderLoading:function () {
         return(
@@ -281,6 +283,7 @@ var UsersContainer = React.createClass({
             </div>
         )
     },
+
     render: function () {
         if(this.state.users != null)
         {

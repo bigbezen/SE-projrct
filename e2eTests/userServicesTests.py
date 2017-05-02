@@ -36,7 +36,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(200)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
     def test_login_wrongUsername(self):
@@ -44,7 +45,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.wrongUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.url)
 
     def test_login_wrongPass(self):
@@ -52,20 +54,22 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.wrongPass)
         self.loginBtn.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.url)
 
     def test_retrievePass_ok(self):
         driver = self.driver
         self.retrievePass.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
+        sleep(3)
         usernameField = driver.find_element_by_xpath(containers.retrievePass.username)
         emailField = driver.find_element_by_xpath(containers.retrievePass.email)
         retrieveBtn = driver.find_element_by_xpath(containers.retrievePass.retrieveBtn)
         usernameField.send_keys(helper.adminUsername)
         emailField.send_keys(helper.adminEmail)
         retrieveBtn.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         # driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div/div/span").click()
         # wait = WebDriverWait(driver, 1000)
         sleep(3)
@@ -75,28 +79,30 @@ class UserService(unittest.TestCase):
     def test_retrievePass_wrongUsername(self):
         driver = self.driver
         self.retrievePass.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
+        sleep(3)
         usernameField = driver.find_element_by_xpath(containers.retrievePass.username)
         emailField = driver.find_element_by_xpath(containers.retrievePass.email)
         retrieveBtn = driver.find_element_by_xpath(containers.retrievePass.retrieveBtn)
         usernameField.send_keys(helper.wrongUsername)
         emailField.send_keys(helper.adminEmail)
         retrieveBtn.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.retrieve_page)
 
     def test_retrievePass_wrongEmail(self):
         driver = self.driver
         self.retrievePass.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
+        sleep(3)
         usernameField = driver.find_element_by_xpath(containers.retrievePass.username)
         emailField = driver.find_element_by_xpath(containers.retrievePass.email)
         retrieveBtn = driver.find_element_by_xpath(containers.retrievePass.retrieveBtn)
         usernameField.send_keys(helper.adminUsername)
         emailField.send_keys(helper.wrongEmail)
         retrieveBtn.click()
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.retrieve_page)
 
@@ -105,7 +111,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(200)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
         changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
         changePassBtn.click()
@@ -120,7 +127,7 @@ class UserService(unittest.TestCase):
         newPass2.send_keys(helper.adminPass)
         changeBtn.click()
 
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
@@ -129,7 +136,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(200)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
         changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
         changePassBtn.click()
@@ -144,7 +152,7 @@ class UserService(unittest.TestCase):
         newPass2.send_keys(helper.adminPass)
         changeBtn.click()
 
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
@@ -153,7 +161,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(200)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
         changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
         changePassBtn.click()
@@ -168,7 +177,7 @@ class UserService(unittest.TestCase):
         newPass2.send_keys(helper.adminPass)
         changeBtn.click()
 
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
@@ -177,7 +186,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(200)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
         changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
         changePassBtn.click()
@@ -192,7 +202,7 @@ class UserService(unittest.TestCase):
         newPass2.send_keys(helper.adminPass)
         changeBtn.click()
 
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
@@ -201,7 +211,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(200)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
         changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
         changePassBtn.click()
@@ -216,7 +227,7 @@ class UserService(unittest.TestCase):
         newPass2.send_keys(helper.adminPass)
         changeBtn.click()
 
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.change_page)
 
@@ -225,7 +236,8 @@ class UserService(unittest.TestCase):
         self.usernameField.send_keys(helper.adminUsername)
         self.passwordField.send_keys(helper.adminPass)
         self.loginBtn.click()
-        driver.implicitly_wait(200)
+        driver.implicitly_wait(300)
+        sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
         changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
         changePassBtn.click()
@@ -240,7 +252,7 @@ class UserService(unittest.TestCase):
         newPass2.send_keys(helper.wrongPass)
         changeBtn.click()
 
-        driver.implicitly_wait(100)
+        driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.change_page)
 

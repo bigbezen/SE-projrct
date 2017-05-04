@@ -656,6 +656,18 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.get('/management/getSalesmanLiveShift', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('salesmanId' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getSalesmanLiveShift(req.headers.sessionid, req.query.salesmanId);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.post('/management/editShifts', async function (req, res) {
         if (!validator.editShift(req.body)) {
             res.status(404).send('invalid parameters');

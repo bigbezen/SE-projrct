@@ -238,7 +238,12 @@ var HomeContainer = React.createClass({
                         {productsByCategory.map(this.renderCategoriesProducts)}
                     </div>
                     <div style={styles.marginTop} className="col-sm-12">
-                        <h1 className="col-sm-offset-5 col-sm-1">{constantStrings.commentsFromShift_string}</h1>
+                        <div className="text-center col-sm-12">
+                            <h1>
+                                {this.state.chosenShift.shiftComments.length > 0 ?
+                                    constantStrings.commentsFromShift_string : constantStrings.noCommentsFromShift_string}
+                            </h1>
+                        </div>
                         {this.state.chosenShift.shiftComments.map(this.renderComment)}
                     </div>
                 </div>

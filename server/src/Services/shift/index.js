@@ -38,7 +38,7 @@ let addShifts = async function(sessionId, shiftArr){
     //check validity of shifts dates
     for(let shift of shiftArr) {
         if ((new Date(shift.startTime)).getTime() > (new Date(shift.endTime)).getTime() ||
-              (new Date(shift.startTime)).getTime() < new Date ()){
+              (new Date(shift.startTime)).getTime() < (new Date()).getTime()){
             return {'code': 409, 'err': 'shifts dates are before current time'};
         }
     }
@@ -100,7 +100,7 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
         return {'code': 401, 'err': 'user not authorized'};
 
     if ((new Date(startTime)).getTime() > (new Date(endTime)).getTime() ||
-        (new Date(startTime)).getTime() < new Date ()) {
+        (new Date(startTime)).getTime() < (new Date()).getTime()) {
         return {'code': 409, 'err': 'shifts dates are before current time'};
     }
 
@@ -248,7 +248,7 @@ let getShiftsOfRange = async function(sessionId, startDate, endDate) {
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsOfRange', null);
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
-    if((new Date(endDate)) - (new Date(startDate)) < 0)
+    if((new Date(endDate)).getTime() - (new Date(startDate)).getTime() < 0)
         return {'code': 409, 'err': 'Starting date should be earlier than the end date'};
     let shifts = await dal.getShiftsOfRange(startDate, endDate);
     if(shifts == null){

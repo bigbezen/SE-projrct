@@ -177,7 +177,7 @@ var AddSaleContainer = React.createClass({
         );
 
         salesmanServices.reportSale(shiftId, salesList).then(function (n) {
-            self.setState({products: this.state.shift.salesReport, soldProducts: []})
+            self.setState({products: self.state.shift.salesReport, soldProducts: []})
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
@@ -201,7 +201,7 @@ var AddSaleContainer = React.createClass({
         );
 
         salesmanServices.reportOpen(shiftId,salesList).then(function (n) {
-            self.setState({products: this.state.shift.salesReport, soldProducts: []})
+            self.setState({products: self.state.shift.salesReport, soldProducts: []})
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
@@ -356,10 +356,10 @@ var AddSaleContainer = React.createClass({
     },
 
     render: function () {
-            if(this.state.soldProducts.length!=0){
+            if(this.state.shift != null && this.state.soldProducts.length != 0){
                 return this.renderStartedSale();
             }
-            else if(this.state.shift != null)
+            else if(this.state.shift != null && this.state.soldProducts.length == 0)
             {
                 return this.renderNotStartedSale();
             }

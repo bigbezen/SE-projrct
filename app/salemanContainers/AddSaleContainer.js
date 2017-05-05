@@ -6,11 +6,9 @@ var React                   = require('react');
 var ReactBsTable            = require("react-bootstrap-table");
 var BootstrapTable          = ReactBsTable.BootstrapTable;
 var TableHeaderColumn       = ReactBsTable.TableHeaderColumn;
-
 var constantStrings         = require('../utils/ConstantStrings');
 var paths                   = require('../utils/Paths');
 var styles                  = require('../styles/salesmanStyles/addSaleStyles');
-
 var salesmanServices        = require('../communication/salesmanServices');
 var StartShiftIcon          = require('react-icons/lib/fa/angle-double-left');
 var PlusIcon                = require('react-icons/lib/fa/plus');
@@ -18,9 +16,11 @@ var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
 var AddSaleContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -29,6 +29,7 @@ var AddSaleContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -37,6 +38,7 @@ var AddSaleContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState(){
         this.setSessionId();
         this.setUserType();
@@ -46,23 +48,26 @@ var AddSaleContainer = React.createClass({
             soldProducts: []
         }
     },
+
     componentDidMount() {
         this.updateShift();
     },
+
     updateShift(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.getCurrentShift().then(function (n) {
-            var currShift = n;
+        salesmanServices.getCurrentShift().then(function (currShift) {
             self.setState(
-                {shift: currShift,
+                {
+                    shift: currShift,
                     products: currShift.salesReport
                 });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
@@ -70,7 +75,7 @@ var AddSaleContainer = React.createClass({
     onRowClick(row){
         var sold = this.state.soldProducts;
         var p2 = row;
-        p2.sold =1;
+        p2.sold = 1;
         sold.push(p2);
         var prods = this.state.products;
         var newProds =[];
@@ -81,6 +86,7 @@ var AddSaleContainer = React.createClass({
         });
         this.setState({soldProducts:sold, saleStarted:true, products:newProds})
     },
+
     onRowClickRevert(row){
         var prods = this.state.products;
         var p2 = row;
@@ -94,6 +100,7 @@ var AddSaleContainer = React.createClass({
         });
         this.setState({soldProducts:newSoldProds, saleStarted:true, products:prods})
     },
+
     increaseNum(cell, row, enumObject, rowIndex){
         var newSoldProds =[];
         this.state.soldProducts.forEach(function(prod) {
@@ -107,6 +114,7 @@ var AddSaleContainer = React.createClass({
         });
         this.setState({soldProducts:newSoldProds})
    },
+
     decreaseNum(cell, row, enumObject, rowIndex){
         var isZero = false;
         var newSoldProds =[];
@@ -128,6 +136,7 @@ var AddSaleContainer = React.createClass({
             this.setState({soldProducts:newSoldProds})
         }
     },
+
     setAmountButton: function(cell, row, enumObject, rowIndex) {
         return (
             <div>
@@ -155,32 +164,62 @@ var AddSaleContainer = React.createClass({
             </div>
         )
     },
+
     handleAddSale(){
         var shiftId = this.state.shift._id;
         var salesList = [];
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
+
         this.state.soldProducts.forEach(function(prod){
             salesList.push({'productId': prod.productId, 'quantity':prod.sold});
             }
         );
-        salesmanServices.reportSale(shiftId, salesList); //TODO: add wait
-        this.setState({products: this.state.shift.salesReport, soldProducts: []})
+
+        salesmanServices.reportSale(shiftId, salesList).then(function (n) {
+            self.setState({products: this.state.shift.salesReport, soldProducts: []})
+        }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
+        });
     },
+
     handleOpenBottle(){
         var shiftId = this.state.shift._id;
         var salesList = [];
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
+
         this.state.soldProducts.forEach(function(prod){
             salesList.push({'productId': prod.productId, 'quantity':prod.sold});
             }
         );
-        salesmanServices.reportOpen(shiftId,salesList); //TODO: add wait
-        this.setState({products: this.state.shift.salesReport, soldProducts: []})
+
+        salesmanServices.reportOpen(shiftId,salesList).then(function (n) {
+            self.setState({products: this.state.shift.salesReport, soldProducts: []})
+        }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
+        });
     },
+
     handleFinishShift: function(){
         this.context.router.push({
             pathname: paths.salesman_endShift_path,
             state:{newShift:this.state.shift}
         });
     },
+
     tablePlusIcon: function(cell, row, enumObject, rowIndex){
         return (
             <div className="w3-jumbo">
@@ -188,11 +227,13 @@ var AddSaleContainer = React.createClass({
             </div>
         )
     },
+
     generateSearchField: function(onKeyUp){
         return (
             <input type="text" className="w3-xxxlarge"/>
         )
     },
+
     renderStartedSale(){
         var selectRowProp = {
             onRowClick: this.onRowClick
@@ -261,14 +302,13 @@ var AddSaleContainer = React.createClass({
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
             )
-
     },
+
     renderNotStartedSale(){
         var selectRowProp = {
             onRowClick: this.onRowClick
         };
         return(
-
             <div>
                 <div className="w3-theme-d5 col-xs-12">
                     <div className="col-xs-offset-7">
@@ -304,15 +344,28 @@ var AddSaleContainer = React.createClass({
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
             )
-
     },
+
+    renderLoading:function () {
+        return(
+            <div>
+                <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
+
     render: function () {
             if(this.state.soldProducts.length!=0){
                 return this.renderStartedSale();
             }
-            else
-                {
+            else if(this.state.shift != null)
+            {
                 return this.renderNotStartedSale();
+            }
+            else
+            {
+                return this.renderLoading();
             }
     }
 });

@@ -280,8 +280,8 @@ class ConstantStrings extends React.Component {
     static mustChooseSalesman_string = 'עליך לבחור דייל לכל משמרת';
 
      //salesman menu
-    static addSale_string = 'מכירות';
-    static editSales_string = 'עריכה';
+    static addSale_string = 'דיווח מכירה';
+    static editSales_string = 'מכירות';
     static addComment_string = 'הוספת הערה';
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';

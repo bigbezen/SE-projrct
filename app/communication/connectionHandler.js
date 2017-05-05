@@ -426,7 +426,7 @@ var managementRequests = {
     },
 
     getSalesmanFinishedShifts: function(salesmanId){
-        console.log('get finshed shifts of salesman');
+        console.log('get finished shifts of salesman');
         return axios.get(serverUrl + 'management/getSalesmanFinishedShifts?salesmanId=' + salesmanId, {
             headers: {
                 sessionId: sessionId
@@ -434,6 +434,20 @@ var managementRequests = {
         }).then(function(info) {
             return info.data;
         }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getSalesmanLiveShift: function(salesmanId){
+        console.log('get salesman live shifts');
+        return axios.get(serverUrl + 'management/getSalesmanLiveShift?salesmanId=' + salesmanId, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info){
+            return info.data;
+        }).catch(function(err){
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })

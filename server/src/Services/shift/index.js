@@ -38,7 +38,7 @@ let addShifts = async function(sessionId, shiftArr){
     //check validity of shifts dates
     for(let shift of shiftArr) {
         if ((new Date(shift.startTime)).getTime() > (new Date(shift.endTime)).getTime() ||
-              (new Date(shift.startTime)).getTime() < new Date ()){
+              (new Date(shift.startTime)).getTime() < (new Date()).getTime()){
             return {'code': 409, 'err': 'shifts dates are before current time'};
         }
     }
@@ -100,7 +100,7 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
         return {'code': 401, 'err': 'user not authorized'};
 
     if ((new Date(startTime)).getTime() > (new Date(endTime)).getTime() ||
-        (new Date(startTime)).getTime() < new Date ()) {
+        (new Date(startTime)).getTime() < (new Date()).getTime()) {
         return {'code': 409, 'err': 'shifts dates are before current time'};
     }
 
@@ -219,10 +219,27 @@ let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
             product.subCategory = productDetails.subCategory;
         }
     }
-    console.log('bla');
 
     return {'code': 200, 'shifts': finishedShifts};
 
+
+};
+
+let getSalesmanLiveShift = async function(sessionId, salesmanId){
+    logger.info('Services.shift.index.getSalesmanLiveShift', {'session-id': sessionId, 'userId': salesmanId});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanLiveShift', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': 'user not authorized'};
+
+    let salesman = await dal.getUserByobjectId(salesmanId);
+    if(salesman == null)
+        return {'code': 401, 'err': 'user does not exist'};
+
+    let shift = await dal.getSalesmanStartedShift(salesman._id);
+    if(shift == null)
+        return {'code': 200};
+
+    return {'code': 200, 'shift': shift};
 
 };
 
@@ -231,7 +248,8 @@ let getShiftsOfRange = async function(sessionId, startDate, endDate) {
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsOfRange', null);
     if(isAuthorized == null)
         return {'code': 401, 'err': 'user not authorized'};
-
+    if((new Date(endDate)).getTime() - (new Date(startDate)).getTime() < 0)
+        return {'code': 409, 'err': 'Starting date should be earlier than the end date'};
     let shifts = await dal.getShiftsOfRange(startDate, endDate);
     if(shifts == null){
         return {'code': 409, 'err': 'Something went wrong with getting the shifts'};
@@ -706,5 +724,5 @@ module.exports.editSale = editSale;
 module.exports.getSalesmanShifts = getSalesmanShifts;
 module.exports.reportExpenses = reportExpenses;
 module.exports.getShiftsOfRange = getShiftsOfRange;
-
+module.exports.getSalesmanLiveShift = getSalesmanLiveShift;
 

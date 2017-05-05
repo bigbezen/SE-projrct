@@ -35,8 +35,8 @@ var ShiftsCreateMultipleShifts = React.createClass({
     componentDidMount: function(){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
-        var startTime = moment(this.props.location.query.startTime).format('YYYY-MM-DD HH:mm') + '+03:00';
-        var endTime = moment(this.props.location.query.endTime).format('YYYY-MM-DD HH:mm') + '+03:00';
+        var startTime = moment(this.props.location.query.startTime).format('YYYY-MM-DD HH:mm Z');
+        var endTime = moment(this.props.location.query.endTime).format('YYYY-MM-DD HH:mm Z');
         managementServices.getAllStores()
             .then(function(stores) {
                 var newShifts = [];

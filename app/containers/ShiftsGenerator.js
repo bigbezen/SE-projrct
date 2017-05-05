@@ -42,8 +42,10 @@ var ShiftDetails = React.createClass({
 
     handleSubmitShift: function (e) {
         e.preventDefault();
-        var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+03:00';
-        var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+03:00';
+        var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
+        startTime = moment(startTime).format('YYYY-MM-DD HH:mm Z');
+        var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
+        endTime = moment(endTime).format('YYYY-MM-DD HH-mm Z');
 
         this.context.router.push({
             pathname: paths.manager_createMultipleShifts_path,

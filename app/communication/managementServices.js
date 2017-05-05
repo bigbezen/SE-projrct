@@ -133,6 +133,11 @@ var helpers = {
         return connection.managementRequests.getSalesmanFinishedShifts(salesmanId);
     },
 
+    getSalesmanLiveShift: function(salesmanId){
+        console.log('managementServices - getSalesmanLiveShift');
+        return connection.managementRequests.getSalesmanLiveShift(salesmanId);
+    },
+
     updateSalesReport: function(shiftId, productId, newSold, newOpened){
         console.log('managementServices - updateSaleReport');
         var result = connection.managementRequests.updateSalesReport(shiftId, productId, newSold, newOpened);

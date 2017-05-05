@@ -141,10 +141,10 @@ var ShiftDetails = React.createClass({
         newShift.storeId = this.state.storeId;
         newShift.type = this.state.shiftType;
         newShift.salesmanId = this.state.salesmanId;
-        var startT = moment(this.refs.startTimeBox.value).format('YYYY-MM-DD hh:mm');
-        var endT = moment(this.refs.endTimeBox.value).format('YYYY-MM-DD hh:mm');
-        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+03:00';
-        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+03:00';
+        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
+        newShift.startTime = moment(newShift.startTime).format('YYYY-MM-DD HH:mm Z');
+        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
+        newShift.endTime = moment(newShift.endTime).format('YYYY-MM-DD HH:mm Z');
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
@@ -315,11 +315,11 @@ var ShiftDetails = React.createClass({
         console.log(this.currShift);
 
         this.state.shiftType =  this.currShift.type;
-        this.state.storeId = this.currShift.store._id;
-        this.state.salesmanId = this.currShift.salesman._id;
+        this.state.storeId = this.currShift.storeId._id;
+        this.state.salesmanId = this.currShift.salesmanId._id;
 
-        this.refs.storeBox.value = this.currShift.store._id;
-        this.refs.userBox.value = this.currShift.salesman._id;
+        this.refs.storeBox.value = this.currShift.storeId._id;
+        this.refs.userBox.value = this.currShift.salesmanId.username;
         this.refs.shiftTypeBox.value =  this.currShift.type;
         this.refs.dateBox.value =  moment(this.currShift.startTime).format('YYYY-MM-DD');
         this.refs.startTimeBox.value = moment(this.currShift.startTime).format('HH:mm');

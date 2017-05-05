@@ -87,7 +87,7 @@ var SalesmanHomeContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanService.getCurrentShift().then(function (n) { 
-            var currShift = n
+            var currShift = n;
             if (currShift.status == "STARTED") {
                 self.setState({
                     shift: currShift,

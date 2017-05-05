@@ -74,6 +74,8 @@ var ReportsSalesReport = React.createClass({
     },
 
     salesmanChanged: function(event) {
+        if(event.target.selectedIndex == 0)
+            return;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         this.setState({

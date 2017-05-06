@@ -1391,11 +1391,8 @@ describe('shift unit test', function () {
                     i = 1;
                 shift = shift.toObject();
                 expect(shift).to.include.all.keys('storeId', 'startTime', 'endTime', 'status', 'salesmanId');
-                //assert.equal(shifts[i].startTime,shift.startTime.toString());
-                //assert.equal(shifts[i].endTime.toString(),shift.endTime.toString());
                 expect(shift.storeId).to.be.a('object');
                 expect(shift.salesmanId).to.be.a('object');
-
             }
         });
 

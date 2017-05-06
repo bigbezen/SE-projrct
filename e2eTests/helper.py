@@ -23,6 +23,21 @@ shiftsContainer = 'http://localhost:3000/#/manager/shifts'
 reportsContainer = 'http://localhost:3000/#/manager/reports'
 incentivesContainer = 'http://localhost:3000/#/manager/incentives'
 
+logoutManagerXpath = "//*[@id=\"app\"]/div/ul/li[9]/a"
+
+# salesman
+salesman_home = "http://localhost:3000/#/salesman/home/home"
+salesman_startShift = "http://localhost:3000/#/salesman/startShift"
+salesman_shift = "http://localhost:3000/#/salesman/shift"
+salesman_encouragements = "http://localhost:3000/#/salesman/shift/encouragements"
+salesman_comments = "http://localhost:3000/#/salesman/shift/comments"
+salesman_editSale = "http://localhost:3000/#/salesman/shift/editSale"
+salesman_sale = "http://localhost:3000/#/salesman/shift/sale"
+salesman_endShift = "http://localhost:3000/#/salesman/endShift"
+salesman_profile = "http://localhost:3000/#/salesman/home/profile"
+salesman_shiftSchedule = "http://localhost:3000/#/salesman/home/shiftSchedule"
+salesman_expenses = "http://localhost:3000/#/salesman/home/shiftsExpenses"
+
 # login
 adminUsername = "testAdmin"
 adminPass = "11111111"
@@ -30,6 +45,8 @@ adminEmail = "testAdmin@bla.bla"
 wrongUsername = "wrong"
 wrongPass = "wrong"
 wrongEmail = "wrong@wrong.com"
+salesmanUsername = "newUser"
+salesmanPass = "12121212"
 
 # product
 productName = "מוצר חדש"

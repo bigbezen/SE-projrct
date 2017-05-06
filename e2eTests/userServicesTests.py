@@ -31,6 +31,7 @@ class UserService(unittest.TestCase):
         self.usernameField.clear()
         self.passwordField.clear()
 
+    # test-1
     def test_login_Ok(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -40,6 +41,7 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
+    # test-2
     def test_login_wrongUsername(self):
         driver = self.driver
         self.usernameField.send_keys(helper.wrongUsername)
@@ -49,6 +51,7 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.url)
 
+    # test-3
     def test_login_wrongPass(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -58,6 +61,21 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.url)
 
+    # test-4
+    def test_logout_Ok(self):
+        driver = self.driver
+        self.usernameField.send_keys(helper.adminUsername)
+        self.passwordField.send_keys(helper.adminPass)
+        self.loginBtn.click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertEqual(driver.current_url, helper.manager_home)
+        driver.find_element_by_xpath(containers.managerHome.logoutTab).click()
+        driver.implicitly_wait(300)
+        sleep(2)
+        self.assertEqual(driver.current_url, helper.url)
+
+    # test-5
     def test_retrievePass_ok(self):
         driver = self.driver
         self.retrievePass.click()
@@ -76,6 +94,7 @@ class UserService(unittest.TestCase):
         # wait.until(EC.element_to_be_clickable(self.retrievePass))
         self.assertEqual(driver.current_url, helper.url)
 
+    # test-6
     def test_retrievePass_wrongUsername(self):
         driver = self.driver
         self.retrievePass.click()
@@ -91,6 +110,7 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.retrieve_page)
 
+    # test-7
     def test_retrievePass_wrongEmail(self):
         driver = self.driver
         self.retrievePass.click()
@@ -106,6 +126,7 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.retrieve_page)
 
+    # test-8
     def test_changePass_ok(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -131,6 +152,7 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
+    # test-9
     def test_changePass_ok(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -156,6 +178,7 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
+    # test-10
     def test_changePass_ok(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)

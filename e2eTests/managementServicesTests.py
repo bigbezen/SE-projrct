@@ -28,6 +28,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
+    # test-11
     def test_addUser_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -48,6 +49,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.usersContainer)
 
+    # test-12
     def test_addUser_badUsername(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -68,6 +70,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
+    # test-13
     def test_addUser_badId(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -88,6 +91,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
+    # test-14
     def test_addUser_badEmail(self):
         # todo: check if it is ok
         driver = self.driver
@@ -109,6 +113,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         # self.assertNotEqual(driver.current_url, helper.usersContainer)
 
+    # test-15
     def test_editUser_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -124,6 +129,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.usersContainer)
 
+    # test-16
     def test_editUser_badUsername(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -140,6 +146,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
+    # test-17
     def test_editUser_badId(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -156,6 +163,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
+    # test-18
     def test_editUser_badEmail(self):
         # todo: check if it is ok
         driver = self.driver
@@ -173,6 +181,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         # self.assertNotEqual(driver.current_url, helper.usersContainer)
 
+    # test-19
     def test_deleteUser_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -193,6 +202,7 @@ class ManagementServices(unittest.TestCase):
         self.assertTrue(tableSizeBefore > tableSizeAfter)
         self.assertEqual(driver.current_url, helper.usersContainer)
 
+    # test-20
     def test_addStore_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.storesTab).click()
@@ -214,10 +224,12 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.storesContainer)
 
+    # test-21
     def test_addStore_badName(self):
         # todo: check if relevant
         return
 
+    # test-22
     def test_editStore_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.storesTab).click()
@@ -234,10 +246,12 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.storesContainer)
 
+    # test-23
     def test_editStore_badName(self):
         # todo: check if relevant
         return
 
+    # test-24
     def test_deleteStore_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.storesTab).click()
@@ -258,6 +272,7 @@ class ManagementServices(unittest.TestCase):
         self.assertTrue(tableSizeBefore > tableSizeAfter)
         self.assertEqual(driver.current_url, helper.storesContainer)
 
+    # test-25
     def test_addProduct_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -277,6 +292,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.productsContainer)
 
+    # test-26
     def test_addProduct_badName(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -296,6 +312,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.productsContainer)
 
+    # test-27
     def test_editProduct_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -312,6 +329,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.productsContainer)
 
+    # test-28
     def test_editProduct_badName(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -329,6 +347,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.productsContainer)
 
+    # test-29
     def test_deleteProduct_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -349,6 +368,7 @@ class ManagementServices(unittest.TestCase):
         self.assertTrue(tableSizeBefore > tableSizeAfter)
         self.assertEqual(driver.current_url, helper.productsContainer)
 
+    # test-30
     def test_addShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
@@ -357,6 +377,7 @@ class ManagementServices(unittest.TestCase):
         self.addCurrShift()
         self.assertEqual(driver.current_url, helper.manager_home)
 
+    # test-31
     def test_editShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
@@ -379,6 +400,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
 
+    # test-32
     def test_deleteShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
@@ -409,6 +431,7 @@ class ManagementServices(unittest.TestCase):
         self.assertTrue(tableSizeBefore > tableSizeAfter)
         self.assertEqual(driver.current_url, helper.shiftsContainer)
 
+    # test-33
     def test_addIncentives_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
@@ -428,6 +451,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
+    # test-34
     def test_editIncentives_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
@@ -446,6 +470,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
+    # test-35
     def test_deleteIncentives_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
@@ -459,6 +484,10 @@ class ManagementServices(unittest.TestCase):
         #  sleep(1)
 
         self.assertEqual(driver.current_url, helper.incentivesContainer)
+
+    #test-36
+    def test_setup_ok(self):
+        self.assertTrue(True)
 
     def tearDown(self):
         self.driver.close()

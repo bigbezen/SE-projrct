@@ -61,7 +61,7 @@ existsEmail = "sds@dsfds.com"
 # incentives
 incentiveName = "תמריץ1"
 incentiveProduct = "קמפארי"
-incentiveQuantity = "10"
+incentiveQuantity = "13"
 incentiveBonus = "100"
 
 # shifts

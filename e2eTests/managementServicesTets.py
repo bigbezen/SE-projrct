@@ -365,9 +365,13 @@ class ManagementServices(unittest.TestCase):
         self.addCurrShift()
         self.assertEqual(driver.current_url, helper.manager_home)
 
+        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.shiftsContainer)
+
         driver.find_element_by_xpath(containers.shifts.edit).click()
         driver.implicitly_wait(300)
-        driver.find_element_by_xpath(containers.shifts.username).clear()
+        sleep(3)
         driver.find_element_by_xpath(containers.shifts.username).send_keys("avadir")
 
         driver.find_element_by_xpath(containers.shifts.addBtn).click()
@@ -383,14 +387,22 @@ class ManagementServices(unittest.TestCase):
         self.addCurrShift()
         self.assertEqual(driver.current_url, helper.manager_home)
 
+        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.shiftsContainer)
+
         table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div[2]/div[2]/table/tbody")
         tableSizeBefore = len(table.text.split("\n"))
 
         driver.find_element_by_xpath(containers.shifts.delete).click()
         driver.implicitly_wait(300)
         sleep(1)
-        driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div/div/div[2]/button").click()
+        driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[3]/div/div/div[2]/button").click()
         sleep(1)
+        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
+        driver.implicitly_wait(300)
+        sleep(2)
+        self.assertEqual(driver.current_url, helper.shiftsContainer)
 
         table = driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div[2]/div[2]/table/tbody")
         tableSizeAfter = len(table.text.split("\n"))
@@ -424,6 +436,7 @@ class ManagementServices(unittest.TestCase):
 
         driver.find_element_by_xpath(containers.Incentives.edit).click()
         driver.implicitly_wait(300)
+        sleep(3)
 
         driver.find_element_by_xpath(containers.Incentives.quantity).clear()
         driver.find_element_by_xpath(containers.Incentives.quantity).send_keys(helper.incentiveQuantity)

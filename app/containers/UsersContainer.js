@@ -280,6 +280,7 @@ var UsersContainer = React.createClass({
         return(
             <div>
                 <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },

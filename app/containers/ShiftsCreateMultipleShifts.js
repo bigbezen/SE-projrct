@@ -121,19 +121,23 @@ var ShiftsCreateMultipleShifts = React.createClass({
         else {
             managementServices.addMultipleShifts(this.state.newShifts)
                 .then(function (data) {
-                    notificationSystem.addNotification({
-                        message: constantsStrings.addSuccessMessage_string,
-                        level: 'success',
-                        autoDismiss: 1,
-                        position: 'tc',
-                        onRemove: function (notification) {
-                            self.context.router.push({
-                                pathname: paths.manager_shifts_path
+                    managementServices.publishMultipleShifts(data)
+                        .then(function(data){
+                            notificationSystem.addNotification({
+                                message: constantsStrings.addSuccessMessage_string,
+                                level: 'success',
+                                autoDismiss: 1,
+                                position: 'tc',
+                                onRemove: function (notification) {
+                                    self.context.router.push({
+                                        pathname: paths.manager_shifts_path
+                                    });
+                                }
                             });
-                        }
-                    });
-
-
+                        })
+                        .catch(function(err){
+                            throw err;
+                        })
                 })
                 .catch(function (err) {
                     notificationSystem.addNotification({

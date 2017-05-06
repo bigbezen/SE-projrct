@@ -812,7 +812,7 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
     res = await workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי למשאבי אנוש '+ (month + 1) + ' ' + year + '.xlsx');
 
     let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
-    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי למשאבי אנוש '+ (month + 1) + ' ' + year + '.xlsx');
     return {'code': 200};
 };
 

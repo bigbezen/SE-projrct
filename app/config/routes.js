@@ -35,7 +35,8 @@ var Incentive = require('../containers/IncentiveDetails');
 var Reports = require('../containers/ReportsBase');
 var SalesReport = require('../containers/ReportsSalesReport');
 var MonthlyAnalysisReport = require('../containers/ReportsMonthlyAnalysis');
-var MonthlyHoursReport = require('../containers/ReportsMonthlyHours');
+var MonthlyHoursReport = require('../containers/ReportsMonthlyHours')
+var HumanResourcesReport = require('../containers/ReportsHumanResources');
 var SalesmanShiftsExpenses = require('../salemanContainers/shiftExpensesContainer');
 var SalesmanProfile = require('../salemanContainers/SalesmanProfileContainer');
 var SalesmanShiftSchedule = require('../salemanContainers/SalesmanShiftsScheduleContainer');
@@ -64,6 +65,7 @@ var routes = (
             <Route path='salesReport' component={SalesReport} />
             <Route path='monthlyAnalysisReport' component={MonthlyAnalysisReport} />
             <Route path='monthlyHoursReport' component={MonthlyHoursReport} />
+            <Route path='humanResourcesReport' component={HumanResourcesReport} />
 
         </Route>
         <Route path='/member/'>

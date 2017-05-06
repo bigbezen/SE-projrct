@@ -137,6 +137,7 @@ class ConstantStrings extends React.Component {
     static reportsSalesReportTitle_string = 'דוח טעימות';
     static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
     static reportsMonthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+    static reportsHumanResourcesReportTitle_string = 'דוח כוח אדם';
     static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
     static reportsShowReport_string = 'הצג דוח';
     static monthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
@@ -209,6 +210,7 @@ class ConstantStrings extends React.Component {
     static startShift_string = 'התחל משמרת';
     static endShift_string = 'סיים משמרת';
     static continueShift_string = 'המשך משמרת';
+    static salesmanNoShifts_string = 'אין לך משמרות היום';
     static genderForDropdown = ["נקבה", "זכר"];
 
     static channelForDropdown = ["מסורתי - חם", "מסורתי - מאורגן", "תדמית יום"];
@@ -282,6 +284,7 @@ class ConstantStrings extends React.Component {
     static addComment_string = 'הוספת הערה';
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';
+    static commentsFromShift_string = 'הערות מהמשמרת';
     static encouragements_string = 'תמריצים';
     static updateExpenses_string = 'עדכן נסיעות';
     //shift expenses

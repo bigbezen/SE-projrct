@@ -368,6 +368,19 @@ var managementRequests = {
         })
     },
 
+    publishMultipleShifts: function(shifts){
+        console.log('publish multiple shift');
+        return axios.post(serverUrl + 'management/publishShifts', {
+            sessionId:sessionId,
+            shiftArr:shifts
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     editShift: function(shift) {
         console.log('edit shift');
         return axios.post(serverUrl + 'management/editShifts', {
@@ -599,6 +612,19 @@ var managerRequests = {
 
     exportMonthlyHoursReport: function(year, month){
         return axios.post(serverUrl + 'manager/exportMonthlyHoursReport', {
+            sessionId: sessionId,
+            year: year,
+            month: month
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    exportSalaryForHumanResourceReport: function(year, month){
+        return axios.post(serverUrl + 'manager/getSalaryForHumanResourceReport', {
             sessionId: sessionId,
             year: year,
             month: month

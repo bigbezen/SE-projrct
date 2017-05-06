@@ -827,6 +827,7 @@ function _setapApiEndpoints() {
         //     return;
         // }
         let result = await reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
+        console.log('bla');
         if(result.code == 200)
             res.status(200).send(result.report);
         else

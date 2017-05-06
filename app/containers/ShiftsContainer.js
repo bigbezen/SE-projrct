@@ -156,7 +156,7 @@ var ShiftsContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.deleteShift(row).then(function (n) {
-            self.updateShifts();
+            self.updateShifts(self.state.startDate, self.state.endDate);
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({

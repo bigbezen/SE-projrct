@@ -186,6 +186,9 @@ describe('shift unit test', function () {
         start.setDate(start.getDate() + 1);
 
         shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'salesmanId': salesman._id, 'sales':[]};
+
+        start.setDate(start.getDate() + 1);
+        end.setDate(end.getDate() + 1);
         shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'sales':[]};
         shifts.push(shift1);
         shifts.push(shift2);
@@ -1279,13 +1282,94 @@ describe('shift unit test', function () {
                 shift.salesmanId = salesman._id;
                 let res = await dal.addShift(shift);
             }
-            let startDate = new Date(2016, 1, 1);
-            let endDate = new Date(2017,10,10);
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear()-1);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 1);
+
+
             let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+
+
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shifts');
             expect(result.shifts).to.have.length(shifts.length);
         });
+
+        it('get shifts of date - get only part of the shifts', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = shifts[0].startTime;
+            let endDate = shifts[0].endTime;
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shifts');
+            expect(result.shifts).to.have.length(1);
+        });
+
+        it('get shifts of date invalid dates', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() + 1);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() - 1);
+
+
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+
+
+            expect(result).to.have.property('code', 409);
+            expect(result).to.not.have.property('shifts');
+            expect(result).to.have.property('err');
+        });
+
+        it('get shifts of date - range with no shifts', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() + 21);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 22);
+
+
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+
+
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shifts');
+            expect(result.shifts).to.have.length(0);
+        });
+
+        it('get shifts of date invalid sessionId', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() + 1);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() - 1);
+
+
+            let result = await shiftService.getShiftsOfRange("invalid session id", startDate, endDate);
+
+
+            expect(result).to.have.property('code', 401);
+            expect(result).to.not.have.property('shifts');
+            expect(result).to.have.property('err');
+        });
+
     });
 
     describe('test get shifts from date', function(){
@@ -1596,4 +1680,5 @@ describe('shift unit test', function () {
             assert.equal(res[0].salesReport[0].sold, 11);
         });
     });
+
 });

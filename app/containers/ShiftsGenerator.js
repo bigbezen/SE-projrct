@@ -2,29 +2,26 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var managementServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var shiftInfo = require('../models/shift');
-var flatten = require('flat');
-var ReactBootstrap = require("react-bootstrap");
-var moment = require('moment');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var constantStrings = require('../utils/ConstantStrings');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var constantsStrings    = require('../utils/ConstantStrings');
+var moment              = require('moment');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var ShiftDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
-        return {
-        }
+        return {}
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -33,6 +30,7 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -41,17 +39,18 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     handleSubmitShift: function (e) {
         e.preventDefault();
-        var startTime = this.refs.startTimeBox.value;
-        var endTime = this.refs.endTimeBox.value;
-        var notificationSystem = this.refs.notificationSystem;
+        var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
+        startTime = moment(startTime).format('YYYY-MM-DD HH:mm Z');
+        var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
+        endTime = moment(endTime).format('YYYY-MM-DD HH-mm Z');
 
         this.context.router.push({
             pathname: paths.manager_createMultipleShifts_path,
             query: {'startTime': startTime, 'endTime': endTime}
         })
-
     },
 
     onChangeStarTime: function(){
@@ -66,8 +65,16 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group ">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
-                        <input type="datetime-local"
-                               className="col-xs-4"
+                        <input type="date"
+                               className="col-xs-5"
+                               ref="dateBox"
+                        />
+                    </div>
+
+                    <div className="form-group ">
+                        <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
+                        <input type="time"
+                               className="col-xs-5"
                                ref="startTimeBox"
                                onChange={this.onChangeStarTime}
                         />
@@ -75,8 +82,8 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group ">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.endDate_string}</label>
-                        <input type="datetime-local"
-                               className="col-xs-4"
+                        <input type="time"
+                               className="col-xs-5"
                                ref="endTimeBox"
                         />
                     </div>

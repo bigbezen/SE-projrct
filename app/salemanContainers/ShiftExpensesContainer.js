@@ -3,22 +3,22 @@
  */
 
 
-var React = require('react');
-var salesmanServices = require('../communication/salesmanServices');
-var constantStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/salesmanStyles/shiftExpensesStyles');
-var userServices = require('../communication/userServices');
-var managementServices = require('../communication/managementServices'); //delete when getAllShifts is fixed
-var EditIcon = require('react-icons/lib/md/edit');
-var NotificationSystem = require('react-notification-system');
-var BackButtonIcon = require('react-icons/lib/md/arrow-forward');
+var React               = require('react');
+var salesmanServices    = require('../communication/salesmanServices');
+var constantStrings     = require('../utils/ConstantStrings');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/salesmanStyles/shiftExpensesStyles');
+var userServices        = require('../communication/userServices');
+var EditIcon            = require('react-icons/lib/md/edit');
+var NotificationSystem  = require('react-notification-system');
 
 
 var ShiftsExpensesContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState(){
         this.setSessionId();
         this.setUserType();
@@ -26,6 +26,7 @@ var ShiftsExpensesContainer = React.createClass({
             shifts: null,
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -34,6 +35,7 @@ var ShiftsExpensesContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -42,50 +44,52 @@ var ShiftsExpensesContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentDidMount() {
         this.updateShifts();
     },
+
     updateShifts(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.getAllShifts().then(function (n) {
-            var shifts = n;
+        salesmanServices.getAllShifts().then(function (shifts) {
             self.setState({shifts: shifts});
-            console.log(shifts);
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     onClickEditButton: function(shift, index){
         var numOfKM = this.refs["numOfKM" + index].value;
         var parkingCost = this.refs["parkingCost" + index].value;
         var shiftId = shift._id;
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.reportExpenses(shiftId,numOfKM,parkingCost)
-            .then(function(result) {
-                console.log('updated sales report');
-            })
+            .then(function(result) {})
             .catch(function(err) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 0,
                     position: 'tc',
                 });
             })
     },
+
     onBackButtonClick: function () {
         this.context.router.push({
             pathname: paths.salesman_home_path
         })
     },
-    renderEachShift: function(shift, i){ //TODO: shift.type should be changed to shift.store.name once we have it
+
+    renderEachShift: function(shift, i){
         var shiftDate = new Date(shift.startTime) ;
         var ShiftDateFormated = shiftDate.toLocaleDateString('en-GB');
         return (
@@ -101,6 +105,7 @@ var ShiftsExpensesContainer = React.createClass({
             </div>
         )
     },
+
     renderList: function(){
         return (
             <div className="w3-container col-sm-12" style={styles.bodyStyle}>
@@ -115,6 +120,7 @@ var ShiftsExpensesContainer = React.createClass({
             </div>
         )
     },
+
     renderLoading:function () {
         return(
             <div>
@@ -123,6 +129,7 @@ var ShiftsExpensesContainer = React.createClass({
             </div>
         )
     },
+
     render: function () {
         if(this.state.shifts != null)
         {

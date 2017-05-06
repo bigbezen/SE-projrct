@@ -29,6 +29,7 @@ class ConstantStrings extends React.Component {
     static changePassTitle_string = 'עדכון סיסמא';
     static retrievePassTitle_string = 'שחזור סיסמא';
     static retrievePass_string = 'שחזור סיסמא';
+    static liveSalesReport_string = 'צפייה במשמרות בזמן אמת';
 
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';
@@ -279,14 +280,15 @@ class ConstantStrings extends React.Component {
     static mustChooseSalesman_string = 'עליך לבחור דייל לכל משמרת';
 
      //salesman menu
-    static addSale_string = 'מכירות';
-    static editSales_string = 'עריכה';
+    static addSale_string = 'דיווח מכירה';
+    static editSales_string = 'מכירות';
     static addComment_string = 'הוספת הערה';
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';
     static commentsFromShift_string = 'הערות מהמשמרת';
     static encouragements_string = 'תמריצים';
     static updateExpenses_string = 'עדכן נסיעות';
+    static noCommentsFromShift_string = 'לא קיימות הערות במשמרת זו';
     //shift expenses
     static km_string = 'ק"מ';
     static parking_string = 'חנייה';

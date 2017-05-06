@@ -2,19 +2,21 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var managementServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var productInfo = require('../models/product');
-var paths = require('../utils/Paths');
-var NotificationSystem = require('react-notification-system');
-var styles = require('../styles/managerStyles/styles');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var managementServices  = require('../communication/managementServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var productInfo         = require('../models/product');
+var paths               = require('../utils/Paths');
+var NotificationSystem  = require('react-notification-system');
+var styles              = require('../styles/managerStyles/styles');
+var userServices        = require('../communication/userServices');
 
 var ProductDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
@@ -24,6 +26,7 @@ var ProductDetails = React.createClass({
             subCategory:''
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -32,6 +35,7 @@ var ProductDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -40,11 +44,10 @@ var ProductDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentDidMount() {
-        console.log('check props');
         var isEmptyVar = !(this.isEmpty(this.props.location.query));
         this.state.editing = isEmptyVar;
-        console.log(this.state.editing);
         if (this.state.editing) {
             this.setFields();
         }
@@ -76,7 +79,6 @@ var ProductDetails = React.createClass({
         }
         return optionsForDropDown;
     },
-
 
     getSubCategoryDropDown: function() {
         var arrayOfObjects = [];
@@ -115,16 +117,17 @@ var ProductDetails = React.createClass({
         newProduct.subCategory = this.state.subCategory;
         newProduct.minRequiredAmount =  0;
         newProduct.notifyManager = this.refs.notifyBox.checked;
+
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newProduct._id = this.props.location.query._id;
-            managementServices.editProduct(newProduct).then(function (n) {
-                var val = n;
+            managementServices.editProduct(newProduct).then(function (val) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantsStrings.editSuccessMessage_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                     onRemove: function (notification) {
                         context.router.push({
@@ -133,20 +136,21 @@ var ProductDetails = React.createClass({
                     }
                 });
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }else {
-            managementServices.addProduct(newProduct).then(function (n) {
-                var val = n;
+            managementServices.addProduct(newProduct).then(function (val) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantsStrings.addSuccessMessage_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                     onRemove: function (notification) {
                         context.router.push({
@@ -155,27 +159,31 @@ var ProductDetails = React.createClass({
                     }
                 });
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }
     },
+
     getTitle: function() {
       if (this.state.editing) {
           return constantsStrings.editProduct_string;
       }
       return constantsStrings.addProduct_string;
     },
+
     getButtonString: function() {
         if (this.state.editing) {
             return constantsStrings.edit_string;
         }
         return constantsStrings.add_string;
     },
+
     addNewProduct: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
@@ -260,6 +268,7 @@ var ProductDetails = React.createClass({
         //this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;
         this.refs.notifyBox.checked = this.currProduct.notifyManager;
     },
+
     render: function () {
         return this.addNewProduct();
     }

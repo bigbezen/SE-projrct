@@ -22,9 +22,7 @@ var styles = {
         height: '50px'
     },
     bodyStyle: {
-        'width' : '80%',
-        'marginTop': '50px',
-        'margin': 'auto'
+        'marginBottom': '120px'
     },
     textStyleRight: {
         textAlign:'right',
@@ -43,7 +41,8 @@ var styles = {
         marginBottom: '10px',
     },
     buttonStyle: {
-        marginBottom: '20px'
+        marginBottom: '50px',
+        marginTop: '20px'
     }
 
 

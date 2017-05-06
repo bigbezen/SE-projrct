@@ -1,21 +1,13 @@
 
-var React = require('react');
-var constantStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-
-
-var userServices = require('../communication/userServices');
-var Chart1 = require('react-icons/lib/ti/chart-bar-outline');
-var Chart2 = require('react-icons/lib/ti/chart-area-outline');
-var Chart3 = require('react-icons/lib/ti/chart-pie-outline');
-var NotificationSystem = require('react-notification-system');
-
-
-
-var options = {
-    noDataText: constantStrings.NoDataText_string
-};
+var React               = require('react');
+var constantStrings     = require('../utils/ConstantStrings');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var userServices        = require('../communication/userServices');
+var Chart1              = require('react-icons/lib/ti/chart-bar-outline');
+var Chart2              = require('react-icons/lib/ti/chart-area-outline');
+var Chart3              = require('react-icons/lib/ti/chart-pie-outline');
+var NotificationSystem  = require('react-notification-system');
 
 var ReportsBase = React.createClass({
     contextTypes: {
@@ -30,6 +22,7 @@ var ReportsBase = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -38,14 +31,11 @@ var ReportsBase = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
-        return{
-
-        }
-    },
-    componentDidMount() {
+        return{}
     },
 
     onClickSalesReport: function(){
@@ -100,7 +90,6 @@ var ReportsBase = React.createClass({
             </div>
         )
     }
-
 });
 
 module.exports = ReportsBase;

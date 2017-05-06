@@ -2,19 +2,21 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var managerServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var storeInfo = require('../models/store');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var managerServices     = require('../communication/managementServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var storeInfo           = require('../models/store');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var StoreDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
@@ -24,6 +26,7 @@ var StoreDetails = React.createClass({
             channel:''
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -32,6 +35,7 @@ var StoreDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -40,6 +44,7 @@ var StoreDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     handleAreaChange(event) {
         this.setState({area: event.target.value});
     },
@@ -49,11 +54,8 @@ var StoreDetails = React.createClass({
     },
 
     componentDidMount() {
-        console.log('check props');
         var isEmptyVar = !(this.isEmpty(this.props.location.query));
-        console.log(!(this.isEmpty(this.props.location.query)));
         this.state.editing = isEmptyVar;
-        console.log(this.state.editing);
         if (this.state.editing) {
             this.setFields();
         }
@@ -84,7 +86,6 @@ var StoreDetails = React.createClass({
             alert('Invalid values. please make sure that you filled all of the fields');
             return;
         }*/
-        console.log('we are here');
         var newStore = new storeInfo();
         newStore.name = this.refs.nameBox.value;
         newStore.managerName = this.refs.managerNameBox.value;
@@ -98,10 +99,11 @@ var StoreDetails = React.createClass({
         if (this.state.editing) {
             newStore._id = this.props.location.query._id;
             managerServices.editStore(newStore).then(function (n) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantsStrings.editSuccessMessage_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                     onRemove: function (notification) {
                         context.router.push({
@@ -110,19 +112,21 @@ var StoreDetails = React.createClass({
                     }
                 });
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }else {
             managerServices.addStore(newStore).then(function (n) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantsStrings.addSuccessMessage_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                     onRemove: function (notification) {
                         context.router.push({
@@ -131,27 +135,31 @@ var StoreDetails = React.createClass({
                     }
                 });
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }
     },
+
     getTitle: function() {
         if (this.state.editing) {
             return constantsStrings.editStore_string;
         }
         return constantsStrings.addStore_string;
     },
+
     getButtonString: function() {
         if (this.state.editing) {
             return constantsStrings.edit_string;
         }
         return constantsStrings.add_string;
     },
+
     addNewStore: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
@@ -261,9 +269,11 @@ var StoreDetails = React.createClass({
         this.refs.areaBox.value = this.currSrure.area;
         this.refs.channelBox.value = this.currSrure.channel;
     },
+
     render: function () {
         return this.addNewStore();
     }
+
 });
 
 module.exports = StoreDetails;

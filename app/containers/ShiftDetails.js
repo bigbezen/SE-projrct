@@ -2,23 +2,23 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var managementServices = require('../communication/managementServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var shiftInfo = require('../models/shift');
-var flatten = require('flat');
-var ReactBootstrap = require("react-bootstrap");
-var moment = require('moment');
-var paths = require('../utils/Paths');
-var NotificationSystem = require('react-notification-system');
-var styles = require('../styles/managerStyles/styles');
-var DropDownInput = ReactBootstrap.DropdownButton;
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var managementServices  = require('../communication/managementServices');
+var constantsStrings    = require('../utils/ConstantStrings');
+var shiftInfo           = require('../models/shift');
+var flatten             = require('flat');
+var moment              = require('moment');
+var paths               = require('../utils/Paths');
+var NotificationSystem  = require('react-notification-system');
+var styles              = require('../styles/managerStyles/styles');
+var userServices        = require('../communication/userServices');
 
 var ShiftDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -27,6 +27,7 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -35,6 +36,7 @@ var ShiftDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
@@ -77,8 +79,8 @@ var ShiftDetails = React.createClass({
         var optionsForDropDown = [];
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        managementServices.getAllStores().then(function (n) {
-            var val = n;
+
+        managementServices.getAllStores().then(function (val) {
             var arrayOfObjects = val;
             optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
             for (var i = 0; i < arrayOfObjects.length; i++) {
@@ -97,6 +99,7 @@ var ShiftDetails = React.createClass({
         var optionsForDropDown = [];
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
+
         managementServices.getAllUsers().then(function (n) {
             var val = n;
             var arrayOfObjects = val;
@@ -138,21 +141,21 @@ var ShiftDetails = React.createClass({
         newShift.storeId = this.state.storeId;
         newShift.type = this.state.shiftType;
         newShift.salesmanId = this.state.salesmanId;
-        var startT = moment(this.refs.startTimeBox.value).format('YYYY-MM-DD hh:mm');
-        var endT = moment(this.refs.endTimeBox.value).format('YYYY-MM-DD hh:mm');
-        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' + this.refs.startTimeBox.value + '+03:00';
-        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + 'T' +  this.refs.endTimeBox.value + '+03:00';
+        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
+        newShift.startTime = moment(newShift.startTime).format('YYYY-MM-DD HH:mm Z');
+        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
+        newShift.endTime = moment(newShift.endTime).format('YYYY-MM-DD HH:mm Z');
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newShift._id = this.props.location.query._id;
             managementServices.editShift(newShift).then(function (n) {
-                    var val1 = n;
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantsStrings.editSuccessMessage_string,
                         level: 'success',
-                        autoDismiss: 2,
+                        autoDismiss: 1,
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
@@ -161,22 +164,23 @@ var ShiftDetails = React.createClass({
                         }
                     });
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }else {
-            managementServices.addShift(newShift).then(function (n) {
-                var val1 = n;
+            managementServices.addShift(newShift).then(function (val1) {
                 newShift._id = val1[0]._id;
                 managementServices.publishShifts(newShift).then(function (n) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantsStrings.addSuccessMessage_string,
                         level: 'success',
-                        autoDismiss: 2,
+                        autoDismiss: 1,
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
@@ -185,35 +189,40 @@ var ShiftDetails = React.createClass({
                         }
                     });
                 }).catch(function (errMess) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: errMess,
                         level: 'error',
-                        autoDismiss: 5,
+                        autoDismiss: 0,
                         position: 'tc'
                     });
                 })
             }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }
     },
+
     getTitle: function() {
         if (this.state.editing) {
             return constantsStrings.editShift_string;
         }
         return constantsStrings.addShift_string;
     },
+
     getButtonString: function() {
         if (this.state.editing) {
             return constantsStrings.edit_string;
         }
         return constantsStrings.add_string;
     },
+
     addNewShift: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
@@ -306,16 +315,17 @@ var ShiftDetails = React.createClass({
         console.log(this.currShift);
 
         this.state.shiftType =  this.currShift.type;
-        this.state.storeId = this.currShift.store._id;
-        this.state.salesmanId = this.currShift.salesman._id;
+        this.state.storeId = this.currShift.storeId._id;
+        this.state.salesmanId = this.currShift.salesmanId._id;
 
-        this.refs.storeBox.value = this.currShift.store._id;
-        this.refs.userBox.value = this.currShift.salesman._id;
+        this.refs.storeBox.value = this.currShift.storeId._id;
+        this.refs.userBox.value = this.currShift.salesmanId.username;
         this.refs.shiftTypeBox.value =  this.currShift.type;
         this.refs.dateBox.value =  moment(this.currShift.startTime).format('YYYY-MM-DD');
         this.refs.startTimeBox.value = moment(this.currShift.startTime).format('HH:mm');
         this.refs.endTimeBox.value = moment(this.currShift.endTime).format('HH:mm');
     },
+
     render: function () {
         if (this.state.storesForDropDown.length == 0) {
             this.getOptionsForStores();

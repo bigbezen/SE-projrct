@@ -3,26 +3,18 @@
  */
 var React               = require('react');
 var constantsStrings    = require('../utils/ConstantStrings');
-var paths               = require('../utils/Paths');
-var salesmanService     = require('../communication/salesmanServices');
 var styles              = require('../styles/salesmanStyles/salesmanShiftSchedule');
 var userServices        = require('../communication/userServices');
 var NotificationSystem  = require('react-notification-system');
 var managementService   = require('../communication/managementServices');
 var moment              = require('moment');
-var flatten             = require('flat');
-
-function flatList(users) {
-    var output = [];
-    for(var i = 0; i < users.length; i++)
-        output.push(flatten(users[i]));
-    return output;
-}
 
 var SalesmanShiftsScheduleContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -31,6 +23,7 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -39,14 +32,17 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState() {
         return {
             shifts: null
         }
     },
+
     componentDidMount() {
       this.updateShifts();
     },
+
     sortShifts: function(a, b){
         var dateA = new Date(a.startTime);
         var dateB = new Date(b.startTime);
@@ -58,18 +54,27 @@ var SalesmanShiftsScheduleContainer = React.createClass({
             return 0;
         }
     },
+
     updateShifts: function() {
         var currentDate = moment().format('YYYY-MM-DD');
         var self = this;
+        var notificationSystem = this.refs.notificationSystem;
         managementService.getShiftsFromDate(currentDate).then(function (result) {
             var sortedShifts =result.sort(self.sortShifts);
             self.setState({
                 shifts: sortedShifts
             });
         }).catch(function (errMess) {
-            // notification should be here
+            notificationSystem.clearNotifications();
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
         })
     },
+
     renderLoading:function () {
         return(
             <div>
@@ -78,6 +83,7 @@ var SalesmanShiftsScheduleContainer = React.createClass({
             </div>
         )
     },
+
     renderEachShift: function(shift, i) {
         var shiftDate = moment(shift.startTime).format('DD/MM/YYYY');
         var startTime = moment(shift.startTime).format('H:mm');
@@ -96,16 +102,18 @@ var SalesmanShiftsScheduleContainer = React.createClass({
             </div>
         )
     },
+
     renderTable: function() {
         return (
-            <div className='main-container'>
-                <div className="w3-container" style={styles.bodyStyle}>
+            <div className='main-container' style={styles.bodyStyle}>
+                <div className="w3-container">
                     {this.state.shifts.map(this.renderEachShift)}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },
+
     render: function () {
         if(this.state.shifts != null)
         {

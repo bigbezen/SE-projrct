@@ -99,7 +99,9 @@ var userRequests = {
 
     getProfile: function(){
         return axios.get(serverUrl + 'user/getProfile', {
-            sessionId:sessionId
+            headers: {
+                sessionId: sessionId
+            }
         }).then(function (info) {
             console.log('the user ' + name + ' getProfile.');
             return info.data;
@@ -108,6 +110,7 @@ var userRequests = {
             throw err.response.data;
         })
     },
+
     getUsername: function () {
         return name;
     }
@@ -423,7 +426,7 @@ var managementRequests = {
     },
 
     getSalesmanFinishedShifts: function(salesmanId){
-        console.log('get finshed shifts of salesman');
+        console.log('get finished shifts of salesman');
         return axios.get(serverUrl + 'management/getSalesmanFinishedShifts?salesmanId=' + salesmanId, {
             headers: {
                 sessionId: sessionId
@@ -431,6 +434,20 @@ var managementRequests = {
         }).then(function(info) {
             return info.data;
         }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getSalesmanLiveShift: function(salesmanId){
+        console.log('get salesman live shifts');
+        return axios.get(serverUrl + 'management/getSalesmanLiveShift?salesmanId=' + salesmanId, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info){
+            return info.data;
+        }).catch(function(err){
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })

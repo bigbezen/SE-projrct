@@ -140,7 +140,6 @@ function _setapApiEndpoints() {
     });
 
     app.get('/user/getProfile', async function (req, res) {
-        console.log('bla');
         if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
             return;

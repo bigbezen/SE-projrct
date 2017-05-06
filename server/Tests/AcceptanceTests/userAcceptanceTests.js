@@ -144,7 +144,7 @@ describe('salesman acceptance test', function(){
             });
 
             assert.equal(result.status, 200);
-            expect(result.sessionId).to.be.undefined;
+            expect(result.data.sessionId).to.be.undefined;
         });
 
         it('LogoutUserNotLoggedIn', async function(){
@@ -344,36 +344,36 @@ describe('salesman acceptance test', function(){
     });
 
     describe('TestGetProfile', function(){
-        // it('GetProfileValid', async function(){
-        //     let result = await axios.get(serverUrl + 'user/getProfile', {
-        //         headers:{
-        //             sessionId:"sessionId"
-        //         }
-        //     });
-        //
-        //     assert.equal(result.status, 200);
-        //     expect(result.user).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
-        //     expect(result.user).to.not.have.all.keys('sessionId', 'password');
-        // }) ;
-        //
-        // it('InvalidSessionId', async function(){
-        //     let result = await axios.get(serverUrl + 'user/getProfile', {
-        //         headers:{
-        //             sessionId:'sessionId'
-        //         }
-        //     }).then(async function(info){
-        //         return info;
-        //     }).catch(async function(err){
-        //         return err;
-        //     });
-        //
-        //     assert.equal(result.response.status, 401);
-        // });
+         it('GetProfileValid', async function(){
+             let result = await axios.get(serverUrl + 'user/getProfile', {
+                 headers:{
+                     sessionId:"sessionId"
+                 }
+             });
+
+             assert.equal(result.status, 200);
+             expect(result.data).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+             expect(result.data).to.not.have.all.keys('sessionId', 'password');
+         }) ;
+
+         it('InvalidSessionId', async function(){
+             let result = await axios.get(serverUrl + 'user/getProfile', {
+                 headers:{
+                     sessionId:1234567
+                 }
+             }).then(async function(info){
+                 return info;
+             }).catch(async function(err){
+                 return err;
+             });
+
+             assert.equal(result.response.status, 401);
+         });
 
         it('IllegalParameter', async function(){
             let result = await axios.get(serverUrl + 'user/getProfile', {
                 headers:{
-                    sessionId:987349823
+                    sessionIdd:987349823
                 }
             }).then(async function(info){
                 return info;

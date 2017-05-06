@@ -20,6 +20,7 @@ namespace FinalProjectTest
         private static JObject[] _salesmanArr;
         private static JObject[] _storesArr;
         private static JObject[] _productsArr;
+        private static JObject[] _encourangementArr;
         private static Action<string,string,string,int>[] _shiftActions;
         private static JArray _shiftsArr;
         private static JObject _admin;
@@ -48,6 +49,10 @@ namespace FinalProjectTest
             //adding 20 products
             AddProducts(productsCount: 20);
             TestProductesAdded(productsCount: 20);
+
+            //adding 5 encourangemnet
+            addEncouragement(encouragementCount: 5);
+            TestEncouragemenAdded(encouragementCount: 5);
 
             //adding shift foreach salesman
             CreateAndpublishShiftsForTheSalesman();
@@ -93,6 +98,19 @@ namespace FinalProjectTest
             JArray req = JArray.Parse(GetRequest(URLGenaretor._getAllProductsUrl, sessionId));
             Assert.IsNotNull(req);
             Assert.AreEqual(productsCount, req.Count);
+        }
+
+        [TestMethod]
+        private void TestEncouragemenAdded(int encouragementCount)
+        {
+            //admin should be loggedin 
+            Assert.IsNotNull(_admin);
+            string sessionId = _admin.GetValue("sessionId").ToString();
+
+            string jsonBody = JSessionId(sessionId);
+            JArray req = JArray.Parse(GetRequest(URLGenaretor._getAllEncouragementUrl, sessionId));
+            Assert.IsNotNull(req);
+            Assert.AreEqual(encouragementCount, req.Count);
         }
 
         private static void AddNewSalesman(int salesmanCount)
@@ -145,7 +163,7 @@ namespace FinalProjectTest
             }
         }
 
-        private void AddStores(int storesCount)
+        private static void AddStores(int storesCount)
         {
             //admin should be loggedin 
             Assert.IsNotNull(_admin);
@@ -173,7 +191,7 @@ namespace FinalProjectTest
             }
         }
 
-        private void AddProducts(int productsCount)
+        private static void AddProducts(int productsCount)
         {
             //admin should be loggedin 
             Assert.IsNotNull(_admin);
@@ -198,6 +216,38 @@ namespace FinalProjectTest
                 string jsonBody = addreq.ToString();
                 JObject req = JObject.Parse(PostRequest(URLGenaretor._addProductUrl, jsonBody));
                 _productsArr[i] = new JObject(req);
+            }
+        }
+
+        private static void addEncouragement(int encouragementCount)
+        {
+            //admin should be loggedin 
+            Assert.IsNotNull(_admin);
+            //products should be added
+            Assert.IsTrue(_productsArr.Length > 0);
+
+            string sessionId = _admin.GetValue("sessionId").ToString();
+            _encourangementArr = new JObject[encouragementCount];
+
+            for (int i = 0; i < encouragementCount; i++)
+            {
+                dynamic encouragement = new JObject();
+                encouragement.active = true;
+                encouragement.numOfProducts = 20;
+                encouragement.rate = 100;
+                encouragement.products = new JArray();
+                for(int j = i * 4; j < (i * 4 + 4); j++)
+                {
+                    encouragement.products.Add(_productsArr[j].GetValue("_id"));
+                }
+
+                dynamic addreq = new JObject();
+                addreq.encouragementDetails = encouragement;
+                addreq.sessionId = sessionId;
+
+                string jsonBody = addreq.ToString();
+                JObject req = JObject.Parse(PostRequest(URLGenaretor._addEncouragementUrl, jsonBody));
+                _encourangementArr[i] = new JObject(req);
             }
         }
 

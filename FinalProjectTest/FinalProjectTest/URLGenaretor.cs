@@ -22,5 +22,7 @@ namespace FinalProjectTest
         public const string _reportSaleUrl = "/salesman/reportSale";
         public const string _reportOpenedUrl = "/salesman/reportOpened";
         public const string _finishShiftUrl = "/salesman/finishShift";
+        public const string _addEncouragementUrl = "/management/addEncouragement";
+        public const string _getAllEncouragementUrl = "/management/getAllEncouragements";
     }
 }

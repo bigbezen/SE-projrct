@@ -10,6 +10,7 @@ let userModel       = require('../../Models/user');
 let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
 let monthAnalysisReportModel = require('../../Models/Reports/monthAnalysisReport');
 let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+let encouragementFactor = 0.0376;
 
 let getSaleReportXl =  async function(sessionId, shiftId){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getSaleReportXl');
@@ -243,19 +244,41 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
     let workbook = new Excel.Workbook();
     workbook.xlsx.readFile('monthAnalysisReport.xlsx')
         .then(async function() {
-            let formArr = ['SUM(M5:M16)','SUM(N5:N16)','SUM(O5:O16)','SUM(P5:P16)','SUM(Q5:Q16)','SUM(R5:R16)','SUM(S5:S16)','SUM(T5:T16)','SUM(U5:U16)','SUM(V5:V16)','SUM(W5:W16)','SUM(X5:X16)','SUM(Y5:Y16)','SUM(Z5:Z16)','SUM(AA5:AA16)','SUM(AB5:AB16)','SUM(AC5:AC16)','SUM(AD5:AD16)'];
+            let formArr = ['SUM(B5:B16)','SUM(C5:C16)','SUM(D5:D16)','SUM(E5:E16)','SUM(F5:F16)','SUM(G5:G16)','SUM(H5:H16)','SUM(I5:I16)','SUM(J5:J16)','SUM(K5:K16)','SUM(L5:L16)','SUM(M5:M16)','SUM(N5:N16)','SUM(O5:O16)','SUM(P5:P16)','SUM(Q5:Q16)','SUM(R5:R16)','SUM(S5:S16)','SUM(T5:T16)','SUM(U5:U16)','SUM(V5:V16)','SUM(W5:W16)','SUM(X5:X16)','SUM(Y5:Y16)','SUM(Z5:Z16)','SUM(AA5:AA16)','SUM(AB5:AB16)','SUM(AC5:AC16)','SUM(AD5:AD16)','SUM(AE5:AE16)','SUM(AF5:AF16)','SUM(AG5:AG16)'];
             let worksheet = workbook.getWorksheet(1);
             worksheet.name = year;
             let row = worksheet.getRow(2);
             row.getCell(3).value = 'ניתוח כללי ' + year;
-
             let monthRow = 4;
+            let encouragement = await dal.getAllEncouragements();
+            for(let i = 0; i < encouragement.length; i++){
+                row = worksheet.getRow(monthRow);
+                row.getCell(6 + i).value = encouragement[i].name;
+            }
+
             let monthCol;
             for(let monthData of report.monthData){
-                monthCol =  13;
+                monthCol =  3;//16;
                 row = worksheet.getRow(monthRow + monthData.month);
                 //row.getCell(monthCol).value = 1;
+                //salesman cost
+                row.getCell(monthCol).value = monthData.salesmanCost.traditionalHot;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.salesmanCost.organized;
+                monthCol++;
+                row.getCell(monthCol).value = monthData.salesmanCost.traditionalOrganized;
+                monthCol++;
 
+                //write all the encouragement
+                for(let j = 0; j < encouragement.length; j++){
+                    for(let enc of monthData.monthlyEncoragement){
+                        if(enc.encouragement._id.equals(encouragement[j]._id)){
+                            row.getCell(monthCol).value = enc.amount;
+                            monthCol++;
+                        }
+                    }
+                }
+                monthCol = 16;
                 //total hours
                 row.getCell(monthCol).value = monthData.totalHours.traditionalHot;
                 monthCol++;
@@ -301,8 +324,8 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
                 row.commit();
             }
             row = worksheet.getRow(monthRow + 13);
-            monthCol =  13;
-            for (let i = 0; i < 18;i++){
+            monthCol =  2;
+            for (let i = 0; i < 33;i++){
                 row.getCell(monthCol).value = {'formula':formArr[i]};
                 monthCol++;
             }
@@ -317,6 +340,9 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
 let genarateMonthAnalysisReport = async function() {
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
+    let storeTraditionalHot = new Set();
+    let storeTraditionalOrganized = new Set();
+    let storeOrganized = new Set();
 
     let yearReport = await dal.getMonthAnalysisReport(year);
     if(yearReport == null){
@@ -375,10 +401,11 @@ let genarateMonthAnalysisReport = async function() {
     let monthShifts = await dal.getMonthShifts(year, month);
     for(let currentShift of monthShifts){
         let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
-        let duration = (currentShift.endTime - currentShift.startTime)/36e5;
+        let duration = parseInt((currentShift.endTime - currentShift.startTime)/36e5, 10);
         let store = await dal.getStoresByIds([currentShift.storeId]);
         store = store[0];
         if(store.channel == 'מסורתי - חם'){
+            storeTraditionalHot.add(store._id.toString());
             yearReport.monthData[month].totalHours.traditionalHot += duration;
             yearReport.monthData[month].salesmanCost.traditionalHot += duration*salesman.jobDetails.salary;
             yearReport.monthData[month].shiftsCount.traditionalHot += 1;
@@ -388,6 +415,7 @@ let genarateMonthAnalysisReport = async function() {
             }
         }
         else if(store.channel == 'מסורתי - מאורגן'){//organized
+            storeTraditionalOrganized.add(store._id.toString());
             yearReport.monthData[month].totalHours.traditionalOrganized += duration;
             yearReport.monthData[month].salesmanCost.traditionalOrganized += duration*salesman.jobDetails.salary;
             yearReport.monthData[month].shiftsCount.traditionalOrganized += 1;
@@ -397,6 +425,7 @@ let genarateMonthAnalysisReport = async function() {
             }
         }
         else {//תדמית יום
+            storeOrganized.add(store._id.toString());
             yearReport.monthData[month].totalHours.organized += duration;
             yearReport.monthData[month].salesmanCost.organized += duration*salesman.jobDetails.salary;
             yearReport.monthData[month].shiftsCount.organized += 1;
@@ -404,24 +433,27 @@ let genarateMonthAnalysisReport = async function() {
             for(let sale of currentShift.salesReport){
                 yearReport.monthData[month].openedCount.organized+= sale.opened;
             }
-
         }
         for(let shiftEnc of currentShift.encouragements){
             for(let encReport of yearReport.monthData[month].monthlyEncoragement){
                 if(encReport.encouragement._id.equals(shiftEnc.encouragement._id)){
-                    encReport.amount += shiftEnc.encouragement.rate * shiftEnc.count;
+                    let totalAmount = shiftEnc.encouragement.rate * shiftEnc.count;
+                    encReport.amount += parseInt(totalAmount + totalAmount * encouragementFactor);
                 }
             }
         }
     }
     if(yearReport.monthData[month].totalHours.organized > 0){
         yearReport.monthData[month].saleAverage.organized = yearReport.monthData[month].saleBottlesCount.organized/yearReport.monthData[month].totalHours.organized;
+        yearReport.monthData[month].uniqueCount.organized = storeOrganized.size;
     }
     if(yearReport.monthData[month].totalHours.traditionalOrganized > 0){
         yearReport.monthData[month].saleAverage.traditionalOrganized = yearReport.monthData[month].saleBottlesCount.traditionalOrganized/yearReport.monthData[month].totalHours.traditionalOrganized;
+        yearReport.monthData[month].uniqueCount.traditionalOrganized = storeTraditionalOrganized.size;
     }
     if(yearReport.monthData[month].totalHours.traditionalHot > 0){
         yearReport.monthData[month].saleAverage.traditionalHot = yearReport.monthData[month].saleBottlesCount.traditionalHot/yearReport.monthData[month].totalHours.traditionalHot;
+        yearReport.monthData[month].uniqueCount.traditionalHot = storeTraditionalHot.size;
     }
 
     let res = await dal.editMonthAnalysisReport(yearReport);
@@ -430,7 +462,6 @@ let genarateMonthAnalysisReport = async function() {
 
 let getMonthlyAnalysisReport = async function(sessionId, year){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getMonthlyAnalysisReport');
-    console.log('bla');
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 

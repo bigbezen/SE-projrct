@@ -3,7 +3,6 @@
  */
 
 var React                   = require('react');
-var constantStrings         = require('../utils/ConstantStrings');
 var salesmanServices        = require('../communication/salesmanServices');
 var userServices            = require('../communication/userServices');
 var managementServices      = require('../communication/managementServices');
@@ -12,9 +11,11 @@ var styles                  = require('../styles/salesmanStyles/encouragementsSt
 var constantsStrings        = require('../utils/ConstantStrings');
 
 var ShiftEncouragementsContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState(){
         this.setSessionId();
         this.setUserType();
@@ -23,6 +24,7 @@ var ShiftEncouragementsContainer = React.createClass({
             totalEncouragementsStatus: null
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -31,9 +33,11 @@ var ShiftEncouragementsContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     componentDidMount() {
         this.updateShift();
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -42,34 +46,39 @@ var ShiftEncouragementsContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     updateShift(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (n) {
             self.updateEncouragements(n);
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     updateEncouragements(shift) {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllIncentives().then(function (n) {
             self.updateEncouragementsStatus(shift, n);
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
              message: errMess,
              level: 'error',
-             autoDismiss: 5,
+             autoDismiss: 0,
              position: 'tc'
              });
         })
     },
+
     updateEncouragementsStatus(shift, encouragements){
         var encouragementsStatus = [];
         var totalEncouragementsStatus = 0;
@@ -95,22 +104,17 @@ var ShiftEncouragementsContainer = React.createClass({
             encouragementsStatus[j] = {encouragement: encouragement,
                                         amountSold: count};
         }
-
-        console.log("sold products:");
-        console.log(soldProducts);
-        console.log("encouragments:");
-        console.log(encouragements);
-        console.log("status:");
-        console.log(encouragementsStatus);
         this.setState({encouragementsStatus : encouragementsStatus,
                   totalEncouragementsStatus : totalEncouragementsStatus})
 
     },
+
     renderProductRow: function(product, i) {
         return (
             <p>&nbsp;&nbsp;&nbsp;&nbsp;{product.name}</p>
         )
     },
+
     renderEachEncouragement: function(encouragementStatus, i) {
         return (
             <div key={i} className="row w3-card-4 w3-round-large" style={styles.encouragementStyle}>
@@ -118,7 +122,6 @@ var ShiftEncouragementsContainer = React.createClass({
                     <p className="w3-xxxlarge" style={styles.encName}>{encouragementStatus.encouragement.name} :</p>
                     <p className="w3-xxxlarge" style={styles.encStatus}> {encouragementStatus.amountSold}/{encouragementStatus.encouragement.numOfProducts}</p>
                 </header>
-
                 <div className="w3-container">
                     <p><b>{constantsStrings.products_string} :</b></p>
                     {encouragementStatus.encouragement.products.map(this.renderProductRow)}
@@ -127,6 +130,7 @@ var ShiftEncouragementsContainer = React.createClass({
             </div>
         )
     },
+
     renderList:function () {
         return(
             <div className='main-container'>
@@ -140,6 +144,7 @@ var ShiftEncouragementsContainer = React.createClass({
             </div>
         )
     },
+
     renderLoading:function () {
         return(
             <div>
@@ -148,6 +153,7 @@ var ShiftEncouragementsContainer = React.createClass({
             </div>
         )
     },
+
     render: function () {
         if(this.state.encouragementsStatus != null)
         {

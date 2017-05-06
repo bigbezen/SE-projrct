@@ -1,0 +1,8 @@
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\bin\Debug\FinalProjectTest.dll
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\bin\Debug\FinalProjectTest.pdb
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\obj\Debug\FinalProjectTest.csprojResolveAssemblyReference.cache
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\obj\Debug\FinalProjectTest.dll
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\obj\Debug\FinalProjectTest.pdb
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\bin\Debug\Newtonsoft.Json.dll
+D:\matan\לימודים\final project\FinalProjectTest\FinalProjectTest\bin\Debug\Newtonsoft.Json.xml

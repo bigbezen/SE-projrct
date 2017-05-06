@@ -2,23 +2,25 @@
  * Created by lihiverchik on 11/01/2017.
  */
 
-var React = require('react');
-var constantsStrings = require('../utils/ConstantStrings');
-var salesmanServices = require('../communication/salesmanServices');
-var paths = require('../utils/Paths');
-var startShiftStyles = require('../styles/salesmanStyles/startShiftStyles');
-var styles = require('../styles/salesmanStyles/startShiftStyles');
-var StartShiftIcon = require('react-icons/lib/fa/angle-double-left');
-var WineGlassIcon = require('react-icons/lib/fa/glass');
-var BackButtonIcon = require('react-icons/lib/md/arrow-forward');
-var userServices = require('../communication/userServices');
+var React                   = require('react');
+var constantsStrings        = require('../utils/ConstantStrings');
+var salesmanServices        = require('../communication/salesmanServices');
+var paths                   = require('../utils/Paths');
+var startShiftStyles        = require('../styles/salesmanStyles/startShiftStyles');
+var styles                  = require('../styles/salesmanStyles/startShiftStyles');
+var StartShiftIcon          = require('react-icons/lib/fa/angle-double-left');
+var WineGlassIcon           = require('react-icons/lib/fa/glass');
+var BackButtonIcon          = require('react-icons/lib/md/arrow-forward');
+var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
 
 var EndShiftContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState()
     {
         this.setSessionId();
@@ -28,6 +30,7 @@ var EndShiftContainer = React.createClass({
             ShiftId:this.props.location.state.newShift._id
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -36,6 +39,7 @@ var EndShiftContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -44,6 +48,7 @@ var EndShiftContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentDidMount() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
@@ -54,14 +59,16 @@ var EndShiftContainer = React.createClass({
             }
             self.setState({shift: currShift});
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     handleSubmitReport: function (e) {
         e.preventDefault();
         var self = this;
@@ -72,20 +79,23 @@ var EndShiftContainer = React.createClass({
                     state: {newShift: self.state.shift}
                 })
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
-    onReturn:function(event) { //TODO: relate this method to return button
+
+    onReturn:function(event) {
         this.context.router.push({
             pathname: paths.salesman_sale_path,
             state: {newShift: this.state.shift}
         })
     },
+
     onUpdateProduct:function(event) {
         var currProductId = event.target.value;
         var isSelected = event.target.checked;
@@ -101,6 +111,7 @@ var EndShiftContainer = React.createClass({
         }
         this.setState({shift:currShift});
     },
+
     renderEachProduct: function(product, i){
         return (
             <li style={styles.product} key={i}>
@@ -116,6 +127,7 @@ var EndShiftContainer = React.createClass({
             </li>
         );
     },
+
     renderEndShift: function () {
         return (
             <div>

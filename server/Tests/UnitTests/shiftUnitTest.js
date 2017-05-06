@@ -1214,9 +1214,9 @@ describe('shift unit test', function () {
                 if(earnedEnc.encouragement.toString() == enc1._id.toString())
                     expect(earnedEnc.count).to.be.equal(3);
                 if(earnedEnc.encouragement.toString() == enc2._id.toString())
-                    expect(earnedEnc.count).to.be.equal(1);
+                    expect(earnedEnc.count).to.be.equal(9);
                 if(earnedEnc.encouragement.toString() == enc3._id.toString())
-                    expect(earnedEnc.count).to.be.equal(1);
+                    expect(earnedEnc.count).to.be.equal(11);
                 if(earnedEnc.encouragement.toString() == enc4._id.toString())
                     expect(earnedEnc.count).to.be.equal(3);
             }
@@ -1380,21 +1380,19 @@ describe('shift unit test', function () {
                 let res = await dal.addShift(shift);
             }
 
-            let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date());
+            let result = await shiftService.getShiftsFromDate(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shiftArr');
             for(let shift of result.shiftArr){
                 let i;
-                if(shift._id == shifts[0]._id)
+                if(shift._id.equals(shifts[0]._id))
                     i = 0;
                 else
                     i = 1;
-                expect(shift).to.include.all.keys('store', 'startTime', 'endTime', 'status', 'salesman');
-                expect((new Date(shifts[0].startTime)).getTime()).to.be.equal(shift.startTime.getTime());
-                expect((new Date(shifts[0].endTime)).getTime()).to.be.equal(shift.endTime.getTime());
-                expect(shift.store).to.be.a('object');
-                expect(shift.salesman).to.be.a('object');
-
+                shift = shift.toObject();
+                expect(shift).to.include.all.keys('storeId', 'startTime', 'endTime', 'status', 'salesmanId');
+                expect(shift.storeId).to.be.a('object');
+                expect(shift.salesmanId).to.be.a('object');
             }
         });
 
@@ -1410,7 +1408,7 @@ describe('shift unit test', function () {
         });
 
         it('tst get shifts from date with 0 shifts in db', async function(){
-            let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date(0));
+            let result = await shiftService.getShiftsFromDate(salesman.sessionId, new Date(0));
             expect(result).to.have.property('code', 200);
             expect(result.shiftArr).to.have.lengthOf(0);
         })

@@ -140,7 +140,6 @@ function _setapApiEndpoints() {
     });
 
     app.get('/user/getProfile', async function (req, res) {
-        console.log('bla');
         if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
             return;
@@ -597,7 +596,7 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/addShifts', async function (req, res) {
-        if (!validator.addOrPublishShifts(req.body)) {
+        if (!validator.addShifts(req.body)) {
             res.status(404).send('invalid parameters');
             return;
         }
@@ -621,7 +620,7 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/publishShifts', async function (req, res) {
-        if (!validator.addOrPublishShifts(req.body)) {
+        if (!validator.publishShifts(req.body)) {
             res.status(404).send('invalid parameters');
             return;
         }

@@ -1,9 +1,10 @@
-var React = require('react');
-var constantsStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var salesmanService = require('../communication/salesmanServices');
-var styles = require('../styles/salesmanStyles/homeStyles');
-var userServices = require('../communication/userServices');
+
+var React                   = require('react');
+var constantsStrings        = require('../utils/ConstantStrings');
+var paths                   = require('../utils/Paths');
+var salesmanService         = require('../communication/salesmanServices');
+var styles                  = require('../styles/salesmanStyles/homeStyles');
+var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
 var shift = {
@@ -52,9 +53,11 @@ var shift = {
 };
 
 var SalesmanHomeContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -63,6 +66,7 @@ var SalesmanHomeContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -71,6 +75,7 @@ var SalesmanHomeContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState(){
         this.setSessionId();
         this.setUserType();
@@ -80,9 +85,11 @@ var SalesmanHomeContainer = React.createClass({
             buttonTitle: null
         })
     },
+
     componentDidMount() {
         this.updateShifts();
     },
+
     updateShifts() { 
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
@@ -103,15 +110,17 @@ var SalesmanHomeContainer = React.createClass({
             }
         }).catch(function (errMess) {
             if(errMess != "user does not have a shift today"){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             }
         })
      },
+
     handleStartShift: function () {
         this.context.router.push({
             pathname: this.state.nextScreen,
@@ -119,7 +128,6 @@ var SalesmanHomeContainer = React.createClass({
         })
     },
     renderShift: function () {
-        //TODO: present to user details about the shift or some other message if he has no shift
         var startTime = new Date(this.state.shift.startTime);
         var formatedStartime = startTime.toLocaleTimeString('en-GB');
         var endTime = new Date(this.state.shift.endTime);
@@ -141,6 +149,7 @@ var SalesmanHomeContainer = React.createClass({
 
         )
     },
+
     renderLoading:function () {
         return(
             <div>
@@ -151,6 +160,7 @@ var SalesmanHomeContainer = React.createClass({
             </div>
         )
     },
+
     render: function () {
         if(this.state.shift != null)
         {

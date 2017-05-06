@@ -152,11 +152,20 @@ module.exports = {
         return checkParams(params, ['sessionId', 'year', 'month'], [stringT, numberT, numberT])
     },
 
-    addOrPublishShifts: function(params){
+    addShifts: function(params){
         var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
         for(let shift of params.shiftArr){
             if(res)
                 res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], [stringT, stringT, stringT, stringT])
+        }
+        return res;
+    },
+
+    publishShifts: function(params){
+        var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
+        for(let shift of params.shiftArr){
+            if(res)
+                res = res && checkParams(shift, ['_id', 'salesmanId'], [stringT, stringT])
         }
         return res;
     },

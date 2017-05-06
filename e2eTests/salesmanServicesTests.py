@@ -26,6 +26,10 @@ class SalesmanServices(unittest.TestCase):
         self.driver.get(helper.url)
         driver = self.driver
 
+    # test-37
+    def test_loginSalesman_ok(self):
+        self.loginAsSalesman()
+
     # test-38
     def test_logoutSalesman_ok(self):
         self.loginAsSalesman()
@@ -86,6 +90,14 @@ class SalesmanServices(unittest.TestCase):
         driver.find_element_by_xpath(containers.salesman_shift.reportOpen).click()
         sleep(2)
         self.assertTrue(helper.salesman_shift in driver.current_url)
+
+    # test-44
+    def test_viewExpenses(self):
+        driver = self.driver
+        self.loginAsSalesman()
+        driver.find_element_by_xpath(containers.salesmanHome.drives).click()
+        sleep(2)
+        self.assertEqual(driver.current_url, helper.salesman_expenses)
 
     # test-45
     def test_shift_editSale(self):
@@ -290,18 +302,6 @@ class SalesmanServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.salesman_shiftSchedule)
 
     # test-57
-    def test_viewExpenses(self):
-        driver = self.driver
-        self.loginAsSalesman()
-        driver.find_element_by_xpath(containers.salesmanHome.drives).click()
-        sleep(2)
-        self.assertEqual(driver.current_url, helper.salesman_expenses)
-
-    # test-58
-    def test_loginSalesman_ok(self):
-        self.loginAsSalesman()
-
-    # test-59
     def test_setUp_Ok(self):
         self.assertEqual(True, True)
 

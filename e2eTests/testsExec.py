@@ -1,0 +1,1 @@
+# python -m unittest discover -s C:/Personal/project/SE-prorject/e2eTests -p *Tests.py

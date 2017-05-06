@@ -153,82 +153,6 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.manager_home)
 
     # test-9
-    def test_changePass_ok(self):
-        driver = self.driver
-        self.usernameField.send_keys(helper.adminUsername)
-        self.passwordField.send_keys(helper.adminPass)
-        self.loginBtn.click()
-        driver.implicitly_wait(300)
-        sleep(3)
-        self.assertEqual(driver.current_url, helper.manager_home)
-        changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
-        changePassBtn.click()
-
-        currPass = driver.find_element_by_xpath(containers.changePass.currPass)
-        newPass1 = driver.find_element_by_xpath(containers.changePass.newPass1)
-        newPass2 = driver.find_element_by_xpath(containers.changePass.newPass2)
-        changeBtn = driver.find_element_by_xpath(containers.changePass.changeBtn)
-
-        currPass.send_keys(helper.adminPass)
-        newPass1.send_keys(helper.adminPass)
-        newPass2.send_keys(helper.adminPass)
-        changeBtn.click()
-
-        driver.implicitly_wait(300)
-        sleep(3)
-        self.assertEqual(driver.current_url, helper.manager_home)
-
-    # test-10
-    def test_changePass_ok(self):
-        driver = self.driver
-        self.usernameField.send_keys(helper.adminUsername)
-        self.passwordField.send_keys(helper.adminPass)
-        self.loginBtn.click()
-        driver.implicitly_wait(300)
-        sleep(3)
-        self.assertEqual(driver.current_url, helper.manager_home)
-        changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
-        changePassBtn.click()
-
-        currPass = driver.find_element_by_xpath(containers.changePass.currPass)
-        newPass1 = driver.find_element_by_xpath(containers.changePass.newPass1)
-        newPass2 = driver.find_element_by_xpath(containers.changePass.newPass2)
-        changeBtn = driver.find_element_by_xpath(containers.changePass.changeBtn)
-
-        currPass.send_keys(helper.adminPass)
-        newPass1.send_keys(helper.adminPass)
-        newPass2.send_keys(helper.adminPass)
-        changeBtn.click()
-
-        driver.implicitly_wait(300)
-        sleep(3)
-        self.assertEqual(driver.current_url, helper.manager_home)
-
-    def test_changePass_ok(self):
-        driver = self.driver
-        self.usernameField.send_keys(helper.adminUsername)
-        self.passwordField.send_keys(helper.adminPass)
-        self.loginBtn.click()
-        driver.implicitly_wait(300)
-        sleep(3)
-        self.assertEqual(driver.current_url, helper.manager_home)
-        changePassBtn = driver.find_element_by_xpath(containers.managerHome.changePass)
-        changePassBtn.click()
-
-        currPass = driver.find_element_by_xpath(containers.changePass.currPass)
-        newPass1 = driver.find_element_by_xpath(containers.changePass.newPass1)
-        newPass2 = driver.find_element_by_xpath(containers.changePass.newPass2)
-        changeBtn = driver.find_element_by_xpath(containers.changePass.changeBtn)
-
-        currPass.send_keys(helper.adminPass)
-        newPass1.send_keys(helper.adminPass)
-        newPass2.send_keys(helper.adminPass)
-        changeBtn.click()
-
-        driver.implicitly_wait(300)
-        sleep(3)
-        self.assertEqual(driver.current_url, helper.manager_home)
-
     def test_changePass_wrongPass(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -254,6 +178,7 @@ class UserService(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.change_page)
 
+    # test-10
     def test_changePass_differentPass(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)

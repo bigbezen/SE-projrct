@@ -614,7 +614,7 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     for(let sale of shift.sales){
         let saleDate = new Date(sale.timeOfSale).getTime();
         let getTime = new Date(time).getTime();
-        if(sale.productId.toString()==(productId) &&  saleDate == getTime){
+        if(sale.productId.toString() == (productId) &&  saleDate == getTime){
             diffQuant = sale.quantity - quantity;
             sale.quantity = quantity;
             found = true;
@@ -632,7 +632,6 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
 
     let res = await dal.updateShift(shift);
     return ({'code': 200});
-
 };
 
 let updateSalesReport = async function(sessionId, shiftId, productId, newSold, newOpened){

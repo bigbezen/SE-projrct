@@ -189,6 +189,10 @@ function _setapApiEndpoints() {
     });
 
     app.post('/salesman/editSale', async function (req, res) {
+        if(!validator.editSale(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
         let result = await shiftService.editSale(req.body.sessionId, req.body.shiftId, req.body.productId, req.body.saleTime, req.body.quantity);
         if(result.code == 200)
             res.status(200).send();
@@ -341,7 +345,6 @@ function _setapApiEndpoints() {
     });
 
     app.post('/management/updateSalesReport', async function(req, res){
-        console.log('bla');
         let result = await shiftService.updateSalesReport(req.body.sessionId, req.body.shiftId,
             req.body.productId, req.body.newSold, req.body.newOpened);
         if(result.code == 200)
@@ -780,7 +783,7 @@ function _setapApiEndpoints() {
     });
 
     app.post('/manager/getMonthAnalysisReportXL', async function (req, res) {
-        var result = await reportsService.getMonthAnalysisReportXL("123456","2017");//req.body.sessionId, req.body.year);
+        var result = await reportsService.getMonthAnalysisReportXL(req.body.sessionId, req.body.year);
         res.status(result.code).send(result.err);
     });
 

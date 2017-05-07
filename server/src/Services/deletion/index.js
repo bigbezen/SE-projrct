@@ -70,8 +70,8 @@ module.exports.cleanShifts = cleanShifts;
 module.exports.cleanMessages = cleanMessages;
 module.exports.cleanProducts = cleanProducts;
 module.exports.cleanEncs = cleanEncs;
-module.exports.cleanMAReports = cleanMAReport();
-module.exports.cleanSMHReports = cleanSMHReport();
+module.exports.cleanMAReports = cleanMAReport;
+module.exports.cleanSMHReports = cleanSMHReport;
 
 
 

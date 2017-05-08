@@ -139,7 +139,7 @@ var AddSaleContainer = React.createClass({
 
     setAmountButton: function(cell, row, enumObject, rowIndex) {
         return (
-            <div>
+            <div style={{paddingTop: '30px'}}>
                 <table>
                     <tr>
                         <td>
@@ -222,7 +222,7 @@ var AddSaleContainer = React.createClass({
 
     tablePlusIcon: function(cell, row, enumObject, rowIndex){
         return (
-            <div className="w3-jumbo">
+            <div className="w3-jumbo" style={{paddingTop: '20px'}}>
                 <PlusIcon/>
             </div>
         )
@@ -262,14 +262,23 @@ var AddSaleContainer = React.createClass({
                     <div className="w3-margin-top" >
                         <BootstrapTable data={this.state.soldProducts} hover bordered={false}>
                             <TableHeaderColumn
+                                dataField = 'subCategory'
+                                dataAlign = 'right'
+                                columnClassName = "col-sm-5"
+                                dataSort
+                                tdStyle = {styles.products_table_body}>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
                                 dataField = 'name'
                                 dataAlign = 'right'
+                                columnClassName = "col-sm-6"
                                 tdStyle = {styles.products_table_body}
                                 isKey = {true}>
                             </TableHeaderColumn>
                             <TableHeaderColumn
                                 dataAlign = 'right'
                                 dataField = 'button'
+                                columnClassName = "col-sm-1"
                                 width = '180'
                                 dataFormat = {this.setAmountButton}/>
                         </BootstrapTable>
@@ -284,16 +293,26 @@ var AddSaleContainer = React.createClass({
                                         bordered={false} hover search
                                         searchPlaceholder={constantStrings.search_string}>
                             <TableHeaderColumn
+                                dataField = 'subCategory'
+                                dataAlign = 'right'
+                                tdStyle = {styles.products_table_body}
+                                className = "col-sm-6"
+                                columnClassName = "col-sm-5"
+                                dataSort>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
                                 dataField = 'name'
                                 dataAlign = 'right'
                                 tdStyle = {styles.products_table_body}
-                                dataSort
+                                className = "col-sm-4"
+                                columnClassName = "col-sm-6"
                                 isKey = {true}>
-                                <h1><b>{constantStrings.select_product_for_sale}</b></h1>
                             </TableHeaderColumn>
                             <TableHeaderColumn
                                 dataField = 'button'
                                 dataAlign = 'left'
+                                className = "col-sm-2"
+                                columnClasName = "col-sm-1"
                                 dataFormat = {this.tablePlusIcon}>
                             </TableHeaderColumn>
                         </BootstrapTable>
@@ -325,17 +344,26 @@ var AddSaleContainer = React.createClass({
                                         bordered={false} hover search
                                         searchPlaceholder={constantStrings.search_string}>
                             <TableHeaderColumn
+                                dataField = 'subCategory'
+                                dataAlign = 'right'
+                                tdStyle = {styles.products_table_body}
+                                className = "col-sm-6"
+                                columnClassName = "col-sm-5"
+                                dataSort>
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
                                 dataField = 'name'
                                 dataAlign = 'right'
                                 tdStyle = {styles.products_table_body}
-                                dataSort
+                                className = "col-sm-4"
+                                columnClassName = "col-sm-6"
                                 isKey = {true}>
-                                <h1><b>{constantStrings.select_product_for_sale}</b></h1>
                             </TableHeaderColumn>
                             <TableHeaderColumn
                                 dataField = 'button'
                                 dataAlign = 'left'
-                                className = "col-xs-2"
+                                className = "col-sm-2"
+                                columnClasName = "col-sm-1"
                                 dataFormat = {this.tablePlusIcon}>
                             </TableHeaderColumn>
                         </BootstrapTable>

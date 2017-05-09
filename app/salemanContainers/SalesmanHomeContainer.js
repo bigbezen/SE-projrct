@@ -109,7 +109,7 @@ var SalesmanHomeContainer = React.createClass({
                 });
             }
         }).catch(function (errMess) {
-            if(errMess != "user does not have a shift today"){
+            if(errMess == "user does not have a shift today"){
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,

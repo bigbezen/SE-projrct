@@ -115,14 +115,12 @@ var EndShiftContainer = React.createClass({
     renderEachProduct: function(product, i){
         return (
             <li style={styles.product} key={i}>
-                <div style={styles.checkbox__detail}>
+                <div style={styles.checkbox__detail} className="col-sm-2">
                     <input type="checkbox" onChange={this.onUpdateProduct} checked={product.stockEndShift == 1} style={styles.product__selector} value={product.productId}/>
                 </div>
-                <div style={styles.product__detail}>
-                    <h1 className="w3-xxxlarge"><b> {product.name} </b></h1>
-                </div>
-                <div style={styles.image__detail} className="image-rounded">
-                    <div className="w3-theme-d5" style={styles.product__image}><WineGlassIcon/></div>
+                <div style={styles.product__detail} className="col-sm-10">
+                    <h1 className="w3-xxxlarge col-sm-12"><b> {product.name} </b></h1>
+                    <h1 className="w3-xxlarge col-sm-12">{product.subCategory}</h1>
                 </div>
             </li>
         );

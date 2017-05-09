@@ -15,7 +15,8 @@ let productService          = require('./src/Services/product/index');
 let encouragementService    = require('./src/Services/encouragements/index');
 let messageService          = require('./src/Services/messages/index');
 let reportsService          = require('./src/Services/reports/index');
-let shiftService             = require('./src/Services/shift/index');
+let shiftService            = require('./src/Services/shift/index');
+let deletionService         = require('./src/Services/deletion/index');
 
 let app = express();
 
@@ -844,4 +845,127 @@ function _setapApiEndpoints() {
         else
             res.status(result.code).send(result.err);
     });
+
+    // -----------------------------Section for deletion API---------------------------------------------------
+    app.get('/super/cleanDb', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanDb();
+            if(result.result.ok == 1)
+                res.status(200).send("DB is successfully deleted");
+            else
+                res.status(500).send("could not delete db");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanUsers', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanUsers();
+            if(result.result.ok == 1)
+                res.status(200).send("Users are successfully deleted");
+            else
+                res.status(500).send("could not delete ");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanShifts', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanShifts();
+            if(result.result.ok == 1)
+                res.status(200).send("shifts are successfully deleted");
+            else
+                res.status(500).send("could not delete");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanProducts', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanProducts();
+            if(result.result.ok == 1)
+                res.status(200).send("products are successfully deleted");
+            else
+                res.status(500).send("could not delete ");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanStores', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanStores();
+            if(result.result.ok == 1)
+                res.status(200).send("stores are successfully deleted");
+            else
+                res.status(500).send("could not delete ");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanMessages', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanMessages();
+            if(result.result.ok == 1)
+                res.status(200).send("messages are successfully deleted");
+            else
+                res.status(500).send("could not delete ");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanEncs', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanEncs();
+            if(result.result.ok == 1)
+                res.status(200).send("encouragements are successfully deleted");
+            else
+                res.status(500).send("could not delete");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanAnalyzeReports', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanMAReports();
+            if(result.result.ok == 1)
+                res.status(200).send("reports are successfully deleted");
+            else
+                res.status(500).send("could not delete");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanMonthlyHoursReports', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanSMHReports();
+            if(result.result.ok == 1)
+                res.status(200).send("reports are successfully deleted");
+            else
+                res.status(500).send("could not delete");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/initiateProducts', async function(req, res){
+        if(req.query.super == "ibblsservices"){
+            let result = await deletionService.initiateProducts();
+            if(result == true)
+                res.status(200).send("products are initiated in db");
+            else
+                res.status(500).send("could not initiate products db");
+        }
+        else
+            res.status(404).send("unauthorized");
+    })
+
+
 }

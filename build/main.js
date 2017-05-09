@@ -57,6 +57,7 @@ var encouragementService = require('./src/Services/encouragements/index');
 var messageService = require('./src/Services/messages/index');
 var reportsService = require('./src/Services/reports/index');
 var shiftService = require('./src/Services/shift/index');
+var deletionService = require('./src/Services/deletion/index');
 
 var app = express();
 
@@ -2289,6 +2290,387 @@ function _setapApiEndpoints() {
 
         return function (_x113, _x114) {
             return _ref58.apply(this, arguments);
+        };
+    }());
+
+    // -----------------------------Section for deletion API---------------------------------------------------
+    app.get('/super/cleanDb', function () {
+        var _ref59 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee59(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee59$(_context59) {
+                while (1) {
+                    switch (_context59.prev = _context59.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context59.next = 7;
+                                break;
+                            }
+
+                            _context59.next = 3;
+                            return deletionService.cleanDb();
+
+                        case 3:
+                            result = _context59.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("DB is successfully deleted");else res.status(500).send("could not delete db");
+                            _context59.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context59.stop();
+                    }
+                }
+            }, _callee59, this);
+        }));
+
+        return function (_x115, _x116) {
+            return _ref59.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanUsers', function () {
+        var _ref60 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee60(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee60$(_context60) {
+                while (1) {
+                    switch (_context60.prev = _context60.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context60.next = 7;
+                                break;
+                            }
+
+                            _context60.next = 3;
+                            return deletionService.cleanUsers();
+
+                        case 3:
+                            result = _context60.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("Users are successfully deleted");else res.status(500).send("could not delete ");
+                            _context60.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context60.stop();
+                    }
+                }
+            }, _callee60, this);
+        }));
+
+        return function (_x117, _x118) {
+            return _ref60.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanShifts', function () {
+        var _ref61 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee61(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee61$(_context61) {
+                while (1) {
+                    switch (_context61.prev = _context61.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context61.next = 7;
+                                break;
+                            }
+
+                            _context61.next = 3;
+                            return deletionService.cleanShifts();
+
+                        case 3:
+                            result = _context61.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("shifts are successfully deleted");else res.status(500).send("could not delete");
+                            _context61.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context61.stop();
+                    }
+                }
+            }, _callee61, this);
+        }));
+
+        return function (_x119, _x120) {
+            return _ref61.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanProducts', function () {
+        var _ref62 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee62(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee62$(_context62) {
+                while (1) {
+                    switch (_context62.prev = _context62.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context62.next = 7;
+                                break;
+                            }
+
+                            _context62.next = 3;
+                            return deletionService.cleanProducts();
+
+                        case 3:
+                            result = _context62.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("products are successfully deleted");else res.status(500).send("could not delete ");
+                            _context62.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context62.stop();
+                    }
+                }
+            }, _callee62, this);
+        }));
+
+        return function (_x121, _x122) {
+            return _ref62.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanStores', function () {
+        var _ref63 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee63(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee63$(_context63) {
+                while (1) {
+                    switch (_context63.prev = _context63.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context63.next = 7;
+                                break;
+                            }
+
+                            _context63.next = 3;
+                            return deletionService.cleanStores();
+
+                        case 3:
+                            result = _context63.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("stores are successfully deleted");else res.status(500).send("could not delete ");
+                            _context63.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context63.stop();
+                    }
+                }
+            }, _callee63, this);
+        }));
+
+        return function (_x123, _x124) {
+            return _ref63.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanMessages', function () {
+        var _ref64 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee64(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee64$(_context64) {
+                while (1) {
+                    switch (_context64.prev = _context64.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context64.next = 7;
+                                break;
+                            }
+
+                            _context64.next = 3;
+                            return deletionService.cleanMessages();
+
+                        case 3:
+                            result = _context64.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("messages are successfully deleted");else res.status(500).send("could not delete ");
+                            _context64.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context64.stop();
+                    }
+                }
+            }, _callee64, this);
+        }));
+
+        return function (_x125, _x126) {
+            return _ref64.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanEncs', function () {
+        var _ref65 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee65(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee65$(_context65) {
+                while (1) {
+                    switch (_context65.prev = _context65.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context65.next = 7;
+                                break;
+                            }
+
+                            _context65.next = 3;
+                            return deletionService.cleanEncs();
+
+                        case 3:
+                            result = _context65.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("encouragements are successfully deleted");else res.status(500).send("could not delete");
+                            _context65.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context65.stop();
+                    }
+                }
+            }, _callee65, this);
+        }));
+
+        return function (_x127, _x128) {
+            return _ref65.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanAnalyzeReports', function () {
+        var _ref66 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee66(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee66$(_context66) {
+                while (1) {
+                    switch (_context66.prev = _context66.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context66.next = 7;
+                                break;
+                            }
+
+                            _context66.next = 3;
+                            return deletionService.cleanMAReports();
+
+                        case 3:
+                            result = _context66.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("reports are successfully deleted");else res.status(500).send("could not delete");
+                            _context66.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context66.stop();
+                    }
+                }
+            }, _callee66, this);
+        }));
+
+        return function (_x129, _x130) {
+            return _ref66.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanMonthlyHoursReports', function () {
+        var _ref67 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee67(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee67$(_context67) {
+                while (1) {
+                    switch (_context67.prev = _context67.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context67.next = 7;
+                                break;
+                            }
+
+                            _context67.next = 3;
+                            return deletionService.cleanSMHReports();
+
+                        case 3:
+                            result = _context67.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("reports are successfully deleted");else res.status(500).send("could not delete");
+                            _context67.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context67.stop();
+                    }
+                }
+            }, _callee67, this);
+        }));
+
+        return function (_x131, _x132) {
+            return _ref67.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/initiateProducts', function () {
+        var _ref68 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee68(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee68$(_context68) {
+                while (1) {
+                    switch (_context68.prev = _context68.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservices")) {
+                                _context68.next = 7;
+                                break;
+                            }
+
+                            _context68.next = 3;
+                            return deletionService.initiateProducts();
+
+                        case 3:
+                            result = _context68.sent;
+
+                            if (result == true) res.status(200).send("products are initiated in db");else res.status(500).send("could not initiate products db");
+                            _context68.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context68.stop();
+                    }
+                }
+            }, _callee68, this);
+        }));
+
+        return function (_x133, _x134) {
+            return _ref68.apply(this, arguments);
         };
     }());
 }

@@ -1,0 +1,12 @@
+add = "//*[@id=\"app\"]/div/div[3]/button"
+edit = "//*[@id=\"app\"]/div/div[3]/div[1]/div[2]/div[2]/table/tbody/tr[1]/td[8]/button"
+delete = "//*[@id=\"app\"]/div/div[3]/div[1]/div[2]/div[2]/table/tbody/tr[1]/td[9]/button"
+
+name = "//*[@id=\"app\"]/div/div[3]/form/div[3]/input"
+manager = "//*[@id=\"app\"]/div/div[3]/form/div[5]/input"
+phone = "//*[@id=\"app\"]/div/div[3]/form/div[7]/input"
+city = "//*[@id=\"app\"]/div/div[3]/form/div[9]/input"
+address = "//*[@id=\"app\"]/div/div[3]/form/div[11]/input"
+area = "//*[@id=\"app\"]/div/div[3]/form/div[13]/select"
+channel = "//*[@id=\"app\"]/div/div[3]/form/div[15]/select"
+addBtn = "//*[@id=\"app\"]/div/div[3]/form/div[16]/button"

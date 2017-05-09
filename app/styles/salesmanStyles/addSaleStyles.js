@@ -34,9 +34,10 @@ var addSaleStyles = {
         marginBottom: '80px'
     },
     products_table_body: {
-        fontSize: '50px',
+        fontSize: '40px',
         fontWeight: 'bold',
-        height: '120px'
+        height: '160px',
+        paddingTop: '40px'
     },
     endShiftButton:{
         marginBottom: '20px',

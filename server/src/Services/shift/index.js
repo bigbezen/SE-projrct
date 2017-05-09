@@ -272,12 +272,13 @@ let getSalesmanCurrentShift = async function(sessionId){
     let productsDict = {};
     let products = await dal.getAllProducts();
     for(let product of products)
-        productsDict[product._id] = product.name;
+        productsDict[product._id] = product;
 
     currShift = currShift.toObject();
     currShift.store = (await dal.getStoresByIds([currShift.storeId]))[0];
     for(let product of currShift.salesReport) {
-        product.name = productsDict[product.productId.toString()];
+        product.name = productsDict[product.productId.toString()].name;
+        product.subCategory = productsDict[product.productId.toString()].subCategory;
     }
     for(let sales of currShift.sales) {
         sales.name = productsDict[sales.productId.toString()];

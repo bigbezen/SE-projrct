@@ -279,6 +279,7 @@ let getSalesmanCurrentShift = async function(sessionId){
     for(let product of currShift.salesReport) {
         product.name = productsDict[product.productId.toString()].name;
         product.subCategory = productsDict[product.productId.toString()].subCategory;
+        product.category= productsDict[product.productId.toString()].category;
     }
     for(let sales of currShift.sales) {
         sales.name = productsDict[sales.productId.toString()];

@@ -60,7 +60,8 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementService.getShiftsFromDate(currentDate).then(function (result) {
-            var sortedShifts =result.sort(self.sortShifts);
+            var sortedShifts = result.sort(self.sortShifts)
+                .filter((shift) => shift.status != 'FINISHED');
             self.setState({
                 shifts: sortedShifts
             });

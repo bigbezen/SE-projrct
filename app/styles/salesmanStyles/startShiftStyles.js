@@ -1,7 +1,7 @@
 
 var startShiftStyles = {
     space: {
-        'height': '185px'
+        'height': '250px'
     },
     transparentBg: {
         background: 'transparent'
@@ -19,7 +19,7 @@ var startShiftStyles = {
     products__list: {
         'backgroundColor': '#ffffff',
         'zIndex': '1',
-        'paddingBottom': '48px'
+        'paddingBottom': '80px'
     },
     start__button: {
         'marginBottom': '10px'

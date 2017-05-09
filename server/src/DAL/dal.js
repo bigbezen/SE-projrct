@@ -144,6 +144,12 @@ module.exports = {
             .populate('storeId');
     },
 
+    getShiftsOfRangeForSalesman: async function(startDate, endDate, salesmanId){
+        startDate = new Date((new Date(startDate)).setHours(0));
+        endDate = new Date((new Date(endDate)).setHours(23, 59));
+        return shiftModel.findOne({$and: [{'startTime': {$gte: startDate}}, {'salesmanId': salesmanId}, {'endTime': {$lte: new Date(endDate)}}]})
+    },
+
     updateShift: async function(shift){
         return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },

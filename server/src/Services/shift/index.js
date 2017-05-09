@@ -52,6 +52,12 @@ let addShifts = async function(sessionId, shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
         if('salesmanId' in shift) {
+            let shiftDB = await dal.getShiftsOfRangeForSalesman(shift.startTime, shift.endTime, shift.salesmanId);
+            if(shiftDB != null) {
+                console.log("Asdsa");
+                return {'code': 409, 'err': 'user cannot have more than one shift at day'};
+            }
+
             newShift.salesmanId = shift.salesmanId;
             let salesman = await dal.getUserByobjectId(shift.salesmanId);
             sendMailOfShift(salesman, shift, storeDict[shift.storeId].name);

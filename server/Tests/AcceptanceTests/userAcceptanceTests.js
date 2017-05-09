@@ -344,7 +344,7 @@ describe('salesman acceptance test', function(){
     });
 
     describe('TestGetProfile', function(){
-         it('GetProfileValid', async function(){
+         it('TestGetProfileValid', async function(){
              let result = await axios.get(serverUrl + 'user/getProfile', {
                  headers:{
                      sessionId:"sessionId"
@@ -356,7 +356,7 @@ describe('salesman acceptance test', function(){
              expect(result.data).to.not.have.all.keys('sessionId', 'password');
          }) ;
 
-         it('InvalidSessionId', async function(){
+         it('TestGetProfileInvalidSessionId', async function(){
              let result = await axios.get(serverUrl + 'user/getProfile', {
                  headers:{
                      sessionId:1234567
@@ -370,7 +370,7 @@ describe('salesman acceptance test', function(){
              assert.equal(result.response.status, 401);
          });
 
-        it('IllegalParameter', async function(){
+        it('TestGetProfileIllegalParameter', async function(){
             let result = await axios.get(serverUrl + 'user/getProfile', {
                 headers:{
                     sessionIdd:987349823

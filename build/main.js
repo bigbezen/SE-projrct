@@ -57,6 +57,7 @@ var encouragementService = require('./src/Services/encouragements/index');
 var messageService = require('./src/Services/messages/index');
 var reportsService = require('./src/Services/reports/index');
 var shiftService = require('./src/Services/shift/index');
+var deletionService = require('./src/Services/deletion/index');
 
 var app = express();
 
@@ -97,7 +98,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-var monthlyJob = scheduler.scheduleJob('42 * * * *', _genarateMonthlyReport);
+var monthlyJob = scheduler.scheduleJob('38 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', { 'port': port });
 function _connectToDb() {
@@ -282,26 +283,24 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            console.log('bla');
-
                             if ('sessionid' in req.headers) {
-                                _context6.next = 4;
+                                _context6.next = 3;
                                 break;
                             }
 
                             res.status(404).send('invalid parameters');
                             return _context6.abrupt('return');
 
-                        case 4:
-                            _context6.next = 6;
+                        case 3:
+                            _context6.next = 5;
                             return userService.getProfile(req.headers.sessionid);
 
-                        case 6:
+                        case 5:
                             result = _context6.sent;
 
                             if (result.code == 200) res.status(200).send(result.user);else res.status(result.code).send(result.err);
 
-                        case 8:
+                        case 7:
                         case 'end':
                             return _context6.stop();
                     }
@@ -433,15 +432,24 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context10.prev = _context10.next) {
                         case 0:
-                            _context10.next = 2;
+                            if (validator.editSale(req.body)) {
+                                _context10.next = 3;
+                                break;
+                            }
+
+                            res.status(404).send('invalid parameters');
+                            return _context10.abrupt('return');
+
+                        case 3:
+                            _context10.next = 5;
                             return shiftService.editSale(req.body.sessionId, req.body.shiftId, req.body.productId, req.body.saleTime, req.body.quantity);
 
-                        case 2:
+                        case 5:
                             result = _context10.sent;
 
                             if (result.code == 200) res.status(200).send();else res.status(result.code).send(result.err);
 
-                        case 4:
+                        case 7:
                         case 'end':
                             return _context10.stop();
                     }
@@ -851,16 +859,15 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context21.prev = _context21.next) {
                         case 0:
-                            console.log('bla');
-                            _context21.next = 3;
+                            _context21.next = 2;
                             return shiftService.updateSalesReport(req.body.sessionId, req.body.shiftId, req.body.productId, req.body.newSold, req.body.newOpened);
 
-                        case 3:
+                        case 2:
                             result = _context21.sent;
 
                             if (result.code == 200) res.status(200).send();else res.status(result.code).send(result.err);
 
-                        case 5:
+                        case 4:
                         case 'end':
                             return _context21.stop();
                     }
@@ -1577,7 +1584,7 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context39.prev = _context39.next) {
                         case 0:
-                            if (validator.addOrPublishShifts(req.body)) {
+                            if (validator.addShifts(req.body)) {
                                 _context39.next = 3;
                                 break;
                             }
@@ -1651,7 +1658,7 @@ function _setapApiEndpoints() {
                 while (1) {
                     switch (_context41.prev = _context41.next) {
                         case 0:
-                            if (validator.addOrPublishShifts(req.body)) {
+                            if (validator.publishShifts(req.body)) {
                                 _context41.next = 3;
                                 break;
                             }
@@ -1755,14 +1762,14 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.post('/management/editShifts', function () {
+    app.get('/management/getSalesmanLiveShift', function () {
         var _ref44 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee44(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee44$(_context44) {
                 while (1) {
                     switch (_context44.prev = _context44.next) {
                         case 0:
-                            if (validator.editShift(req.body)) {
+                            if (!(!('sessionid' in req.headers) || !('salesmanId' in req.query))) {
                                 _context44.next = 3;
                                 break;
                             }
@@ -1772,12 +1779,12 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context44.next = 5;
-                            return shiftService.editShift(req.body.sessionId, req.body.shiftDetails);
+                            return shiftService.getSalesmanLiveShift(req.headers.sessionid, req.query.salesmanId);
 
                         case 5:
                             result = _context44.sent;
 
-                            if (result.code == 200) res.status(200).send();else res.status(result.code).send(result.err);
+                            if (result.code == 200) res.status(200).send(result.shift);else res.status(result.code).send(result.err);
 
                         case 7:
                         case 'end':
@@ -1792,14 +1799,14 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.post('/management/deleteShift', function () {
+    app.post('/management/editShifts', function () {
         var _ref45 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee45(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee45$(_context45) {
                 while (1) {
                     switch (_context45.prev = _context45.next) {
                         case 0:
-                            if (validator.deleteShift(req.body)) {
+                            if (validator.editShift(req.body)) {
                                 _context45.next = 3;
                                 break;
                             }
@@ -1809,24 +1816,14 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context45.next = 5;
-                            return shiftService.deleteShift(req.body.sessionId, req.body.shiftId);
+                            return shiftService.editShift(req.body.sessionId, req.body.shiftDetails);
 
                         case 5:
                             result = _context45.sent;
 
-                            if (!(result.err != null)) {
-                                _context45.next = 11;
-                                break;
-                            }
+                            if (result.code == 200) res.status(200).send();else res.status(result.code).send(result.err);
 
-                            res.status(result.code).send(result.err);
-                            return _context45.abrupt('return');
-
-                        case 11:
-                            res.status(result.code).send(result.store);
-                            return _context45.abrupt('return');
-
-                        case 13:
+                        case 7:
                         case 'end':
                             return _context45.stop();
                     }
@@ -1839,14 +1836,14 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/management/getShiftsOfRange', function () {
+    app.post('/management/deleteShift', function () {
         var _ref46 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee46(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee46$(_context46) {
                 while (1) {
                     switch (_context46.prev = _context46.next) {
                         case 0:
-                            if (!(!('sessionid' in req.headers) || !('startDate' in req.query) || !('endDate' in req.query))) {
+                            if (validator.deleteShift(req.body)) {
                                 _context46.next = 3;
                                 break;
                             }
@@ -1856,14 +1853,24 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context46.next = 5;
-                            return shiftService.getShiftsOfRange(req.headers.sessionid, req.query.startDate, req.query.endDate);
+                            return shiftService.deleteShift(req.body.sessionId, req.body.shiftId);
 
                         case 5:
                             result = _context46.sent;
 
-                            if (result.code == 200) res.status(200).send(result.shifts);else res.status(result.code).send(result.err);
+                            if (!(result.err != null)) {
+                                _context46.next = 11;
+                                break;
+                            }
 
-                        case 7:
+                            res.status(result.code).send(result.err);
+                            return _context46.abrupt('return');
+
+                        case 11:
+                            res.status(result.code).send(result.store);
+                            return _context46.abrupt('return');
+
+                        case 13:
                         case 'end':
                             return _context46.stop();
                     }
@@ -1873,6 +1880,43 @@ function _setapApiEndpoints() {
 
         return function (_x89, _x90) {
             return _ref46.apply(this, arguments);
+        };
+    }());
+
+    app.get('/management/getShiftsOfRange', function () {
+        var _ref47 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee47(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee47$(_context47) {
+                while (1) {
+                    switch (_context47.prev = _context47.next) {
+                        case 0:
+                            if (!(!('sessionid' in req.headers) || !('startDate' in req.query) || !('endDate' in req.query))) {
+                                _context47.next = 3;
+                                break;
+                            }
+
+                            res.status(404).send('invalid parameters');
+                            return _context47.abrupt('return');
+
+                        case 3:
+                            _context47.next = 5;
+                            return shiftService.getShiftsOfRange(req.headers.sessionid, req.query.startDate, req.query.endDate);
+
+                        case 5:
+                            result = _context47.sent;
+
+                            if (result.code == 200) res.status(200).send(result.shifts);else res.status(result.code).send(result.err);
+
+                        case 7:
+                        case 'end':
+                            return _context47.stop();
+                    }
+                }
+            }, _callee47, this);
+        }));
+
+        return function (_x91, _x92) {
+            return _ref47.apply(this, arguments);
         };
     }());
 
@@ -1890,39 +1934,39 @@ function _setapApiEndpoints() {
     });
 
     app.post('/manager/sendBroadcastMessage', function () {
-        var _ref47 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee47(req, res) {
+        var _ref48 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee48(req, res) {
             var result;
-            return _regenerator2.default.wrap(function _callee47$(_context47) {
+            return _regenerator2.default.wrap(function _callee48$(_context48) {
                 while (1) {
-                    switch (_context47.prev = _context47.next) {
+                    switch (_context48.prev = _context48.next) {
                         case 0:
                             if (validator.sendBroadcastMessage(req.body)) {
-                                _context47.next = 3;
+                                _context48.next = 3;
                                 break;
                             }
 
                             res.status(404).send('invalid parameters');
-                            return _context47.abrupt('return');
+                            return _context48.abrupt('return');
 
                         case 3:
-                            _context47.next = 5;
+                            _context48.next = 5;
                             return messageService.sendBroadcast(req.body.sessionId, req.body.content, req.body.date);
 
                         case 5:
-                            result = _context47.sent;
+                            result = _context48.sent;
 
                             if (result.code == 200) res.status(200).send();else res.status(result.code).send(result.err);
 
                         case 7:
                         case 'end':
-                            return _context47.stop();
+                            return _context48.stop();
                     }
                 }
-            }, _callee47, this);
+            }, _callee48, this);
         }));
 
-        return function (_x91, _x92) {
-            return _ref47.apply(this, arguments);
+        return function (_x93, _x94) {
+            return _ref48.apply(this, arguments);
         };
     }());
 
@@ -1951,34 +1995,6 @@ function _setapApiEndpoints() {
     });
 
     app.get('/manager/getSaleReportXl', function () {
-        var _ref48 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee48(req, res) {
-            var result;
-            return _regenerator2.default.wrap(function _callee48$(_context48) {
-                while (1) {
-                    switch (_context48.prev = _context48.next) {
-                        case 0:
-                            _context48.next = 2;
-                            return reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
-
-                        case 2:
-                            result = _context48.sent;
-
-                            res.status(result.code).send(result.err);
-
-                        case 4:
-                        case 'end':
-                            return _context48.stop();
-                    }
-                }
-            }, _callee48, this);
-        }));
-
-        return function (_x93, _x94) {
-            return _ref48.apply(this, arguments);
-        };
-    }());
-
-    app.post('/manager/getSalaryForHumanResourceReport', function () {
         var _ref49 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee49(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee49$(_context49) {
@@ -1986,7 +2002,7 @@ function _setapApiEndpoints() {
                     switch (_context49.prev = _context49.next) {
                         case 0:
                             _context49.next = 2;
-                            return reportsService.getSalaryForHumanResourceReport(req.body.sessionId, req.body.year, req.body.month);
+                            return reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);
 
                         case 2:
                             result = _context49.sent;
@@ -2006,7 +2022,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getSalesmanListXL', function () {
+    app.post('/manager/getSalaryForHumanResourceReport', function () {
         var _ref50 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee50(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee50$(_context50) {
@@ -2014,7 +2030,7 @@ function _setapApiEndpoints() {
                     switch (_context50.prev = _context50.next) {
                         case 0:
                             _context50.next = 2;
-                            return reportsService.getSalesmanListXL(req.headers.sessionid);
+                            return reportsService.getSalaryForHumanResourceReport(req.body.sessionId, req.body.year, req.body.month);
 
                         case 2:
                             result = _context50.sent;
@@ -2034,7 +2050,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyHoursSalesmansReportXl', function () {
+    app.get('/manager/getSalesmanListXL', function () {
         var _ref51 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee51(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee51$(_context51) {
@@ -2042,7 +2058,7 @@ function _setapApiEndpoints() {
                     switch (_context51.prev = _context51.next) {
                         case 0:
                             _context51.next = 2;
-                            return reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, req.headers.year, req.headers.month);
+                            return reportsService.getSalesmanListXL(req.headers.sessionid);
 
                         case 2:
                             result = _context51.sent;
@@ -2062,7 +2078,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.post('/manager/getMonthAnalysisReportXL', function () {
+    app.get('/manager/getMonthlyHoursSalesmansReportXl', function () {
         var _ref52 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee52(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee52$(_context52) {
@@ -2070,7 +2086,7 @@ function _setapApiEndpoints() {
                     switch (_context52.prev = _context52.next) {
                         case 0:
                             _context52.next = 2;
-                            return reportsService.getMonthAnalysisReportXL(req.body.sessionId, req.body.year);
+                            return reportsService.getMonthlyHoursSalesmansReportXl(req.headers.sessionId, req.headers.year, req.headers.month);
 
                         case 2:
                             result = _context52.sent;
@@ -2090,7 +2106,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyHoursSalesmansReport', function () {
+    app.post('/manager/getMonthAnalysisReportXL', function () {
         var _ref53 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee53(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee53$(_context53) {
@@ -2098,12 +2114,12 @@ function _setapApiEndpoints() {
                     switch (_context53.prev = _context53.next) {
                         case 0:
                             _context53.next = 2;
-                            return reportsService.getMonthlyUserHoursReport(req.headers.sessionid, req.query.year, req.query.month);
+                            return reportsService.getMonthAnalysisReportXL(req.body.sessionId, req.body.year);
 
                         case 2:
                             result = _context53.sent;
 
-                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+                            res.status(result.code).send(result.err);
 
                         case 4:
                         case 'end':
@@ -2118,7 +2134,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/manager/getMonthlyAnalysisReport', function () {
+    app.get('/manager/getMonthlyHoursSalesmansReport', function () {
         var _ref54 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee54(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee54$(_context54) {
@@ -2126,7 +2142,7 @@ function _setapApiEndpoints() {
                     switch (_context54.prev = _context54.next) {
                         case 0:
                             _context54.next = 2;
-                            return reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
+                            return reportsService.getMonthlyUserHoursReport(req.headers.sessionid, req.query.year, req.query.month);
 
                         case 2:
                             result = _context54.sent;
@@ -2146,31 +2162,22 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.post('/manager/updateMonthlyAnalysisReport', function () {
+    app.get('/manager/getMonthlyAnalysisReport', function () {
         var _ref55 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee55(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee55$(_context55) {
                 while (1) {
                     switch (_context55.prev = _context55.next) {
                         case 0:
-                            if (validator.updateMonthlyAnalysisReport(req.body)) {
-                                _context55.next = 3;
-                                break;
-                            }
+                            _context55.next = 2;
+                            return reportsService.getMonthlyAnalysisReport(req.headers.sessionid, parseInt(req.query.year));
 
-                            res.status(404).send('invalid parameters');
-                            return _context55.abrupt('return');
-
-                        case 3:
-                            _context55.next = 5;
-                            return reportsService.updateMonthlyAnalysisReport(req.body.sessionId, req.body.year, req.body.report);
-
-                        case 5:
+                        case 2:
                             result = _context55.sent;
 
                             if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
 
-                        case 7:
+                        case 4:
                         case 'end':
                             return _context55.stop();
                     }
@@ -2183,14 +2190,14 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.post('/manager/updateMonthlyHoursReport', function () {
+    app.post('/manager/updateMonthlyAnalysisReport', function () {
         var _ref56 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee56(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee56$(_context56) {
                 while (1) {
                     switch (_context56.prev = _context56.next) {
                         case 0:
-                            if (validator.updateMonthlyHoursReport(req.body)) {
+                            if (validator.updateMonthlyAnalysisReport(req.body)) {
                                 _context56.next = 3;
                                 break;
                             }
@@ -2200,7 +2207,7 @@ function _setapApiEndpoints() {
 
                         case 3:
                             _context56.next = 5;
-                            return reportsService.updateMonthlySalesmanHoursReport(req.body.sessionId, req.body.year, req.body.month, req.body.report);
+                            return reportsService.updateMonthlyAnalysisReport(req.body.sessionId, req.body.year, req.body.report);
 
                         case 5:
                             result = _context56.sent;
@@ -2220,23 +2227,31 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.post('/manager/exportMonthlyHoursReport', function () {
+    app.post('/manager/updateMonthlyHoursReport', function () {
         var _ref57 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee57(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee57$(_context57) {
                 while (1) {
                     switch (_context57.prev = _context57.next) {
                         case 0:
-                            _context57.next = 2;
-                            return reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
+                            if (validator.updateMonthlyHoursReport(req.body)) {
+                                _context57.next = 3;
+                                break;
+                            }
 
-                        case 2:
-                            result = _context57.sent;
+                            res.status(404).send('invalid parameters');
+                            return _context57.abrupt('return');
 
-                            console.log('bla');
-                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+                        case 3:
+                            _context57.next = 5;
+                            return reportsService.updateMonthlySalesmanHoursReport(req.body.sessionId, req.body.year, req.body.month, req.body.report);
 
                         case 5:
+                            result = _context57.sent;
+
+                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+
+                        case 7:
                         case 'end':
                             return _context57.stop();
                     }
@@ -2246,6 +2261,416 @@ function _setapApiEndpoints() {
 
         return function (_x111, _x112) {
             return _ref57.apply(this, arguments);
+        };
+    }());
+
+    app.post('/manager/exportMonthlyHoursReport', function () {
+        var _ref58 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee58(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee58$(_context58) {
+                while (1) {
+                    switch (_context58.prev = _context58.next) {
+                        case 0:
+                            _context58.next = 2;
+                            return reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
+
+                        case 2:
+                            result = _context58.sent;
+
+                            console.log('bla');
+                            if (result.code == 200) res.status(200).send(result.report);else res.status(result.code).send(result.err);
+
+                        case 5:
+                        case 'end':
+                            return _context58.stop();
+                    }
+                }
+            }, _callee58, this);
+        }));
+
+        return function (_x113, _x114) {
+            return _ref58.apply(this, arguments);
+        };
+    }());
+
+    // -----------------------------Section for deletion API---------------------------------------------------
+    app.get('/super/cleanDb', function () {
+        var _ref59 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee59(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee59$(_context59) {
+                while (1) {
+                    switch (_context59.prev = _context59.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context59.next = 7;
+                                break;
+                            }
+
+                            _context59.next = 3;
+                            return deletionService.cleanDb();
+
+                        case 3:
+                            result = _context59.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("DB is successfully deleted");else res.status(500).send("could not delete db");
+                            _context59.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context59.stop();
+                    }
+                }
+            }, _callee59, this);
+        }));
+
+        return function (_x115, _x116) {
+            return _ref59.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanUsers', function () {
+        var _ref60 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee60(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee60$(_context60) {
+                while (1) {
+                    switch (_context60.prev = _context60.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context60.next = 7;
+                                break;
+                            }
+
+                            _context60.next = 3;
+                            return deletionService.cleanUsers();
+
+                        case 3:
+                            result = _context60.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("Users are successfully deleted");else res.status(500).send("could not delete ");
+                            _context60.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context60.stop();
+                    }
+                }
+            }, _callee60, this);
+        }));
+
+        return function (_x117, _x118) {
+            return _ref60.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanShifts', function () {
+        var _ref61 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee61(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee61$(_context61) {
+                while (1) {
+                    switch (_context61.prev = _context61.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context61.next = 7;
+                                break;
+                            }
+
+                            _context61.next = 3;
+                            return deletionService.cleanShifts();
+
+                        case 3:
+                            result = _context61.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("shifts are successfully deleted");else res.status(500).send("could not delete");
+                            _context61.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context61.stop();
+                    }
+                }
+            }, _callee61, this);
+        }));
+
+        return function (_x119, _x120) {
+            return _ref61.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanProducts', function () {
+        var _ref62 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee62(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee62$(_context62) {
+                while (1) {
+                    switch (_context62.prev = _context62.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context62.next = 7;
+                                break;
+                            }
+
+                            _context62.next = 3;
+                            return deletionService.cleanProducts();
+
+                        case 3:
+                            result = _context62.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("products are successfully deleted");else res.status(500).send("could not delete ");
+                            _context62.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context62.stop();
+                    }
+                }
+            }, _callee62, this);
+        }));
+
+        return function (_x121, _x122) {
+            return _ref62.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanStores', function () {
+        var _ref63 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee63(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee63$(_context63) {
+                while (1) {
+                    switch (_context63.prev = _context63.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context63.next = 7;
+                                break;
+                            }
+
+                            _context63.next = 3;
+                            return deletionService.cleanStores();
+
+                        case 3:
+                            result = _context63.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("stores are successfully deleted");else res.status(500).send("could not delete ");
+                            _context63.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context63.stop();
+                    }
+                }
+            }, _callee63, this);
+        }));
+
+        return function (_x123, _x124) {
+            return _ref63.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanMessages', function () {
+        var _ref64 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee64(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee64$(_context64) {
+                while (1) {
+                    switch (_context64.prev = _context64.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context64.next = 7;
+                                break;
+                            }
+
+                            _context64.next = 3;
+                            return deletionService.cleanMessages();
+
+                        case 3:
+                            result = _context64.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("messages are successfully deleted");else res.status(500).send("could not delete ");
+                            _context64.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context64.stop();
+                    }
+                }
+            }, _callee64, this);
+        }));
+
+        return function (_x125, _x126) {
+            return _ref64.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanEncs', function () {
+        var _ref65 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee65(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee65$(_context65) {
+                while (1) {
+                    switch (_context65.prev = _context65.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context65.next = 7;
+                                break;
+                            }
+
+                            _context65.next = 3;
+                            return deletionService.cleanEncs();
+
+                        case 3:
+                            result = _context65.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("encouragements are successfully deleted");else res.status(500).send("could not delete");
+                            _context65.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context65.stop();
+                    }
+                }
+            }, _callee65, this);
+        }));
+
+        return function (_x127, _x128) {
+            return _ref65.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanAnalyzeReports', function () {
+        var _ref66 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee66(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee66$(_context66) {
+                while (1) {
+                    switch (_context66.prev = _context66.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context66.next = 7;
+                                break;
+                            }
+
+                            _context66.next = 3;
+                            return deletionService.cleanMAReports();
+
+                        case 3:
+                            result = _context66.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("reports are successfully deleted");else res.status(500).send("could not delete");
+                            _context66.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context66.stop();
+                    }
+                }
+            }, _callee66, this);
+        }));
+
+        return function (_x129, _x130) {
+            return _ref66.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/cleanMonthlyHoursReports', function () {
+        var _ref67 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee67(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee67$(_context67) {
+                while (1) {
+                    switch (_context67.prev = _context67.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context67.next = 7;
+                                break;
+                            }
+
+                            _context67.next = 3;
+                            return deletionService.cleanSMHReports();
+
+                        case 3:
+                            result = _context67.sent;
+
+                            if (result.result.ok == 1) res.status(200).send("reports are successfully deleted");else res.status(500).send("could not delete");
+                            _context67.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context67.stop();
+                    }
+                }
+            }, _callee67, this);
+        }));
+
+        return function (_x131, _x132) {
+            return _ref67.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/initiateProducts', function () {
+        var _ref68 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee68(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee68$(_context68) {
+                while (1) {
+                    switch (_context68.prev = _context68.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservices")) {
+                                _context68.next = 7;
+                                break;
+                            }
+
+                            _context68.next = 3;
+                            return deletionService.initiateProducts();
+
+                        case 3:
+                            result = _context68.sent;
+
+                            if (result == true) res.status(200).send("products are initiated in db");else res.status(500).send("could not initiate products db");
+                            _context68.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context68.stop();
+                    }
+                }
+            }, _callee68, this);
+        }));
+
+        return function (_x133, _x134) {
+            return _ref68.apply(this, arguments);
         };
     }());
 }

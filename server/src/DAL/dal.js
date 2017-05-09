@@ -144,6 +144,12 @@ module.exports = {
             .populate('storeId');
     },
 
+    getShiftsOfRangeForSalesman: async function(startDate, endDate, salesmanId){
+        startDate = new Date((new Date(startDate)).setHours(0));
+        endDate = new Date((new Date(endDate)).setHours(23, 59));
+        return shiftModel.findOne({$and: [{'startTime': {$gte: startDate}}, {'salesmanId': salesmanId}, {'endTime': {$lte: new Date(endDate)}}]})
+    },
+
     updateShift: async function(shift){
         return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },
@@ -268,7 +274,9 @@ module.exports = {
         messages.map(x => x.remove());
         var shift = await shiftModel.find({});
         shift.map(x => x.remove());
-        var reports = await monthlySalesmanHoursReportModel.find({});
+        var MonthlySalesmanReports = await monthlySalesmanHoursReportModel.find({});
+        MonthlySalesmanReports.map(x => x.remove());
+        var reports = await monthAnalysisReportModel.find({});
         reports.map(x => x.remove());
     }
 };

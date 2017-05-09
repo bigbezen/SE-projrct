@@ -405,7 +405,7 @@ let genarateMonthAnalysisReport = async function() {
         let store = await dal.getStoresByIds([currentShift.storeId]);
         store = store[0];
         if(store.channel == 'מסורתי - חם'){
-            storeTraditionalHot.add(store._id.toString());
+            storeTraditionalHot.add(store._id);
             yearReport.monthData[month].totalHours.traditionalHot += duration;
             yearReport.monthData[month].salesmanCost.traditionalHot += duration*salesman.jobDetails.salary;
             yearReport.monthData[month].shiftsCount.traditionalHot += 1;

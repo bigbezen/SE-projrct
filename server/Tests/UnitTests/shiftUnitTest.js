@@ -228,6 +228,21 @@ describe('shift unit test', function () {
             expect(res).to.have.property('err', 'shifts dates are before current time');
         });
 
+        it('add two shifts for same user at the same date', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            
+            res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 409);
+            expect(res).to.have.property('err', 'user cannot have more than one shift at day');
+
+            let endT = new Date(shifts[0].endTime);
+            endT = endT.setHours(endT.getHours() + 1);
+            shifts[0].endTime = endT;
+            res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 409);
+            expect(res).to.have.property('err', 'user cannot have more than one shift at day');
+        });
+
         it('add shift by manager', async function () {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 200);

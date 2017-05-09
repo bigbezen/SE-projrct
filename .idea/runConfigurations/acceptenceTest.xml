@@ -9,7 +9,7 @@
     <extra-mocha-options />
     <test-kind>DIRECTORY</test-kind>
     <test-directory>$PROJECT_DIR$/build/Tests/AcceptanceTests</test-directory>
-    <recursive>false</recursive>
+    <recursive>true</recursive>
     <method />
   </configuration>
 </component>

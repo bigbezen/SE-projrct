@@ -574,6 +574,96 @@ describe('management acceptance test', function(){
         });
     });
 
+    describe('test publish shift', function() {
+        it('publish shift not by manager', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl + 'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, 'user not authorized');
+        });
+
+        it('publish shift valid', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl +   'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(res.status, 200);
+        });
+
+        it('publish shift invalid parameters', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let res = await axios.post(serverUrl +   'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 404);
+            assert.equal(res.response.data, 'invalid parameters');
+        });
+
+        it('publish shift without status CREATED', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+            shifts[0].status = "STARTED";
+            result = await dal.editShift(shifts[0]);
+            let res = await axios.post(serverUrl + 'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 409);
+            assert.equal(res.response.data, 'trying to publish a shift that is already published');
+        });
+    });
+
     describe('test add encouragement ', function() {
         it('add valid Encouragement ', async function () {
             let res = await axios.post(serverUrl + 'management/addEncouragement', {
@@ -777,6 +867,101 @@ describe('management acceptance test', function(){
 
             assert.equal(res.response.status, 401);
             assert.equal(res.response.data, 'permission denied')
+        });
+    });
+
+    describe('test edit shift', function() {
+        it('edit shift valid', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+            shifts[0].status = "FINISHED";
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: result.data[0],
+                sessionId: manager.sessionId
+            });
+            assert.equal(res.status, 200);
+        });
+
+        it('edit shift invalid parameters', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: "invalid parameter",
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 404);
+            assert.equal(res.response.data, 'invalid parameters')
+        });
+
+        it('edit shift not by manager', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: result.data[0],
+                sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, 'user not authorized')
+        });
+
+        it('edit shift not shift already started', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+            shifts[0].status = "STARTED";
+            result = await dal.editShift(shifts[0]);
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: shifts[0],
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, 'permission denied shift already started');
         });
     });
 

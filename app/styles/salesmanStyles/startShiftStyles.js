@@ -40,7 +40,6 @@ var startShiftStyles = {
         'textAlign': 'center'
     },
     product__detail : {
-        'width': '47%',
         'textAlign': 'right'
     },
     image__detail: {
@@ -48,8 +47,8 @@ var startShiftStyles = {
         'textAlign': 'center'
     },
     product__selector : {
-        'height': '30px',
-        'width': '30px'
+        'height': '40px',
+        'width': '40px'
     },
     product__image: {
 

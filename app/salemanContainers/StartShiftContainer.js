@@ -12,6 +12,7 @@ var StartShiftIcon          = require('react-icons/lib/fa/angle-double-left');
 var BackButtonIcon          = require('react-icons/lib/md/arrow-forward');
 var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
+var utils                   = require('../utils/Helpers');
 
 var StartShiftContainer = React.createClass({
 
@@ -42,11 +43,33 @@ var StartShiftContainer = React.createClass({
         this.setSessionId();
         this.setUserType();
         var shift = this.props.location.state.newShift;
+        shift.salesReport = shift.salesReport.sort(this.productSortingMethod);
         for(var index in shift.salesReport){
             shift.salesReport[index].stockStartShift = 1;
         }
         return{
             shift: shift
+        }
+    },
+
+    productSortingMethod: function(a, b){
+        if(a.category != b.category){
+            if(a.category == constantsStrings['ספיריט'])
+                return 1;
+            else
+                return -1;
+        }
+
+        if(a.subCategory < b.subCategory)
+            return -1;
+        else if(a.subCategory > b.subCategory)
+            return 1;
+        else{
+            if(a.name < b.name)
+                return -1;
+            else if(a.name > b.name)
+                return 1;
+            return 0;
         }
     },
 
@@ -98,14 +121,12 @@ var StartShiftContainer = React.createClass({
     renderEachProduct: function(product, i){
         return (
                 <li style={styles.product} key={i}>
-                    <div style={styles.checkbox__detail}>
+                    <div style={styles.checkbox__detail} className="col-sm-2">
                         <input type="checkbox" onChange={this.onUpdateProduct} checked={product.stockStartShift == 1} style={styles.product__selector} value={product.productId}/>
                     </div>
-                    <div style={styles.product__detail}>
-                        <h1 className="w3-xxxlarge"><b> {product.name} </b></h1>
-                    </div>
-                    <div style={styles.image__detail} className="image-rounded">
-                        <div className="w3-theme-d5" style={styles.product__image}><WineGlassIcon/></div>
+                    <div style={styles.product__detail} className="col-sm-10">
+                        <h1 className="w3-xxxlarge col-sm-12"><b> {product.name} </b></h1>
+                        <h1 className="w3-xxlarge col-sm-12">{product.subCategory}</h1>
                     </div>
                 </li>
         );

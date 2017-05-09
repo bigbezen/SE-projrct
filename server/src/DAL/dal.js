@@ -268,7 +268,9 @@ module.exports = {
         messages.map(x => x.remove());
         var shift = await shiftModel.find({});
         shift.map(x => x.remove());
-        var reports = await monthlySalesmanHoursReportModel.find({});
+        var MonthlySalesmanReports = await monthlySalesmanHoursReportModel.find({});
+        MonthlySalesmanReports.map(x => x.remove());
+        var reports = await monthAnalysisReportModel.find({});
         reports.map(x => x.remove());
     }
 };

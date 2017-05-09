@@ -28,7 +28,21 @@ var styles = {
         'width' : '80%',
         'margin': 'auto',
         'marginTop': '50px'
-    }
+    },
+    notificationStyle: {
+        NotificationItem: {
+            DefaultStyle: {
+                fontSize: 'large',
+                width: '350px',
+                height: '60px',
+                textAlign: 'center',
+                margin: '100px -20px'
+            },
+            info: {
+                height: '100px'
+            },
+        }
+    },
 
 };
 

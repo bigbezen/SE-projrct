@@ -44,7 +44,25 @@ var addSaleStyles = {
     },
     inputMinHeight:{
         height: '60px',
-    }
+    },
+    productSaleRow: {
+        marginBottom: '10px',
+        height: '120px'
+    },
+    notificationStyle: {
+        NotificationItem: {
+            DefaultStyle: {
+                fontSize: 'large',
+                width: '350px',
+                height: '60px',
+                textAlign: 'center',
+                margin: '100px -20px'
+            },
+            info: {
+                height: '100px'
+            },
+        }
+    },
 };
 
 module.exports = addSaleStyles;

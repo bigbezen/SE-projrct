@@ -166,7 +166,27 @@ describe('management acceptance test', function(){
     });
 
     describe('test add user', function() {
-        it('add user valid', async function () {
+        it('add user salesman valid', async function () {
+            let res = await axios.post(serverUrl + 'management/addUser', {
+                sessionId: manager.sessionId,
+                userDetails: salesman
+            });
+            assert.equal(res.status, 200);
+            assert.equal(res.data.username, salesman.username);
+        });
+
+        it('add user manager valid', async function () {
+            salesman.jobDetails.userType = "manager";
+            let res = await axios.post(serverUrl + 'management/addUser', {
+                sessionId: manager.sessionId,
+                userDetails:salesman
+            });
+            assert.equal(res.status, 200);
+            assert.equal(res.data.username, salesman.username);
+        });
+
+        it('add user event valid', async function () {
+            salesman.jobDetails.userType = "event";
             let res = await axios.post(serverUrl + 'management/addUser', {
                 sessionId: manager.sessionId,
                 userDetails: salesman
@@ -537,6 +557,20 @@ describe('management acceptance test', function(){
 
             assert.equal(res.response.status, 404);
             assert.equal(res.response.data, 'invalid parameters');
+        });
+
+        it('add event shift valid', async function () {
+            shifts[0].type = 'אירועים';
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let res = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(res.status, 200);
+            assert.equal(res.data[0].status, 'FINISHED');
         });
 
         it('add shift by illegal date', async function () {

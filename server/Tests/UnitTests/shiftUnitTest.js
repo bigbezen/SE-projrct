@@ -230,7 +230,7 @@ describe('shift unit test', function () {
 
         it('add two shifts for same user at the same date', async function () {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
-            
+
             res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
             expect(res).to.have.property('err', 'user cannot have more than one shift at day');
@@ -241,6 +241,34 @@ describe('shift unit test', function () {
             res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
             expect(res).to.have.property('err', 'user cannot have more than one shift at day');
+        });
+
+        it('add regular shift valid', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 200);
+            assert.equal(res.shiftArr.length, 2);
+
+            let dbShifts = await dal.getShiftsByIds([res.shiftArr[0]._id, res.shiftArr[1]._id]);
+            expect(dbShifts).to.have.lengthOf(2);
+            for(let shift of dbShifts){
+                shift = shift.toObject();
+                expect(shift).to.have.property('status', 'CREATED');
+            }
+        });
+
+        it('add event shift valid', async function () {
+            shifts[0].type = 'אירועים';
+            shifts[1].type = 'אירועים';
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 200);
+            assert.equal(res.shiftArr.length, 2);
+
+            let dbShifts = await dal.getShiftsByIds([res.shiftArr[0]._id, res.shiftArr[1]._id]);
+            expect(dbShifts).to.have.lengthOf(2);
+            for(let shift of dbShifts){
+                shift = shift.toObject();
+                expect(shift).to.have.property('status', 'FINISHED');
+            }
         });
 
         it('add shift by manager', async function () {

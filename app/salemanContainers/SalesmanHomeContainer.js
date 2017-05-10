@@ -109,7 +109,7 @@ var SalesmanHomeContainer = React.createClass({
                 });
             }
         }).catch(function (errMess) {
-            if(errMess == "user does not have a shift today"){
+            if(errMess != "user does not have a shift today"){
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
@@ -154,7 +154,7 @@ var SalesmanHomeContainer = React.createClass({
         return(
             <div>
                 <div className="text-center">
-                    <h1>{constantsStrings.salesmanNoShifts_string}</h1>
+                    <h1>loading...</h1>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

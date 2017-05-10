@@ -154,7 +154,7 @@ var SalesmanHomeContainer = React.createClass({
         return(
             <div>
                 <div className="text-center">
-                    <h1>{constantsStrings.salesmanNoShifts_string}</h1>
+                    <h1>loading...</h1>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

@@ -16,7 +16,7 @@ var addSaleStyles = {
         width:'100%',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '20px',
+        marginTop: '40px',
         marginBottom: '20px'
     },
     reportButtonsContainer:{

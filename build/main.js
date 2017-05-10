@@ -98,7 +98,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-var monthlyJob = scheduler.scheduleJob('38 * * * *', _genarateMonthlyReport);
+var monthlyJob = scheduler.scheduleJob('57 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', { 'port': port });
 function _connectToDb() {

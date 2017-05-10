@@ -14,3 +14,11 @@ D:\matan\לימודים\final project\SE-projrct\FinalProjectTest\FinalProjectTe
 D:\matan\לימודים\final project\SE-projrct\FinalProjectTest\FinalProjectTest\obj\Debug\FinalProjectTest.csprojResolveAssemblyReference.cache
 D:\matan\לימודים\final project\SE-projrct\FinalProjectTest\FinalProjectTest\obj\Debug\FinalProjectTest.dll
 D:\matan\לימודים\final project\SE-projrct\FinalProjectTest\FinalProjectTest\obj\Debug\FinalProjectTest.pdb
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\bin\Debug\FinalProjectTest.dll
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\bin\Debug\FinalProjectTest.pdb
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\bin\Debug\Newtonsoft.Json.dll
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\bin\Debug\Newtonsoft.Json.xml
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\obj\Debug\FinalProjectTest.csprojResolveAssemblyReference.cache
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\obj\Debug\FinalProjectTest.dll
+D:\matan\לימודים\final project\SE-projrct\RandomTests\FinalProjectTest\obj\Debug\FinalProjectTest.pdb

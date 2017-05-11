@@ -117,10 +117,13 @@ var ShiftDetails = React.createClass({
     getOptionsForShiftType: function() {
         var arrayOfObjects = constantsStrings.shiftType;
         var optionsForDropDown = [];
-        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+        optionsForDropDown.push(<option disabled>{constantsStrings.dropDownChooseString}</option>);
         for (var i = 0; i < arrayOfObjects.length; i++) {
             var currOption = arrayOfObjects[i];
-            optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
+            if(currOption == constantsStrings.shiftType_taste)
+                optionsForDropDown.push(<option selected value={currOption}>{currOption}</option>);
+            else
+                optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
         }
         return optionsForDropDown;
     },

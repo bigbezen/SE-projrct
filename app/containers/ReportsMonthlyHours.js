@@ -44,7 +44,7 @@ var ReportsMonthlyHours = React.createClass({
     onClickExportReport: function() {
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
-        managerServices.exportMonthlyHoursReport(datepickerVal[0], datepickerVal[1])
+        managerServices.exportMonthlyHoursReport(datepickerVal[0], datepickerVal[1] - 1)
             .then(function(data){
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
@@ -69,7 +69,7 @@ var ReportsMonthlyHours = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
-        managerServices.getMonthlyHoursReportData(parseInt(datepickerVal[0]), parseInt(datepickerVal[1]))
+        managerServices.getMonthlyHoursReportData(parseInt(datepickerVal[0]), parseInt(datepickerVal[1] - 1))
             .then(function(data){
                 self.setState({
                     report: data

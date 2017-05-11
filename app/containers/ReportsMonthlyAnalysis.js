@@ -133,20 +133,20 @@ var ReportsMonthlyAnalysis = React.createClass({
             <div style={styles.col} className="w3-theme-l5 w3-round-large ">
                 <p>{constantStrings.dictionary[sectionData['section']]}</p>
                 <div className="col-sm-10" style={{padding: '0'}}>
-                    <p className="col-sm-6">{constantStrings.dictionary["traditionalHot"]}</p>
-                    <input type="number" min="0" className="w3-round-large col-sm-6"
+                    <p className="col-sm-12">{constantStrings.dictionary["traditionalHot"]}</p>
+                    <input type="number" min="0" className="w3-round-large col-sm-12"
                         defaultValue={sectionData.traditionalHot} ref={sectionData.month + "#" + sectionData.section + "#traditionalHot"}
                         onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "traditionalHot")}/>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
-                    <p className="col-sm-6">{constantStrings.dictionary["traditionalOrganized"]}</p>
-                    <input type="number" min="0" className="w3-round-large col-sm-6"
+                    <p className="col-sm-12">{constantStrings.dictionary["traditionalOrganized"]}</p>
+                    <input type="number" min="0" className="w3-round-large col-sm-12"
                         defaultValue={sectionData.traditionalOrganized} ref={sectionData.month + "#" + sectionData.section + "#traditionalOrganized"}
                         onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "traditionalOrganized")}/>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
-                    <p className="col-sm-6">{constantStrings.dictionary["organized"]}</p>
-                    <input type="number" min="0" className="w3-round-large col-sm-6"
+                    <p className="col-sm-12">{constantStrings.dictionary["organized"]}</p>
+                    <input type="number" min="0" className="w3-round-large col-sm-12"
                         defaultValue={sectionData.organized} ref={sectionData.month + "#" + sectionData.section + "#organized"}
                         onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "organized")}/>
                 </div>
@@ -158,8 +158,8 @@ var ReportsMonthlyAnalysis = React.createClass({
     renderEncouragements: function(encouragement, index){
         return (
             <div style={styles.col} className="w3-theme-l5 w3-round-large">
-                <p>{encouragement.encouragement.name}</p>
-                <input type="number" min="0" className="w3-round-large col-sm-8" defaultValue={encouragement.amount}
+                <p className="col-sm-12">{encouragement.encouragement.name}</p>
+                <input type="number" min="0" className="w3-round-large col-sm-12" defaultValue={encouragement.amount}
                     ref={encouragement.month + "#" + index} onChange={() => this.onChangeEncValue(encouragement.month, index)}/>
             </div>
         )

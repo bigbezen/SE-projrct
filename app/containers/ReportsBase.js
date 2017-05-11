@@ -65,26 +65,38 @@ var ReportsBase = React.createClass({
     render: function () {
         return (
             <div className="w3-container" style={styles.marginTop}>
-                <div className="col-sm-12">
-                    <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
-                    style={{marginRight: '13%'}}
+
+                <div className="col-sm-12" style={{marginBottom: '20px'}}>
+                    <button className="w3-card-4 w3-btn w3-theme-d5 w3-circle w3-xlarge"
+                    style={{marginRight: '13%', display: 'inline'}}
                     onClick={this.onClickSalesReport}>
-                        {constantStrings.reportsSalesReportTitle_string}<Chart1/>
+                        <Chart1/>
                     </button>
-                    <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
-                            onClick={this.onClickMonthlyHoursReport}>
-                        {constantStrings.reportsMonthlyUserHoursReportTitle_string}<Chart2/>
-                    </button>
-                    <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
-                            onClick={this.onClickMonthlyAnalysisReport}>
-                        {constantStrings.reportsMonthlyAnalysisReportTitle_string}<Chart3/>
-                    </button>
+                    <h1 style={{display: 'inline'}}>{constantStrings.reportsSalesReportTitle_string}</h1>
                 </div>
-                <div className="col-sm-12">
-                    <button className="w3-card-4 w3-btn w3-theme-d5 col-sm-2 col-sm-offset-1 w3-round-xlarge w3-xlarge"
-                            onClick={this.onClickHumanResourcesReport} style={{marginRight: '13%', marginTop: '50px'}}>
-                        {constantStrings.reportsHumanResourcesReportTitle_string}<Chart3/>
+                <div className="col-sm-12" style={{marginBottom: '20px'}}>
+                    <button className="w3-card-4 w3-btn w3-theme-d5 w3-circle w3-xlarge"
+                            style={{marginRight: '13%', display: 'inline'}}
+                            onClick={this.onClickMonthlyHoursReport}>
+                        <Chart2/>
                     </button>
+                    <h1 style={{display: 'inline'}}>{constantStrings.reportsMonthlyUserHoursReportTitle_string}</h1>
+                </div>
+                <div className="col-sm-12" style={{marginBottom: '20px'}}>
+                    <button className="w3-card-4 w3-btn w3-theme-d5 w3-circle w3-xlarge"
+                            style={{marginRight: '13%', display: 'inline'}}
+                            onClick={this.onClickMonthlyAnalysisReport}>
+                        <Chart3/>
+                    </button>
+                    <h1 style={{display: 'inline'}}>{constantStrings.reportsMonthlyAnalysisReportTitle_string}</h1>
+                </div>
+                <div className="col-sm-12" style={{marginBottom: '20px'}}>
+                    <button className="w3-card-4 w3-btn w3-theme-d5 w3-circle w3-xlarge"
+                            onClick={this.onClickHumanResourcesReport}
+                            style={{marginRight: '13%', display: 'inline'}}>
+                        <Chart3/>
+                    </button>
+                    <h1 style={{display: 'inline'}}>{constantStrings.reportsHumanResourcesReportTitle_string}</h1>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

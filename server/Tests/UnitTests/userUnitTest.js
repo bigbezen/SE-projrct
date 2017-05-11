@@ -159,6 +159,54 @@ describe('user unit test', function () {
             expect(addedUserFromDb).to.not.have.property('sessionId');
         });
 
+        it('AddUserMnagerValid', async function(){
+            let user = getUserDetails();
+            user.jobDetails.userType = "manager";
+            let result = await userServices.addUser('sessionId', user);
+            let addedUserFromDb = await dal.getUserByUsername('new user');
+            addedUserFromDb = addedUserFromDb.toObject();
+
+            expect(result).to.have.all.keys('code', 'user');
+            let resultUser = result.user;
+            expect(resultUser).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(resultUser).to.not.all.keys('password', 'sessionId');
+
+            expect(addedUserFromDb).to.contain.all.keys('username', 'password', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(addedUserFromDb).to.not.have.property('sessionId');
+        });
+
+        it('AddUserSalesmanValid', async function(){
+            let user = getUserDetails();
+            user.jobDetails.userType = "salesman";
+            let result = await userServices.addUser('sessionId', getUserDetails());
+            let addedUserFromDb = await dal.getUserByUsername('new user');
+            addedUserFromDb = addedUserFromDb.toObject();
+
+            expect(result).to.have.all.keys('code', 'user');
+            let resultUser = result.user;
+            expect(resultUser).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(resultUser).to.not.all.keys('password', 'sessionId');
+
+            expect(addedUserFromDb).to.contain.all.keys('username', 'password', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(addedUserFromDb).to.not.have.property('sessionId');
+        });
+
+        it('AddUserEventValid', async function(){
+            let user = getUserDetails();
+            user.jobDetails.userType = "event";
+            let result = await userServices.addUser('sessionId', getUserDetails());
+            let addedUserFromDb = await dal.getUserByUsername('new user');
+            addedUserFromDb = addedUserFromDb.toObject();
+
+            expect(result).to.have.all.keys('code', 'user');
+            let resultUser = result.user;
+            expect(resultUser).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(resultUser).to.not.all.keys('password', 'sessionId');
+
+            expect(addedUserFromDb).to.contain.all.keys('username', 'password', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(addedUserFromDb).to.not.have.property('sessionId');
+        });
+
         it('AddUserExistingUsername', async function(){
             let userDetails = getUserDetails();
             userDetails.username = "shahaf";

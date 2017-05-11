@@ -66,8 +66,14 @@ let addShifts = async function(sessionId, shiftArr){
         let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
-        newShift.status = "CREATED";
         newShift.type = shift.type;
+        if(shift.type == 'אירועים'){
+            newShift.status = "FINISHED";
+        }
+        else{
+            newShift.status = "CREATED";
+        }
+
         newShift.salesReport = newSalesReportSchema;
         newShift.sales = [];
         newShift.numOfKm = 0;

@@ -52,7 +52,7 @@ module.exports = {
     },
 
     getAllSalesman: async function(){
-        return userModel.find({'jobDetails.userType': 'salesman'});
+        return userModel.find({$or:[{'jobDetails.userType': 'salesman'},{'jobDetails.userType': 'event'}]});
     },
 
     getAllUsers: async function(){

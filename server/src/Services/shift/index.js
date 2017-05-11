@@ -67,7 +67,7 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.type = shift.type;
-        if(shift.type == 'אירועים'){
+        if(shift.type == 'אירוע'){
             newShift.status = "FINISHED";
         }
         else{

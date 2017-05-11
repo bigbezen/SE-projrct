@@ -98,11 +98,15 @@ var IncentiveDetails = React.createClass({
             optionsForDropDown.push(<option disabled>{constantsStrings.dropDownChooseString}</option>);
 
         for (var i = 0; i < arrayOfObjects.length; i++) {
-            var currOption = arrayOfObjects[i].name;
-            if(currOption == selectedProductName)
-                optionsForDropDown.push(<option key={i + (index*10)} selected value={currOption}>{currOption}</option>);
+            var currOption = arrayOfObjects[i];
+            if(currOption.name == selectedProductName)
+                optionsForDropDown.push(<option key={i + (index*10)} selected value={currOption.name + " - " + currOption.subCategory}>
+                    {currOption.name + " - " + currOption.subCategory}
+                </option>);
             else
-                optionsForDropDown.push(<option key={i + (index*10)} value={currOption}>{currOption}</option>);
+                optionsForDropDown.push(<option key={i + (index*10)} value={currOption.name + " - " + currOption.subCategory}>
+                    {currOption.name+ " - " + currOption.subCategory}
+                </option>);
         }
         return optionsForDropDown;
     },
@@ -126,7 +130,7 @@ var IncentiveDetails = React.createClass({
     renderProductChoice: function(product, i){
         return (
             <div className="row" style={styles.productSelect}>
-                <select key={i} className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange}
+                <select key={i} className="col-xs-6 col-xs-offset-2" onChange={this.handleSubCategoryChange}
                     ref={"product" + i} data="" >
                     {this.getOptions(this.state.products, i)}
                 </select>
@@ -153,7 +157,7 @@ var IncentiveDetails = React.createClass({
         for(var productIndex in productsAsObjects)
             productsAsDict[productsAsObjects[productIndex].name] = productsAsObjects[productIndex]._id;
         for(var i=0; i<numOfProducts; i++) {
-            var chosenProduct = this.refs["product" + i].value;
+            var chosenProduct = this.refs["product" + i].value.split(" - ")[0];
             if(chosenProduct != constantsStrings.dropDownChooseString)
                 selectedProducts.push(productsAsDict[chosenProduct]);
         }
@@ -254,8 +258,9 @@ var IncentiveDetails = React.createClass({
                     </div>
                     <div className="form-group">
                         <input type="text"
-                               className="col-xs-4 col-xs-offset-2"
+                               className="col-xs-6 col-xs-offset-2"
                                ref="nameBox"
+                               required
                         />
                     </div>
 
@@ -278,8 +283,9 @@ var IncentiveDetails = React.createClass({
                     </div>
                     <div className="form-group ">
                         <input type="number" min={0}
-                               className="col-xs-4 col-xs-offset-2"
+                               className="col-xs-6 col-xs-offset-2"
                                ref="numOfProductsBox"
+                               required
                         />
                     </div>
 
@@ -288,8 +294,9 @@ var IncentiveDetails = React.createClass({
                     </div>
                     <div className="form-group ">
                         <input type="number" min={0}
-                               className="col-xs-4 col-xs-offset-2"
+                               className="col-xs-6 col-xs-offset-2"
                                ref="rateBox"
+                               required
                         />
                     </div>
 

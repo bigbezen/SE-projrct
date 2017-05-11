@@ -294,7 +294,8 @@ let getSalesmanCurrentShift = async function(sessionId){
         product.category= productsDict[product.productId.toString()].category;
     }
     for(let sales of currShift.sales) {
-        sales.name = productsDict[sales.productId.toString()];
+        sales.name = productsDict[sales.productId.toString()].name;
+        sales.subCategory = productsDict[sales.productId.toString()].subCategory;
     }
     return {'code': 200, 'shift': currShift};
 };
@@ -667,7 +668,9 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
             salesReport[i].opened = newOpened;
         }
     }
-    let res = await dal.editSalesReport(shift._id, shift.salesReport);
+
+    let newEncouragements = await encouragementServices.calculateEncouragements(shift.salesReport);
+    let res = await dal.editSalesReport(shift._id, shift.salesReport, newEncouragements);
 
     if(res.ok == 0)
         return {'shift': shift, 'code':400, 'err': 'cannot edit this shift'};

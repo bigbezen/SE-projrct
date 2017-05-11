@@ -183,7 +183,7 @@ var ReportsSalesReport = React.createClass({
             <div className="w3-container col-sm-6">
                 <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
                 <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
+                    <p className="col-sm-4" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
@@ -197,10 +197,9 @@ var ReportsSalesReport = React.createClass({
         return (
             <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
                  style={{marginTop: '10px', height: '45px'}}>
-                <p className="col-sm-3"><b>{product.subCategory}</b></p>
+                <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
-                <p className="col-sm-1"></p>
                 <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
                 <p className="w3-xlarge col-sm-1" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
             </div>

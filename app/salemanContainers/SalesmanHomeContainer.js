@@ -150,11 +150,11 @@ var SalesmanHomeContainer = React.createClass({
         )
     },
 
-    renderLoading:function () {
+    renderLoading:function (text) {
         return(
             <div>
                 <div className="text-center">
-                    <h1>loading...</h1>
+                    <h1>{text}</h1>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

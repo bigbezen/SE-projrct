@@ -58,11 +58,13 @@ var ShiftMakeSalesContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (currShift) {
-            let subCategories = new Set(currShift.salesReport.map((product) => product.subCategory));
+            let subCategories = new Set(currShift.salesReport
+                .map((product) => product.subCategory));
             let subCategory_to_productList = {};
             for(let subCategory of subCategories){
                 let productList = currShift.salesReport
-                    .filter((product) => product.subCategory == subCategory);
+                    .filter((product) => product.subCategory == subCategory)
+                    .sort(self.productSortingMethod);
                 subCategory_to_productList[subCategory] = {
                     subCategory: subCategory,
                     products: productList
@@ -86,24 +88,19 @@ var ShiftMakeSalesContainer = React.createClass({
     },
 
     productSortingMethod: function(a, b){
-        if(a.category != b.category){
-            if(a.category == constantsStrings['ספיריט'])
-                return 1;
-            else
-                return -1;
-        }
-
-        if(a.subCategory < b.subCategory)
+        if(a.name < b.name)
             return -1;
-        else if(a.subCategory > b.subCategory)
+        else if(a.name > b.name)
             return 1;
-        else{
-            if(a.name < b.name)
-                return -1;
-            else if(a.name > b.name)
-                return 1;
-            return 0;
-        }
+        return 0;
+    },
+
+    stringSortingMethod: function(a, b){
+        if(a < b)
+            return -1;
+        else if(a > b)
+            return 1;
+        return 0;
     },
 
     handleFinishShift: function(){
@@ -282,7 +279,7 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderProducts(){
         let self = this;
-        let categories = Object.keys(this.state.subCategory_to_productList);
+        let categories = Object.keys(this.state.subCategory_to_productList).sort();
         return(
             <div>
                 <div className="w3-theme-d5 col-xs-12">

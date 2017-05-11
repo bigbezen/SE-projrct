@@ -191,13 +191,13 @@ var HomeContainer = React.createClass({
     },
 
     renderSalesProducts: function(product, i){
+        let w3_theme = (product.sold || product.opened) > 0 ? "w3-theme-d1" : "w3-theme-l4";
         return (
-            <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
+            <div className={"row col-sm-10 col-sm-offset-1 w3-round-large w3-card-4 w3-text-black " + w3_theme}
                  style={{marginTop: '10px', height: '45px'}}>
-                <p className="col-sm-3"><b>{product.productId.subCategory}</b></p>
+                <p className="col-sm-5"><b>{product.productId.subCategory}</b></p>
                 <p className="col-sm-3">{product.productId.name}</p>
                 <p className="col-sm-2">{product.sold}</p>
-                <p className="col-sm-1"></p>
                 <p className="col-sm-2">{product.opened}</p>
             </div>
         )
@@ -208,10 +208,10 @@ var HomeContainer = React.createClass({
             <div className="w3-container col-sm-6">
                 <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
                 <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
+                    <p className="col-sm-5" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
                 </div>
                 {productsOfOneCategory.products.map(this.renderSalesProducts)}
             </div>

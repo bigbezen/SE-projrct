@@ -254,11 +254,13 @@ function _setapApiEndpoints() {
     });
 
     app.get('/salesman/getCurrentShift', async function (req, res) {
+
         if(!('sessionid' in req.headers)) {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, res.query.date);
+        console.log('bla');
+        let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, req.query.date);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else

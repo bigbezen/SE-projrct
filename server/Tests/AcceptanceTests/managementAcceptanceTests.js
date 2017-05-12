@@ -560,7 +560,7 @@ describe('management acceptance test', function(){
         });
 
         it('add event shift valid', async function () {
-            shifts[0].type = 'אירועים';
+            shifts[0].type = 'אירוע';
             let store = await dal.addStore(store1);
             shifts[0].storeId = store._id.toString();
             shifts[0].salesmanId = notManager._id.toString();

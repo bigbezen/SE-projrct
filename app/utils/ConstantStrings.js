@@ -239,7 +239,8 @@ class ConstantStrings extends React.Component {
 
     static shiftType_taste = 'טעימה';
     static shiftType_learning = 'הדרכה';
-    static shiftType = ['טעימה', 'הדרכה'] ;
+    static shiftType_event = 'אירוע';
+    static shiftType = [ConstantStrings.shiftType_taste, ConstantStrings.shiftType_event,  ConstantStrings.shiftType_learning] ;
 
 
     //  static userRoleForDropDown = ["דייל", "סוכן שטח"];

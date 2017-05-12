@@ -135,18 +135,18 @@ var ShiftMakeSalesContainer = React.createClass({
 
     onClickProduct: function(product){
         let soldProducts = this.state.soldProducts;
-        if(soldProducts[product.productId] == undefined){
-            soldProducts[product.productId] = {
-                product: product,
-                quantity: 1
-            }
-        }
-        else{
-            soldProducts[product.productId].quantity += 1;
-        }
+        soldProducts[product.productId] = {
+            product: product,
+            quantity: 1
+        };
+        let subCategory_to_products = this.state.subCategory_to_productList;
+        subCategory_to_products[product.subCategory].products = subCategory_to_products[product.subCategory].products
+            .filter((prod) => prod.productId != product.productId);
+
         this.setState({
-            soldProducts: soldProducts
-        })
+            soldProducts: soldProducts,
+            subCategory_to_productsList: subCategory_to_products
+        });
     },
 
     onClickAddSale: function(){
@@ -163,8 +163,15 @@ var ShiftMakeSalesContainer = React.createClass({
             });
         salesmanServices.reportSale(shiftId, salesList)
             .then(function(result){
+                let subCategory_to_productList = self.state.subCategory_to_productList;
+                for(let index in soldProducts){
+                    subCategory_to_productList[soldProducts[index].product.subCategory]
+                        .products
+                        .push(soldProducts[index].product);
+                }
                 self.setState({
-                    soldProducts: {}
+                    soldProducts: {},
+                    subCategory_to_productList: subCategory_to_productList
                 })
             }).catch(function(errMsg){
             notificationSystem.clearNotifications();
@@ -191,8 +198,14 @@ var ShiftMakeSalesContainer = React.createClass({
             });
         salesmanServices.reportOpen(shiftId, openList)
             .then(function(result){
+                for(let index in soldProducts){
+                    subCategory_to_productList[soldProducts[index].product.subCategory]
+                        .products
+                        .push(soldProducts[index].product);
+                }
                 self.setState({
-                    soldProducts: {}
+                    soldProducts: {},
+                    subCategory_to_productList: subCategory_to_productList
                 })
             }).catch(function(errMsg){
             notificationSystem.clearNotifications();
@@ -238,7 +251,7 @@ var ShiftMakeSalesContainer = React.createClass({
                 <span style={{float: 'right', marginTop: '15px'}}>{productAndQuantity.product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}}>
                     <span onClick={() => this.onClickPlus(productAndQuantity.product.productId)}><PlusIcon/></span>
-                    {productAndQuantity.quantity}
+                    <span style={{marginLeft: '20px', marginRight: '20px'}}>{productAndQuantity.quantity}</span>
                     <span onClick={() => this.onClickMinus(productAndQuantity.product.productId)}><MinusIcon/></span>
                 </span>
             </div>

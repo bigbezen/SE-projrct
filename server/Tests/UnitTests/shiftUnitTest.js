@@ -712,7 +712,7 @@ describe('shift unit test', function () {
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
             shifts[1] = (await dal.addShift(shifts[1])).toObject();
 
-            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId);
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shift');
             expect(result.shift.status).to.be.equal('PUBLISHED');
@@ -744,7 +744,7 @@ describe('shift unit test', function () {
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
 
 
-            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId);
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shift');
             expect(result.shift.status).to.be.equal('STARTED');
@@ -796,7 +796,7 @@ describe('shift unit test', function () {
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
             shifts[1] = (await dal.addShift(shifts[1])).toObject();
 
-            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId);
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 409);
             expect(result).to.have.property('err');
         });

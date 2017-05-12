@@ -258,7 +258,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid);
+        let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, res.query.date);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else

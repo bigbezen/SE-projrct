@@ -270,14 +270,14 @@ let getShiftsOfRange = async function(sessionId, startDate, endDate) {
     return {'code': 200, 'shifts': shifts};
 };
 
-let getSalesmanCurrentShift = async function(sessionId){
+let getSalesmanCurrentShift = async function(sessionId, date){
     logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
 
     let salesman = await dal.getUserBySessionId(sessionId);
     if(salesman == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let currShift = await dal.getSalesmanCurrentShift(salesman._id);
+    let currShift = await dal.getSalesmanCurrentShift(salesman._id, date);
     if(currShift == null)
         return {'code': 409, 'err': 'user does not have a shift today'};
 

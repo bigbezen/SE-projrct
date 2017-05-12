@@ -658,7 +658,8 @@ var managerRequests = {
 var salesmanRequests = {
     //TODO:
     getCurrentShift: function() {
-        return axios.get(serverUrl + 'salesman/getCurrentShift', {
+        let date = new Date();
+        return axios.get(serverUrl + 'salesman/getCurrentShift?date=' + date, {
             headers:{
                 sessionId:sessionId
             }

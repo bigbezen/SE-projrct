@@ -173,12 +173,12 @@ module.exports = {
         return results;
     },
 
-    getSalesmanCurrentShift: async function(salesmanId){
-        var today = moment().startOf('day');
-        var tomorrow = moment(today).add(1, 'days');
+    getSalesmanCurrentShift: async function(salesmanId, date){
+        let startOfDay = new Date((new Date(date)).setHours(0, 0, 0));
+        let endOfDay = new Date((new Date(date)).setHours(23, 59, 59));
 
         return shiftModel.findOne({$and: [{'salesmanId': salesmanId},
-            {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}, {'startTime': {$gte: today.toDate(), $lt: tomorrow.toDate()}}]});
+            {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}, {'startTime': {$gte: startOfDay, $lt: endOfDay}}]});
     },
 
     deleteShift: async function(shiftId){
@@ -204,8 +204,8 @@ module.exports = {
     },
 
     getShiftsOfRange: async function(startDate, endDate){
-        startDate = new Date((new Date(startDate)).setHours(0));
-        endDate = new Date((new Date(endDate)).setHours(23, 59));
+        startDate = new Date((new Date(startDate)).setHours(0, 0, 0));
+        endDate = new Date((new Date(endDate)).setHours(23, 59, 59));
         return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lte: new Date(endDate)}}]})
             .populate('salesmanId')
             .populate('storeId');

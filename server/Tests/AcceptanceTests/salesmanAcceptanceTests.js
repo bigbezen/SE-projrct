@@ -127,7 +127,7 @@ describe('salesman acceptance test', function(){
             shift = await dal.addShift(shift);
 
 
-            let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
+            let result = await axios.get(serverUrl + 'salesman/getCurrentShift?date=' + new Date(), {
                 headers: {
                     sessionId: salesman.sessionId
                 }
@@ -145,7 +145,7 @@ describe('salesman acceptance test', function(){
             shift.status = "STARTED";
             shift = await dal.addShift(shift);
 
-            let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
+            let result = await axios.get(serverUrl + 'salesman/getCurrentShift?date=' + new Date(), {
                 headers: {
                     sessionId: salesman.sessionId
                 }
@@ -160,7 +160,7 @@ describe('salesman acceptance test', function(){
         });
 
         it('get current shift 0 shifts in system', async function(){
-            let result = await axios.get(serverUrl + 'salesman/getCurrentShift', {
+            let result = await axios.get(serverUrl + 'salesman/getCurrentShift?date=' + new Date(), {
                 headers: {
                     sessionId: salesman.sessionId
                 }

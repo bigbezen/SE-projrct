@@ -24,5 +24,6 @@ namespace FinalProjectTest
         public const string _finishShiftUrl = "/salesman/finishShift";
         public const string _addEncouragementUrl = "/management/addEncouragement";
         public const string _getAllEncouragementUrl = "/management/getAllEncouragements";
+        public const string _addShiftComment = "/salesman/addShiftComment";
     }
 }

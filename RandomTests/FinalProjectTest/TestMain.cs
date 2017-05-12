@@ -30,9 +30,10 @@ namespace FinalProjectTest
         [TestInitialize]
         public void init()
         {
-            _shiftActions = new Action<string,string,string,int>[2];
+            _shiftActions = new Action<string,string,string,int>[3];
             _shiftActions[0] = RepoertSale;
             _shiftActions[1] = ReportOpened;
+            _shiftActions[2] = ReportComment;
         }
 
         [TestMethod]
@@ -313,6 +314,7 @@ namespace FinalProjectTest
         {
             JObject user = _salesmanArr[numOfSalesman];
             Dictionary<string, int>[] actionResult = new Dictionary<string, int>[2];
+            LinkedList<string> comments = new LinkedList<string>();
             actionResult[0] = new Dictionary<string, int>();
             actionResult[1] = new Dictionary<string, int>();
 
@@ -338,20 +340,24 @@ namespace FinalProjectTest
             for (int i = 0; i < 100; i++)
             {
                 int product = rnd.Next(0, 19);
-                int action = rnd.Next(0, 2);
+                int action = rnd.Next(0, 3);
                 int amount = rnd.Next(1, 10);
                 int timeToSleep = rnd.Next(500, 5000);
                 string productName = (string)_productsArr[product].GetValue("name");
                 _shiftActions[action](sessionId, shiftId, (string)_productsArr[product].GetValue("_id"), amount);
 
                 //update the action
-                if(actionResult[action].ContainsKey(productName))
+                if(action < 2 && actionResult[action].ContainsKey(productName))
                 {
                     actionResult[action][productName] += amount;
                 }
-                else
+                else if(action < 2)
                 {
                     actionResult[action].Add(productName, amount);
+                }
+                else
+                {
+                    comments.AddLast((string)_productsArr[product].GetValue("_id"));
                 }
 
                 //finish and going to sleep
@@ -374,6 +380,12 @@ namespace FinalProjectTest
                     int openedCount = actionResult[1][productName];
                     Assert.AreEqual(openedCount, (int)(sale.GetValue("opened")));
                 }
+            }
+
+            JArray shiftComments = shift.GetValue("shiftComments");
+            for(int i = 0; i < comments.Count; i++)
+            {
+                Assert.AreEqual(comments.ElementAt(i), shiftComments.ElementAt(i).ToString());
             }
 
             //finish salesman shift
@@ -411,6 +423,17 @@ namespace FinalProjectTest
 
             string req = report.ToString();
             PostRequest(URLGenaretor._reportOpenedUrl, req);
+        }
+
+        public static void ReportComment(string sessionId, string shiftId, string comment, int quantity = 0)
+        {
+            dynamic report = new JObject();
+            report.sessionId = sessionId;
+            report.shiftId = shiftId;
+            report.content = comment;
+
+            string req = report.ToString();
+            PostRequest(URLGenaretor._addShiftComment, req);
         }
 
         //jsons

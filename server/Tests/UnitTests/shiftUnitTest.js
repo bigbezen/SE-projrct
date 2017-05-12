@@ -257,8 +257,8 @@ describe('shift unit test', function () {
         });
 
         it('add event shift valid', async function () {
-            shifts[0].type = 'אירועים';
-            shifts[1].type = 'אירועים';
+            shifts[0].type = 'אירוע';
+            shifts[1].type = 'אירוע';
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 200);
             assert.equal(res.shiftArr.length, 2);

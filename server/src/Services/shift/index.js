@@ -54,7 +54,6 @@ let addShifts = async function(sessionId, shiftArr){
         if('salesmanId' in shift) {
             let shiftDB = await dal.getShiftsOfRangeForSalesman(shift.startTime, shift.endTime, shift.salesmanId);
             if(shiftDB != null) {
-                console.log("Asdsa");
                 return {'code': 409, 'err': 'user cannot have more than one shift at day'};
             }
 

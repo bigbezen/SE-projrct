@@ -10,9 +10,11 @@ import containers.managerHome
 import containers.changePass
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-
+import pytest
 
 class UserService(unittest.TestCase):
+    MAX_RUNNING_TIME = 120
+
     usernameField = None
     passwordField = None
     loginBtn = None
@@ -32,6 +34,7 @@ class UserService(unittest.TestCase):
         self.passwordField.clear()
 
     # test-1
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_login_Ok(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -42,6 +45,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.manager_home)
 
     # test-2
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_login_wrongUsername(self):
         driver = self.driver
         self.usernameField.send_keys(helper.wrongUsername)
@@ -52,6 +56,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.url)
 
     # test-3
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_login_wrongPass(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -62,6 +67,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.url)
 
     # test-4
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_logout_Ok(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -76,6 +82,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.url)
 
     # test-5
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_retrievePass_ok(self):
         driver = self.driver
         self.retrievePass.click()
@@ -95,6 +102,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.url)
 
     # test-6
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_retrievePass_wrongUsername(self):
         driver = self.driver
         self.retrievePass.click()
@@ -111,6 +119,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.retrieve_page)
 
     # test-7
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_retrievePass_wrongEmail(self):
         driver = self.driver
         self.retrievePass.click()
@@ -127,6 +136,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.retrieve_page)
 
     # test-8
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_changePass_ok(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -153,6 +163,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.manager_home)
 
     # test-9
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_changePass_wrongPass(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)
@@ -179,6 +190,7 @@ class UserService(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.change_page)
 
     # test-10
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_changePass_differentPass(self):
         driver = self.driver
         self.usernameField.send_keys(helper.adminUsername)

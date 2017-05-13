@@ -9,10 +9,13 @@ import containers.stores
 import containers.users
 import containers.Incentives
 import containers.shifts
+import pytest
 from time import sleep
 
 
 class ManagementServices(unittest.TestCase):
+    MAX_RUNNING_TIME = 120
+
     def setUp(self):
         dbConnector.deleteDb()
         dbConnector.initDb()
@@ -29,6 +32,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.manager_home)
 
     # test-11
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addUser_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -50,6 +54,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.usersContainer)
 
     # test-12
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addUser_badUsername(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -71,6 +76,7 @@ class ManagementServices(unittest.TestCase):
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
     # test-13
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addUser_badId(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -92,6 +98,7 @@ class ManagementServices(unittest.TestCase):
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
     # test-14
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addUser_badEmail(self):
         # todo: check if it is ok
         driver = self.driver
@@ -114,6 +121,7 @@ class ManagementServices(unittest.TestCase):
         # self.assertNotEqual(driver.current_url, helper.usersContainer)
 
     # test-15
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editUser_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -130,6 +138,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.usersContainer)
 
     # test-16
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editUser_badUsername(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -147,6 +156,7 @@ class ManagementServices(unittest.TestCase):
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
     # test-17
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editUser_badId(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -164,6 +174,7 @@ class ManagementServices(unittest.TestCase):
         self.assertNotEqual(driver.current_url, helper.usersContainer)
 
     # test-18
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editUser_badEmail(self):
         # todo: check if it is ok
         driver = self.driver
@@ -182,6 +193,7 @@ class ManagementServices(unittest.TestCase):
         # self.assertNotEqual(driver.current_url, helper.usersContainer)
 
     # test-19
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_deleteUser_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.usersTab).click()
@@ -203,6 +215,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.usersContainer)
 
     # test-20
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addStore_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.storesTab).click()
@@ -225,11 +238,13 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.storesContainer)
 
     # test-21
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addStore_badName(self):
         # todo: check if relevant
         return
 
     # test-22
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editStore_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.storesTab).click()
@@ -247,11 +262,13 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.storesContainer)
 
     # test-23
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editStore_badName(self):
         # todo: check if relevant
         return
 
     # test-24
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_deleteStore_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.storesTab).click()
@@ -273,6 +290,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.storesContainer)
 
     # test-25
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addProduct_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -293,6 +311,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.productsContainer)
 
     # test-26
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addProduct_badName(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -313,6 +332,7 @@ class ManagementServices(unittest.TestCase):
         self.assertNotEqual(driver.current_url, helper.productsContainer)
 
     # test-27
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editProduct_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -330,6 +350,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.productsContainer)
 
     # test-28
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editProduct_badName(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -348,6 +369,7 @@ class ManagementServices(unittest.TestCase):
         self.assertNotEqual(driver.current_url, helper.productsContainer)
 
     # test-29
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_deleteProduct_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.productsTab).click()
@@ -369,6 +391,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.productsContainer)
 
     # test-30
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
@@ -378,6 +401,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.manager_home)
 
     # test-31
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
@@ -401,6 +425,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.manager_home)
 
     # test-32
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_deleteShift_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
@@ -432,6 +457,7 @@ class ManagementServices(unittest.TestCase):
         # self.assertEqual(driver.current_url, helper.shiftsContainer)
 
     # test-33
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addIncentives_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
@@ -452,6 +478,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
     # test-34
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editIncentives_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
@@ -471,6 +498,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
     # test-35
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_deleteIncentives_ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
@@ -486,6 +514,7 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
     #test-36
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_setup_ok(self):
         self.assertTrue(True)
 

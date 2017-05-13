@@ -278,8 +278,10 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
                         }
                     }
                 }
-                monthCol = 16;
+                monthCol = 15;
                 //total hours
+                row.getCell(monthCol).value = monthData.salesmanCost.events;
+                monthCol++;
                 row.getCell(monthCol).value = monthData.totalHours.traditionalHot;
                 monthCol++;
                 row.getCell(monthCol).value = monthData.totalHours.organized;
@@ -354,7 +356,8 @@ let genarateMonthAnalysisReport = async function() {
                 'salesmanCost':{
                     'traditionalHot': 0,
                     'traditionalOrganized': 0,
-                    'organized': 0
+                    'organized': 0,
+                    'events': 0
                 },
                 'totalHours': {
                     'traditionalHot': 0,
@@ -404,7 +407,10 @@ let genarateMonthAnalysisReport = async function() {
         let duration = parseInt((currentShift.endTime - currentShift.startTime)/36e5, 10);
         let store = await dal.getStoresByIds([currentShift.storeId]);
         store = store[0];
-        if(store.channel == 'מסורתי - חם'){
+        if(currentShift.type == 'אירוע'){
+            yearReport.monthData[month].salesmanCost.events += duration*salesman.jobDetails.salary;
+        }
+        else if(store.channel == 'מסורתי - חם'){
             storeTraditionalHot.add(store._id);
             yearReport.monthData[month].totalHours.traditionalHot += duration;
             yearReport.monthData[month].salesmanCost.traditionalHot += duration*salesman.jobDetails.salary;

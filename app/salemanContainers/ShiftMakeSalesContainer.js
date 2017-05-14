@@ -4,8 +4,8 @@
 
 var React                   = require('react');
 var ReactBsTable            = require("react-bootstrap-table");
-var BootstrapTable          = ReactBsTable.BootstrapTable;
-var TableHeaderColumn       = ReactBsTable.TableHeaderColumn;
+var ReactBootstrap          = require('react-bootstrap');
+var Collapse                = ReactBootstrap.Collapse;
 var constantStrings         = require('../utils/ConstantStrings');
 var paths                   = require('../utils/Paths');
 var styles                  = require('../styles/salesmanStyles/addSaleStyles');
@@ -13,6 +13,8 @@ var salesmanServices        = require('../communication/salesmanServices');
 var StartShiftIcon          = require('react-icons/lib/fa/angle-double-left');
 var PlusIcon                = require('react-icons/lib/fa/plus');
 var MinusIcon               = require('react-icons/lib/fa/minus');
+var DownArrow               = require('react-icons/lib/fa/angle-double-down');
+var UpArrow                 = require('react-icons/lib/fa/angle-double-up');
 var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
@@ -46,7 +48,8 @@ var ShiftMakeSalesContainer = React.createClass({
         return{
             shift: null,
             subCategory_to_productList: [],
-            soldProducts: {}
+            soldProducts: {},
+            subCategoriesOpen: {}
         }
     },
 
@@ -61,7 +64,9 @@ var ShiftMakeSalesContainer = React.createClass({
             let subCategories = new Set(currShift.salesReport
                 .map((product) => product.subCategory));
             let subCategory_to_productList = {};
+            let subCategoriesOpen = {}; // uses for collapse of subCategories
             for(let subCategory of subCategories){
+                subCategoriesOpen[subCategory] = false;
                 let productList = currShift.salesReport
                     .filter((product) => product.subCategory == subCategory)
                     .sort(self.productSortingMethod);
@@ -74,7 +79,8 @@ var ShiftMakeSalesContainer = React.createClass({
             self.setState(
                 {
                     shift: currShift,
-                    subCategory_to_productList: subCategory_to_productList
+                    subCategory_to_productList: subCategory_to_productList,
+                    subCategoriesOpen: subCategoriesOpen
                 });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -195,6 +201,7 @@ var ShiftMakeSalesContainer = React.createClass({
             });
         salesmanServices.reportOpen(shiftId, openList)
             .then(function(result){
+                let subCategory_to_productList = self.state.subCategory_to_productList;
                 for(let index in soldProducts){
                     subCategory_to_productList[soldProducts[index].product.subCategory]
                         .products
@@ -257,7 +264,7 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderEachProduct: function(product){
         return (
-            <div className="col-sm-12 w3-round-xlarge w3-theme-d1 w3-xxxlarge"
+            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge"
                  style={styles.productSaleRow}  onClick={() => this.onClickProduct(product)}>
                 <span style={{float: 'right', marginTop: '15px'}}>{product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}} className="w3-xxxlarge"><PlusIcon /></span>
@@ -265,14 +272,41 @@ var ShiftMakeSalesContainer = React.createClass({
         )
     },
 
+    renderArrow: function(isOpen){
+        if(isOpen){
+            return (
+                <span className="w3-jumbo">
+                    <UpArrow/>
+                </span>
+            )
+        }
+        else{
+            return (
+                <span className="w3-jumbo">
+                    <DownArrow/>
+                </span>
+            )
+        }
+    },
+
     renderProductsForSubCategory: function(category){
+        let self = this;
         let productsAndCategory = this.state.subCategory_to_productList[category];
         return (
-            <div className="col-sm-12" key={category}>
-                <h1 className="text-right"><b>{productsAndCategory.subCategory}</b></h1>
-                <div className="col-sm-10 col-sm-offset-1">
-                    {productsAndCategory.products.map(this.renderEachProduct)}
-                </div>
+            <div className="col-sm-12" key={category} style={{marginTop: '15px'}}>
+                <button className="w3-btn w3-round-xlarge w3-theme-d3 col-sm-12 text-center" style={{marginBottom: '10px'}} onClick={function(){
+                    let subCategoriesOpen = self.state.subCategoriesOpen;
+                    subCategoriesOpen[category] = !subCategoriesOpen[category];
+                    self.setState({subCategoriesOpen: subCategoriesOpen});
+                }}>
+                    <h1 className="w3-xxxlarge"><b style={{fontSize: '55px'}}>{productsAndCategory.subCategory}</b></h1>
+                    {this.renderArrow(self.state.subCategoriesOpen[category])}
+                </button>
+                <Collapse in={this.state.subCategoriesOpen[category]}>
+                    <div className="col-sm-10">
+                        {productsAndCategory.products.map(this.renderEachProduct)}
+                    </div>
+                </Collapse>
             </div>
         )
     },

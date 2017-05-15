@@ -22,7 +22,9 @@ var IncentiveDetails = React.createClass({
         return {
             productsForIncentive: [1],
             products: [],
-            editedIncentive: undefined
+            editedIncentive: undefined,
+            subCategories: [],
+            productsOfSubCategory: []
         }
     },
 
@@ -71,8 +73,10 @@ var IncentiveDetails = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getAllProducts().then(function (result) {
+            let subCategories = new Set(result.map((product) => product.subCategory));
             self.setState({
-                products: result
+                products: result,
+                subCategories: Array.from(subCategories)
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -91,11 +95,14 @@ var IncentiveDetails = React.createClass({
             // this means that the page is on edit mode and there are already selected products to display
             selectedProductName = this.state.editedIncentive.products[index].name;
         }
+        else if(this.state.productsOfSubCategory.length > 0){
+            selectedProductName = this.state.productsOfSubCategory[index].name;
+        }
         var optionsForDropDown = [];
         if(selectedProductName == "")
-            optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+            optionsForDropDown.push(<option selected>{constantsStrings.dropDownChooseString}</option>);
         else
-            optionsForDropDown.push(<option disabled>{constantsStrings.dropDownChooseString}</option>);
+            optionsForDropDown.push(<option>{constantsStrings.dropDownChooseString}</option>);
 
         for (var i = 0; i < arrayOfObjects.length; i++) {
             var currOption = arrayOfObjects[i];
@@ -111,26 +118,55 @@ var IncentiveDetails = React.createClass({
         return optionsForDropDown;
     },
 
+    getCategoriesOptions: function(){
+        var optionsForDropDown = [];
+        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+
+        for (let currOption of this.state.subCategories) {
+            optionsForDropDown.push(<option key={currOption} value={currOption}>
+                {currOption}
+            </option>);
+        }
+        return optionsForDropDown;
+    },
+
     addProduct: function(){
         var newProducts = this.state.productsForIncentive;
         newProducts.push(1);
         this.setState({
-            productsForIncentive: newProducts
-        })
+            productsForIncentive: newProducts,
+            productsOfSubCategory: newProducts
+        });
+        this.refs.subCategory.value = constantsStrings.dropDownChooseString;
     },
 
     deleteProduct: function(){
-        var newProducts = this.state.productsForIncentive;
-        newProducts.splice(-1);
+        var newProducts = this.state.productsForIncentive.slice(0, -1);
+
         this.setState({
-            productsForIncentive: newProducts
+            productsForIncentive: newProducts,
+            productsOfSubCategory: newProducts
         });
+        this.refs.subCategory.value = constantsStrings.dropDownChooseString;
+    },
+
+    onChangeSubCategory: function() {
+        let subCategory = this.refs.subCategory.value;
+        let productsOfSubCategory = this.state.products.filter((product) => product.subCategory == subCategory);
+        this.setState({
+            productsOfSubCategory: productsOfSubCategory,
+            productsForIncentive: productsOfSubCategory
+        });
+    },
+
+    onChangeProduct: function(){
+        this.state.refs.subCategory.value = constantsStrings.dropDownChooseString;
     },
 
     renderProductChoice: function(product, i){
         return (
             <div className="row" style={styles.productSelect}>
-                <select key={i} className="col-xs-6 col-xs-offset-2" onChange={this.handleSubCategoryChange}
+                <select key={i} className="col-xs-6 col-xs-offset-2" onChange={this.onChangeProduct}
                     ref={"product" + i} data="" >
                     {this.getOptions(this.state.products, i)}
                 </select>
@@ -269,6 +305,18 @@ var IncentiveDetails = React.createClass({
                     </div>
                     <div className="form-group " ref="productsBox">
                         {this.state.productsForIncentive.map(this.renderProductChoice)}
+                    </div>
+
+                    <div className="form-group">
+                        <label className="col-xs-4 col-xs-offset-2">Sub Category:</label>
+                    </div>
+                    <div className="form-group" ref="subCategoryBox">
+                        <div className="row" style={styles.productSelect}>
+                            <select className="col-xs-6 col-xs-offset-2" onChange={this.onChangeSubCategory}
+                                    ref="subCategory" data="" >
+                                {this.getCategoriesOptions()}
+                            </select>
+                        </div>
                     </div>
 
                     <div className="form-group">

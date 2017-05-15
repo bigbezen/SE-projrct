@@ -1303,7 +1303,6 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 400);
-            assert.equal(res.response.data, 'cannot edit this encouragement');
         });
 
         it('edit encouragement not by manager ', async function () {

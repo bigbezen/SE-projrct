@@ -130,7 +130,6 @@ describe('encouragements unit test', function () {
             editEncouragement._id = "notexisting1";
             let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 400);
-            assert.equal(result.err, 'cannot edit this encouragement');
         });
 
         it('edit encouragement active', async function () {

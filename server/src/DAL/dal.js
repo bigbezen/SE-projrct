@@ -63,6 +63,8 @@ module.exports = {
         return userModel.find({'_id': {$in: ids}});
     },
 
+    //----------------------------------------------------- STORES ----------------------------------------------
+
     editStore: async function (storeDetails) {
         return storeModel.update({'_id': mongoose.Types.ObjectId(storeDetails._id)}, storeDetails, { upsert: false })
     },
@@ -84,6 +86,8 @@ module.exports = {
         return storeModel.findOne({'name': name, 'area': area});
     },
 
+    // ------------------------------------------------ PRODUCTS ------------------------------------------------
+
     addProduct: async function(product){
         return product.save();
     },
@@ -103,6 +107,17 @@ module.exports = {
     getProductByNameAndCatagory: async function(name,category){
         return productModel.findOne({'name': name, 'category': category});
     },
+
+    getProductById: async function (productId){
+        return productModel.findOne({'_id': productId});
+    },
+
+    getProductsById: async function(encouragementDetails){
+        var products = encouragementDetails.products.map(x => mongoose.Types.ObjectId(x));
+        return productModel.find({'_id': {$in: products}});
+    },
+
+    // ---------------------------------------------- ENCOURAGEMENTS ---------------------------------------
 
     addEncouragement: async function(Encouragement){
         return Encouragement.save();
@@ -124,13 +139,10 @@ module.exports = {
         return encouragementModel.findOne({'_id': id});
     },
 
-    getProductById: async function (productId){
-        return productModel.findOne({'_id': productId});
-    },
+    // ------------------------------------------------- SHIFTS --------------------------------------------
 
-    getProductsById: async function(encouragementDetails){
-        var products = encouragementDetails.products.map(x => mongoose.Types.ObjectId(x));
-        return productModel.find({'_id': {$in: products}});
+    addShift: async function(shift){
+        return shift.save();
     },
 
     getShiftsByIds: async function(shiftIds){
@@ -185,12 +197,6 @@ module.exports = {
         return shiftModel.remove({'_id': mongoose.Types.ObjectId(shiftId)});
     },
 
-    sendBroadcast: async function(msg){
-        var save = await msg.save();
-        var update = await userModel.update({'jobDetails.userType': 'salesman'}, {$push: {inbox: msg._id}}, {multi: true});
-        return update;
-    },
-
     getMonthShifts: async function(year, month){
         var startMonth = new Date(year, month, 1);
         var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
@@ -210,6 +216,35 @@ module.exports = {
             .populate('salesmanId')
             .populate('storeId');
     },
+
+    getSalesmanShifts: async function(salesmanId){
+        return shiftModel.find({'salesmanId': salesmanId});
+    },
+
+    getSalesmanStartedShift: async function(salesmanId){
+        return shiftModel.findOne({$and: [{'salesmanId': salesmanId}, {'status': 'STARTED'}]})
+            .populate('salesmanId')
+            .populate('storeId')
+            .populate('salesReport.productId');
+    },
+
+    // ------------------------------------------------- MESSAGES -----------------------------------------------
+
+    sendBroadcast: async function(msg){
+        var save = await msg.save();
+        var update = await userModel.update({'jobDetails.userType': 'salesman'}, {$push: {inbox: msg._id}}, {multi: true});
+        return update;
+    },
+
+    markMessagesAsRead: async function(userId){
+        return userModel.update({'_id': userId}, {$set: {inbox: []}});
+    },
+
+    getMessages: async function(messagesIds){
+        return messageModel.find({'_id': {$in: messagesIds}});
+    },
+
+    // ------------------------------------------------- REPORTS -----------------------------------------------
 
     addMonthlySalesmanReport: async function(report){
         return report.save()
@@ -234,29 +269,6 @@ module.exports = {
     getMonthlyUserHoursReport: async function(year, month){
         return monthlySalesmanHoursReportModel.findOne({$and: [{'year': year}, {'month': month}]})
             .populate('salesmansData.user');
-    },
-
-    getSalesmanShifts: async function(salesmanId){
-      return shiftModel.find({'salesmanId': salesmanId});
-    },
-
-    getSalesmanStartedShift: async function(salesmanId){
-        return shiftModel.findOne({$and: [{'salesmanId': salesmanId}, {'status': 'STARTED'}]})
-            .populate('salesmanId')
-            .populate('storeId')
-            .populate('salesReport.productId');
-    },
-
-    markMessagesAsRead: async function(userId){
-        return userModel.update({'_id': userId}, {$set: {inbox: []}});
-    },
-
-    getMessages: async function(messagesIds){
-        return messageModel.find({'_id': {$in: messagesIds}});
-    },
-
-    addShift: async function(shift){
-        return shift.save();
     },
 
     cleanDb: async function () {

@@ -113,15 +113,16 @@ describe('encouragements unit test', function () {
         it('edit encouragement by manager', async function () {
             //add new encouragement
             let encouragement = await encouragementServices.addEncouragement(manager.sessionId, newEncouragement);
-            editEncouragement._id = encouragement.encouragement._id
+            editEncouragement._id = encouragement.encouragement._id;
+            console.log('bla');
             let result = await encouragementServices.editEncouragement(manager.sessionId, editEncouragement);
             assert.equal(result.code, 200, 'code 200');
             assert.isNull(result.err, 'permission denied');
 
             //get all the encouragement to ensure that the store not changed
             result = await dal.getAllEncouragements();
+            console.log('bla');
             assert.equal(result.length, 1);
-            assert.strictEqual(result[0].active, editEncouragement.active, 'same active like the newEncouragement');
             assert.equal(result[0].numOfProducts, editEncouragement.numOfProducts, 'same numOfProducts like the newEncouragement');
             assert.equal(result[0].rate, editEncouragement.rate, 'same rate like the newEncouragement');
         });
@@ -143,7 +144,6 @@ describe('encouragements unit test', function () {
             //get all the encouragement to ensure that the store not changed
             result = await dal.getAllEncouragements();
             assert.equal(result.length, 1);
-            assert.strictEqual(result[0].active, editEncouragement.active, 'same active like the newEncouragement');
         });
 
         it('edit encouragement numOfProducts', async function () {

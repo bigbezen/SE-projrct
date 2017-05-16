@@ -120,23 +120,27 @@ module.exports = {
     // ---------------------------------------------- ENCOURAGEMENTS ---------------------------------------
 
     addEncouragement: async function(Encouragement){
+        Encouragement.active = true;
         return Encouragement.save();
     },
 
     editEncouragement: async function(EncouragementDetails){
+        if(EncouragementDetails.active != undefined)
+            delete EncouragementDetails.active;
         return encouragementModel.update({'_id': mongoose.Types.ObjectId(EncouragementDetails._id)}, EncouragementDetails, { upsert: false })
     },
 
-    deleteEncouragement: async function(iDencouragement){
-        return encouragementModel.remove({'_id': mongoose.Types.ObjectId(iDencouragement)})
+    deleteEncouragement: async function(encId){
+        //return encouragementModel.remove({'_id': mongoose.Types.ObjectId(encId)})
+        return encouragementModel.update({'_id': mongoose.Types.ObjectId(encId)}, {$set: {'active': false}})
     },
 
     getAllEncouragements: async function () {
-        return encouragementModel.find({});
+        return encouragementModel.find({'active': true});
     },
 
     getEncouragement: async function(id){
-        return encouragementModel.findOne({'_id': id});
+        return encouragementModel.findOne({$and: [{'_id': id}]});
     },
 
     // ------------------------------------------------- SHIFTS --------------------------------------------

@@ -11,6 +11,7 @@ let dal                 = require('../../src/DAL/dal');
 let userModel           = require('../../src/Models/user');
 let productModel        = require('../../src/Models/product');
 let storeModel          = require('../../src/Models/store');
+let constantString      = require('../../src/Utils/Constans/ConstantStrings.js');
 let encouragementModel        = require('../../src/Models/encouragement');
 let serverUrl = 'http://localhost:3000/';
 

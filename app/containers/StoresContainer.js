@@ -48,7 +48,7 @@ var StoresContainer = React.createClass({
         userServices.setSessionId(sessId);
     },
 
-    componentWillMount() {
+    componentDidMount() {
         this.updateStores();
     },
 

@@ -49,7 +49,7 @@ var IncentivesContainer = React.createClass({
         userServices.setSessionId(sessId);
     },
 
-    componentWillMount() {
+    componentDidMount() {
         this.updateIncentives();
     },
 

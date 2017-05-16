@@ -214,7 +214,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'Username or Id already exists');
+            assert.equal(res.response.data, constantString.UsernameOrIdAlreadyExists);
         });
 
         it('add user not by manager', async function () {
@@ -228,7 +228,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add user not by invalid parameter', async function () {
@@ -303,7 +303,7 @@ describe('management acceptance test', function(){
             });
 
         assert.equal(res.response.status, 409);
-        assert.equal(res.response.data, 'problem occurred with one of the parameters')
+        assert.equal(res.response.data, constantString.userDoesNotExist)
         });
 
         it('delete user not by manager', async function () {
@@ -317,7 +317,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
 
         it('delete manager by manager', async function () {
@@ -331,7 +331,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
 
         it('delete user invalid parameters', async function () {
@@ -1151,7 +1151,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'edited user does not exist');
+            assert.equal(res.response.data, constantString.userDoesNotExist);
         });
 
         it('edit user not by manager ', async function () {
@@ -1166,7 +1166,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('edit user invalid', async function () {
@@ -1475,7 +1475,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('get all users invalid parameters', async function () {

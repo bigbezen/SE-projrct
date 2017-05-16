@@ -13,6 +13,7 @@ let userModel           = require('../../src/Models/user');
 let productModel        = require('../../src/Models/product');
 let storeModel          = require('../../src/Models/store');
 let encouragementModel        = require('../../src/Models/encouragement');
+let constantSreing      = require('../../src/Utils/Constans/ConstantStrings.js');
 let cypher              = require('../../src/Utils/Cypher/index');
 let serverUrl = 'http://localhost:3000/';
 
@@ -102,7 +103,7 @@ describe('salesman acceptance test', function(){
             });
 
             expect(result.response.status).to.equal(409);
-            expect(result.response.data).to.equal('user does not exist');
+            expect(result.response.data).to.equal(constantSreing.userDoesNotExist);
         });
 
         it('TestLoginInvalidParameter', async function(){
@@ -129,7 +130,7 @@ describe('salesman acceptance test', function(){
             });
 
             expect(result.response.status).to.equal(409);
-            expect(result.response.data).to.equal('password is incorrect');
+            expect(result.response.data).to.equal(constantSreing.passwordIsIncorrect);
         });
     });
 

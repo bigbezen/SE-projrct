@@ -269,14 +269,14 @@ let getShiftsOfRange = async function(sessionId, startDate, endDate) {
     return {'code': 200, 'shifts': shifts};
 };
 
-let getSalesmanCurrentShift = async function(sessionId){
+let getSalesmanCurrentShift = async function(sessionId, date){
     logger.info('Services.shift.index.getSalesmanCurrentShift', {'session-id': sessionId});
 
     let salesman = await dal.getUserBySessionId(sessionId);
     if(salesman == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let currShift = await dal.getSalesmanCurrentShift(salesman._id);
+    let currShift = await dal.getSalesmanCurrentShift(salesman._id, date);
     if(currShift == null)
         return {'code': 409, 'err': 'user does not have a shift today'};
 
@@ -293,7 +293,8 @@ let getSalesmanCurrentShift = async function(sessionId){
         product.category= productsDict[product.productId.toString()].category;
     }
     for(let sales of currShift.sales) {
-        sales.name = productsDict[sales.productId.toString()];
+        sales.name = productsDict[sales.productId.toString()].name;
+        sales.subCategory = productsDict[sales.productId.toString()].subCategory;
     }
     return {'code': 200, 'shift': currShift};
 };
@@ -666,7 +667,9 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
             salesReport[i].opened = newOpened;
         }
     }
-    let res = await dal.editSalesReport(shift._id, shift.salesReport);
+
+    let newEncouragements = await encouragementServices.calculateEncouragements(shift.salesReport);
+    let res = await dal.editSalesReport(shift._id, shift.salesReport, newEncouragements);
 
     if(res.ok == 0)
         return {'shift': shift, 'code':400, 'err': 'cannot edit this shift'};

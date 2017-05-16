@@ -14,9 +14,12 @@ import containers.salesmanHome
 import containers.endShift
 import containers.salesman_shift
 from time import sleep
+import pytest
 
 
 class SalesmanServices(unittest.TestCase):
+    MAX_RUNNING_TIME = 120
+
     def setUp(self):
         dbConnector.deleteDb()
         dbConnector.initDb()
@@ -27,10 +30,12 @@ class SalesmanServices(unittest.TestCase):
         driver = self.driver
 
     # test-37
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_loginSalesman_ok(self):
         self.loginAsSalesman()
 
     # test-38
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_logoutSalesman_ok(self):
         self.loginAsSalesman()
         driver = self.driver
@@ -40,11 +45,13 @@ class SalesmanServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.url)
 
     # test-39
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_startShift_ok(self):
         driver = self.driver
         self.startShift()
 
     # test-40
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_startShift_return(self):
         driver = self.driver
         self.startShift()
@@ -54,6 +61,7 @@ class SalesmanServices(unittest.TestCase):
         # self.assertEqual(driver.current_url, helper.salesman_home)
 
     # test-41
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_startShift_selectExistingProduct(self):
         driver = self.driver
         self.startShift()
@@ -66,6 +74,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_shift in driver.current_url)
 
     # test-42
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_reportSale(self):
         driver = self.driver
         self.startShift()
@@ -79,6 +88,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_shift in driver.current_url)
 
     # test-43
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_reportOpen(self):
         driver = self.driver
         self.startShift()
@@ -92,6 +102,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_shift in driver.current_url)
 
     # test-44
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_viewExpenses(self):
         driver = self.driver
         self.loginAsSalesman()
@@ -100,6 +111,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.salesman_expenses)
 
     # test-45
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_editSale(self):
         driver = self.driver
         self.startShift()
@@ -125,6 +137,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_sale in driver.current_url)
 
     # test-46
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_addComment(self):
         driver = self.driver
         self.startShift()
@@ -149,6 +162,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_sale in driver.current_url)
 
     # test-47
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_cancelComment(self):
         driver = self.driver
         self.startShift()
@@ -173,6 +187,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_sale in driver.current_url)
 
     # test-48
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_viewEncouragemants(self):
         driver = self.driver
         self.startShift()
@@ -187,6 +202,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_encouragements in driver.current_url)
 
     # test-49
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_reportSaleIncreaseNumber(self):
         driver = self.driver
         self.startShift()
@@ -201,6 +217,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_shift in driver.current_url)
 
     # test-50
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_reportOpenIncreaseNumber(self):
         driver = self.driver
         self.startShift()
@@ -215,6 +232,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_shift in driver.current_url)
 
     # test-51
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_reportMultipleSale(self):
         driver = self.driver
         self.startShift()
@@ -230,6 +248,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_shift in driver.current_url)
 
     # test-52
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_reportMultipleOpen(self):
         driver = self.driver
         self.startShift()
@@ -245,6 +264,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_shift in driver.current_url)
 
     # test-53
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_endShift(self):
         driver = self.driver
         self.startShift()
@@ -264,6 +284,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_home in driver.current_url)
 
     # test-54
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_shift_endShiftWithReport(self):
         driver = self.driver
         self.startShift()
@@ -286,6 +307,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertTrue(helper.salesman_home in driver.current_url)
 
     # test-55
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_viewProfile(self):
         driver = self.driver
         self.loginAsSalesman()
@@ -294,6 +316,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.salesman_profile)
 
     # test-56
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_viewShifts(self):
         driver = self.driver
         self.loginAsSalesman()
@@ -302,6 +325,7 @@ class SalesmanServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.salesman_shiftSchedule)
 
     # test-57
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_setUp_Ok(self):
         self.assertEqual(True, True)
 

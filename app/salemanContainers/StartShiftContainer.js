@@ -73,6 +73,13 @@ var StartShiftContainer = React.createClass({
         }
     },
 
+    componentWillMount() {
+        setTimeout(() => {
+            window.history.forward()
+        }, 0)
+        window.onunload=function(){null};
+    },
+
     handleSubmitReport: function (e) {
         e.preventDefault();
         var self = this;

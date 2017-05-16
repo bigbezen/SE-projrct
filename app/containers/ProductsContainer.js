@@ -51,7 +51,7 @@ var ProductsContainer = React.createClass({
         }
     },
 
-    componentWillMount() {
+    componentDidMount() {
         this.updateProducts();
     },
 

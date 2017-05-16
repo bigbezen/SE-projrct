@@ -31,7 +31,7 @@ var editSaleStyles = {
     },
     products_table_container: {
         backgroundColor: 'RGB(255,255,255)',
-        marginBottom: '30px',
+        marginBottom: '150px',
         fontSize: '50px'
     },
     products_table_body: {

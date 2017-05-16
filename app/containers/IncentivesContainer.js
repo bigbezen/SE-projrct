@@ -49,7 +49,7 @@ var IncentivesContainer = React.createClass({
         userServices.setSessionId(sessId);
     },
 
-    componentWillMount() {
+    componentDidMount() {
         this.updateIncentives();
     },
 
@@ -128,7 +128,7 @@ var IncentivesContainer = React.createClass({
 
     renderProductRow: function(product, i) {
         return (
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;{product.name}</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;{product.name + " - " + product.subCategory}</p>
         )
     },
     renderCard: function(incentive, i){

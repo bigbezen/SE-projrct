@@ -12,55 +12,49 @@ var monthAnalysisReportModel = require('../Models/Reports/monthAnalysisReport');
 
 module.exports = {
     addUser: async function (user) {
-        return user.save();
-    },
-
-    editUser: async function (user) {
+        user.active = true;
         return user.save();
     },
 
     deleteUser: async function(username){
-        return userModel.remove({'username': username});
+        // return userModel.remove({'username': username});
+        return userModel.update({'username': username}, {$set: {'active': false}});
     },
 
-    addStore: async function (store) {
-        return store.save();
-    },
-
-    setStoreDefaultUser: async function(storeId, salesmanId){
-        return storeModel.update({'_id': mongoose.Types.ObjectId(storeId)}, {$set: {'defaultSalesman': mongoose.Types.ObjectId(salesmanId)}});
-    },
 
     updateUser: async function(user){
+        if(user.active != undefined)
+            delete user.active;
         return userModel.update({'_id': mongoose.Types.ObjectId(user._id)}, user, { upsert: false });
     },
 
     getUserBySessionId: async function(sessionId){
-        return userModel.findOne({ 'sessionId': sessionId })
+        return userModel.findOne({$and: [{ 'sessionId': sessionId }, {'active': true}]});
     },
 
     getUserByUsername: async function(username){
-        return userModel.findOne({ 'username': username });
+        return userModel.findOne({$and: [{'username': username }, {'active': true}]});
     },
 
     getUserById: async function(Id){
-        return userModel.findOne({'personal.id': Id});
+        return userModel.findOne({$and: [{'personal.id': Id}, {'active': true}]});
     },
 
     getUserByobjectId(userId){
-        return userModel.findOne({'_id': userId});
+        return userModel.findOne({$and: [{'_id': userId}, {'active': true}]});
     },
 
     getAllSalesman: async function(){
-        return userModel.find({$or:[{'jobDetails.userType': 'salesman'},{'jobDetails.userType': 'event'}]});
+        return userModel.find({$and: [{$or:[{'jobDetails.userType': 'salesman'},{'jobDetails.userType': 'event'}]},
+            {'active': true}]});
     },
 
     getAllUsers: async function(){
-        return userModel.find({});
+        return userModel.find({'active': true});
     },
 
     getUsersByIds: async function(ids){
-        return userModel.find({'_id': {$in: ids}});
+        return userModel.find({$and: [{'_id': {$in: ids}}, {'active': true}]});
     },
 
     //----------------------------------------------------- STORES ----------------------------------------------
@@ -84,6 +78,14 @@ module.exports = {
 
     getStoreByNameAndArea: async function (name, area) {
         return storeModel.findOne({'name': name, 'area': area});
+    },
+
+    addStore: async function (store) {
+        return store.save();
+    },
+
+    setStoreDefaultUser: async function(storeId, salesmanId){
+        return storeModel.update({'_id': mongoose.Types.ObjectId(storeId)}, {$set: {'defaultSalesman': mongoose.Types.ObjectId(salesmanId)}});
     },
 
     // ------------------------------------------------ PRODUCTS ------------------------------------------------

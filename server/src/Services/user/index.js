@@ -65,7 +65,7 @@ let login = async function(username, password){
 
     let newSessionId = await _generateSessionId();
     user.sessionId = newSessionId;
-    let res = await dal.editUser(user);
+    let res = await dal.updateUser(user.toObject());
     if(res != null)
         return {'sessionId': newSessionId, 'userType': user.jobDetails.userType};
     else
@@ -81,8 +81,8 @@ let logout = async function(sessionId) {
         return {'code': 401, 'err': 'user is not logged in'};
     }
 
-    user.sessionId = undefined;
-    let res = await dal.editUser(user);
+    user.sessionId = null;
+    let res = await dal.updateUser(user.toObject());
     if(res != null)
         return {'code': 200};
     else
@@ -193,7 +193,7 @@ let changePassword = async function(sessionId, oldPass, newPass) {
     }
 
     user.password = cypher.encrypt(newPass);
-    let res = await dal.editUser(user);
+    let res = await dal.updateUser(user.toObject());
     if(res != null)
         return {'code': 200};
     else

@@ -7,6 +7,7 @@ var userSchema = new Schema({
     'sessionId': String,
     'startDate': Date,
     'endDate': Date,
+    'active': Boolean,
     'personal': {
         'id': String,
         'firstName': String,

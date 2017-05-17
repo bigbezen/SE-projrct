@@ -126,13 +126,14 @@ describe('user unit test', function () {
             let sessionId = "sessionId";
             let user = await dal.getUserByUsername('shahaf');
             user.sessionId = sessionId;
-            let res = await dal.editUser(user);
+            let res = await dal.updateUser(user.toObject());
 
             res = await userServices.logout(sessionId);
             expect(res).to.have.property('code', 200);
 
             user = await dal.getUserByUsername('shahaf');
-            expect(user.sessionId).to.be.undefined;
+            console.log('bla');
+            expect(user.sessionId).to.be.equal(null);
         });
 
         it('LogoutUserNotLoggedIn', async function(){
@@ -448,7 +449,7 @@ describe('user unit test', function () {
         it('GetProfileValid', async function(){
             let newUser = await dal.getUserByUsername('shahaf');
             newUser.sessionId = 'session';
-            await dal.editUser(newUser);
+            await dal.updateUser(newUser);
 
             let result = await userServices.getProfile('session');
 

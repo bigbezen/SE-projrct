@@ -20,6 +20,7 @@ let productModel        = require('../../src/Models/product');
 let storeModel          = require('../../src/Models/store');
 let encouragementModel        = require('../../src/Models/encouragement');
 let reportServices      =require('../../src/Services/reports/index.js');
+let constantString      = require('../../src/Utils/Constans/ConstantStrings.js');
 let serverUrl = 'http://localhost:3000/';
 
 let _createNewSalesReport = async function(){
@@ -218,7 +219,7 @@ describe('manager acceptance test', function(){
         shifts.pop();
     });
 
-   /* describe('test Excel reports against the system reports', function() {
+    describe('test Excel reports against the system reports', function() {
         it('getSalaryForHumanResourceReport file 1', async function () {
             let fileName = "reportTest1.xlsx";
             this.timeout(30000);
@@ -383,7 +384,7 @@ describe('manager acceptance test', function(){
                 }
             }
         });
-    });*/
+    });
 
     describe('test update sale report', function(){
         it('test update sale report valid', async function(){
@@ -463,7 +464,7 @@ describe('manager acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied - shift is not finished or does not exist');
+            assert.equal(res.response.data, constantString.shiftNotFinished);
         });
     });
 

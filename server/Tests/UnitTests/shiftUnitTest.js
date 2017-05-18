@@ -16,6 +16,7 @@ let shiftService            = require('../../src/Services/shift/index');
 let productService          = require('../../src/Services/product/index');
 let storeService            = require('../../src/Services/store/index');
 let encouragementsService   = require('../../src/Services/encouragements/index');
+let constantString          = require('../../src/Utils/Constans/ConstantStrings.js');
 
 
 describe('shift unit test', function () {
@@ -203,29 +204,28 @@ describe('shift unit test', function () {
         it('add shift not by manager', async function () {
             let res = await shiftService.addShifts(salesman.sessionId, shifts);
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift with not exist store', async function () {
             shifts[0].storeId = mongoose.Types.ObjectId("notexisting1");
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'One or more of the stores does not exist');
-            expect(res).to.have.property('err', 'One or more of the stores does not exist');
+            expect(res).to.have.property('err', constantString.storeDoesNotExist);
         });
 
         it('add shift with expire start date', async function () {
             shifts[0].startTime =  new Date(99,11,24);
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'shifts dates are before current time');
+            expect(res).to.have.property('err', constantString.shiftsCurrentTimeError);
         });
 
         it('add shift with expire finish date', async function () {
             shifts[0].endTime =  new Date(99,11,24).toString();
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'shifts dates are before current time');
+            expect(res).to.have.property('err', constantString.shiftsCurrentTimeError);
         });
 
         it('add two shifts for same user at the same date', async function () {
@@ -233,14 +233,14 @@ describe('shift unit test', function () {
 
             res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'user cannot have more than one shift at day');
+            expect(res).to.have.property('err', constantString.userCannotHaveMoreThanOneShiftAtDay);
 
             let endT = new Date(shifts[0].endTime);
             endT = endT.setHours(endT.getHours() + 1);
             shifts[0].endTime = endT;
             res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'user cannot have more than one shift at day');
+            expect(res).to.have.property('err', constantString.userCannotHaveMoreThanOneShiftAtDay);
         });
 
         it('add regular shift valid', async function () {
@@ -290,14 +290,14 @@ describe('shift unit test', function () {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             res = await shiftService.addShiftComment(manager.sessionId, shifts[0]._id, "not user");
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift comment not exist shift id', async function () {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             res = await shiftService.addShiftComment(salesman.sessionId, mongoose.Types.ObjectId("notexisting1"), "new comment");
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift comment salesman not an owner', async function () {
@@ -310,7 +310,7 @@ describe('shift unit test', function () {
             res = await shiftService.addShifts(manager.sessionId, shifts);
             res = await shiftService.addShiftComment(salesmanNotOwner.sessionId, shifts[0]._id, "new comment");
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift comment by salesman', async function () {
@@ -352,7 +352,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(manager.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('start shift not by salesman owner', async function(){
@@ -376,7 +376,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(salesman2.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('start shift not exist shift', async function(){
@@ -395,7 +395,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(salesman.sessionId, shifts[1]);
             expect(result).to.have.property('code', 404);
-            expect(result).to.have.property('err', 'shift not found');
+            expect(result).to.have.property('err', constantString.shiftDoedNotExist);
         });
 
         it('start shift not published', async function(){
@@ -408,7 +408,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(salesman.sessionId, shifts[0]);
             expect(result).to.have.property('code', 403);
-            expect(result).to.have.property('err', 'shift not published');
+            expect(result).to.have.property('err', constantString.shiftDoesNotPublished);
         });
 
         it('start shift valid', async function(){
@@ -464,7 +464,7 @@ describe('shift unit test', function () {
             let result = await shiftService.editShift(salesman2.sessionId, shifts[0]);
 
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('edit shift already started', async function(){
@@ -486,7 +486,7 @@ describe('shift unit test', function () {
             let result = await shiftService.editShift(manager.sessionId, shifts[0]);
 
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'permission denied shift already started');
+            expect(result).to.have.property('err', constantString.shiftAlreadyStarted);
         });
 
         it('edit shift valid', async function(){
@@ -1223,7 +1223,7 @@ describe('shift unit test', function () {
             let opens = [{'productId':"invalid8shif",'quantity':quantity}];
             let result = await shiftService.reportExpenses(user1.sessionId, shift._id.toString(), km, -1);
             expect(result).to.have.property('code', 404);
-            expect(result).to.have.property('err', 'illegal km or parking cost');
+            expect(result).to.have.property('err', constantString.illegalkmOrParkingCost);
         });
     });
 
@@ -1471,7 +1471,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(manager.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('end shift not by salesman owner', async function(){
@@ -1487,7 +1487,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(salesman2.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('end shift not exist shift', async function(){
@@ -1510,7 +1510,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(salesman.sessionId, shifts[1]);
             expect(result).to.have.property('code', 404);
-            expect(result).to.have.property('err', 'shift not found');
+            expect(result).to.have.property('err', constantString.shiftDoedNotExist);
         });
 
         it('end shift not started', async function(){
@@ -1523,7 +1523,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(salesman.sessionId, shifts[0]);
             expect(result).to.have.property('code', 403);
-            expect(result).to.have.property('err', 'shift not started');
+            expect(result).to.have.property('err', constantString.shiftDoesnotStarted);
         });
 
         it('end shift valid', async function(){
@@ -1563,7 +1563,7 @@ describe('shift unit test', function () {
         it('delete shift not by manager', async function() {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             let result = await shiftService.deleteShift(salesman.sessionId, 'shiftId');
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'shift return null');
 
@@ -1588,7 +1588,7 @@ describe('shift unit test', function () {
             res.shiftArr[0].status = "STARTED";
             let result = await dal.updateShift(  res.shiftArr[0]);
             result = await shiftService.deleteShift(manager.sessionId, res.shiftArr[0]._id);
-            assert.equal(result.err, 'permission denied shift already started');
+            assert.equal(result.err, constantString.shiftAlreadyStarted);
             assert.equal(result.code, 401, 'code 401');
 
             //get all the shifts to ensure that the product is not removed
@@ -1632,7 +1632,7 @@ describe('shift unit test', function () {
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
             let result = await shiftService.editSale(manager.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, 2);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
 
             let res = await dal.getShiftsByIds([shift1._id]);
@@ -1653,7 +1653,7 @@ describe('shift unit test', function () {
 
                 shift1 = await dal.addShift(shift_object_to_model(shift1));
                 let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, -1);
-                assert.equal(result.err, 'quantity cannot be negative');
+                assert.equal(result.err, constantString.illegalQuantity);
                 assert.equal(result.code, 400, 'code 400');
 
                 let res = await dal.getShiftsByIds([shift1._id]);
@@ -1674,7 +1674,7 @@ describe('shift unit test', function () {
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
             let result = await shiftService.editSale(salesman.sessionId, "notexisting1", product1._id.toString(), saleTime, 2);
-            assert.equal(result.err, 'shift not found');
+            assert.equal(result.err, constantString.shiftDoedNotExist);
             assert.equal(result.code, 404, 'code 400');
         });
 
@@ -1692,7 +1692,7 @@ describe('shift unit test', function () {
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
             let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),"notexisting1", saleTime, 2);
-            assert.equal(result.err, 'product not found');
+            assert.equal(result.err, constantString.productDoesNotExist);
             assert.equal(result.code, 404, 'code 404');
 
             let res = await dal.getShiftsByIds([shift1._id]);

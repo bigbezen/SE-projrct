@@ -13,7 +13,7 @@ from time import sleep
 import pytest
 
 class UserService(unittest.TestCase):
-    MAX_RUNNING_TIME = 120
+    MAX_RUNNING_TIME = 90
 
     usernameField = None
     passwordField = None

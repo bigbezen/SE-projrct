@@ -14,7 +14,7 @@ from time import sleep
 
 
 class ManagementServices(unittest.TestCase):
-    MAX_RUNNING_TIME = 120
+    MAX_RUNNING_TIME = 90
 
     def setUp(self):
         dbConnector.deleteDb()
@@ -476,6 +476,67 @@ class ManagementServices(unittest.TestCase):
         driver.implicitly_wait(300)
         sleep(3)
         self.assertEqual(driver.current_url, helper.incentivesContainer)
+
+    # test-33 AVIRAM
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_addIncentives_subCategory_ok(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.incentivesContainer)
+
+        driver.find_element_by_xpath(containers.Incentives.add).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.Incentives.name).send_keys(helper.incentiveName)
+        driver.find_element_by_xpath(containers.Incentives.subCategory).send_keys(helper.incentiveSubCategory)
+        driver.find_element_by_xpath(containers.Incentives.quantity).send_keys(helper.incentiveQuantity)
+        driver.find_element_by_xpath(containers.Incentives.bonus).send_keys(helper.incentiveBonus)
+
+        driver.find_element_by_xpath(containers.Incentives.addBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertEqual(driver.current_url, helper.incentivesContainer)
+
+    # test-33 AVIRAM
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_addIncentives_noQuantity(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.incentivesContainer)
+
+        driver.find_element_by_xpath(containers.Incentives.add).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.Incentives.name).send_keys(helper.incentiveName)
+        driver.find_element_by_xpath(containers.Incentives.subCategory).send_keys(helper.incentiveSubCategory)
+        driver.find_element_by_xpath(containers.Incentives.bonus).send_keys(helper.incentiveBonus)
+
+        driver.find_element_by_xpath(containers.Incentives.addBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertNotEqual(driver.current_url, helper.incentivesContainer)
+
+    # test-33 AVIRAM
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_addIncentives_noBonus(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.managerHome.incentivesTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.incentivesContainer)
+
+        driver.find_element_by_xpath(containers.Incentives.add).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.Incentives.name).send_keys(helper.incentiveName)
+        driver.find_element_by_xpath(containers.Incentives.subCategory).send_keys(helper.incentiveSubCategory)
+        driver.find_element_by_xpath(containers.Incentives.quantity).send_keys(helper.incentiveQuantity)
+
+        driver.find_element_by_xpath(containers.Incentives.addBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertNotEqual(driver.current_url, helper.incentivesContainer)
 
     # test-34
     @pytest.mark.timeout(MAX_RUNNING_TIME)

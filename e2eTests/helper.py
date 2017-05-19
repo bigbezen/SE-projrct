@@ -78,6 +78,7 @@ existsEmail = "sds@dsfds.com"
 # incentives
 incentiveName = "תמריץ1"
 incentiveProduct = "קמפארי"
+incentiveSubCategory = "סינגל מאלט סקוטי"
 incentiveQuantity = "13"
 incentiveBonus = "100"
 

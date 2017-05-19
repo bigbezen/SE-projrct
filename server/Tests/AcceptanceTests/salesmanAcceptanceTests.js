@@ -368,7 +368,7 @@ describe('salesman acceptance test', function(){
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
                 sales:[{productId: product1._id,
-                    quantity: 2,
+                    quantity: "2",
                     timeOfSale: timeOfSale}]
             }).then(async function(info){
                 return info;

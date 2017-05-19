@@ -142,7 +142,7 @@ var SalesmanHomeContainer = React.createClass({
 
                 </div>
                 <div style={styles.buttonsStyle}>
-                    <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
+                    <button className="w3-btn w3-ripple w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

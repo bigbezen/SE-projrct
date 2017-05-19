@@ -958,7 +958,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/super/initiateProducts', async function(req, res){
-        if(req.query.super == "ibblsservices"){
+        if(req.query.super == "ibblsservice"){
             let result = await deletionService.initiateProducts();
             if(result == true)
                 res.status(200).send("products are initiated in db");

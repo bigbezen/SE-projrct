@@ -477,7 +477,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
-    # test-33 AVIRAM
+    # test-34
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addIncentives_subCategory_ok(self):
         driver = self.driver
@@ -498,7 +498,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
-    # test-33 AVIRAM
+    # test-35
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addIncentives_noQuantity(self):
         driver = self.driver
@@ -518,7 +518,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.incentivesContainer)
 
-    # test-33 AVIRAM
+    # test-36
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addIncentives_noBonus(self):
         driver = self.driver
@@ -538,7 +538,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertNotEqual(driver.current_url, helper.incentivesContainer)
 
-    # test-34
+    # test-37
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editIncentives_ok(self):
         driver = self.driver
@@ -558,7 +558,7 @@ class ManagementServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
-    # test-35
+    # test-38
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_deleteIncentives_ok(self):
         driver = self.driver
@@ -574,7 +574,7 @@ class ManagementServices(unittest.TestCase):
 
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
-    #test-36
+    #test-39
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_setup_ok(self):
         self.assertTrue(True)

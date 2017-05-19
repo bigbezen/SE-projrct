@@ -22,6 +22,8 @@ usersContainer = 'http://localhost:3000/#/manager/users'
 shiftsContainer = 'http://localhost:3000/#/manager/shifts'
 reportsContainer = 'http://localhost:3000/#/manager/reports'
 incentivesContainer = 'http://localhost:3000/#/manager/incentives'
+salesReportContainer = "http://localhost:3000/#/manager/salesReport"
+monthlyReportContainer = "http://localhost:3000/#/manager/monthlyAnalysisReport"
 
 logoutManagerXpath = "//*[@id=\"app\"]/div/ul/li[9]/a"
 

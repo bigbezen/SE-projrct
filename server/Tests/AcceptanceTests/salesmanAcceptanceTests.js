@@ -382,7 +382,7 @@ describe('salesman acceptance test', function(){
                 shiftId: shift._id,
                 productId: product1._id,
                 saleTime: timeOfSale,
-                quantity: 10
+                quantity: "10"
             }).then(async function(info){
                 return info;
             }).catch(async function(err){

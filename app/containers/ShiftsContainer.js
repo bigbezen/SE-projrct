@@ -74,8 +74,9 @@ var ShiftsContainer = React.createClass({
     },
 
     componentDidMount: function() {
+        let beginningOfMonth = moment((new Date()).setDate(1)).format('YYYY-MM-DD');
         var currentDate = moment().format('YYYY-MM-DD');
-        this.updateShifts(currentDate, currentDate);
+        this.updateShifts(beginningOfMonth, currentDate);
     },
 
     updateShifts(startDate, endDate) {

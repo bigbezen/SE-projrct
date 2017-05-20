@@ -194,8 +194,9 @@ var ReportsSalesReport = React.createClass({
     },
 
     renderSalesProducts: function(product, i){
+        let w3_theme = (product.sold || product.opened) > 0 ? "w3-theme-d1" : "w3-theme-l4";
         return (
-            <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
+            <div className={"row col-sm-10 col-sm-offset-1 w3-round-large w3-card-4 w3-text-black" + w3_theme}
                  style={{marginTop: '10px', height: '45px'}}>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>

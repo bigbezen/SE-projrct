@@ -15,7 +15,7 @@ namespace FinalProjectTest
         public const string _addStoreUrl = "/management/addStore";
         public const string _addShiftsUrl = "/management/addShifts";
         public const string _startShiftUrl = "/salesman/startShift";
-        public const string _getCurrentShiftUrl = "/salesman/getCurrentShift";
+        public const string _getCurrentShiftUrl = "/salesman/getCurrentShiftForRandomTests";
         public const string _publishShiftsUrl = "/management/publishShifts";
         public const string _addProductUrl = "/management/addProduct";
         public const string _getAllProductsUrl = "/management/getAllProducts";

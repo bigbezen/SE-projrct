@@ -679,6 +679,36 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
 
 };
 
+let managerEndShift = async function(sessionId, shiftId){
+    logger.info('Services.shift.index.managerEndShift', {'session-id': sessionId});
+
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'managerEndShift');
+    if(user == null)
+        return {'code': 401, 'err':constantString.permssionDenied};
+
+    let shiftDb = await dal.getShiftsByIds([shiftId]);
+    shiftDb = shiftDb[0];
+    if(shiftDb == null)
+        return {'code': 404, 'err': constantString.shiftDoedNotExist};
+
+    if(shiftDb.status != 'STARTED')
+        return {'code': 403, 'err': constantString.shiftDoesnotStarted};
+
+    shiftDb.status = 'FINISHED';
+
+    let encouragements = await encouragementServices.calculateEncouragements(shiftDb.salesReport);
+    if(encouragements == null)
+        return {'code': 500, 'err': constantString.somthingBadHappend};
+
+    shiftDb.encouragements = encouragements;
+
+    let result = await dal.updateShift(shiftDb);
+    if(result.ok != 1)
+        return {'code': 500, 'err': constantString.somthingBadHappend};
+    else
+        return {'code': 200};
+};
+
 let _createNewSalesReport = async function(){
     let report = [];
     let productsIds = await dal.getAllProducts();
@@ -724,6 +754,7 @@ module.exports.startShift = startShift;
 module.exports.endShift = endShift;
 module.exports.reportSale = reportSale;
 module.exports.reportOpened = reportOpened;
+module.exports.managerEndShift = managerEndShift;
 module.exports.addShiftComment = addShiftComment;
 module.exports.getActiveShiftEncouragements = getActiveShiftEncouragements;
 module.exports.getSalesmanFinishedShifts = getSalesmanFinishedShifts;

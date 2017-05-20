@@ -51,6 +51,7 @@ describe('manager acceptance test', function(){
     let product2;
     let newProduct;
     let newEncouragement;
+    let shift;
     let shift1;
     let shifts = [];
 
@@ -122,6 +123,22 @@ describe('manager acceptance test', function(){
         return {'code': 200};
     };
 
+    let createNewSalesReport = async function(){
+        let report = [];
+        let productsIds = await dal.getAllProducts();
+        productsIds = productsIds.map(x => x._id);
+
+        for(let productId of productsIds){
+            report.push({
+                'productId': productId,
+                'stockStartShift': 0,
+                'stockEndShift': 0,
+                'sold': 0,
+                'opened': 0
+            });
+        }
+        return report;
+    };
 
     beforeEach(async function() {
         let res = await dal.cleanDb();
@@ -212,6 +229,15 @@ describe('manager acceptance test', function(){
 
         shift1  = {'storeId': '','startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'salesmanId': ''};
         shifts.push(shift1);
+
+        shift = new shiftModel();
+        shift.status = 'PUBLISHED';
+        shift.startTime = new Date();
+        shift.endTime = new Date();
+        shift.storeId = store._id;
+        shift.salesmanId = notManager._id;
+        shift.salesReport = await createNewSalesReport();
+        shift.sales = [];
     });
 
     afterEach(async function(){
@@ -991,6 +1017,99 @@ describe('manager acceptance test', function(){
                 return err;
             });
             expect(result.response).to.have.property('status', 404);
+        });
+    });
+
+    describe('test manager finish Shift', function(){
+        it('test finish shift valid', async function(){
+            shift.status = "STARTED";
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift = await dal.addShift(shift);
+
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].sold = i;
+            }
+
+            let result = await axios.post(serverUrl + 'manager/finishShift', {
+                sessionId: manager.sessionId,
+                shiftId: shift._id
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result).to.have.property('status', 200);
+        });
+
+        it('test finish shift unexiting Shift', async function(){
+            shift.status = "STARTED";
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].sold = i;
+            }
+
+            let result = await axios.post(serverUrl + 'manager/finishShift', {
+                sessionId: manager.sessionId,
+                shiftId: "unexistingid"
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 404);
+        });
+
+        it('test finish shift salesman Shift', async function(){
+            shift.status = "STARTED";
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift = await dal.addShift(shift);
+
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].sold = i;
+            }
+
+            let result = await axios.post(serverUrl + 'manager/finishShift', {
+                sessionId: notManager.sessionId,
+                shiftId: shift._id
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 401);
+        });
+
+        it('test finish not STARTED shift', async function(){
+            shift.status = "FINISHES";
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift = await dal.addShift(shift);
+
+            for(let i=0; i<shift.salesReport.length; i++){
+                shift.salesReport[i].sold = i;
+            }
+
+            let result = await axios.post(serverUrl + 'manager/finishShift', {
+                sessionId: manager.sessionId,
+                shiftId: shift._id
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 403);
         });
     });
 });

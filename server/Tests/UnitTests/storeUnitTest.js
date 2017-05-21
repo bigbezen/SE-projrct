@@ -102,11 +102,12 @@ describe('store unit test', function () {
             assert(result[0].name, editStoreDetails.name);
         });
 
-        it('edit store with existing name and area', async function () {
+        it('edit store with existing name address and city', async function () {
             let result = await storeService.addStore(manager.sessionId, newStoreDetails);
             result = await storeService.addStore(manager.sessionId, editStoreDetails);
             editStoreDetails.name = newStoreDetails.name;
-            editStoreDetails.area = newStoreDetails.area;
+            editStoreDetails.address = newStoreDetails.address;
+            editStoreDetails.city = newStoreDetails.city;
             editStoreDetails._id = result.store._id.toString();
             result = await storeService.editStore(manager.sessionId, editStoreDetails);
             assert.equal(result.code, 409);

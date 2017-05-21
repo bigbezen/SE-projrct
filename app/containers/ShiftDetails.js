@@ -125,6 +125,7 @@ var ShiftDetails = React.createClass({
             else
                 optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
         }
+        this.state.shiftType = constantsStrings.shiftType_taste;
         return optionsForDropDown;
     },
 

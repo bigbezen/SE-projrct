@@ -867,7 +867,6 @@ function _setapApiEndpoints() {
         //     return;
         // }
         let result = await reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
-        console.log('bla');
         if(result.code == 200)
             res.status(200).send(result.report);
         else
@@ -875,7 +874,11 @@ function _setapApiEndpoints() {
     });
 
     app.post('/manager/getOrderEventReportXl', async function(req, res){
-        let result = await reportsService.getOrderEventReportXL("123456", 2017, 3);
+        let result = await reportsService.getOrderEventReportXL(req.body.sessionId, req.body.year, req.body.month);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
     // -----------------------------Section for deletion API---------------------------------------------------

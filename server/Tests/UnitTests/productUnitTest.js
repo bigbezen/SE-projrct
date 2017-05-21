@@ -2,7 +2,7 @@ let assert            = require('chai').assert;
 let dal               = require('../../src/DAL/dal');
 let productServices      = require('../../src/Services/product/index');
 let userModel         = require('../../src/Models/user');
-
+let constant          = require('../../src/Utils/Constans/ConstantStrings.js');
 describe('product unit test', function () {
 
     let manager;
@@ -33,7 +33,7 @@ describe('product unit test', function () {
     describe('test add product', function (){
         it('add product not by manager',async function () {
             let result = await productServices.addProduct(notManager.sessionId, newProduct);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constant.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.isNull(result.product);
 
@@ -61,7 +61,7 @@ describe('product unit test', function () {
             assert.equal(result.product.name, newProduct.name, 'product return same');
             //add the same product
             result = await productServices.addProduct(manager.sessionId, newProduct);
-            assert.equal(result.err, 'product already exist', 'product already exist');
+            assert.equal(result.err, constant.productAlreadyExist, 'product already exist');
             assert.equal(result.code, 409, 'code 409 err');
             //get all the product to ensure that the store not added
             result = await dal.getAllProducts();
@@ -78,7 +78,7 @@ describe('product unit test', function () {
 
             let result = await productServices.editProduct(notManager.sessionId, editProduct);
             assert.equal(result.code, 401, 'code 401');
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constant.permssionDenied);
             assert.equal(result.product, null, 'product return null');
 
             //get all the store to ensure that the store not changed
@@ -109,14 +109,14 @@ describe('product unit test', function () {
             editProduct._id = result.product._id.toString();
             result = await productServices.editProduct(manager.sessionId, editProduct);
             assert.equal(result.code, 409);
-            assert.equal(result.err, 'product with the same name and category already exist');
+            assert.equal(result.err, constant.productWithTheSameNameAndCategoryAlreadyExist);
         });
 
         it('edit unexist product', async function () {
             editProduct._id = "notexisting1";
             let result = await productServices.editProduct(manager.sessionId, editProduct);
             assert.equal(result.code, 400);
-            assert.equal(result.err, 'cannot edit this product');
+            assert.equal(result.err, constant.productCannotBeEdited);
         });
 
         it('edit product name', async function () {
@@ -236,7 +236,7 @@ describe('product unit test', function () {
         it('delete product not by manager', async function() {
             let result = await productServices.addProduct(manager.sessionId, newProduct);
             result = await productServices.deleteProduct(notManager.sessionId, 'storeId');
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constant.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'store return null');
 
@@ -271,7 +271,7 @@ describe('product unit test', function () {
     describe('test getAllProducts store', function () {
         it('getAllproducts not by permission user', async function () {
             let result = await productServices.getAllProducts('notuser');
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constant.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'product return null');
         });
@@ -308,7 +308,7 @@ describe('product unit test', function () {
         it('get product not by permission user', async function () {
             let result = await productServices.addProduct(manager.sessionId, newProduct);
             result =  await productServices.getProduct('notuser', newProduct._id);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constant.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.product, null, 'product return null');
         });
@@ -333,7 +333,7 @@ describe('product unit test', function () {
 
         it('get product not exist', async function () {
             let result = await productServices.getProduct(notManager.sessionId, "notexisting1");
-            assert.equal(result.err,'no such product');
+            assert.equal(result.err,constant.productDoesNotExist);
             assert.equal(result.code, 409, 'code 409');
         });
     });

@@ -4,6 +4,7 @@ let logger          = require('../../Utils/Logger/logger');
 let dal             = require('../../DAL/dal');
 let permissions     = require('../permissions/index');
 let mailer          = require('../../Utils/Mailer/index');
+let constantString  = require('../../Utils/Constans/ConstantStrings.js');
 let moment          = require('moment');
 
 let shiftModel       = require('../../Models/shift');
@@ -15,7 +16,7 @@ let addShifts = async function(sessionId, shiftArr){
     logger.info('Services.shift.index.addShifts', {'session-id': sessionId});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addShifts');
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     if(shiftArr.length == 0)
         return {'code': 200, 'shiftArr': []};
@@ -29,7 +30,7 @@ let addShifts = async function(sessionId, shiftArr){
             uniqueIds.push(id);
     let stores = await dal.getStoresByIds(uniqueIds);
     if(stores.length != uniqueIds.length)
-        return {'code': 409, 'err': 'One or more of the stores does not exist'};
+        return {'code': 409, 'err': constantString.storeDoesNotExist};
 
     let storeDict = {};
     for(let store of stores)
@@ -39,7 +40,7 @@ let addShifts = async function(sessionId, shiftArr){
     for(let shift of shiftArr) {
         if ((new Date(shift.startTime)).getTime() > (new Date(shift.endTime)).getTime() ||
               (new Date(shift.startTime)).getTime() < (new Date()).getTime()){
-            return {'code': 409, 'err': 'shifts dates are before current time'};
+            return {'code': 409, 'err': constantString.shiftsCurrentTimeError};
         }
     }
 
@@ -54,8 +55,8 @@ let addShifts = async function(sessionId, shiftArr){
         if('salesmanId' in shift) {
             let shiftDB = await dal.getShiftsOfRangeForSalesman(shift.startTime, shift.endTime, shift.salesmanId);
             if(shiftDB != null) {
-                return {'code': 409, 'err': 'user cannot have more than one shift at day'};
-            }
+                return {'code': 409, 'err': constantString.userCannotHaveMoreThanOneShiftAtDay};
+        }
 
             newShift.salesmanId = shift.salesmanId;
             let salesman = await dal.getUserByobjectId(shift.salesmanId);
@@ -66,7 +67,7 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.type = shift.type;
-        if(shift.type == 'אירוע'){
+        if(shift.type == constantString.shiftTypeEvemt){
             newShift.status = "FINISHED";
         }
         else{
@@ -108,11 +109,11 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
     logger.info('Services.shift.index.automateGenerateShifts', {'session-id': sessionId});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'automateGenerateShifts', null);
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     if ((new Date(startTime)).getTime() > (new Date(endTime)).getTime() ||
         (new Date(startTime)).getTime() < (new Date()).getTime()) {
-        return {'code': 409, 'err': 'shifts dates are before current time'};
+        return {'code': 409, 'err': constantString.shiftsCurrentTimeError};
     }
 
     let allStores = await dal.getAllStores();
@@ -150,7 +151,7 @@ let publishShifts = async function(sessionId, shiftArr){
     logger.info('Services.shift.index.publishShifts', {'session-id': sessionId});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'publishShifts', null);
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     //get a list of shift Ids and user Ids from shiftArr @param
     let shiftIds = shiftArr.map(x => x._id);
@@ -159,7 +160,7 @@ let publishShifts = async function(sessionId, shiftArr){
     for(let index in userIds) {
         //redundant check - needs to be checked in the validator level
         if(typeof(userIds[index]) != 'string')
-            return {'code': 409, 'err': 'all shifts must be attached with a user id'};
+            return {'code': 409, 'err': constantString.shiftWirhoutSalesmanError};
         if (index == userIds.indexOf(userIds[index]))
             uniqueUserIds.push(userIds[index]);
     }
@@ -169,19 +170,19 @@ let publishShifts = async function(sessionId, shiftArr){
     let dbShifts = await dal.getShiftsByIds(shiftIds);
     let dbUsers = await dal.getUsersByIds(uniqueUserIds);
     if(shiftIds.length != dbShifts.length)
-        return {'code': 409, 'err': 'some shift ids are not in the database'};
+        return {'code': 409, 'err': constantString.shiftDoedNotExist};
     if(uniqueUserIds.length != dbUsers.length)
-        return {'code': 409, 'err': 'some user ids are not in the database'};
+        return {'code': 409, 'err': constantString.userDoesNotExist};
     for(let user of dbUsers)
         if(user.jobDetails.userType != 'salesman')
-            return {'code': 409, 'err': 'one or more of the users is not a salesman'};
+            return {'code': 409, 'err': constantString.userDoestSalesman};
 
 
     //check that all given shifts are on status 'CREATED'
     //change shifts' status to "PUBLISED"
     for(let shift of dbShifts)
         if(shift.status != 'CREATED')
-            return {'code': 409, 'err': 'trying to publish a shift that is already published'};
+            return {'code': 409, 'err': constantString.shiftAlreadyPublished};
 
     for(let shift of shiftArr)
         shift.status = 'PUBLISHED';
@@ -198,15 +199,15 @@ let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
     logger.info('Services.shift.index.getSalesmanFinishedShifts', {'session-id': sessionId, 'userId': salesmanId});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanFinishedShifts', null);
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let salesman = await dal.getUserByobjectId(salesmanId);
     if(salesman == null)
-        return {'code': 401, 'err': 'user does not exist'};
+        return {'code': 401, 'err': constantString.userDoesNotExist};
 
     let finishedShifts = await dal.getSalesmanShifts(salesman._id);
     if(finishedShifts == null)
-        return {'code': 409, 'err': 'user does not have a shift today'};
+        return {'code': 409, 'err': constantString.shiftSalesmanDoesntHaveShift};
 
     let productsDict = {};
     let products = await dal.getAllProducts();
@@ -240,11 +241,11 @@ let getSalesmanLiveShift = async function(sessionId, salesmanId){
     logger.info('Services.shift.index.getSalesmanLiveShift', {'session-id': sessionId, 'userId': salesmanId});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanLiveShift', null);
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let salesman = await dal.getUserByobjectId(salesmanId);
     if(salesman == null)
-        return {'code': 401, 'err': 'user does not exist'};
+        return {'code': 401, 'err': constantString.userDoesNotExist};
 
     let shift = await dal.getSalesmanStartedShift(salesman._id);
     if(shift == null)
@@ -258,12 +259,12 @@ let getShiftsOfRange = async function(sessionId, startDate, endDate) {
     logger.info('Services.shift.index.getShiftsOfRange', {'session-id': sessionId, 'startDate': startDate, 'endDate': endDate});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsOfRange', null);
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
     if((new Date(endDate)).getTime() - (new Date(startDate)).getTime() < 0)
-        return {'code': 409, 'err': 'Starting date should be earlier than the end date'};
+        return {'code': 409, 'err': constantString.shiftsCurrentTimeError};
     let shifts = await dal.getShiftsOfRange(startDate, endDate);
     if(shifts == null){
-        return {'code': 409, 'err': 'Something went wrong with getting the shifts'};
+        return {'code': 409, 'err': constantString.somthingBadHappend};
     }
 
     return {'code': 200, 'shifts': shifts};
@@ -274,11 +275,11 @@ let getSalesmanCurrentShift = async function(sessionId, date){
 
     let salesman = await dal.getUserBySessionId(sessionId);
     if(salesman == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let currShift = await dal.getSalesmanCurrentShift(salesman._id, date);
     if(currShift == null)
-        return {'code': 409, 'err': 'user does not have a shift today'};
+        return {'code': 409, 'err': constantString.shiftSalesmanDoesntHaveShift};
 
     let productsDict = {};
     let products = await dal.getAllProducts();
@@ -304,11 +305,11 @@ let getSalesmanShifts = async function(sessionId){
 
     let salesman = await dal.getUserBySessionId(sessionId);
     if(salesman == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let currShifts = await dal.getSalesmanShifts(salesman._id);
     if(currShifts == null)
-        return {'code': 409, 'err': 'user does not have a shift today'};
+        return {'code': 409, 'err': constantString.shiftSalesmanDoesntHaveShift};
 
     let productsDict = {};
     let products = await dal.getAllProducts();
@@ -331,10 +332,10 @@ let getActiveShift = async function(sessionId, shiftId){
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'getActiveShift', null);
     let shift = await dal.getShiftsByIds([shiftId]);
     if(shift == null)
-        return {'code': 409, 'err': 'shift does not exist in the database'};
+        return {'code': 409, 'err': constantString.shiftDoedNotExist};
     shift = shift[0];
     if(salesman == null || !(salesman._id.equals(shift.salesmanId)) || shift.status != 'STARTED')
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     return {'code': 200, 'shift': shift.toObject()};
 };
@@ -346,20 +347,20 @@ let reportExpenses = async function(sessionId, shiftId, km, parking){
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if(shift == null)
-        return {'code': 409, 'err': 'shift does not exist in the database'};
+        return {'code': 409, 'err': constantString.shiftDoedNotExist};
 
     if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
         return {'code': 401, 'err': 'user not authorized'};
     }
 
     if(km < 0 || parking < 0)
-        return {'code': 404, 'err': 'illegal km or parking cost'};
+        return {'code': 404, 'err': constantString.illegalkmOrParkingCost};
     shift.numOfKM = km;
     shift.parkingCost = parking;
 
     let res = await dal.updateShift(shift);
     if(res.ok == 0)
-        return {'shift': shift[0], 'code':400, 'err': 'cannot edit this shift'};
+        return {'shift': shift[0], 'code':400, 'err': constantString.somthingBadHappend};
 
     return {'shift': shift[0], 'code':200, 'err': null};
 
@@ -370,12 +371,12 @@ let getShiftsFromDate = async function(sessionId, fromDate){
 
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'getShiftsFromDate');
     if(salesman == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let allShifts = await dal.getShiftsFromDate(fromDate, salesman._id);
 
     if(allShifts == null)
-        return {'code': 500, 'err': 'something went wrong'};
+        return {'code': 500, 'err': constantString.somthingBadHappend};
     else
         return {'code': 200, 'shiftArr': allShifts};
 };
@@ -385,17 +386,17 @@ let startShift = async function(sessionId, shift){
 
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'startShift');
     if(salesman == null || !salesman._id.equals(shift.salesmanId))
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
 
 
     let shiftDb = await dal.getShiftsByIds([shift._id]);
     shiftDb = shiftDb[0];
     if(shiftDb == null)
-        return {'code': 404, 'err': 'shift not found'};
+        return {'code': 404, 'err': constantString.shiftDoedNotExist};
 
     if(shiftDb.status != 'PUBLISHED')
-        return {'code': 403, 'err': 'shift not published'};
+        return {'code': 403, 'err': constantString.shiftDoesNotPublished};
 
     if(!(shift.salesReport instanceof  Array))
         return {'code': 409, 'err': 'a sale report is required'};
@@ -411,7 +412,7 @@ let startShift = async function(sessionId, shift){
     shiftDb.status = 'STARTED';
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)
-        return {'code': 500, 'err': 'unexpected error'};
+        return {'code': 500, 'err': constantString.somthingBadHappend};
     else
         return {'code': 200};
 
@@ -424,7 +425,7 @@ let reportSale = async function(sessionId, shiftId, sales){
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if (shift == null)
-        return {'code': 409, 'err': 'problem with one or more of the parameters'};
+        return {'code': 409, 'err': constantString.shiftDoedNotExist};
     //check for all the quantity of sales
     for(let sale of sales){
         if(sale.quantity <= 0){
@@ -433,7 +434,7 @@ let reportSale = async function(sessionId, shiftId, sales){
     }
 
     if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
     }
 
     let productExist = false;
@@ -453,11 +454,11 @@ let reportSale = async function(sessionId, shiftId, sales){
     }
 
     if(!productExist)
-        return {'code': 409, 'err': 'product does not exist'};
+        return {'code': 409, 'err': constantString.productDoesNotExist};
 
     let result = await dal.updateShift(shift);
     if(result.ok != 1)
-        return {'code': '500', 'err': 'unexpected error'};
+        return {'code': '500', 'err': constantString.somthingBadHappend};
     else
         return {'code': 200}
 };
@@ -469,16 +470,16 @@ let reportOpened = async function(sessionId, shiftId, opens){
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if (shift == null)
-        return {'code': 409, 'err': 'problem with one or more of the parameters'};
+        return {'code': 409, 'err': constantString.shiftDoedNotExist};
     //check for all the quantity of sales
     for(let open of opens){
         if(open.quantity <= 0){
-            return {'code': 409, 'err': 'problem with one or more of the parameters'};
+            return {'code': 409, 'err': constantString.illegalQuantity};
         }
     }
 
     if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
     }
 
     let productExist = false;
@@ -492,11 +493,11 @@ let reportOpened = async function(sessionId, shiftId, opens){
     }
 
     if(!productExist)
-        return {'code': 409, 'err': 'product does not exist'};
+        return {'code': 409, 'err': constantString.productDoesNotExist};
 
     let result = await dal.updateShift(shift);
     if(result.ok != 1)
-        return {'code': '500', 'err': 'unexpected error'};
+        return {'code': '500', 'err': constantString.somthingBadHappend};
     else
         return {'code': 200}
 };
@@ -508,12 +509,12 @@ let addShiftComment = async function(sessionId, shiftId, content){
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if(salesman == null || shift == null || !salesman._id.equals(shift.salesmanId))
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     shift.shiftComments.push(content);
     let result = await dal.updateShift(shift);
     if(result.ok != 1)
-        return {'code': '500', 'err': 'unexpected error'};
+        return {'code': '500', 'err': constantString.somthingBadHappend};
     else
         return {'code': 200}
 };
@@ -523,15 +524,15 @@ let endShift = async function(sessionId, shift){
 
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'endShift');
     if(salesman == null || !salesman._id.equals(shift.salesmanId))
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let shiftDb = await dal.getShiftsByIds([shift._id]);
     shiftDb = shiftDb[0];
     if(shiftDb == null)
-        return {'code': 404, 'err': 'shift not found'};
+        return {'code': 404, 'err': constantString.shiftDoedNotExist};
 
     if(shiftDb.status != 'STARTED')
-        return {'code': 403, 'err': 'shift not started'};
+        return {'code': 403, 'err': constantString.shiftDoesnotStarted};
 
     if(!(shift.salesReport instanceof  Array))
         return {'code': 409, 'err': 'a sale report is required'};
@@ -549,13 +550,13 @@ let endShift = async function(sessionId, shift){
 
     let encouragements = await encouragementServices.calculateEncouragements(shift.salesReport);
     if(encouragements == null)
-       return {'code': 500, 'err': 'unexpected error'};
+       return {'code': 500, 'err': constantString.somthingBadHappend};
 
     shiftDb.encouragements = encouragements;
 
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)
-        return {'code': 500, 'err': 'unexpected error'};
+        return {'code': 500, 'err': constantString.somthingBadHappend};
     else
         return {'code': 200};
 };
@@ -566,14 +567,14 @@ let getActiveShiftEncouragements = async function(sessionId, shiftId){
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'getActiveShiftEncouragements', null);
     let shift = await dal.getShiftsByIds([shiftId]);
     if(shift.length == 0)
-        return {'code': 409, 'err': 'shift does not exist in the database'};
+        return {'code': 409, 'err': constantString.shiftDoedNotExist};
     shift = shift[0];
     if(salesman == null || salesman._id.toString() != shift.salesmanId.toString())
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let result = await encouragementServices.calculateEncouragements(shift.salesReport);
     if(result == null)
-        return {'code': 500, 'err': 'something went wrong'};
+        return {'code': 500, 'err': constantString.somthingBadHappend};
     else
         return {'code': 200, 'encouragements': result};
 };
@@ -582,11 +583,11 @@ let deleteShift = async function (sessionId, shiftId) {
     logger.info('Services.shift.index.deleteShift', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'deleteShift');
     if(user == null)
-        return {'shift': null, 'code': 401, 'err': 'permission denied'};
+        return {'shift': null, 'code': 401, 'err': constantString.permssionDenied};
 
     let shift = await dal.getShiftsByIds([shiftId]);
     if(shift[0] != null && shift[0].status == "STARTED")
-        return {'shift': null, 'code': 401, 'err': 'permission denied shift already started'};
+        return {'shift': null, 'code': 401, 'err': constantString.shiftAlreadyStarted};
 
     shift = await dal.deleteShift(shiftId);
     return {'shift': shift, 'code':200, 'err': null};
@@ -596,15 +597,15 @@ let editShift = async function (sessionId, shiftDetails) {
     logger.info('Services.shift.index.editShift', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editShift');
     if(user == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     let shift = await dal.getShiftsByIds([shiftDetails._id]);
     if(shift[0] != null && shift[0].status == "STARTED")
-        return {'code': 401, 'err': 'permission denied shift already started'};
+        return {'code': 401, 'err': constantString.shiftAlreadyStarted};
 
     let res = await dal.editShift(shiftDetails);
     if(res.ok == 0)
-        return {'code':400, 'err': 'cannot edit this shift'};
+        return {'code':400, 'err': constantString.shiftCannotBeEdited};
 
     return {'code':200, 'err': null};
 };
@@ -612,14 +613,14 @@ let editShift = async function (sessionId, shiftDetails) {
 let editSale = async function(sessionId, shiftId, productId, time, quantity){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editSale');
     if(user == null)
-        return {'code': 401, 'err': 'permission denied'};
+        return {'code': 401, 'err': constantString.permssionDenied};
 
     if(quantity < 0)
-        return ({'code': 400, 'err': 'quantity cannot be negative'});
+        return ({'code': 400, 'err': constantString.illegalQuantity});
 
     let shift = await dal.getShiftsByIds([shiftId]);
     if(shift.length == 0)
-        return {'code': 404, 'err': 'shift not found'};
+        return {'code': 404, 'err': constantString.shiftDoedNotExist};
 
     shift = shift[0];
 
@@ -636,7 +637,7 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
     }
 
     if(!found)
-        return {'code': 404, 'err': 'product not found'};
+        return {'code': 404, 'err': constantString.productDoesNotExist};
 
     for(let saleR of shift.salesReport){
         if(saleR.productId.equals(productId)){
@@ -656,7 +657,7 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
     }
     let shift = await dal.getShiftsByIds([shiftId]);
     if(shift[0] != null && shift[0].status != "FINISHED")
-        return {'shift': null, 'code': 401, 'err': 'permission denied - shift is not finished or does not exist'};
+        return {'shift': null, 'code': 401, 'err': constantString.shiftNotFinished};
     shift = shift[0].toObject();
     let salesReport = shift.salesReport;
     for(let i in salesReport){
@@ -672,10 +673,40 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
     let res = await dal.editSalesReport(shift._id, shift.salesReport, newEncouragements);
 
     if(res.ok == 0)
-        return {'shift': shift, 'code':400, 'err': 'cannot edit this shift'};
+        return {'shift': shift, 'code':400, 'err': constantString.shiftCannotBeEdited};
 
     return {'shift': shift, 'code':200, 'err': null};
 
+};
+
+let managerEndShift = async function(sessionId, shiftId){
+    logger.info('Services.shift.index.managerEndShift', {'session-id': sessionId});
+
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'managerEndShift');
+    if(user == null)
+        return {'code': 401, 'err':constantString.permssionDenied};
+
+    let shiftDb = await dal.getShiftsByIds([shiftId]);
+    shiftDb = shiftDb[0];
+    if(shiftDb == null)
+        return {'code': 404, 'err': constantString.shiftDoedNotExist};
+
+    if(shiftDb.status != 'STARTED')
+        return {'code': 403, 'err': constantString.shiftDoesnotStarted};
+
+    shiftDb.status = 'FINISHED';
+
+    let encouragements = await encouragementServices.calculateEncouragements(shiftDb.salesReport);
+    if(encouragements == null)
+        return {'code': 500, 'err': constantString.somthingBadHappend};
+
+    shiftDb.encouragements = encouragements;
+
+    let result = await dal.updateShift(shiftDb);
+    if(result.ok != 1)
+        return {'code': 500, 'err': constantString.somthingBadHappend};
+    else
+        return {'code': 200};
 };
 
 let _createNewSalesReport = async function(){
@@ -723,6 +754,7 @@ module.exports.startShift = startShift;
 module.exports.endShift = endShift;
 module.exports.reportSale = reportSale;
 module.exports.reportOpened = reportOpened;
+module.exports.managerEndShift = managerEndShift;
 module.exports.addShiftComment = addShiftComment;
 module.exports.getActiveShiftEncouragements = getActiveShiftEncouragements;
 module.exports.getSalesmanFinishedShifts = getSalesmanFinishedShifts;

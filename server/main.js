@@ -267,6 +267,20 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.get('/salesman/getCurrentShiftForRandomTests', async function (req, res) {
+
+        if(!('sessionid' in req.headers)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        console.log('bla');
+        let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, new Date().toISOString());
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.get('/salesman/getActiveShift', async function (req, res) {
         if(!('sessionid' in req.headers) || (!('shiftId' in req.query))) {
             res.status(404).send('invalid parameters');
@@ -755,6 +769,18 @@ function _setapApiEndpoints() {
 
     app.get('/manager/getShiftDetails', function (req, res) {
         res.status(200).send('get a specific shift details');
+    });
+
+    app.post('/manager/finishShift', async function (req, res) {
+        if(!validator.managerEndShift(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.managerEndShift(req.body.sessionId, req.body.shiftId);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
     app.get('/manager/getShortages', function (req, res) {

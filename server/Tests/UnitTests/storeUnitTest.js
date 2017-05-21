@@ -2,6 +2,7 @@ let assert            = require('chai').assert;
 let dal               = require('../../src/DAL/dal');
 let storeService      = require('../../src/Services/store/index');
 let userModel         = require('../../src/Models/user');
+let constantString    = require('../../src/Utils/Constans/ConstantStrings.js');
 
 
 
@@ -34,7 +35,7 @@ describe('store unit test', function () {
     describe('test add store', function (){
         it('add store not by manager',async function () {
             let result = await storeService.addStore(notManager.sessionId, newStoreDetails);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null,'store return null');
 
@@ -62,7 +63,7 @@ describe('store unit test', function () {
             assert.equal(result.store.name, newStoreDetails.name, 'store return same');
             //add the same store
             result = await storeService.addStore(manager.sessionId, newStoreDetails);
-            assert.equal(result.err, 'store already exist', 'store already exist');
+            assert.equal(result.err, constantString.storeAlreadyExist);
             assert.equal(result.code, 409, 'code 409 err');
             //get all the store to ensure that the store not added
             result = await dal.getAllStores();
@@ -78,7 +79,7 @@ describe('store unit test', function () {
             //edit the store not be manager
 
             result = await storeService.editStore(notManager.sessionId, editStoreDetails);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'store return null');
 
@@ -111,14 +112,14 @@ describe('store unit test', function () {
             editStoreDetails._id = result.store._id.toString();
             result = await storeService.editStore(manager.sessionId, editStoreDetails);
             assert.equal(result.code, 409);
-            assert.equal(result.err, 'store with the same name and area already exist');
+            assert.equal(result.err, constantString.duplicateStore);
         });
 
         it('edit unexist store', async function () {
             editStoreDetails._id = "notexisting1";
             let result = await storeService.editStore(manager.sessionId, editStoreDetails);
             assert.equal(result.code, 400);
-            assert.equal(result.err, 'cannot edit this store');
+            assert.equal(result.err, constantString.somthingBadHappend);
         });
 
         it('edit store name', async function () {
@@ -209,7 +210,7 @@ describe('store unit test', function () {
     describe('test delete store', function () {
         it('delete store not by manager', async function() {
             var result = await storeService.deleteStroe(notManager.sessionId, newStoreDetails);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'store return null');
 
@@ -244,7 +245,7 @@ describe('store unit test', function () {
     describe('test getAllStores store', function () {
         it('getAll Stores store not by permission user', async function () {
             var result = await storeService.getAllStores('notuser');
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'store return null');
         });
@@ -280,7 +281,7 @@ describe('store unit test', function () {
         it('get store not by permission user', async function () {
             let result = await storeService.addStore(manager.sessionId, newStoreDetails);
             result =  await storeService.getStore('notuser',newStoreDetails._id);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'store return null');
         });
@@ -305,7 +306,7 @@ describe('store unit test', function () {
 
         it('get store not exist', async function () {
             let result = await storeService.getStore(notManager.sessionId, "notexisting1");
-            assert.equal(result.err,'no such store');
+            assert.equal(result.err,constantString.storeDoesNotExist);
             assert.equal(result.code, 409, 'code 409');
         });
     });

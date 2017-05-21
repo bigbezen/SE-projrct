@@ -193,6 +193,10 @@ module.exports = {
         return checkParams(params, ['sessionId', 'shiftId', 'productId', 'saleTime', 'quantity'],[stringT, stringT, stringT, stringT, stringT]);
     },
 
+    managerEndShift: function (params) {
+        return checkParams(params, ['sessionId', 'shiftId'], [stringT, stringT]);
+    },
+
     reportSaleOrOpened: function(params){
         return true;
     }

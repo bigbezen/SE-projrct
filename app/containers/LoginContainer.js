@@ -122,7 +122,7 @@ var LoginContainer = React.createClass({
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 col-lg-4 col-lg-offset-4
+                                className="w3-btn w3-ripple btn w3-theme-d5 col-lg-4 col-lg-offset-4
                                     col-xs-8 col-xs-offset-2 w3-xxlarge w3-round-xlarge w3-card-4"
                                 type="submit">
                                 {constantsStrings.login_string}

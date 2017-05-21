@@ -70,7 +70,13 @@ var HomeContainer = React.createClass({
             result = result.filter((user) => user.jobDetails.userType == 'salesman');
             self.setState({
                 salesmenNum: result.length,
-                salesmen: result
+                salesmen: result.sort(function(a, b) {
+                    if((a.personal.firstName + a.personal.lastName) > (b.personal.firstName + b.personal.lastName))
+                        return 1;
+                    else if((a.personal.firstName + a.personal.lastName) < (b.personal.firstName + b.personal.lastName))
+                        return -1;
+                    return 0;
+                })
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();

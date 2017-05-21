@@ -8,7 +8,8 @@ var monthAnalysisReport = new Schema({
         'salesmanCost':{
             'traditionalHot': Number,
             'traditionalOrganized': Number,
-            'organized': Number
+            'organized': Number,
+            'events': Number
         },
         'totalHours': {
             'traditionalHot': Number,

@@ -190,8 +190,7 @@ module.exports = {
     },
 
     editSale: function(params){
-
-        return checkParams(params, ['sessionId', 'shiftId', 'productId', 'saleTime', 'quantity'],[stringT, stringT, stringT, stringT, numberT]);
+        return checkParams(params, ['sessionId', 'shiftId', 'productId', 'saleTime', 'quantity'],[stringT, stringT, stringT, stringT, stringT]);
     },
 
     reportSaleOrOpened: function(params){

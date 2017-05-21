@@ -4,6 +4,7 @@ let dal                 = require('../../src/DAL/dal');
 let userServices        = require('../../src/Services/user/index');
 let userModel           = require('../../src/Models/user');
 let cypher              = require('../../src/Utils/Cypher/index');
+let constantString      = require('../../src/Utils/Constans/ConstantStrings.js');
 
 let getUserDetails = function(){
     let userDetails = new Object();
@@ -338,7 +339,7 @@ describe('user unit test', function () {
             let user = await dal.getUserByUsername('shahaf');
             let result = await userServices.deleteUser(user.sessionId, user.username.toString());
             assert.equal(result.code, 401, 'code 401');
-            assert.equal(result.err, 'user not authorized');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.store, null, 'user return null');
 
             //get all the store to ensure that the store not added
@@ -362,7 +363,7 @@ describe('user unit test', function () {
             userCount = userCount.count;
             let manager = await dal.getUserByUsername('manager');
             let result = await userServices.deleteUser(manager.sessionId, 'notExisying');
-            assert.equal(result.err, 'problem occurred with one of the parameters');
+            assert.equal(result.err, constantString.userDoesNotExist);
             assert.equal(result.code, 409, 'code 409');
         });
 
@@ -373,7 +374,7 @@ describe('user unit test', function () {
             let result = await userServices.deleteUser(manager.sessionId, 'manager');
 
             assert.equal(result.code, 401, 'code 401');
-            assert.equal(result.err, 'user not authorized');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.store, null, 'user return null');
 
             let userCountAfterDelete = await dal.getAllUsers();

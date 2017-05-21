@@ -58,7 +58,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('57 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('46 * * * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
 function _connectToDb(){
@@ -958,7 +958,7 @@ function _setapApiEndpoints() {
     });
 
     app.get('/super/initiateProducts', async function(req, res){
-        if(req.query.super == "ibblsservices"){
+        if(req.query.super == "ibblsservice"){
             let result = await deletionService.initiateProducts();
             if(result == true)
                 res.status(200).send("products are initiated in db");

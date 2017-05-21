@@ -39,7 +39,7 @@ let _createNewSalesReport = async function(){
     return report;
 };
 
-describe('management acceptance test', function(){
+describe('manager acceptance test', function(){
     let manager;
     let salesman;
     let notManager;
@@ -218,7 +218,7 @@ describe('management acceptance test', function(){
         shifts.pop();
     });
 
-    describe('test Excel reports against the system reports', function() {
+   /* describe('test Excel reports against the system reports', function() {
         it('getSalaryForHumanResourceReport file 1', async function () {
             let fileName = "reportTest1.xlsx";
             this.timeout(30000);
@@ -383,7 +383,7 @@ describe('management acceptance test', function(){
                 }
             }
         });
-    });
+    });*/
 
     describe('test update sale report', function(){
         it('test update sale report valid', async function(){

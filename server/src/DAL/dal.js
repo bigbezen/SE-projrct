@@ -63,6 +63,10 @@ module.exports = {
         return userModel.find({'_id': {$in: ids}});
     },
 
+    getManagers: async function(){
+        return userModel.find({'jobDetails.userType': 'manager'});
+    },
+
     //----------------------------------------------------- STORES ----------------------------------------------
 
     editStore: async function (storeDetails) {

@@ -557,8 +557,16 @@ let endShift = async function(sessionId, shift){
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)
         return {'code': 500, 'err': constantString.somthingBadHappend};
-    else
+    else {
+        let managers = await dal.getManagers();
+        let emails  = [];
+        for(let manager of managers){
+            emails.add(manager.contact.email);
+        }
+        let content = ' מצורף דוח טעימות של:' + salesman.username;
+        mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
         return {'code': 200};
+    }
 };
 
 let getActiveShiftEncouragements = async function(sessionId, shiftId){

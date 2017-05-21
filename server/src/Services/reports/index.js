@@ -407,7 +407,7 @@ let genarateMonthAnalysisReport = async function() {
         let duration = parseInt((currentShift.endTime - currentShift.startTime)/36e5, 10);
         let store = await dal.getStoresByIds([currentShift.storeId]);
         store = store[0];
-        if(currentShift.type == 'אירוע'){
+        if(currentShift.type.includes('אירוע')){
             yearReport.monthData[month].salesmanCost.events += duration*salesman.jobDetails.salary;
         }
         else if(store.channel == 'מסורתי - חם'){

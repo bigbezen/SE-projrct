@@ -874,6 +874,10 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.post('/manager/getOrderEventReportXl', async function(req, res){
+        let result = await reportsService.getOrderEventReportXL("123456", 2017, 3);
+    });
+
     // -----------------------------Section for deletion API---------------------------------------------------
     app.get('/super/cleanDb', async function(req, res){
         if(req.query.super == "ibblsservice"){

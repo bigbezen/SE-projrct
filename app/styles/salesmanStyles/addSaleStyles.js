@@ -16,8 +16,9 @@ var addSaleStyles = {
         width:'100%',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '40px',
-        marginBottom: '20px'
+        marginTop: '79px',
+        marginBottom: '20px',
+        height: '120px'
     },
     reportButtonsContainer:{
         flex: 'auto',
@@ -47,7 +48,7 @@ var addSaleStyles = {
     },
     productSaleRow: {
         marginBottom: '10px',
-        height: '120px'
+        height: '100px'
     },
     notificationStyle: {
         NotificationItem: {

@@ -410,7 +410,14 @@ let getOrderEventReportXL = async function(sessionId, year, month){
                             right: {style:'medium'}
                         };
 
-                        row.getCell(5).value = 22;
+                        if(shift.numOfKM != null && shift.parkingCost != null){
+                            let expensesCost = shift.numOfKM * 0.7 + shift.parkingCost;
+                            row.getCell(5).value = _calcEventCost(duration, expensesCost);
+                        }
+                        else{
+                            row.getCell(5).value = _calcEventCost(duration, 0);
+                        }
+
                         row.getCell(5).border = {
                             top: {style:'medium'},
                             left: {style:'medium'},
@@ -1087,6 +1094,14 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
     let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
     mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי למשאבי אנוש '+ (month + 1) + ' ' + year + '.xlsx');
     return {'code': 200};
+};
+
+let _calcEventCost = function(numOfHours, expensesCost){
+    let totalCost = constantString.eventSalary
+                    + constantString.eventSalary * 0.1276
+                    + constantString.eventSalary * (0.1433 + 0.09)
+                    + ((expensesCost * 0.0376)/numOfHours);
+    return totalCost * numOfHours;
 };
 
 

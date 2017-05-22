@@ -3,6 +3,9 @@
  */
 
 var React               = require('react');
+var ReactBootstrap      = require('react-bootstrap');
+var DropdownButton      = ReactBootstrap.DropdownButton;
+var MenuItem            = ReactBootstrap.MenuItem;
 var userServices        = require('../communication/userServices');
 var constantsStrings    = require('../utils/ConstantStrings');
 var paths               = require('../utils/Paths');
@@ -14,6 +17,7 @@ var Shifts              = require('react-icons/lib/fa/calendar');
 var Reports             = require('react-icons/lib/go/graph');
 var styles              = require('../styles/managerStyles/baseStyles');
 var NotificationSystem  = require('react-notification-system');
+import Dropdown from 'react-dropdown';
 
 var BaseContainer = React.createClass({
 
@@ -57,6 +61,45 @@ var BaseContainer = React.createClass({
         }
     },
 
+    getReportsOptions: function(){
+        var options = [
+           constantsStrings.reportsSalesReportTitle_string,
+           constantsStrings.reportsHumanResourcesReportTitle_string,
+           constantsStrings.reportsMonthlyAnalysisReportTitle_string,
+           constantsStrings.reportsMonthlyUserHoursReportTitle_string
+        ];
+        return options;
+    },
+
+    getDefaultReportOption: function(){
+        return <button type="input" style={{background: 'none', border: '#FFFFFF'}}>{constantsStrings.reports_string}</button>
+    },
+
+    onChangeReport: function(event){
+        switch (event.value){
+            case constantsStrings.reportsSalesReportTitle_string:
+                this.context.router.push({
+                    pathname: paths.manager_salesReport_path
+                });
+                break;
+            case constantsStrings.reportsHumanResourcesReportTitle_string:
+                this.context.router.push({
+                    pathname: paths.manager_humanResourcesReport_path
+                });
+                break;
+            case constantsStrings.reportsMonthlyAnalysisReportTitle_string:
+                this.context.router.push({
+                    pathname: paths.manager_monthlyAnalysisReport_path
+                });
+                break;
+            case constantsStrings.reportsMonthlyUserHoursReportTitle_string:
+                this.context.router.push({
+                    pathname: paths.manager_monthlyHoursReport_path
+                });
+                break;
+        }
+    },
+
     render: function () {
         return (
             <div className='main-container'>
@@ -70,7 +113,12 @@ var BaseContainer = React.createClass({
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
-                    <li className="w3-hide-small w3-right"><a className="w3-hover-none" href={'/#'+paths.manager_reports_path}><Reports/>{constantsStrings.reports_string}</a></li>
+                    <li className="w3-hide-small w3-right text-right" style={{marginTop: '8px'}}>
+                        <span style={{marginRight: '10px'}}> <Reports /> </span>
+                        <div className="w3-left" style={{marginRight: '5px'}}>
+                            <Dropdown className="text-right w3-left" options={this.getReportsOptions()} onChange={this.onChangeReport} placeholder={this.getDefaultReportOption()}/>
+                        </div>
+                    </li>
                     <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a></li>
                     <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleChangePassword}>{constantsStrings.changePass_string}</a></li>
                 </ul>

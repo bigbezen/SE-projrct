@@ -8,7 +8,11 @@ var styles = {
     },
     bottom_border: {
         borderBottom: '1px solid #ccc'
+    },
+    margin_bottom: {
+        marginBottom: '30px'
     }
+
 };
 
 module.exports = styles;

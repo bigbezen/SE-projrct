@@ -33,7 +33,6 @@ class Paths extends React.Component {
     static salesman_profile_path = '/salesman/home/profile';
     static salesman_shiftSchedule_path = '/salesman/home/shiftSchedule';
     static manager_incentiveDetails_path = '/manager/incentive';
-    static manager_reports_path = '/manager/reports';
     static manager_salesReport_path = '/manager/salesReport';
     static manager_monthlyAnalysisReport_path = '/manager/monthlyAnalysisReport';
     static manager_monthlyHoursReport_path = '/manager/monthlyHoursReport';

@@ -32,10 +32,9 @@ var shiftComments           = require('../salemanContainers/ShiftCommentsContain
 var ShiftEncouragements     = require('../salemanContainers/ShiftEncouragementsContainer');
 var IncentivesContainer     = require('../containers/IncentivesContainer');
 var Incentive               = require('../containers/IncentiveDetails');
-var Reports                 = require('../containers/ReportsBase');
 var SalesReport             = require('../containers/ReportsSalesReport');
 var MonthlyAnalysisReport   = require('../containers/ReportsMonthlyAnalysis');
-var MonthlyHoursReport      = require('../containers/ReportsMonthlyHours')
+var MonthlyHoursReport      = require('../containers/ReportsMonthlyHours');
 var HumanResourcesReport    = require('../containers/ReportsHumanResources');
 var SalesmanShiftsExpenses  = require('../salemanContainers/shiftExpensesContainer');
 var SalesmanProfile         = require('../salemanContainers/SalesmanProfileContainer');
@@ -61,7 +60,6 @@ var routes = (
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
             <Route path='changePassword' component={ChangePass}/>
-            <Route path='reports' component={Reports} />
             <Route path='salesReport' component={SalesReport} />
             <Route path='monthlyAnalysisReport' component={MonthlyAnalysisReport} />
             <Route path='monthlyHoursReport' component={MonthlyHoursReport} />
@@ -69,7 +67,6 @@ var routes = (
         </Route>
         <Route path='/member/'>
             <Route path='retrievePassword' component={RetrievePass}/>
-            <Route path='reports' component={Reports} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='startShift' component={SalesmanStartShift}/>

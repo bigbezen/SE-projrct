@@ -165,12 +165,14 @@ var ReportsSalesReport = React.createClass({
                             {constantStrings.getReport_string}
                         </button>
                     </div>
+                    <div style={styles.marginBottom} className="col-sm-12">
+                        <div className="text-center col-sm-12">
+                            <h1>{constantStrings.commentsFromShift_string}</h1>
+                        </div>
+                        {this.state.chosenShift.shiftComments.map(this.renderComment)}
+                    </div>
                     <div className="col-sm-12">
                         {productsByCategory.map(this.renderCategoriesProducts)}
-                    </div>
-                    <div style={styles.marginTop} className="col-sm-12">
-                        <h1 className="col-sm-offset-5 col-sm-1">{constantStrings.commentsFromShift_string}</h1>
-                        {this.state.chosenShift.shiftComments.map(this.renderComment)}
                     </div>
                 </div>
             )
@@ -182,11 +184,11 @@ var ReportsSalesReport = React.createClass({
         return (
             <div className="w3-container col-sm-6">
                 <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
-                <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
+                <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
                     <p className="col-sm-4" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
                 </div>
                 {productsOfOneCategory.products.map(this.renderSalesProducts)}
             </div>
@@ -194,14 +196,14 @@ var ReportsSalesReport = React.createClass({
     },
 
     renderSalesProducts: function(product, i){
-        let w3_theme = (product.sold || product.opened) > 0 ? "w3-theme-d1" : "w3-theme-l4";
+        let w3_theme = (product.sold > 0 || product.opened > 0) ? "w3-theme-d1" : "";
         return (
-            <div className={"row col-sm-10 col-sm-offset-1 w3-round-large w3-card-4 w3-text-black" + w3_theme}
+            <div className={"row col-sm-12 w3-round-large w3-card-4 " + w3_theme}
                  style={{marginTop: '10px', height: '45px'}}>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
                 <p className="w3-xlarge col-sm-1" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
             </div>
         )

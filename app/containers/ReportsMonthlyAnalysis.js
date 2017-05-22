@@ -131,7 +131,7 @@ var ReportsMonthlyAnalysis = React.createClass({
     renderMonthSections: function(sectionData, index){
         return (
             <div style={styles.col} className="w3-theme-l5 w3-round-large ">
-                <p>{constantStrings.dictionary[sectionData['section']]}</p>
+                <p><b>{constantStrings.dictionary[sectionData['section']]}</b></p>
                 <div className="col-sm-10" style={{padding: '0'}}>
                     <p className="col-sm-12">{constantStrings.dictionary["traditionalHot"]}</p>
                     <input type="number" min="0" className="w3-round-large col-sm-12"
@@ -213,7 +213,7 @@ var ReportsMonthlyAnalysis = React.createClass({
             <div className="w3-container">
                 <div className="col=sm-12">
                     <div className="row text-center">
-                        <h2>{constantStrings.monthlyAnalysisReportTitle_string}</h2>
+                        <h2>{constantStrings.reportsMonthlyAnalysisReportTitle_string}</h2>
                     </div>
                     <div className="row">
                         <input className="col-sm-1 w3-card-4 w3-round-xlarge" ref="datepicker" type="number" min="2000" max="2099"

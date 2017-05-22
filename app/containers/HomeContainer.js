@@ -197,7 +197,7 @@ var HomeContainer = React.createClass({
     },
 
     renderSalesProducts: function(product, i){
-        let w3_theme = (product.sold || product.opened) > 0 ? "w3-theme-d1" : "w3-theme-l4";
+        let w3_theme = (product.sold || product.opened) > 0 ? "w3-theme-d1" : "";
         return (
             <div className={"row col-sm-10 col-sm-offset-1 w3-round-large w3-card-4 w3-text-black " + w3_theme}
                  style={{marginTop: '10px', height: '45px'}}>
@@ -240,10 +240,7 @@ var HomeContainer = React.createClass({
                     <div className="col-sm-12 text-center">
                         <h1>{this.state.chosenShift.storeId.name} - {this.state.chosenShift.storeId.city}</h1>
                     </div>
-                    <div className="col-sm-12">
-                        {productsByCategory.map(this.renderCategoriesProducts)}
-                    </div>
-                    <div style={styles.marginTop} className="col-sm-12">
+                    <div style={styles.marginBottom} className="col-sm-12">
                         <div className="text-center col-sm-12">
                             <h1>
                                 {this.state.chosenShift.shiftComments.length > 0 ?
@@ -252,6 +249,10 @@ var HomeContainer = React.createClass({
                         </div>
                         {this.state.chosenShift.shiftComments.map(this.renderComment)}
                     </div>
+                    <div className="col-sm-12">
+                        {productsByCategory.map(this.renderCategoriesProducts)}
+                    </div>
+
                 </div>
             )
 

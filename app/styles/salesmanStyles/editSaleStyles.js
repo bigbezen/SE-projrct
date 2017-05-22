@@ -60,7 +60,23 @@ var editSaleStyles = {
         fontSize: '45px',
         width: '35%',
         fontWeight: 'bold',
-    }
+    },
+    notificationStyle: {
+        NotificationItem: {
+            DefaultStyle: {
+                fontSize: '50px',
+                width: '500px',
+                height: '200px',
+                textAlign: 'center',
+                margin: '100px -80px'
+            },
+            info: {
+                height: '200px',
+                width: '500px',
+                fontSize: '50px'
+            },
+        }
+    },
 };
 
 module.exports = editSaleStyles;

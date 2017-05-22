@@ -228,10 +228,10 @@ var ShiftMakeSalesContainer = React.createClass({
             return(
                 <div>
                     <div style={styles.reportTopContainer}>
-                        <div style={styles.reportButtonsContainer}>
+                        <div className="w3-ripple" style={styles.reportButtonsContainer}>
                             <button onClick={this.onClickAddSale} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8" > {constantStrings.reportSale_string}</button>
                         </div>
-                        <div style={styles.reportButtonsContainer}>
+                        <div className="w3-ripple" style={styles.reportButtonsContainer}>
                             <button onClick={this.onClickOpenBottle} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8">{constantStrings.reportOpen_string}</button>
                         </div>
                     </div>
@@ -250,7 +250,7 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderEachSoldProduct: function(productAndQuantity){
         return (
-            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge"
+            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge w3-card-4"
                 style={styles.productSaleRow}>
                 <span style={{float: 'right', marginTop: '15px'}}>{productAndQuantity.product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}}>
@@ -264,7 +264,7 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderEachProduct: function(product){
         return (
-            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge"
+            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge w3-card-4 w3-ripple"
                  style={styles.productSaleRow}  onClick={() => this.onClickProduct(product)}>
                 <span style={{float: 'right', marginTop: '15px'}}>{product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}} className="w3-xxxlarge"><PlusIcon /></span>

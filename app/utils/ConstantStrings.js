@@ -127,6 +127,7 @@ class ConstantStrings extends React.Component {
     static salesman_string = 'דייל';
     static getReport_string = 'שלח לאימייל';
     static shiftType_string = 'סוג משמרת';
+    static eventType_string = 'סוג אירוע';
     static addMultipleShifts_string = 'הוספת מספר משמרות';
 
     //reports
@@ -138,11 +139,10 @@ class ConstantStrings extends React.Component {
     static reportsNumberOfProductsOpened_string = 'נפתחו';
     static reportsSalesReportTitle_string = 'דוח טעימות';
     static reportsSalesReportSubTitle_string = 'דוח טעימות עבור התאריך';
-    static reportsMonthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
+    static reportsMonthlyAnalysisReportTitle_string = 'סיכום ערוץ דיול חודשי';
     static reportsHumanResourcesReportTitle_string = 'דוח כוח אדם';
     static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
     static reportsShowReport_string = 'הצג דוח';
-    static monthlyAnalysisReportTitle_string = 'ניתוח ערוץ דיול חודשי';
     static totalSalesmanHours_string = 'סך שעות דיול';
 
 
@@ -198,7 +198,8 @@ class ConstantStrings extends React.Component {
         'דרום': 'דרום',
         'מרכז': 'מרכז',
         'שפלה': 'שפלה',
-        'ירושלים': 'ירושלים'
+        'ירושלים': 'ירושלים',
+        'השרון': 'השרון'
     };
 
     static store_channel =
@@ -217,7 +218,7 @@ class ConstantStrings extends React.Component {
 
     static channelForDropdown = ["מסורתי - חם", "מסורתי - מאורגן", "תדמית יום"];
 
-    static areaForDropdown = ["צפון", "דרום", "מרכז", "שפלה", "ירושלים"];
+    static areaForDropdown = ["צפון", "דרום", "מרכז", "שפלה", "ירושלים", "השרון"];
 
     static categoryForDropdown = ["ספיריט", "יין"];
 
@@ -283,7 +284,7 @@ class ConstantStrings extends React.Component {
 
      //salesman menu
     static addSale_string = 'דיווח מכירה';
-    static editSales_string = 'מכירות';
+    static editSales_string = 'סיכום מכירות';
     static addComment_string = 'הוספת הערה';
     static addCommentContent_string = 'הוספת הערה:';
     static comments_string = 'הערות';

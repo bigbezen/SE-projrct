@@ -9,6 +9,7 @@ var styles              = require('../styles/managerStyles/styles');
 var paths               = require('../utils/Paths');
 var managementServices  = require('../communication/managementServices');
 var userServices        = require('../communication/userServices');
+var DeleteIcon          = require('react-icons/lib/fa/close');
 
 var IncentiveDetails = React.createClass({
 
@@ -140,8 +141,12 @@ var IncentiveDetails = React.createClass({
         this.refs.subCategory.value = constantsStrings.dropDownChooseString;
     },
 
-    deleteProduct: function(){
-        var newProducts = this.state.productsForIncentive.slice(0, -1);
+    deleteProduct: function(i){
+        var newProducts = this.state.productsForIncentive;
+        if(i == undefined)
+            newProducts = newProducts.slice(0, -1);
+        else
+            newProducts.splice(i, 1);
 
         this.setState({
             productsForIncentive: newProducts,
@@ -166,7 +171,8 @@ var IncentiveDetails = React.createClass({
     renderProductChoice: function(product, i){
         return (
             <div className="row" style={styles.productSelect}>
-                <select key={i} className="col-xs-6 col-xs-offset-2" onChange={this.onChangeProduct}
+                <span className="col-sm-1 col-sm-offset-1"><a onClick={() => this.deleteProduct(i)}><DeleteIcon/></a></span>
+                <select key={i} className="col-xs-6" onChange={this.onChangeProduct}
                     ref={"product" + i} data="" >
                     {this.getOptions(this.state.products, i)}
                 </select>
@@ -296,7 +302,6 @@ var IncentiveDetails = React.createClass({
                         <input type="text"
                                className="col-xs-6 col-xs-offset-2"
                                ref="nameBox"
-                               required
                         />
                     </div>
 
@@ -322,7 +327,6 @@ var IncentiveDetails = React.createClass({
                     <div className="form-group">
                         <div className="row">
                             <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" onClick={this.addProduct}>+</button>
-                            <button className="w3-card-4 w3-circle w3-button" onClick={this.deleteProduct}>-</button>
                         </div>
                     </div>
 

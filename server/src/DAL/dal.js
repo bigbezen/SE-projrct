@@ -86,8 +86,8 @@ module.exports = {
         return storeModel.find({'_id': {$in: ids}});
     },
 
-    getStoreByNameAndArea: async function (name, area) {
-        return storeModel.findOne({'name': name, 'area': area});
+    getStoreByNameAndArea: async function (name, address, city) {
+        return storeModel.findOne({'name': name, 'address': address, 'city': city});
     },
 
     // ------------------------------------------------ PRODUCTS ------------------------------------------------

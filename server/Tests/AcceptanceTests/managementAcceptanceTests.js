@@ -407,14 +407,14 @@ describe('management acceptance test', function(){
             assert.equal(res.response.data, constantString.storeAlreadyExist);
         });
 
-        it('add existing name and different area', async function () {
+        it('add existing name and different city', async function () {
             let res = await axios.post(serverUrl + 'management/addStore', {
                 storeDetails: newStore,
                 sessionId: manager.sessionId,
             });
             assert.equal(res.status, 200);
 
-            newStore.area = 'different'
+            newStore.city = 'different';
             res = await axios.post(serverUrl + 'management/addStore', {
                 storeDetails: newStore,
                 sessionId: manager.sessionId,

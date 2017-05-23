@@ -9,7 +9,7 @@ let addStore = async function(sessionId, storeDetails) {
     let user = await permissions.validatePermissionForSessionId(sessionId, 'addStore');
         //check if to user have the permissions
     if(user != null) {
-        let store = await dal.getStoreByNameAndArea(storeDetails.name, storeDetails.area);
+        let store = await dal.getStoreByNameAndArea(storeDetails.name, storeDetails.address, storeDetails.city);
         //check if the store existing
         if (store == null) {
             let store = new storeModel();
@@ -38,7 +38,7 @@ let editStore = async function (sessionId, storeDetails) {
     if (user == null)
         return {'store': null, 'code': 401, 'err': constantString.permssionDenied};
 
-    let store = await dal.getStoreByNameAndArea(storeDetails.name, storeDetails.area);
+    let store = await dal.getStoreByNameAndArea(storeDetails.name, storeDetails.address, storeDetails.city);
     if (store != null && !store._id.equals(storeDetails._id))
         return {'store': null, 'code': 409, 'err': constantString.duplicateStore};
 

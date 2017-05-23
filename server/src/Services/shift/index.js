@@ -561,10 +561,10 @@ let endShift = async function(sessionId, shift){
         let managers = await dal.getManagers();
         let emails  = [];
         for(let manager of managers){
-            emails.add(manager.contact.email);
+            emails.push(manager.contact.email);
         }
         let content = ' מצורף דוח טעימות של:' + salesman.username;
-        mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+        mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime + ' ' + salesman.username + '.xlsx');
         return {'code': 200};
     }
 };

@@ -458,14 +458,13 @@ let getOrderEventReportXL = async function(sessionId, year, month){
                     };
                 }
             }
-/*
-    let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
-    mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
-   */
 
-            return workbook.xlsx.writeFile('monthReport/myCheck.xlsx');
+            return workbook.xlsx.writeFile('monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
    });
-           return {'code': 200};
+    let content = 'מורף הזמנת עבודה לחודש ' + (month + 1) + ' ' + year;
+    mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח הזמנת עבודה ' + (month + 1) + ' ' + year, content, 'monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
+
+    return {'code': 200};
 };
 
 let getMonthAnalysisReportXL = async function(sessionId, year){

@@ -67,7 +67,7 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.type = shift.type;
-        if(shift.type == constantString.shiftTypeEvemt){
+        if(shift.type.includes(constantString.shiftTypeEvemt)){
             newShift.status = "FINISHED";
         }
         else{
@@ -557,8 +557,16 @@ let endShift = async function(sessionId, shift){
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)
         return {'code': 500, 'err': constantString.somthingBadHappend};
-    else
+    else {
+        let managers = await dal.getManagers();
+        let emails  = [];
+        for(let manager of managers){
+            emails.push(manager.contact.email);
+        }
+        let content = ' מצורף דוח טעימות של:' + salesman.username;
+        mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime + ' ' + salesman.username + '.xlsx');
         return {'code': 200};
+    }
 };
 
 let getActiveShiftEncouragements = async function(sessionId, shiftId){

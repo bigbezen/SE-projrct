@@ -63,6 +63,10 @@ module.exports = {
         return userModel.find({'_id': {$in: ids}});
     },
 
+    getManagers: async function(){
+        return userModel.find({'jobDetails.userType': 'manager'});
+    },
+
     //----------------------------------------------------- STORES ----------------------------------------------
 
     editStore: async function (storeDetails) {
@@ -168,6 +172,12 @@ module.exports = {
 
     editShift: async function(shiftDetails){
         return shiftModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
+    },
+
+    getEventShifts: async function(year, month){
+        var startMonth = new Date(year, month, 1);
+        var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
+        return shiftModel.find({$and: [{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}, {'type': {$regex : ".*אירוע.*"}}]}).populate('storeId').populate('salesmanId');
     },
 
     editSalesReport: async function(shiftId, salesReport, encouragements){

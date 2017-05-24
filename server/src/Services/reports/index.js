@@ -7,6 +7,7 @@ let fs              = require('fs');
 let moment          = require('moment');
 let Excel           = require('exceljs');
 let userModel       = require('../../Models/user');
+let constantString  = require('../../Utils/Constans/ConstantStrings.js');
 let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
 let monthAnalysisReportModel = require('../../Models/Reports/monthAnalysisReport');
 let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
@@ -232,6 +233,240 @@ let getSalesmanListXL = async function(sessionId){
 
 };
 
+let getOrderEventReportXL = async function(sessionId, year, month){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getOrderEventReportXL');
+    if(user == null)
+        return {'code': 401, 'err': constantString.permssionDenied};
+
+    let eventShifts = await dal.getEventShifts(year, month);
+    let eventsName = new  Set();
+    for(let shift of eventShifts){
+        eventsName.add(shift.type);
+    }
+
+    let workbook = new Excel.Workbook();
+    workbook.xlsx.readFile('orderJob.xlsx')
+        .then(async function() {
+            for(let eventName of eventsName){
+                let worksheet = workbook.addWorksheet(eventName);
+                let shifts = eventShifts.filter(function (shift) {
+                    return shift.type == eventName;
+                });
+
+                let setStoresName = new Set();
+                for(let shift of shifts){
+                    setStoresName.add(shift.storeId.name);
+                }
+
+                let rowCount = 1;
+                for(let storeName of setStoresName){
+                    rowCount++;
+                    rowCount++;
+                    let currentsShifts = shifts.filter(function (shift) {
+                       return shift.storeId.name == storeName;
+                    });
+
+                    //write the event type
+                    let row = worksheet.getRow(rowCount);
+                    row.getCell(2).value = 'שם האירוע';
+                    row.getCell(2).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(2).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(3).value = storeName;
+                    row.getCell(3).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(3).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.commit();
+                    rowCount++;
+                    rowCount++;
+
+                    row = worksheet.getRow(rowCount);
+                    row.getCell(1).value = 'תאריך';
+                    row.getCell(1).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(1).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(2).value = 'שם העובדת';
+                    row.getCell(2).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(2).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(3).value = 'מס שעות העבודה';
+                    row.getCell(3).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(3).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(4).value = 'נסיעות';
+                    row.getCell(4).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(4).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(5).value = 'סה"כ לתשלום';
+                    row.getCell(5).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(5).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.commit();
+                    rowCount++;
+
+                    for(let shift of currentsShifts){
+                        row = worksheet.getRow(rowCount);
+                        row.getCell(1).value = new Date(shift.startTime).toLocaleString();
+                        row.getCell(1).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+
+                        row.getCell(2).value = shift.salesmanId.personal.firstName + " " + shift.salesmanId.personal.lastName;
+                        row.getCell(2).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+
+                        let duration = parseInt((shift.endTime - shift.startTime)/36e5, 10);
+                        row.getCell(3).value = duration;
+                        row.getCell(3).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+                        if(shift.numOfKM != null && shift.parkingCost != null){
+                            row.getCell(4).value = shift.numOfKM * 0.7 + shift.parkingCost;
+                        }
+                        else{
+                            row.getCell(4).value = 0;
+                        }
+                        row.getCell(4).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+
+                        if(shift.numOfKM != null && shift.parkingCost != null){
+                            let expensesCost = shift.numOfKM * 0.7 + shift.parkingCost;
+                            row.getCell(5).value = _calcEventCost(duration, expensesCost);
+                        }
+                        else{
+                            row.getCell(5).value = _calcEventCost(duration, 0);
+                        }
+
+                        row.getCell(5).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+                        row.commit();
+                        rowCount++;
+                    }
+
+                    row = worksheet.getRow(rowCount);
+                    row.getCell(4).value = 'סה"כ';
+                    row.getCell(4).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99FFFF00'},
+                        bgColor:{argb:'99FFFF00'}
+                    };
+                    row.getCell(4).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(5).value = {'formula':'SUM(E' + (rowCount - currentsShifts.length) + ':E' + (rowCount - 1) + ')'};
+                    row.getCell(5).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99FFFF00'},
+                        bgColor:{argb:'99FFFF00'}
+                    };
+                    row.getCell(5).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                }
+            }
+
+            return workbook.xlsx.writeFile('monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
+   });
+    let content = 'מורף הזמנת עבודה לחודש ' + (month + 1) + ' ' + year;
+    mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח הזמנת עבודה ' + (month + 1) + ' ' + year, content, 'monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
+
+    return {'code': 200};
+};
+
 let getMonthAnalysisReportXL = async function(sessionId, year){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getMonthAnalysisReportXL');
     if(user == null)
@@ -402,12 +637,13 @@ let genarateMonthAnalysisReport = async function() {
     }
 
     let monthShifts = await dal.getMonthShifts(year, month);
+    let monthShiftsEvent = await dal.getEventShifts(year, month);
     for(let currentShift of monthShifts){
         let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
         let duration = parseInt((currentShift.endTime - currentShift.startTime)/36e5, 10);
         let store = await dal.getStoresByIds([currentShift.storeId]);
         store = store[0];
-        if(currentShift.type == 'אירוע'){
+        if(currentShift.type.includes('אירוע')){
             yearReport.monthData[month].salesmanCost.events += duration*salesman.jobDetails.salary;
         }
         else if(store.channel == 'מסורתי - חם'){
@@ -815,7 +1051,13 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
             row.getCell(5).value = currentShift.type;
             row.getCell(6).value = new Date(currentShift.startTime).getHours() + ":" + moment(new Date(currentShift.startTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.startTime).getSeconds()).format("ss");
             row.getCell(7).value = new Date(currentShift.endTime).getHours() + ":" + moment(new Date(currentShift.endTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.endTime).getSeconds()).format("ss");
-            row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+            if(currentShift.numOfKM != null && currentShift.parkingCost != null){
+                row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+            }
+            else{
+                row.getCell(15).value = 0;
+            }
+
             //add formulas
             row.getCell(8).value = {'formula': 'IF((G' + rowCountFormula + '-F' + rowCountFormula + ')<0,(1-F' + rowCountFormula + '+G' + rowCountFormula +'),(G' + rowCountFormula + '-F' + rowCountFormula +'))'};//'=IF((G8-F8)<0,(1-F8+G8),(G8-F8))'
             row.getCell(9).value = {'formula': 'H' + rowCountFormula + '*24'};
@@ -853,6 +1095,14 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
     return {'code': 200};
 };
 
+let _calcEventCost = function(numOfHours, expensesCost){
+    let totalCost = constantString.eventSalary
+                    + constantString.eventSalary * 0.1276
+                    + constantString.eventSalary * (0.1433 + 0.09)
+                    + ((expensesCost * 0.0376)/numOfHours);
+    return totalCost * numOfHours;
+};
+
 
 module.exports.getSaleReportXl = getSaleReportXl;
 module.exports.getMonthlyUserHoursReport = getMonthlyUserHoursReport;
@@ -865,3 +1115,4 @@ module.exports.getMonthlyAnalysisReport = getMonthlyAnalysisReport;
 module.exports.getMonthAnalysisReportXL = getMonthAnalysisReportXL;
 module.exports.updateMonthlySalesmanHoursReport = updateMonthlySalesmanHoursReport;
 module.exports.updateMonthlyAnalysisReport = updateMonthlyAnalysisReport;
+module.exports.getOrderEventReportXL = getOrderEventReportXL;

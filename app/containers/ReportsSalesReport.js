@@ -57,6 +57,12 @@ var ReportsSalesReport = React.createClass({
             .then(function(result) {
                 var salesmen = result.filter(function(user){
                     return user.jobDetails.userType == 'salesman'
+                }).sort(function(a, b) {
+                    if((a.personal.firstName + a.personal.lastName) > (b.personal.firstName + b.personal.lastName))
+                        return 1;
+                    else if((a.personal.firstName + a.personal.lastName) < (b.personal.firstName + b.personal.lastName))
+                        return -1;
+                    return 0;
                 });
                 self.setState({
                     salesmen: salesmen

@@ -103,14 +103,21 @@ var ShiftDetails = React.createClass({
         })
     },
 
+    sortSalesmenMethod: function(a, b){
+        if(a.username > b.username)
+            return 1;
+        if(a.username < b.username)
+            return -1;
+        return 0;
+    },
+
     getOptionsForSalesmen: function() {
         var optionsForDropDown = [];
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
 
-        managementServices.getAllUsers().then(function (n) {
-            var val = n;
-            var arrayOfObjects = val;
+        managementServices.getAllUsers().then(function (arrayOfObjects) {
+            arrayOfObjects = arrayOfObjects.sort(self.sortSalesmenMethod);
             optionsForDropDown.push(<option value="" disabled selected>{constantsStrings.dropDownChooseString}</option>);
             for (var i = 0; i < arrayOfObjects.length; i++) {
                 var currOption = arrayOfObjects[i];

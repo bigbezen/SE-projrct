@@ -18,6 +18,7 @@ class ConstantStrings extends React.Component {
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
     static search_string = 'חיפוש';
+    static productSearch_string = 'חיפוש מוצר';
     static add_string = 'הוספה';
     static logout_string = 'התנתק';
     static NoDataText_string = 'לא נמצאו תוצאות מתאימות';
@@ -31,6 +32,8 @@ class ConstantStrings extends React.Component {
     static retrievePass_string = 'שחזור סיסמא';
     static liveSalesReport_string = 'צפייה במשמרות בזמן אמת';
     static selectedProducts_string = 'המוצרים שנבחרו';
+    static createPublishShifts_string = 'יצירה ופרסום משמרות';
+    static managePublishedShifts_string = 'ניהול משמרות מפורסמות';
 
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';

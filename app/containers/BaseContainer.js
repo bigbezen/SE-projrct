@@ -100,6 +100,27 @@ var BaseContainer = React.createClass({
         }
     },
 
+    getShiftsOptions: function (){
+        return [
+            constantsStrings.createPublishShifts_string,
+            constantsStrings.managePublishedShifts_string
+        ];
+    },
+
+    onChangeShifts: function(event){
+        switch (event.value){
+            case constantsStrings.managePublishedShifts_string:
+                this.context.router.push({
+                    pathname: paths.manager_shifts_path
+                });
+                break;
+        }
+    },
+
+    getDefaultShiftOption: function() {
+        return <button type="input" style={{background: 'none', border: '#FFFFFF'}}>{constantsStrings.shifts_string}</button>
+    },
+
     render: function () {
         return (
             <div className='main-container'>
@@ -112,7 +133,12 @@ var BaseContainer = React.createClass({
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
                     <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
-                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_shifts_path}><Shifts/>{constantsStrings.shifts_string}</a></li>
+                    <li className="w3-hide-small w3-right text-right" style={Object.assign({marginTop: '8px'}, styles.navbarButtons)}>
+                        <span style={{marginRight: '10px'}}><Shifts/></span>
+                        <div className="w3-left" style={{marginRight: '5px'}}>
+                            <Dropdown className="text-right w3-left" options={this.getShiftsOptions()} onChange={this.onChangeShifts} placeholder={this.getDefaultShiftOption()} />
+                        </div>
+                    </li>
                     <li className="w3-hide-small w3-right text-right" style={{marginTop: '8px'}}>
                         <span style={{marginRight: '10px'}}> <Reports /> </span>
                         <div className="w3-left" style={{marginRight: '5px'}}>

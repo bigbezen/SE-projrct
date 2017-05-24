@@ -61,7 +61,8 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementService.getShiftsFromDate(currentDate).then(function (result) {
             var sortedShifts = result.sort(self.sortShifts)
-                .filter((shift) => shift.status != 'FINISHED');
+                .filter((shift) =>
+                    ((shift.status != 'FINISHED') || shift.type.includes(constantsStrings.shiftType_event)));
             self.setState({
                 shifts: sortedShifts
             });
@@ -97,7 +98,9 @@ var SalesmanShiftsScheduleContainer = React.createClass({
                 </header>
 
                 <div className="w3-container text-center">
+                    <p className="w3-xxxlarge">{constantsStrings.shiftType_string}: {shift.type}</p>
                     <p className="w3-xxxlarge" >{constantsStrings.storeName_string}: {shift.storeId.name}</p>
+                    <p className="w3-xxxlarge" >{constantsStrings.city_string}: {shift.storeId.city}</p>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

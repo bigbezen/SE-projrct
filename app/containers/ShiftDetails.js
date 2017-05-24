@@ -13,6 +13,9 @@ var NotificationSystem  = require('react-notification-system');
 var styles              = require('../styles/managerStyles/styles');
 var userServices        = require('../communication/userServices');
 
+var ReactBootstrap          = require('react-bootstrap');
+var Collapse                = ReactBootstrap.Collapse;
+
 var ShiftDetails = React.createClass({
 
     contextTypes: {
@@ -44,7 +47,8 @@ var ShiftDetails = React.createClass({
             editing: false,
             storeId: '',
             salesmanId: '',
-            shiftType:'',
+            shiftType: constantsStrings.shiftType_taste,
+            shiftTypeEvent: false,
             storesForDropDown:[] ,
             salesmenForDropDown:[]
         }
@@ -63,7 +67,11 @@ var ShiftDetails = React.createClass({
     },
 
     handleShiftTypeChange(event) {
-        this.setState({shiftType: event.target.value});
+        var shiftTypeEvent = event.target.value == constantsStrings.shiftType_event;
+        this.setState({
+            shiftType: event.target.value,
+            shiftTypeEvent: shiftTypeEvent
+        });
     },
 
     componentDidMount() {
@@ -125,7 +133,6 @@ var ShiftDetails = React.createClass({
             else
                 optionsForDropDown.push(<option value={currOption}>{currOption}</option>);
         }
-        this.state.shiftType = constantsStrings.shiftType_taste;
         return optionsForDropDown;
     },
 
@@ -143,7 +150,8 @@ var ShiftDetails = React.createClass({
 
         var newShift = new shiftInfo();
         newShift.storeId = this.state.storeId;
-        newShift.type = this.state.shiftType;
+        newShift.type = this.state.shiftType +
+            (this.state.shiftType == constantsStrings.shiftType_event ? (" " + this.refs.eventType.value) : "");
         newShift.salesmanId = this.state.salesmanId;
         newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
         newShift.startTime = moment(newShift.startTime).format('YYYY-MM-DD HH:mm Z');
@@ -269,6 +277,19 @@ var ShiftDetails = React.createClass({
                             {this.getOptionsForShiftType()}
                         </select>
                     </div>
+
+                    <Collapse in={this.state.shiftTypeEvent}>
+                        <div>
+                            <div className="form-group">
+                                <label className="col-xs-4 col-xs-offset-2">{constantsStrings.eventType_string}:</label>
+                            </div>
+                            <div className="form-group">
+                                <input type="text"
+                                       className="col-xs-4 col-xs-offset-2"
+                                       ref="eventType"/>
+                            </div>
+                        </div>
+                    </Collapse>
 
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.date_string}:</label>

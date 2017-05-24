@@ -109,8 +109,16 @@ var EditSaleContainer = React.createClass({
     onUpdateAmount: function (row, amount) {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount).then(function (n) {
-            self.updateShift();
+        salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount)
+            .then(function (n) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: constantStrings.editSuccessMessage_string,
+                    level: 'info',
+                    autoDismiss: 1,
+                    position: 'tc'
+                });
+                self.updateShift();
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({

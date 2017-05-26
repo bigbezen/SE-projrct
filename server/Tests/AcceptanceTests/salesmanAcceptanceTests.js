@@ -27,6 +27,7 @@ describe('salesman acceptance test', function(){
     let product3;
     let km = 20;
     let parking = 100;
+    let extraExpenses = 30;
 
 
     let createNewSalesReport = async function(){
@@ -593,7 +594,8 @@ describe('salesman acceptance test', function(){
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
                 km: km,
-                parking: parking
+                parking: parking,
+                extraExpenses: extraExpenses
             }).then(async function(info){
                 return info;
             }).catch(async function(err){
@@ -606,6 +608,7 @@ describe('salesman acceptance test', function(){
             dbShift = dbShift[0];
             expect(dbShift).to.have.property('numOfKM',km);
             expect(dbShift).to.have.property('parkingCost',parking);
+            expect(dbShift).to.have.property('extraExpenses', extraExpenses);
         });
 
         it('test report expenses non-positive km', async function() {
@@ -619,7 +622,8 @@ describe('salesman acceptance test', function(){
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
                 km: -1,
-                parking: parking
+                parking: parking,
+                extraExpenses: extraExpenses
             }).then(async function (info) {
                 return info;
             }).catch(async function (err) {
@@ -640,7 +644,30 @@ describe('salesman acceptance test', function(){
                 sessionId: salesman.sessionId,
                 shiftId: shift._id,
                 km: km,
-                parking: -1
+                parking: -1,
+                extraExpenses: extraExpenses
+            }).then(async function (info) {
+                return info;
+            }).catch(async function (err) {
+                return err;
+            });
+
+            expect(result.response).to.have.property('status', 404);
+        });
+
+        it('test report expenses non-positive extraExpenses', async function() {
+            for (let i = 0; i < shift.salesReport.length; i++) {
+                shift.salesReport[i].stockStartShift = i;
+            }
+            shift.status = "STARTED";
+            shift = await dal.addShift(shift);
+
+            let result = await axios.post(serverUrl + 'salesman/reportExpenses', {
+                sessionId: salesman.sessionId,
+                shiftId: shift._id,
+                km: km,
+                parking: parking,
+                extraExpenses: -1
             }).then(async function (info) {
                 return info;
             }).catch(async function (err) {
@@ -661,7 +688,8 @@ describe('salesman acceptance test', function(){
                 sessionId: manager.sessionId,
                 shiftId: shift._id,
                 km: km,
-                parking: parking
+                parking: parking,
+                extraExpenses: extraExpenses
             }).then(async function(info){
                 return info;
             }).catch(async function(err){

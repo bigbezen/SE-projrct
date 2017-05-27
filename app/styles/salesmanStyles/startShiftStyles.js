@@ -22,13 +22,17 @@ var startShiftStyles = {
         'paddingBottom': '80px'
     },
     start__button: {
-        'marginBottom': '10px'
+        'marginBottom': '10px',
+    },
+    subCategory :{
+        margin: '20px',
+        'backgroundColor': '#ffffff',
     },
     product: {
         display: 'flex',
         flexDirection: 'row',
         width:'100%',
-        height: '200px',
+        height: '120px',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '10px 0px 10px 0px',

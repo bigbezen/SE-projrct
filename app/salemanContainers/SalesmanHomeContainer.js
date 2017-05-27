@@ -109,13 +109,18 @@ var SalesmanHomeContainer = React.createClass({
                 });
             }
         }).catch(function (errMess) {
-            if(errMess != "user does not have a shift today"){
+            if(errMess != "לדייל אין משמרת היום"){
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'
+                });
+            }
+            else {
+                self.setState({
+                    shift: ""
                 });
             }
         })
@@ -160,9 +165,21 @@ var SalesmanHomeContainer = React.createClass({
             </div>
         )
     },
-
+    renderNoShift:function () {
+        return(
+            <div>
+                <div className="text-center">
+                    <p className="w3-xxlarge"><b>{constantsStrings.noShiftToday_string}</b></p>
+                </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
     render: function () {
-        if(this.state.shift != null)
+        if(this.state.shift === "") {
+            return this.renderNoShift();
+        }
+        else if(this.state.shift != null)
         {
             return this.renderShift();
         }

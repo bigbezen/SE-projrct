@@ -117,9 +117,21 @@ var SalesmanShiftsScheduleContainer = React.createClass({
             </div>
         )
     },
-
+    renderNoShifts:function () {
+        return(
+            <div>
+                <div className="text-center">
+                    <p className="w3-xxlarge"><b>{constantsStrings.noShifts_string}</b></p>
+                </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
     render: function () {
-        if(this.state.shifts != null)
+        if(this.state.shifts != null && this.state.shifts.length == 0){
+            return this.renderNoShifts();
+        }
+        else if(this.state.shifts != null)
         {
             return this.renderTable();
         }

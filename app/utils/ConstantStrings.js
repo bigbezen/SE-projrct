@@ -137,6 +137,7 @@ class ConstantStrings extends React.Component {
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
     static defaultShiftDropDown_string = 'בחר/י משמרת';
     static noShifts_string = 'לא קיימות משמרות להצגה';
+    static noShiftToday_string = 'לא קיימת משמרת להיום';
     static editReport_string = 'ערוך דוח';
     static reportsNumberOfProductsSold_string = 'נמכרו';
     static reportsNumberOfProductsOpened_string = 'נפתחו';

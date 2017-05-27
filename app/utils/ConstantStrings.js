@@ -259,6 +259,7 @@ class ConstantStrings extends React.Component {
     static errorMessage_string = 'אירעה שגיאה בשרת, אנא נסה שוב מאוחר יותר';
     static errorTitle_string = 'שגיאה';
     static addSuccessMessage_string = 'ההוספה התבצעה בהצלחה!';
+    static reportExpenseSuccess = 'ההוצאה נשמרה בהצלחה';
     static editSuccessMessage_string = 'העריכה התבצעה בהצלחה!';
     static addFailMessage_string = 'שגיאה קרתה בעת הוספה';
     static editFailMessage_string = 'שגיאה קרתה בעת עריכה';
@@ -298,6 +299,7 @@ class ConstantStrings extends React.Component {
     //shift expenses
     static km_string = 'ק"מ';
     static parking_string = 'חנייה';
+    static other_expenses = 'הוצאות נוספות';
     static store_string = 'חנות';
 
     //encouragements

@@ -42,8 +42,28 @@ var styles = {
     },
     buttonStyle: {
         marginBottom: '50px',
-        marginTop: '20px'
-    }
+        marginTop: '20px',
+        paddingBottom: '5px',
+        paddingLeft: '20px',
+        paddingRight: '20px',
+        paddingTop: '5px'
+    },
+    notificationStyle: {
+        NotificationItem: {
+            DefaultStyle: {
+                fontSize: '50px',
+                width: '500px',
+                height: '200px',
+                textAlign: 'center',
+                margin: '100px -80px'
+            },
+            error: {
+                height: '200px',
+                width: '500px',
+                fontSize: '50px'
+            },
+        }
+    },
 
 
 };

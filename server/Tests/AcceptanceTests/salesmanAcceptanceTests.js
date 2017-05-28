@@ -110,7 +110,7 @@ describe('salesman acceptance test', function(){
         shift = new shiftModel();
         shift.status = 'PUBLISHED';
         shift.startTime = new Date();
-        shift.endTime = new Date();
+        shift.endTime = (new Date()).setHours(shift.startTime.getHours() + 1);
         shift.storeId = store._id;
         shift.salesmanId = salesman._id;
         shift.salesReport = await createNewSalesReport();
@@ -125,7 +125,6 @@ describe('salesman acceptance test', function(){
     describe('test getCurrentShift', function(){
         it('get current shift valid', async function(){
             shift = await dal.addShift(shift);
-
 
             let result = await axios.get(serverUrl + 'salesman/getCurrentShift?date=' + new Date(), {
                 headers: {

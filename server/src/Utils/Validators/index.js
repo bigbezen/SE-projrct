@@ -199,6 +199,10 @@ module.exports = {
 
     reportSaleOrOpened: function(params){
         return true;
+    },
+
+    submitConstraints: function(params){
+        return checkParams(params, ['sessionId', 'constraints'], [stringT, objectT]);
     }
 
 

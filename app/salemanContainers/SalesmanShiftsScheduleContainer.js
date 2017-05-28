@@ -8,6 +8,7 @@ var userServices        = require('../communication/userServices');
 var NotificationSystem  = require('react-notification-system');
 var managementService   = require('../communication/managementServices');
 var moment              = require('moment');
+var paths               = require('../utils/Paths');
 
 var SalesmanShiftsScheduleContainer = React.createClass({
 
@@ -77,6 +78,12 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         })
     },
 
+    handleMoveToAssignShifts: function(){
+        this.context.router.push({
+            pathname: paths.salesman_assignShifts_path
+        })
+    },
+
     renderLoading:function () {
         return(
             <div>
@@ -110,7 +117,13 @@ var SalesmanShiftsScheduleContainer = React.createClass({
     renderTable: function() {
         return (
             <div className='main-container' style={styles.bodyStyle}>
-                <div className="w3-container">
+                <div className="navbar-fixed-top text-center" style={{marginTop: '80px'}}>
+                    <button className="w3-xxlarge w3-theme-l4 w3-card-4 w3-round-large"
+                        onClick={this.handleMoveToAssignShifts}>
+                        {constantsStrings.assignShifts_string}
+                    </button>
+                </div>
+                <div className="w3-container" style={{marginTop: '80px'}}>
                     {this.state.shifts.map(this.renderEachShift)}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

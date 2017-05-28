@@ -30,5 +30,7 @@ module.exports = {
     productAlreadyExist: "החנות כבר קיימת",
     productWithTheSameNameAndCategoryAlreadyExist: "לא ניתן להוסיף מוצר עם אותו הקטגוריה ואותו השם",
     productCannotBeEdited: "לא ניתן לערוך את המוצר",
+    serverError: "שגיאה התרחשה בשרת. אנסה נסה שוב מאוחר יותר",
+    noSuchShiftStatus: 'סוג משמרת זה לא קיים במערכת. אנה נסה שנית',
     eventSalary: 42
 };

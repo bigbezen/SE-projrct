@@ -4,6 +4,7 @@ let logger          = require('../../Utils/Logger/logger');
 let productModel    = require('../../Models/product');
 let dal             = require('../../DAL/dal');
 let permissions     = require('../permissions/index');
+let constantString  = require('../../Utils/Constans/ConstantStrings.js');
 
 
 let addProduct = async function(sessionId, productDetails) {
@@ -25,11 +26,11 @@ let addProduct = async function(sessionId, productDetails) {
             return {'product': product, 'code': 200, 'err': null};
         }
         else{
-            return {'product': null, 'code': 409, 'err': 'product already exist'};
+            return {'product': null, 'code': 409, 'err': constantString.productAlreadyExist};
         }
     }
     else {
-        return {'product': null, 'code': 401, 'err': 'permission denied'};
+        return {'product': null, 'code': 401, 'err': constantString.permssionDenied};
     }
 };
 
@@ -37,15 +38,15 @@ let editProduct = async function (sessionId, productDetails) {
     logger.info('Services.product.index.editProduct', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editProduct');
     if(user == null)
-        return {'product': null, 'code': 401, 'err': 'permission denied'};
+        return {'product': null, 'code': 401, 'err': constantString.permssionDenied};
 
     let product = await dal.getProductByNameAndCatagory(productDetails.name, productDetails.category);
     if(product != null && !product._id.equals(productDetails._id))
-        return {'product': null, 'code': 409, 'err': 'product with the same name and category already exist'};
+        return {'product': null, 'code': 409, 'err': constantString.productWithTheSameNameAndCategoryAlreadyExist};
 
     let res = await dal.editProduct(productDetails);
     if(res.ok == 0 || res.nModified == 0)
-        return {'product': product, 'code':400, 'err': 'cannot edit this product'};
+        return {'product': product, 'code':400, 'err': constantString.productCannotBeEdited};
 
     return {'product': product, 'code':200, 'err': null};
 };
@@ -58,7 +59,7 @@ let deleteProduct = async function(sessionId, ProductId){
         return {'product': product, 'code':200, 'err': null};
     }
     else {
-        return {'product': null, 'code': 401, 'err': 'permission denied'};
+        return {'product': null, 'code': 401, 'err': constantString.permssionDenied};
     }
 };
 
@@ -70,7 +71,7 @@ let getAllProducts = async function(sessionId){
         return {'products': products, 'code': 200, 'err': null};
     }
     else {
-        return {'products': null, 'code': 401, 'err': 'permission denied'};;
+        return {'products': null, 'code': 401, 'err': constantString.permssionDenied};
     }
 };
 
@@ -78,10 +79,10 @@ let getProduct = async function(sessionId, productId){
     logger.info('Services.Encouragement.index.getEncouragement', {'session-id': sessionId});
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getProduct');
     if(user == null)
-        return {'code': 401, 'err': 'permission denied'};
+        return {'code': 401, 'err': constantString.permssionDenied};
     let product = await dal.getProductById(productId);
     if(product == null)
-        return {'code': 409, 'err': 'no such product'};
+        return {'code': 409, 'err': constantString.productDoesNotExist};
     return {'code': 200, 'product': product.toObject()};
 };
 

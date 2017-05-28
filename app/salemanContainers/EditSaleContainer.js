@@ -13,7 +13,6 @@ var moment                  = require('moment');
 var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
-
 const cellEditProp = {
     mode: 'click',
 };
@@ -34,7 +33,6 @@ class QuantityEditor extends React.Component {
         this.refs.inputRef.value = this.props.row.quantity;
     }
     updateData() {
-        console.log("priceEditor calling update");
         this.props.onUpdate(this.props.row, this.refs.inputRef.value);
     }
     render() {
@@ -53,9 +51,11 @@ class QuantityEditor extends React.Component {
 const createPriceEditor = (onUpdate, props) => (<QuantityEditor onUpdate={ onUpdate } {...props}/>);
 
 var EditSaleContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -64,6 +64,7 @@ var EditSaleContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -72,6 +73,7 @@ var EditSaleContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState(){
         this.setSessionId();
         this.setUserType();
@@ -80,46 +82,56 @@ var EditSaleContainer = React.createClass({
             sales: []
         }
     },
+
     componentDidMount() {
         this.updateShift();
     },
+
     updateShift(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.getCurrentShift().then(function (n) {
-            var currShift = n;
+        salesmanServices.getCurrentShift().then(function (currShift) {
             self.setState(
                 {shift: currShift,
                     sales: currShift.sales
                 });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     onUpdateAmount: function (row, amount) {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount).then(function (n) {
-            self.updateShift();
+        salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount)
+            .then(function (n) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: constantStrings.editSuccessMessage_string,
+                    level: 'info',
+                    autoDismiss: 1,
+                    position: 'tc'
+                });
+                self.updateShift();
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
-        })
-        console.log("onUpdateAmount");
-        console.log(amount);
-        console.log(row);
+        });
         this.updateShift();
     },
-    render: function () {
+
+    renderSales: function () {
         return(
             <div>
                 <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
@@ -150,6 +162,26 @@ var EditSaleContainer = React.createClass({
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
+    },
+
+    renderLoading:function () {
+        return(
+            <div>
+                <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
+
+    render: function () {
+        if(this.state.shift != null)
+        {
+            return this.renderSales();
+        }
+        else
+        {
+            return this.renderLoading();
+        }
     }
 });
 

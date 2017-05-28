@@ -1,0 +1,8 @@
+changePass = "//*[@id=\"app\"]/div/ul/li[10]/a"
+productsTab = "//*[@id=\"app\"]/div/ul/li[3]/a"
+storesTab = "//*[@id=\"app\"]/div/ul/li[4]/a"
+usersTab = "//*[@id=\"app\"]/div/ul/li[5]/a"
+incentivesTab = "//*[@id=\"app\"]/div/ul/li[6]/a"
+ShiftsTab = "//*[@id=\"app\"]/div/ul/li[7]/a"
+reportsTab = "//*[@id=\"app\"]/div/ul/li[8]/a"
+logoutTab = "//*[@id=\"app\"]/div/ul/li[9]/a"

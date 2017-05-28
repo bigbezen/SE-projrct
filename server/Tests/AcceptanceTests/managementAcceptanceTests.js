@@ -11,6 +11,7 @@ let dal                 = require('../../src/DAL/dal');
 let userModel           = require('../../src/Models/user');
 let productModel        = require('../../src/Models/product');
 let storeModel          = require('../../src/Models/store');
+let constantString      = require('../../src/Utils/Constans/ConstantStrings.js');
 let encouragementModel        = require('../../src/Models/encouragement');
 let serverUrl = 'http://localhost:3000/';
 
@@ -166,7 +167,27 @@ describe('management acceptance test', function(){
     });
 
     describe('test add user', function() {
-        it('add user valid', async function () {
+        it('add user salesman valid', async function () {
+            let res = await axios.post(serverUrl + 'management/addUser', {
+                sessionId: manager.sessionId,
+                userDetails: salesman
+            });
+            assert.equal(res.status, 200);
+            assert.equal(res.data.username, salesman.username);
+        });
+
+        it('add user manager valid', async function () {
+            salesman.jobDetails.userType = "manager";
+            let res = await axios.post(serverUrl + 'management/addUser', {
+                sessionId: manager.sessionId,
+                userDetails:salesman
+            });
+            assert.equal(res.status, 200);
+            assert.equal(res.data.username, salesman.username);
+        });
+
+        it('add user event valid', async function () {
+            salesman.jobDetails.userType = "event";
             let res = await axios.post(serverUrl + 'management/addUser', {
                 sessionId: manager.sessionId,
                 userDetails: salesman
@@ -194,7 +215,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'Username or Id already exists');
+            assert.equal(res.response.data, constantString.UsernameOrIdAlreadyExists);
         });
 
         it('add user not by manager', async function () {
@@ -208,7 +229,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add user not by invalid parameter', async function () {
@@ -283,7 +304,7 @@ describe('management acceptance test', function(){
             });
 
         assert.equal(res.response.status, 409);
-        assert.equal(res.response.data, 'problem occurred with one of the parameters')
+        assert.equal(res.response.data, constantString.userDoesNotExist)
         });
 
         it('delete user not by manager', async function () {
@@ -297,7 +318,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
 
         it('delete manager by manager', async function () {
@@ -311,7 +332,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
 
         it('delete user invalid parameters', async function () {
@@ -349,7 +370,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add store invalid parameters', async function () {
@@ -383,17 +404,17 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'store already exist');
+            assert.equal(res.response.data, constantString.storeAlreadyExist);
         });
 
-        it('add existing name and different area', async function () {
+        it('add existing name and different city', async function () {
             let res = await axios.post(serverUrl + 'management/addStore', {
                 storeDetails: newStore,
                 sessionId: manager.sessionId,
             });
             assert.equal(res.status, 200);
 
-            newStore.area = 'different'
+            newStore.city = 'different';
             res = await axios.post(serverUrl + 'management/addStore', {
                 storeDetails: newStore,
                 sessionId: manager.sessionId,
@@ -423,7 +444,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add product invalid subCetagory', async function () {
@@ -488,7 +509,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'product already exist');
+            assert.equal(res.response.data, constantString.productAlreadyExist);
         });
     });
 
@@ -507,7 +528,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add shift valid', async function () {
@@ -539,6 +560,20 @@ describe('management acceptance test', function(){
             assert.equal(res.response.data, 'invalid parameters');
         });
 
+        it('add event shift valid', async function () {
+            shifts[0].type = 'אירוע';
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let res = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(res.status, 200);
+            assert.equal(res.data[0].status, 'FINISHED');
+        });
+
         it('add shift by illegal date', async function () {
             let store = await dal.addStore(store1);
             shifts[0].storeId = store._id.toString();
@@ -554,7 +589,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'shifts dates are before current time');
+            assert.equal(res.response.data, constantString.shiftsCurrentTimeError);
         });
 
         it('add shift store by not exist', async function () {
@@ -570,7 +605,97 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data,  'One or more of the stores does not exist');
+            assert.equal(res.response.data, constantString.storeDoesNotExist);
+        });
+    });
+
+    describe('test publish shift', function() {
+        it('publish shift not by manager', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl + 'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, constantString.permssionDenied);
+        });
+
+        it('publish shift valid', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl +   'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(res.status, 200);
+        });
+
+        it('publish shift invalid parameters', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let res = await axios.post(serverUrl +   'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 404);
+            assert.equal(res.response.data, 'invalid parameters');
+        });
+
+        it('publish shift without status CREATED', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+            shifts[0].status = "STARTED";
+            result = await dal.editShift(shifts[0]);
+            let res = await axios.post(serverUrl + 'management/publishShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 409);
+            assert.equal(res.response.data, constantString.shiftAlreadyPublished);
         });
     });
 
@@ -669,7 +794,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
     });
 
@@ -710,7 +835,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
     });
 
@@ -776,7 +901,102 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied')
+            assert.equal(res.response.data, constantString.permssionDenied);
+        });
+    });
+
+    describe('test edit shift', function() {
+        it('edit shift valid', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+            shifts[0].status = "FINISHED";
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: result.data[0],
+                sessionId: manager.sessionId
+            });
+            assert.equal(res.status, 200);
+        });
+
+        it('edit shift invalid parameters', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: "invalid parameter",
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+
+            assert.equal(res.response.status, 404);
+            assert.equal(res.response.data, 'invalid parameters')
+        });
+
+        it('edit shift not by manager', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+
+            shifts[0]._id = result.data[0]._id;
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: result.data[0],
+                sessionId: notManager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, constantString.permssionDenied);
+        });
+
+        it('edit shift not shift already started', async function () {
+            let store = await dal.addStore(store1);
+            shifts[0].storeId = store._id.toString();
+            shifts[0].salesmanId = notManager._id.toString();
+            let result = await axios.post(serverUrl + 'management/addShifts', {
+                shiftArr: shifts,
+                sessionId: manager.sessionId
+            });
+            assert.equal(result.status, 200);
+            shifts[0]._id = result.data[0]._id;
+            shifts[0].status = "STARTED";
+            result = await dal.editShift(shifts[0]);
+
+            let res = await axios.post(serverUrl + 'management/editShifts', {
+                shiftDetails: shifts[0],
+                sessionId: manager.sessionId
+            }).then(async function(info){
+                return info;
+            }).catch(async function(err){
+                return err;
+            });
+            assert.equal(res.response.status, 401);
+            assert.equal(res.response.data, constantString.shiftAlreadyStarted);
         });
     });
 
@@ -843,7 +1063,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 400);
-            assert.equal(res.response.data, 'cannot edit this product');
+            assert.equal(res.response.data, constantString.productCannotBeEdited);
         });
 
         it('edit product not by manager ', async function () {
@@ -858,7 +1078,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('edit product invalid name', async function () {
@@ -932,7 +1152,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'edited user does not exist');
+            assert.equal(res.response.data, constantString.userDoesNotExist);
         });
 
         it('edit user not by manager ', async function () {
@@ -947,7 +1167,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('edit user invalid', async function () {
@@ -1006,7 +1226,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 400);
-            assert.equal(res.response.data, 'cannot edit this store');
+            assert.equal(res.response.data, constantString.somthingBadHappend);
         });
 
         it('edit store not by manager ', async function () {
@@ -1022,7 +1242,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('edit store invalid name', async function () {
@@ -1084,7 +1304,6 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 400);
-            assert.equal(res.response.data, 'cannot edit this encouragement');
         });
 
         it('edit encouragement not by manager ', async function () {
@@ -1169,7 +1388,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('get all products invalid parameters', async function () {
@@ -1217,7 +1436,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('get all stores invalid parameters', async function () {
@@ -1256,7 +1475,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('get all users invalid parameters', async function () {

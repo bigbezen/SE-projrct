@@ -16,8 +16,9 @@ var addSaleStyles = {
         width:'100%',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '20px',
-        marginBottom: '20px'
+        marginTop: '79px',
+        marginBottom: '20px',
+        height: '120px'
     },
     reportButtonsContainer:{
         flex: 'auto',
@@ -31,19 +32,40 @@ var addSaleStyles = {
     },
     products_table_container: {
         backgroundColor: 'RGB(255,255,255)',
-        marginBottom: '30px'
+        marginBottom: '80px'
     },
     products_table_body: {
-        fontSize: '50px',
+        fontSize: '40px',
         fontWeight: 'bold',
-        height: '120px'
+        height: '160px',
+        paddingTop: '40px'
     },
     endShiftButton:{
         marginBottom: '20px',
     },
     inputMinHeight:{
         height: '60px',
-    }
+    },
+    productSaleRow: {
+        marginBottom: '10px',
+        height: '100px'
+    },
+    notificationStyle: {
+        NotificationItem: {
+            DefaultStyle: {
+                fontSize: '50px',
+                width: '500px',
+                height: '200px',
+                textAlign: 'center',
+                margin: '100px -80px'
+            },
+            error: {
+                height: '200px',
+                width: '500px',
+                fontSize: '50px'
+            },
+        }
+    },
 };
 
 module.exports = addSaleStyles;

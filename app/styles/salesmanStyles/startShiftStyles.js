@@ -1,7 +1,7 @@
 
 var startShiftStyles = {
     space: {
-        'height': '185px'
+        'height': '250px'
     },
     transparentBg: {
         background: 'transparent'
@@ -19,16 +19,20 @@ var startShiftStyles = {
     products__list: {
         'backgroundColor': '#ffffff',
         'zIndex': '1',
-        'paddingBottom': '48px'
+        'paddingBottom': '80px'
     },
     start__button: {
-        'marginBottom': '10px'
+        'marginBottom': '10px',
+    },
+    subCategory :{
+        margin: '20px',
+        'backgroundColor': '#ffffff',
     },
     product: {
         display: 'flex',
         flexDirection: 'row',
         width:'100%',
-        height: '200px',
+        height: '120px',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '10px 0px 10px 0px',
@@ -40,7 +44,6 @@ var startShiftStyles = {
         'textAlign': 'center'
     },
     product__detail : {
-        'width': '47%',
         'textAlign': 'right'
     },
     image__detail: {
@@ -48,8 +51,8 @@ var startShiftStyles = {
         'textAlign': 'center'
     },
     product__selector : {
-        'height': '30px',
-        'width': '30px'
+        'height': '40px',
+        'width': '40px'
     },
     product__image: {
 

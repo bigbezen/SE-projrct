@@ -13,6 +13,7 @@ let userModel           = require('../../src/Models/user');
 let productModel        = require('../../src/Models/product');
 let storeModel          = require('../../src/Models/store');
 let encouragementModel        = require('../../src/Models/encouragement');
+let constantSreing      = require('../../src/Utils/Constans/ConstantStrings.js');
 let cypher              = require('../../src/Utils/Cypher/index');
 let serverUrl = 'http://localhost:3000/';
 
@@ -102,7 +103,7 @@ describe('salesman acceptance test', function(){
             });
 
             expect(result.response.status).to.equal(409);
-            expect(result.response.data).to.equal('user does not exist');
+            expect(result.response.data).to.equal(constantSreing.userDoesNotExist);
         });
 
         it('TestLoginInvalidParameter', async function(){
@@ -129,7 +130,7 @@ describe('salesman acceptance test', function(){
             });
 
             expect(result.response.status).to.equal(409);
-            expect(result.response.data).to.equal('password is incorrect');
+            expect(result.response.data).to.equal(constantSreing.passwordIsIncorrect);
         });
     });
 
@@ -144,7 +145,7 @@ describe('salesman acceptance test', function(){
             });
 
             assert.equal(result.status, 200);
-            expect(result.sessionId).to.be.undefined;
+            expect(result.data.sessionId).to.be.undefined;
         });
 
         it('LogoutUserNotLoggedIn', async function(){
@@ -344,36 +345,36 @@ describe('salesman acceptance test', function(){
     });
 
     describe('TestGetProfile', function(){
-        // it('GetProfileValid', async function(){
-        //     let result = await axios.get(serverUrl + 'user/getProfile', {
-        //         headers:{
-        //             sessionId:"sessionId"
-        //         }
-        //     });
-        //
-        //     assert.equal(result.status, 200);
-        //     expect(result.user).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
-        //     expect(result.user).to.not.have.all.keys('sessionId', 'password');
-        // }) ;
-        //
-        // it('InvalidSessionId', async function(){
-        //     let result = await axios.get(serverUrl + 'user/getProfile', {
-        //         headers:{
-        //             sessionId:'sessionId'
-        //         }
-        //     }).then(async function(info){
-        //         return info;
-        //     }).catch(async function(err){
-        //         return err;
-        //     });
-        //
-        //     assert.equal(result.response.status, 401);
-        // });
+         it('TestGetProfileValid', async function(){
+             let result = await axios.get(serverUrl + 'user/getProfile', {
+                 headers:{
+                     sessionId:"sessionId"
+                 }
+             });
 
-        it('IllegalParameter', async function(){
+             assert.equal(result.status, 200);
+             expect(result.data).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+             expect(result.data).to.not.have.all.keys('sessionId', 'password');
+         }) ;
+
+         it('TestGetProfileInvalidSessionId', async function(){
+             let result = await axios.get(serverUrl + 'user/getProfile', {
+                 headers:{
+                     sessionId:1234567
+                 }
+             }).then(async function(info){
+                 return info;
+             }).catch(async function(err){
+                 return err;
+             });
+
+             assert.equal(result.response.status, 401);
+         });
+
+        it('TestGetProfileIllegalParameter', async function(){
             let result = await axios.get(serverUrl + 'user/getProfile', {
                 headers:{
-                    sessionId:987349823
+                    sessionIdd:987349823
                 }
             }).then(async function(info){
                 return info;

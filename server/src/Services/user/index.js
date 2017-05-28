@@ -3,6 +3,7 @@ let mailer          = require('../../Utils/Mailer/index');
 let cypher          = require('../../Utils/Cypher/index');
 let dal             = require('../../DAL/dal');
 let permissions     = require('../permissions/index');
+let constansStrings = require('../../Utils/Constans/ConstantStrings.js');
 
 let userModel       = require('../../Models/user');
 let inboxModel      = require('../../Models/message');
@@ -59,9 +60,9 @@ let login = async function(username, password){
     let user = await dal.getUserByUsername(username);
     let err;
     if(user == null)
-        return {'code': 409, 'err': 'user does not exist'};
+        return {'code': 409, 'err': constansStrings.userDoesNotExist};
     if(cypher.decrypt(user.password) != password)
-        return {'code': 409, 'err': 'password is incorrect'};
+        return {'code': 409, 'err': constansStrings.passwordIsIncorrect};
 
     let newSessionId = await _generateSessionId();
     user.sessionId = newSessionId;
@@ -78,7 +79,7 @@ let logout = async function(sessionId) {
     logger.info('Services.user.index.logout', {'session-id': sessionId});
     let user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 401, 'err': 'user is not logged in'};
+        return {'code': 401, 'err': constansStrings.userIsNotLoggedIn};
     }
 
     user.sessionId = undefined;
@@ -86,22 +87,22 @@ let logout = async function(sessionId) {
     if(res != null)
         return {'code': 200};
     else
-        return {'code': 500, 'err': 'something went wrong'};
+        return {'code': 500, 'err': constansStrings.somthingBadHappend};
 };
 
 let addUser = async function(sessionId, userDetails) {
     logger.info('Services.user.index.addUser', {'session-id': sessionId});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'addUser');
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constansStrings.permssionDenied};
 
     let isExistUsername = await dal.getUserByUsername(userDetails.username);
     let isExistId = await dal.getUserById(userDetails.personal.id);
     if(isExistUsername != null || isExistId != null){
-        return {'code': 409, 'err': 'Username or Id already exists'}
+        return {'code': 409, 'err': constansStrings.UsernameOrIdAlreadyExists}
     }
     if(userDetails.personal.id.length < ID_MIN_DIGITS_COUNT){
-        return {'code': 409, 'err': 'ID must be atleast ' + ID_MIN_DIGITS_COUNT + ' digits'}
+        return {'code': 409, 'err': constansStrings.passwordIsIncorrect}
     }
     let newUser = new userModel();
     let generatedPassword = userDetails.personal.id; //Math.random().toString(36).substring(2,10);
@@ -123,7 +124,7 @@ let addUser = async function(sessionId, userDetails) {
         return {'code': 200, 'user': newUser};
     }
     else{
-        return {'code': 500, 'err': 'could not insert user to database'};
+        return {'code': 500, 'err': constansStrings.somthingBadHappend};
     }
 };
 
@@ -132,23 +133,26 @@ let editUser = async function(sessionId, username, userDetails){
 
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'editUser', null);
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constansStrings.permssionDenied};
 
     let user = await dal.getUserByUsername(username);
     if(user == null) {
-        return {'code': 409, 'err': 'edited user does not exist'};
+        return {'code': 409, 'err': constansStrings.userDoesNotExist};
     }
     user = user.toObject();
     if(userDetails.username != user.username) {
         let isExistUsername = await dal.getUserByUsername(userDetails.username);
         if (isExistUsername != null) {
-            return {'code': 409, 'err': 'Username already exists'}
+            return {'code': 409, 'err': constansStrings.UsernameOrIdAlreadyExists}
         }
     }
-    if(userDetails.personal.id != user.personal.id){
-        let isExistId = await dal.getUserById(userDetails.personal.id);
-        if(isExistId != null){
-            return {'code': 409, 'err': 'Id already exists'}
+    if(userDetails.personal.id != undefined) {
+        if (userDetails.personal.id != user.personal.id) {
+            let isExistId = await dal.getUserById(userDetails.personal.id);
+            if (isExistId != null) {
+                return {'code': 409, 'err': constansStrings.UsernameOrIdAlreadyExists}
+            }
+            userDetails.password = cypher.encrypt(userDetails.personal.id);
         }
     }
 
@@ -158,18 +162,18 @@ let editUser = async function(sessionId, username, userDetails){
         return {'code': 200};
     }
     else{
-        return {'code': 500, 'err': 'could not insert user to database'};
+        return {'code': 500, 'err': constansStrings.somthingBadHappend};
     }
 };
 
 let deleteUser = async function(sessionId, username) {
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'deleteUser');
     if (isAuthorized == null || username == isAuthorized.username)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constansStrings.permssionDenied};
 
     let user = await dal.getUserByUsername(username);
     if (user == null)
-        return {'code': 409, 'err': 'problem occurred with one of the parameters'};
+        return {'code': 409, 'err': constansStrings.userDoesNotExist};
 
     let res = await dal.deleteUser(username);
     //TODO: check return value of remove from mongo
@@ -181,15 +185,15 @@ let changePassword = async function(sessionId, oldPass, newPass) {
 
     let user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 401, 'err': 'unauthorized request'};
+        return {'code': 401, 'err': constansStrings.userDoesNotExist};
     }
 
     if(user.password != cypher.encrypt(oldPass)){
-        return {'code': 409, 'err': 'problem occurred with one of the parameters'};
+        return {'code': 409, 'err': constansStrings.passwordIsIncorrect};
     }
 
     if(newPass.length < ID_MIN_DIGITS_COUNT){
-        return {'code': 409, 'err': 'New password must be atleast 6 characters long'};
+        return {'code': 409, 'err': constansStrings.PasswortToShort};
     }
 
     user.password = cypher.encrypt(newPass);
@@ -197,32 +201,30 @@ let changePassword = async function(sessionId, oldPass, newPass) {
     if(res != null)
         return {'code': 200};
     else
-        return {'code': 500, 'err': 'something went wrong'};
+        return {'code': 500, 'err': constansStrings.somthingBadHappend};
 };
 
 let retrievePassword = async function(username, email) {
     logger.info('Services.user.index.retrievePassword', {'username': username});
     let user = await dal.getUserByUsername(username);
     if(user == null)
-        return {'code': 401, 'err': 'user is not logged in'};
+        return {'code': 401, 'err': constansStrings.userDoesNotExist};
 
     if(user.contact.email != email)
-        return {'code': 401, 'err': 'user not exist'};
+        return {'code': 401, 'err': constansStrings.incorectEmail};
 
     if (mailer.sendMail([user.contact.email], mailer.subjects.retrievePassword,
             'Your password is: ' + cypher.decrypt(user.password)))
         return {'code': 200};
     else
-        return {'code': 500, 'err': 'failed sending email'};
-
-
+        return {'code': 500, 'err': constansStrings.somthingBadHappend};
 };
 
 let getProfile = async function(sessionId) {
     logger.info('Services.user.index.getProfile', {'sessionId': sessionId});
     let user = await dal.getUserBySessionId(sessionId);
     if(user == null){
-        return {'code': 401, 'err': 'user is not logged in'};
+        return {'code': 401, 'err': constansStrings.userIsNotLoggedIn};
     }
 
     user = user.toObject();
@@ -235,7 +237,7 @@ let getAllUsers = async function(sessionId){
     logger.info('Services.user.index.getAllUsers', {'sessionId': sessionId});
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getAllUsers', null);
     if(isAuthorized == null)
-        return {'code': 401, 'err': 'user not authorized'};
+        return {'code': 401, 'err': constansStrings.permssionDenied};
 
     let users = await dal.getAllUsers();
     if(users != null) {
@@ -249,7 +251,7 @@ let getAllUsers = async function(sessionId){
         return {'code': 200, 'users': usersAsObjects};
     }
     else
-        return {'code': 500, 'err': 'something went wrong'};
+        return {'code': 500, 'err': constansStrings.somthingBadHappend};
 };
 
 let _generateSessionId = async function() {

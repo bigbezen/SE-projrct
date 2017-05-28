@@ -26,9 +26,25 @@ var styles = {
     },
     bodyStyle: {
         'width' : '80%',
-        'marginTop': '50px',
-        'margin': 'auto'
-    }
+        'margin': 'auto',
+        'marginTop': '50px'
+    },
+    notificationStyle: {
+        NotificationItem: {
+            DefaultStyle: {
+                fontSize: '50px',
+                width: '500px',
+                height: '200px',
+                textAlign: 'center',
+                margin: '100px -80px'
+            },
+            error: {
+                height: '200px',
+                width: '500px',
+                fontSize: '50px'
+            },
+        }
+    },
 
 };
 

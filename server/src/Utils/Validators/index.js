@@ -152,11 +152,20 @@ module.exports = {
         return checkParams(params, ['sessionId', 'year', 'month'], [stringT, numberT, numberT])
     },
 
-    addOrPublishShifts: function(params){
+    addShifts: function(params){
         var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
         for(let shift of params.shiftArr){
             if(res)
                 res = res && checkParams(shift, ['storeId', 'startTime', 'endTime', 'type'], [stringT, stringT, stringT, stringT])
+        }
+        return res;
+    },
+
+    publishShifts: function(params){
+        var res = checkParams(params, ['sessionId', 'shiftArr'], [stringT, objectT]);
+        for(let shift of params.shiftArr){
+            if(res)
+                res = res && checkParams(shift, ['_id', 'salesmanId'], [stringT, stringT])
         }
         return res;
     },
@@ -178,6 +187,14 @@ module.exports = {
         return checkParams(params, ['sessionId', 'shift'], [stringT, objectT]) &&
             checkParams(params.shift, ['salesmanId', 'startTime', 'endTime', '_id', 'salesReport', 'storeId'],
                 [stringT, stringT, stringT, stringT, objectT, stringT]);
+    },
+
+    editSale: function(params){
+        return checkParams(params, ['sessionId', 'shiftId', 'productId', 'saleTime', 'quantity'],[stringT, stringT, stringT, stringT, stringT]);
+    },
+
+    managerEndShift: function (params) {
+        return checkParams(params, ['sessionId', 'shiftId'], [stringT, stringT]);
     },
 
     reportSaleOrOpened: function(params){

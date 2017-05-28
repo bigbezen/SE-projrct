@@ -4,6 +4,7 @@ let dal                 = require('../../src/DAL/dal');
 let userServices        = require('../../src/Services/user/index');
 let userModel           = require('../../src/Models/user');
 let cypher              = require('../../src/Utils/Cypher/index');
+let constantString      = require('../../src/Utils/Constans/ConstantStrings.js');
 
 let getUserDetails = function(){
     let userDetails = new Object();
@@ -14,7 +15,7 @@ let getUserDetails = function(){
             "startDate": "08-16-2016",
             "endDate": null,
             "personal": {
-                "id": "223455",
+                "id": "2231145",
                 "firstName": "israel",
                 "lastName": "israeli",
                 "sex": "male",
@@ -147,7 +148,54 @@ describe('user unit test', function () {
     describe('TestAddUser', function(){
         it('AddUserValid', async function(){
             let result = await userServices.addUser('sessionId', getUserDetails());
-            console.log('bla');
+            let addedUserFromDb = await dal.getUserByUsername('new user');
+            addedUserFromDb = addedUserFromDb.toObject();
+
+            expect(result).to.have.all.keys('code', 'user');
+            let resultUser = result.user;
+            expect(resultUser).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(resultUser).to.not.all.keys('password', 'sessionId');
+
+            expect(addedUserFromDb).to.contain.all.keys('username', 'password', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(addedUserFromDb).to.not.have.property('sessionId');
+        });
+
+        it('AddUserMnagerValid', async function(){
+            let user = getUserDetails();
+            user.jobDetails.userType = "manager";
+            let result = await userServices.addUser('sessionId', user);
+            let addedUserFromDb = await dal.getUserByUsername('new user');
+            addedUserFromDb = addedUserFromDb.toObject();
+
+            expect(result).to.have.all.keys('code', 'user');
+            let resultUser = result.user;
+            expect(resultUser).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(resultUser).to.not.all.keys('password', 'sessionId');
+
+            expect(addedUserFromDb).to.contain.all.keys('username', 'password', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(addedUserFromDb).to.not.have.property('sessionId');
+        });
+
+        it('AddUserSalesmanValid', async function(){
+            let user = getUserDetails();
+            user.jobDetails.userType = "salesman";
+            let result = await userServices.addUser('sessionId', getUserDetails());
+            let addedUserFromDb = await dal.getUserByUsername('new user');
+            addedUserFromDb = addedUserFromDb.toObject();
+
+            expect(result).to.have.all.keys('code', 'user');
+            let resultUser = result.user;
+            expect(resultUser).to.contain.all.keys('username', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(resultUser).to.not.all.keys('password', 'sessionId');
+
+            expect(addedUserFromDb).to.contain.all.keys('username', 'password', 'startDate', 'personal', 'contact', 'jobDetails');
+            expect(addedUserFromDb).to.not.have.property('sessionId');
+        });
+
+        it('AddUserEventValid', async function(){
+            let user = getUserDetails();
+            user.jobDetails.userType = "event";
+            let result = await userServices.addUser('sessionId', getUserDetails());
             let addedUserFromDb = await dal.getUserByUsername('new user');
             addedUserFromDb = addedUserFromDb.toObject();
 
@@ -290,7 +338,7 @@ describe('user unit test', function () {
             let user = await dal.getUserByUsername('shahaf');
             let result = await userServices.deleteUser(user.sessionId, user.username.toString());
             assert.equal(result.code, 401, 'code 401');
-            assert.equal(result.err, 'user not authorized');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.store, null, 'user return null');
 
             //get all the store to ensure that the store not added
@@ -314,7 +362,7 @@ describe('user unit test', function () {
             userCount = userCount.count;
             let manager = await dal.getUserByUsername('manager');
             let result = await userServices.deleteUser(manager.sessionId, 'notExisying');
-            assert.equal(result.err, 'problem occurred with one of the parameters');
+            assert.equal(result.err, constantString.userDoesNotExist);
             assert.equal(result.code, 409, 'code 409');
         });
 
@@ -325,7 +373,7 @@ describe('user unit test', function () {
             let result = await userServices.deleteUser(manager.sessionId, 'manager');
 
             assert.equal(result.code, 401, 'code 401');
-            assert.equal(result.err, 'user not authorized');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.store, null, 'user return null');
 
             let userCountAfterDelete = await dal.getAllUsers();

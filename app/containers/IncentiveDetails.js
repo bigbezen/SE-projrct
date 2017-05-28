@@ -2,29 +2,33 @@
  * Created by lihiverchik on 17/12/2016.
  */
 
-var React = require('react');
-var NotificationSystem = require('react-notification-system');
-
-var constantsStrings = require('../utils/ConstantStrings');
-var styles = require('../styles/managerStyles/styles');
-var encs = require('../utils/encouragmentsMock');
-var paths = require('../utils/Paths');
-var managementServices = require('../communication/managementServices');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var NotificationSystem  = require('react-notification-system');
+var constantsStrings    = require('../utils/ConstantStrings');
+var styles              = require('../styles/managerStyles/styles');
+var paths               = require('../utils/Paths');
+var managementServices  = require('../communication/managementServices');
+var userServices        = require('../communication/userServices');
+var DeleteIcon          = require('react-icons/lib/fa/close');
 
 var IncentiveDetails = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
         return {
             productsForIncentive: [1],
             products: [],
-            editedIncentive: undefined
+            editedIncentive: undefined,
+            subCategories: [],
+            productsOfSubCategory: []
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -33,6 +37,7 @@ var IncentiveDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -41,6 +46,7 @@ var IncentiveDetails = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentDidMount() {
         this.updateProducts();
         var query = this.props.location.query;
@@ -68,36 +74,59 @@ var IncentiveDetails = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getAllProducts().then(function (result) {
+            let subCategories = new Set(result.map((product) => product.subCategory));
             self.setState({
-                products: result
+                products: result,
+                subCategories: Array.from(subCategories)
             });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     getOptions: function(arrayOfObjects, index) {
         var selectedProductName = "";
         if(this.state.editedIncentive != undefined){
             // this means that the page is on edit mode and there are already selected products to display
             selectedProductName = this.state.editedIncentive.products[index].name;
         }
+        else if(this.state.productsOfSubCategory.length > 0){
+            selectedProductName = this.state.productsOfSubCategory[index].name;
+        }
         var optionsForDropDown = [];
         if(selectedProductName == "")
-            optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+            optionsForDropDown.push(<option selected>{constantsStrings.dropDownChooseString}</option>);
         else
-            optionsForDropDown.push(<option disabled>{constantsStrings.dropDownChooseString}</option>);
+            optionsForDropDown.push(<option>{constantsStrings.dropDownChooseString}</option>);
 
         for (var i = 0; i < arrayOfObjects.length; i++) {
-            var currOption = arrayOfObjects[i].name;
-            if(currOption == selectedProductName)
-                optionsForDropDown.push(<option key={i + (index*10)} selected value={currOption}>{currOption}</option>);
+            var currOption = arrayOfObjects[i];
+            if(currOption.name == selectedProductName)
+                optionsForDropDown.push(<option key={i + (index*10)} selected value={currOption.name + " - " + currOption.subCategory}>
+                    {currOption.name + " - " + currOption.subCategory}
+                </option>);
             else
-                optionsForDropDown.push(<option key={i + (index*10)} value={currOption}>{currOption}</option>);
+                optionsForDropDown.push(<option key={i + (index*10)} value={currOption.name + " - " + currOption.subCategory}>
+                    {currOption.name+ " - " + currOption.subCategory}
+                </option>);
+        }
+        return optionsForDropDown;
+    },
+
+    getCategoriesOptions: function(){
+        var optionsForDropDown = [];
+        optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
+
+        for (let currOption of this.state.subCategories) {
+            optionsForDropDown.push(<option key={currOption} value={currOption}>
+                {currOption}
+            </option>);
         }
         return optionsForDropDown;
     },
@@ -106,22 +135,44 @@ var IncentiveDetails = React.createClass({
         var newProducts = this.state.productsForIncentive;
         newProducts.push(1);
         this.setState({
-            productsForIncentive: newProducts
-        })
+            productsForIncentive: newProducts,
+            productsOfSubCategory: newProducts
+        });
+        this.refs.subCategory.value = constantsStrings.dropDownChooseString;
     },
 
-    deleteProduct: function(){
+    deleteProduct: function(i){
         var newProducts = this.state.productsForIncentive;
-        newProducts.splice(-1);
+        if(i == undefined)
+            newProducts = newProducts.slice(0, -1);
+        else
+            newProducts.splice(i, 1);
+
         this.setState({
-            productsForIncentive: newProducts
+            productsForIncentive: newProducts,
+            productsOfSubCategory: newProducts
         });
+        this.refs.subCategory.value = constantsStrings.dropDownChooseString;
+    },
+
+    onChangeSubCategory: function() {
+        let subCategory = this.refs.subCategory.value;
+        let productsOfSubCategory = this.state.products.filter((product) => product.subCategory == subCategory);
+        this.setState({
+            productsOfSubCategory: productsOfSubCategory,
+            productsForIncentive: productsOfSubCategory
+        });
+    },
+
+    onChangeProduct: function(){
+        this.state.refs.subCategory.value = constantsStrings.dropDownChooseString;
     },
 
     renderProductChoice: function(product, i){
         return (
             <div className="row" style={styles.productSelect}>
-                <select key={i} className="col-xs-4 col-xs-offset-2" onChange={this.handleSubCategoryChange}
+                <span className="col-sm-1 col-sm-offset-1"><a onClick={() => this.deleteProduct(i)}><DeleteIcon/></a></span>
+                <select key={i} className="col-xs-6" onChange={this.onChangeProduct}
                     ref={"product" + i} data="" >
                     {this.getOptions(this.state.products, i)}
                 </select>
@@ -148,11 +199,12 @@ var IncentiveDetails = React.createClass({
         for(var productIndex in productsAsObjects)
             productsAsDict[productsAsObjects[productIndex].name] = productsAsObjects[productIndex]._id;
         for(var i=0; i<numOfProducts; i++) {
-            var chosenProduct = this.refs["product" + i].value;
+            var chosenProduct = this.refs["product" + i].value.split(" - ")[0];
             if(chosenProduct != constantsStrings.dropDownChooseString)
                 selectedProducts.push(productsAsDict[chosenProduct]);
         }
         if(selectedProducts.length == 0){
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: constantsStrings.incentiveMissingProducts_string,
                 level: 'error',
@@ -176,10 +228,11 @@ var IncentiveDetails = React.createClass({
 
             managementServices.addIncentive(newIncentive)
                 .then(function(result) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantsStrings.addSuccessMessage_string,
                         level: 'success',
-                        autoDismiss: 2,
+                        autoDismiss: 1,
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
@@ -188,10 +241,11 @@ var IncentiveDetails = React.createClass({
                         }
                     });
                 }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
@@ -205,10 +259,11 @@ var IncentiveDetails = React.createClass({
 
             managementServices.editIncentive(editedIncentive)
                 .then(function(result){
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantsStrings.editSuccessMessage_string,
                         level: 'success',
-                        autoDismiss: 2,
+                        autoDismiss: 1,
                         position: 'tc',
                         onRemove: function (notification) {
                             context.router.push({
@@ -217,19 +272,17 @@ var IncentiveDetails = React.createClass({
                         }
                     });
                 }).catch(function (errMess) {
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
                 });
             })
         }
-
-
-
-        /**/
     },
+
     addNewIncentive: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
@@ -247,11 +300,10 @@ var IncentiveDetails = React.createClass({
                     </div>
                     <div className="form-group">
                         <input type="text"
-                               className="col-xs-4 col-xs-offset-2"
+                               className="col-xs-6 col-xs-offset-2"
                                ref="nameBox"
                         />
                     </div>
-
 
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentivePickProducts_string}:</label>
@@ -260,36 +312,45 @@ var IncentiveDetails = React.createClass({
                         {this.state.productsForIncentive.map(this.renderProductChoice)}
                     </div>
 
+                    <div className="form-group">
+                        <label className="col-xs-4 col-xs-offset-2">Sub Category:</label>
+                    </div>
+                    <div className="form-group" ref="subCategoryBox">
+                        <div className="row" style={styles.productSelect}>
+                            <select className="col-xs-6 col-xs-offset-2" onChange={this.onChangeSubCategory}
+                                    ref="subCategory" data="" >
+                                {this.getCategoriesOptions()}
+                            </select>
+                        </div>
+                    </div>
 
                     <div className="form-group">
                         <div className="row">
                             <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" onClick={this.addProduct}>+</button>
-                            <button className="w3-card-4 w3-circle w3-button" onClick={this.deleteProduct}>-</button>
                         </div>
                     </div>
-
 
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentiveNumOfProducts_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="number" min={0}
-                               className="col-xs-4 col-xs-offset-2"
+                               className="col-xs-6 col-xs-offset-2"
                                ref="numOfProductsBox"
+                               required
                         />
                     </div>
-
 
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.incentiveRate_string}:</label>
                     </div>
                     <div className="form-group ">
                         <input type="number" min={0}
-                               className="col-xs-4 col-xs-offset-2"
+                               className="col-xs-6 col-xs-offset-2"
                                ref="rateBox"
+                               required
                         />
                     </div>
-
 
                     <div className="form-group">
                         <button

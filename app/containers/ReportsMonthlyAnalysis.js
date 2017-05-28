@@ -1,23 +1,16 @@
 /**
  * Created by lihiverchik on 17/12/2016.
  */
-var React = require('react');
-var constantStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var managerServices = require('../communication/managerServices');
-
-var moment = require('moment');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
-
-
-
-var options = {
-    noDataText: constantStrings.NoDataText_string
-};
+var React               = require('react');
+var constantStrings     = require('../utils/ConstantStrings');
+var styles              = require('../styles/managerStyles/styles');
+var managerServices     = require('../communication/managerServices');
+var moment              = require('moment');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var ReportsMonthlyAnalysis = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
@@ -30,6 +23,7 @@ var ReportsMonthlyAnalysis = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -38,6 +32,7 @@ var ReportsMonthlyAnalysis = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -45,27 +40,26 @@ var ReportsMonthlyAnalysis = React.createClass({
             report: undefined
         }
     },
-    componentWillMount() {
-    },
 
     onClickExportReport: function() {
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var chosenYear = this.refs.datepicker.value;
         managerServices.exportMonthlyAnalysisReport(chosenYear)
             .then(function(data){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                 });
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 0,
                     position: 'tc',
                 });
             });
@@ -83,25 +77,25 @@ var ReportsMonthlyAnalysis = React.createClass({
                 })
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 0,
                     position: 'tc',
                 });
                 self.setState({
                     report: undefined
                 })
             })
-
     },
 
     onClickEditReport: function(){
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         if(this.state.report != undefined) {
             managerServices.updateMonthlyAnalysisReport(this.state.report.year, this.state.report)
                 .then(function (data) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantStrings.editSuccessMessage_string,
                         level: 'success',
@@ -110,10 +104,11 @@ var ReportsMonthlyAnalysis = React.createClass({
                     });
                 })
                 .catch(function (err) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: err,
                         level: 'error',
-                        autoDismiss: 1,
+                        autoDismiss: 0,
                         position: 'tc',
                     });
                 });
@@ -136,22 +131,22 @@ var ReportsMonthlyAnalysis = React.createClass({
     renderMonthSections: function(sectionData, index){
         return (
             <div style={styles.col} className="w3-theme-l5 w3-round-large ">
-                <p>{constantStrings.dictionary[sectionData['section']]}</p>
+                <p><b>{constantStrings.dictionary[sectionData['section']]}</b></p>
                 <div className="col-sm-10" style={{padding: '0'}}>
-                    <p className="col-sm-6">{constantStrings.dictionary["traditionalHot"]}</p>
-                    <input type="number" min="0" className="w3-round-large col-sm-6"
+                    <p className="col-sm-12">{constantStrings.dictionary["traditionalHot"]}</p>
+                    <input type="number" min="0" className="w3-round-large col-sm-12"
                         defaultValue={sectionData.traditionalHot} ref={sectionData.month + "#" + sectionData.section + "#traditionalHot"}
                         onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "traditionalHot")}/>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
-                    <p className="col-sm-6">{constantStrings.dictionary["traditionalOrganized"]}</p>
-                    <input type="number" min="0" className="w3-round-large col-sm-6"
+                    <p className="col-sm-12">{constantStrings.dictionary["traditionalOrganized"]}</p>
+                    <input type="number" min="0" className="w3-round-large col-sm-12"
                         defaultValue={sectionData.traditionalOrganized} ref={sectionData.month + "#" + sectionData.section + "#traditionalOrganized"}
                         onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "traditionalOrganized")}/>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
-                    <p className="col-sm-6">{constantStrings.dictionary["organized"]}</p>
-                    <input type="number" min="0" className="w3-round-large col-sm-6"
+                    <p className="col-sm-12">{constantStrings.dictionary["organized"]}</p>
+                    <input type="number" min="0" className="w3-round-large col-sm-12"
                         defaultValue={sectionData.organized} ref={sectionData.month + "#" + sectionData.section + "#organized"}
                         onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "organized")}/>
                 </div>
@@ -163,8 +158,8 @@ var ReportsMonthlyAnalysis = React.createClass({
     renderEncouragements: function(encouragement, index){
         return (
             <div style={styles.col} className="w3-theme-l5 w3-round-large">
-                <p>{encouragement.encouragement.name}</p>
-                <input type="number" min="0" className="w3-round-large col-sm-8" defaultValue={encouragement.amount}
+                <p className="col-sm-12">{encouragement.encouragement.name}</p>
+                <input type="number" min="0" className="w3-round-large col-sm-12" defaultValue={encouragement.amount}
                     ref={encouragement.month + "#" + index} onChange={() => this.onChangeEncValue(encouragement.month, index)}/>
             </div>
         )
@@ -218,7 +213,7 @@ var ReportsMonthlyAnalysis = React.createClass({
             <div className="w3-container">
                 <div className="col=sm-12">
                     <div className="row text-center">
-                        <h2>{constantStrings.monthlyAnalysisReportTitle_string}</h2>
+                        <h2>{constantStrings.reportsMonthlyAnalysisReportTitle_string}</h2>
                     </div>
                     <div className="row">
                         <input className="col-sm-1 w3-card-4 w3-round-xlarge" ref="datepicker" type="number" min="2000" max="2099"
@@ -234,7 +229,6 @@ var ReportsMonthlyAnalysis = React.createClass({
             </div>
         )
     }
-
 });
 
 module.exports = ReportsMonthlyAnalysis;

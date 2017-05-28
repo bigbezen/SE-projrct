@@ -2,18 +2,19 @@
  * Created by lihiverchik on 25/03/2017.
  */
 
-var React = require('react');
-var salesmanServices = require('../communication/salesmanServices');
-var constantsStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/salesmanStyles/shiftCommentsStyles');
-var userServices = require('../communication/userServices');
+var React                   = require('react');
+var salesmanServices        = require('../communication/salesmanServices');
+var constantsStrings        = require('../utils/ConstantStrings');
+var styles                  = require('../styles/salesmanStyles/shiftCommentsStyles');
+var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
 var ShiftComments = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState(){
         this.setSessionId();
         this.setUserType();
@@ -22,6 +23,7 @@ var ShiftComments = React.createClass({
             viewMode: true
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -30,6 +32,7 @@ var ShiftComments = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -38,30 +41,35 @@ var ShiftComments = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     componentDidMount() {
         this.updateShift();
     },
+
     updateShift(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.getCurrentShift().then(function (n) {
-            var currShift = n;
+        salesmanServices.getCurrentShift().then(function (currShift) {
             self.setState({shift: currShift});
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     changeStateToAddMode: function(){
         this.setState({viewMode: false})
     },
+
     changeStateToViewMode: function(){
         this.setState({viewMode: true})
     },
+
     handleAddComment(){
         var content = this.refs.commentContent.value;
         var self = this;
@@ -70,14 +78,16 @@ var ShiftComments = React.createClass({
             self.updateShift()
             self.changeStateToViewMode()
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     renderEachComment: function(comment, i) {
         return (
                 <div key={i} className="row col-xs-10 col-xs-offset-1 w3-card-4" style={styles.commentsStyle}>
@@ -85,6 +95,7 @@ var ShiftComments = React.createClass({
                 </div>
         )
     },
+
     renderAddMode: function(){
         return(
             <div className='main-container' >
@@ -103,6 +114,7 @@ var ShiftComments = React.createClass({
             </div>
         )
     },
+
     renderViewMode: function(){
         return (
             <div className='main-container'>
@@ -116,6 +128,7 @@ var ShiftComments = React.createClass({
             </div>
         )
     },
+
     renderLoading:function () {
         return(
             <div>
@@ -124,6 +137,7 @@ var ShiftComments = React.createClass({
             </div>
         )
     },
+
     render: function () {
         if(this.state.shift != null && this.state.viewMode)
         {

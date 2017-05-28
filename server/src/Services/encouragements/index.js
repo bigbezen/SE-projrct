@@ -43,6 +43,10 @@ let editEncouragement = async function (sessionId, encouragementDetails) {
     if(user == null)
         return {'encouragement': null, 'code': 401, 'err': 'permission denied'};
 
+    let encExists = await dal.getEncouragement(encouragementDetails._id);
+    if(!encExists){
+        return {code: 400, err: 'encouragement does not exist'};
+    }
     //check if all the products id belongs to products
     for (let i = 0; i < encouragementDetails.products.length; i++) {
         let exist = await dal.getProductById(encouragementDetails.products[i]);
@@ -52,7 +56,7 @@ let editEncouragement = async function (sessionId, encouragementDetails) {
     }
 
     let res =  await dal.editEncouragement(encouragementDetails);
-    if (res.ok == 0 || res.nModified == 0)
+    if (res.ok != 1)
         return {'encouragement': res, 'code': 400, 'err': 'cannot edit this encouragement'};
 
     return {'encouragement': res, 'code': 200, 'err': null};

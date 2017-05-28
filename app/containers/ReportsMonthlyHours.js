@@ -1,23 +1,16 @@
 /**
  * Created by lihiverchik on 17/12/2016.
  */
-var React = require('react');
-var constantStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var managerServices = require('../communication/managerServices');
-
-var moment = require('moment');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
-
-
-
-var options = {
-    noDataText: constantStrings.NoDataText_string
-};
+var React               = require('react');
+var constantStrings     = require('../utils/ConstantStrings');
+var styles              = require('../styles/managerStyles/styles');
+var managerServices     = require('../communication/managerServices');
+var moment              = require('moment');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var ReportsMonthlyHours = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
@@ -30,6 +23,7 @@ var ReportsMonthlyHours = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -38,6 +32,7 @@ var ReportsMonthlyHours = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -45,27 +40,26 @@ var ReportsMonthlyHours = React.createClass({
             report: undefined
         }
     },
-    componentWillMount() {
-    },
 
     onClickExportReport: function() {
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
-        managerServices.exportMonthlyHoursReport(datepickerVal[0], datepickerVal[1])
+        managerServices.exportMonthlyHoursReport(datepickerVal[0], datepickerVal[1] - 1)
             .then(function(data){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: constantStrings.mailSentSuccess_string,
                     level: 'success',
-                    autoDismiss: 2,
+                    autoDismiss: 1,
                     position: 'tc',
                 });
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 0,
                     position: 'tc',
                 });
             });
@@ -75,32 +69,32 @@ var ReportsMonthlyHours = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
-        managerServices.getMonthlyHoursReportData(parseInt(datepickerVal[0]), parseInt(datepickerVal[1]))
+        managerServices.getMonthlyHoursReportData(parseInt(datepickerVal[0]), parseInt(datepickerVal[1] - 1))
             .then(function(data){
                 self.setState({
                     report: data
                 })
             })
             .catch(function(err){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: err,
                     level: 'error',
-                    autoDismiss: 1,
+                    autoDismiss: 0,
                     position: 'tc',
                 });
                 self.setState({
                     report: undefined
                 })
             })
-
     },
 
     onClickEditReport: function(){
-        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         if(this.state.report != undefined) {
             managerServices.updateMonthlyHoursReport(this.state.report.year, this.state.report.month, this.state.report)
                 .then(function (data) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: constantStrings.editSuccessMessage_string,
                         level: 'success',
@@ -109,10 +103,11 @@ var ReportsMonthlyHours = React.createClass({
                     });
                 })
                 .catch(function (err) {
+                    notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: err,
                         level: 'error',
-                        autoDismiss: 1,
+                        autoDismiss: 0,
                         position: 'tc',
                     });
                 });
@@ -123,10 +118,7 @@ var ReportsMonthlyHours = React.createClass({
         var newVal = this.refs[index + refName].value;
         var report = this.state.report;
         report.salesmansData[index][refName] = newVal;
-        console.log(report.salesmansData[index][refName]);
-
     },
-
 
     renderSalesmanData: function(salesman, index){
         return (
@@ -189,7 +181,6 @@ var ReportsMonthlyHours = React.createClass({
             </div>
         )
     }
-
 });
 
 module.exports = ReportsMonthlyHours;

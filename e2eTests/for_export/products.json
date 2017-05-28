@@ -1,0 +1,12 @@
+{"_id":{"$oid":"586e7754d17c7562f4dae96d"},"notifyManager":false,"minRequiredAmount":12,"subCategory":"סינגל מאלט סקוטי","category":"ספיריט","salePrice":0,"retailPrice":150,"name":"גלנליווט","__v":0}
+{"_id":{"$oid":"586e795fd17c7562f4dae972"},"notifyManager":true,"minRequiredAmount":10,"subCategory":"בלנד סקוטי","category":"ספיריט","salePrice":0,"retailPrice":70,"name":"בלו לייבל","__v":0}
+{"_id":{"$oid":"587a3e2961dc3f5b3cc2584d"},"notifyManager":true,"minRequiredAmount":0,"subCategory":"הר","category":"יין","salePrice":0,"retailPrice":40,"name":"יין תבור פנינים","__v":0}
+{"_id":{"$oid":"587a3f2f33d13356104f55d1"},"notifyManager":true,"minRequiredAmount":4,"subCategory":"אפרטיף-ביטר","category":"ספיריט","salePrice":0,"retailPrice":60,"name":"קמפארי","__v":0}
+{"_id":{"$oid":"587a4942d86d5360e4c87c2d"},"notifyManager":true,"minRequiredAmount":10,"subCategory":"L.E","category":"יין","salePrice":150,"retailPrice":80,"name":"יין סדרה 11000","__v":0}
+{"_id":{"$oid":"588176277c98e445a4166c6b"},"notifyManager":false,"minRequiredAmount":20,"subCategory":"בלנד סקוטי","category":"ספיריט","salePrice":150,"retailPrice":100,"name":"בלאק לייבל","__v":0}
+{"_id":{"$oid":"588176417c98e445a4166c6e"},"notifyManager":false,"minRequiredAmount":10,"subCategory":"ארבעת הלבנים","category":"ספיריט","salePrice":100,"retailPrice":60,"name":"קטל וואן","__v":0}
+{"_id":{"$oid":"588176847c98e445a4166c74"},"notifyManager":true,"minRequiredAmount":5,"subCategory":"סינגל מאלט סקוטי","category":"ספיריט","salePrice":300,"retailPrice":200,"name":"מקאלן","__v":0}
+{"_id":{"$oid":"588176b27c98e445a4166c77"},"notifyManager":true,"minRequiredAmount":15,"subCategory":"תבור אדמה","category":"יין","salePrice":150,"retailPrice":100,"name":"תבור אדמה בציר 2014","__v":0}
+{"_id":{"$oid":"588176ca7c98e445a4166c7a"},"notifyManager":false,"minRequiredAmount":10,"subCategory":"ארבעת הלבנים","category":"ספיריט","salePrice":110,"retailPrice":80,"name":"סמירנוף בלאק","__v":0}
+{"_id":{"$oid":"588176f37c98e445a4166c7d"},"notifyManager":true,"minRequiredAmount":12,"subCategory":"ארבעת הלבנים","category":"ספיריט","salePrice":120,"retailPrice":100,"name":"קטל וואן ציטרון","__v":0}
+{"_id":{"$oid":"58bbf1480c78622ef8480618"},"notifyManager":true,"minRequiredAmount":5,"subCategory":"סינגל מאלט סקוטי","category":"ספיריט","salePrice":170,"retailPrice":120,"name":"גלנפידיך","__v":0}

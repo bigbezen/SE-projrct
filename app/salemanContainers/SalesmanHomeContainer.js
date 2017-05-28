@@ -1,9 +1,10 @@
-var React = require('react');
-var constantsStrings = require('../utils/ConstantStrings');
-var paths = require('../utils/Paths');
-var salesmanService = require('../communication/salesmanServices');
-var styles = require('../styles/salesmanStyles/homeStyles');
-var userServices = require('../communication/userServices');
+
+var React                   = require('react');
+var constantsStrings        = require('../utils/ConstantStrings');
+var paths                   = require('../utils/Paths');
+var salesmanService         = require('../communication/salesmanServices');
+var styles                  = require('../styles/salesmanStyles/homeStyles');
+var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
 
 var shift = {
@@ -52,9 +53,11 @@ var shift = {
 };
 
 var SalesmanHomeContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -63,6 +66,7 @@ var SalesmanHomeContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -71,6 +75,7 @@ var SalesmanHomeContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     getInitialState(){
         this.setSessionId();
         this.setUserType();
@@ -80,14 +85,16 @@ var SalesmanHomeContainer = React.createClass({
             buttonTitle: null
         })
     },
+
     componentDidMount() {
         this.updateShifts();
     },
+
     updateShifts() { 
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanService.getCurrentShift().then(function (n) { 
-            var currShift = n
+            var currShift = n;
             if (currShift.status == "STARTED") {
                 self.setState({
                     shift: currShift,
@@ -102,16 +109,23 @@ var SalesmanHomeContainer = React.createClass({
                 });
             }
         }).catch(function (errMess) {
-            if(errMess != "user does not have a shift today"){
+            if(errMess != "לדייל אין משמרת היום"){
+                notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
-                    autoDismiss: 5,
+                    autoDismiss: 0,
                     position: 'tc'
+                });
+            }
+            else {
+                self.setState({
+                    shift: ""
                 });
             }
         })
      },
+
     handleStartShift: function () {
         this.context.router.push({
             pathname: this.state.nextScreen,
@@ -119,13 +133,12 @@ var SalesmanHomeContainer = React.createClass({
         })
     },
     renderShift: function () {
-        //TODO: present to user details about the shift or some other message if he has no shift
         var startTime = new Date(this.state.shift.startTime);
         var formatedStartime = startTime.toLocaleTimeString('en-GB');
         var endTime = new Date(this.state.shift.endTime);
         var formatedEndTime = endTime.toLocaleTimeString('en-GB');
         return (
-            <div className='main-container w3-card-4' style={styles.bodyStyle}>
+            <div className='main-container w3-card-8' style={styles.bodyStyle}>
                 <div style={styles.centerAlign}>
                     <p>{constantsStrings.storeName_string}: {this.state.shift.store.name}</p>
                     <p>{constantsStrings.city_string}: {this.state.shift.store.city}</p>
@@ -134,25 +147,39 @@ var SalesmanHomeContainer = React.createClass({
 
                 </div>
                 <div style={styles.buttonsStyle}>
-                    <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
+                    <button className="w3-btn w3-ripple w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
 
         )
     },
-    renderLoading:function () {
+
+    renderLoading:function (text) {
         return(
             <div>
                 <div className="text-center">
-                    <h1>אין לך משמרות היום, סע לים!!! (:</h1>
+                    <h1>{text}</h1>
+                </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
+    renderNoShift:function () {
+        return(
+            <div>
+                <div className="text-center">
+                    <p className="w3-xxlarge"><b>{constantsStrings.noShiftToday_string}</b></p>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },
     render: function () {
-        if(this.state.shift != null)
+        if(this.state.shift === "") {
+            return this.renderNoShift();
+        }
+        else if(this.state.shift != null)
         {
             return this.renderShift();
         }

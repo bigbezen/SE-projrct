@@ -1,25 +1,27 @@
-var React = require('react');
-var ReactBsTable = require("react-bootstrap-table");
-var BootstrapTable = ReactBsTable.BootstrapTable;
-var TableHeaderColumn = ReactBsTable.TableHeaderColumn;
-var constantStrings = require('../utils/ConstantStrings');
-var managementServices = require('../communication/managementServices');
-var helpers = require('../utils/Helpers');
-var paths = require('../utils/Paths');
-var styles = require('../styles/managerStyles/styles');
-var TrashIcon = require('react-icons/lib/fa/trash-o');
-var EditIcon = require('react-icons/lib/md/edit');
-var NotificationSystem = require('react-notification-system');
-var userServices = require('../communication/userServices');
+var React               = require('react');
+var ReactBsTable        = require("react-bootstrap-table");
+var BootstrapTable      = ReactBsTable.BootstrapTable;
+var TableHeaderColumn   = ReactBsTable.TableHeaderColumn;
+var constantStrings     = require('../utils/ConstantStrings');
+var managementServices  = require('../communication/managementServices');
+var helpers             = require('../utils/Helpers');
+var paths               = require('../utils/Paths');
+var styles              = require('../styles/managerStyles/styles');
+var TrashIcon           = require('react-icons/lib/fa/trash-o');
+var EditIcon            = require('react-icons/lib/md/edit');
+var NotificationSystem  = require('react-notification-system');
+var userServices        = require('../communication/userServices');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
 };
 
 var StoresContainer = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
+
     getInitialState() {
         this.setSessionId();
         this.setUserType();
@@ -27,6 +29,7 @@ var StoresContainer = React.createClass({
             stores: null
         }
     },
+
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -35,6 +38,7 @@ var StoresContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -43,9 +47,11 @@ var StoresContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
-    componentWillMount() {
+
+    componentDidMount() {
         this.updateStores();
     },
+
     updateStores() {
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
@@ -54,25 +60,27 @@ var StoresContainer = React.createClass({
                 stores: n
             });
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     onClickEditButton: function(cell, row, rowIndex){
-        console.log('Store #', rowIndex);
-        console.log(row);
         this.context.router.push({
             pathname: paths.manager_storeDetails_path,
             query: row
         })
     },
+
     onClickDeleteButton: function(cell, row, rowIndex){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
+        notificationSystem.clearNotifications();
         notificationSystem.addNotification({
             message: constantStrings.areYouSure_string,
             level: 'info',
@@ -87,6 +95,7 @@ var StoresContainer = React.createClass({
             }
         });
     },
+
     handleDeleteStore: function(row){
         this.setState({
             products: null
@@ -96,19 +105,22 @@ var StoresContainer = React.createClass({
         managementServices.deleteStore(row).then(function (n) {
             self.updateStores();
         }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
                 level: 'error',
-                autoDismiss: 5,
+                autoDismiss: 0,
                 position: 'tc'
             });
         })
     },
+
     onClickAddButton: function(){
         this.context.router.push({
             pathname: paths.manager_storeDetails_path
         })
     },
+
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
@@ -120,6 +132,7 @@ var StoresContainer = React.createClass({
             </button>
         )
     },
+
     deleteButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
@@ -131,6 +144,7 @@ var StoresContainer = React.createClass({
             </button>
         )
     },
+
     renderTable: function () {
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
@@ -198,13 +212,16 @@ var StoresContainer = React.createClass({
             </div>
         )
     },
+
     renderLoading:function () {
         return(
             <div>
                 <h1>loading...</h1>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },
+
     render: function () {
         if(this.state.stores != null)
         {

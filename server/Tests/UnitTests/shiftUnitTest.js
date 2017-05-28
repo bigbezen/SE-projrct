@@ -16,6 +16,7 @@ let shiftService            = require('../../src/Services/shift/index');
 let productService          = require('../../src/Services/product/index');
 let storeService            = require('../../src/Services/store/index');
 let encouragementsService   = require('../../src/Services/encouragements/index');
+let constantString          = require('../../src/Utils/Constans/ConstantStrings.js');
 
 
 describe('shift unit test', function () {
@@ -37,6 +38,7 @@ describe('shift unit test', function () {
     let enc4;
     let km = 100;
     let parking = 20;
+    let extraExpenses = 30;
 
     let shift_object_to_model = function(shiftObj){
         let shift = new shiftModel();
@@ -186,6 +188,9 @@ describe('shift unit test', function () {
         start.setDate(start.getDate() + 1);
 
         shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'salesmanId': salesman._id, 'sales':[]};
+
+        start.setDate(start.getDate() + 1);
+        end.setDate(end.getDate() + 1);
         shift2  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'sales':[]};
         shifts.push(shift1);
         shifts.push(shift2);
@@ -200,29 +205,71 @@ describe('shift unit test', function () {
         it('add shift not by manager', async function () {
             let res = await shiftService.addShifts(salesman.sessionId, shifts);
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift with not exist store', async function () {
             shifts[0].storeId = mongoose.Types.ObjectId("notexisting1");
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'One or more of the stores does not exist');
-            expect(res).to.have.property('err', 'One or more of the stores does not exist');
+            expect(res).to.have.property('err', constantString.storeDoesNotExist);
         });
 
         it('add shift with expire start date', async function () {
             shifts[0].startTime =  new Date(99,11,24);
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'shifts dates are before current time');
+            expect(res).to.have.property('err', constantString.shiftsCurrentTimeError);
         });
 
         it('add shift with expire finish date', async function () {
             shifts[0].endTime =  new Date(99,11,24).toString();
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             expect(res).to.have.property('code', 409);
-            expect(res).to.have.property('err', 'shifts dates are before current time');
+            expect(res).to.have.property('err', constantString.shiftsCurrentTimeError);
+        });
+
+        it('add two shifts for same user at the same date', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+
+            res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 409);
+            expect(res).to.have.property('err', constantString.userCannotHaveMoreThanOneShiftAtDay);
+
+            let endT = new Date(shifts[0].endTime);
+            endT = endT.setHours(endT.getHours() + 1);
+            shifts[0].endTime = endT;
+            res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 409);
+            expect(res).to.have.property('err', constantString.userCannotHaveMoreThanOneShiftAtDay);
+        });
+
+        it('add regular shift valid', async function () {
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 200);
+            assert.equal(res.shiftArr.length, 2);
+
+            let dbShifts = await dal.getShiftsByIds([res.shiftArr[0]._id, res.shiftArr[1]._id]);
+            expect(dbShifts).to.have.lengthOf(2);
+            for(let shift of dbShifts){
+                shift = shift.toObject();
+                expect(shift).to.have.property('status', 'CREATED');
+            }
+        });
+
+        it('add event shift valid', async function () {
+            shifts[0].type = 'אירוע';
+            shifts[1].type = 'אירוע';
+            let res = await shiftService.addShifts(manager.sessionId, shifts);
+            expect(res).to.have.property('code', 200);
+            assert.equal(res.shiftArr.length, 2);
+
+            let dbShifts = await dal.getShiftsByIds([res.shiftArr[0]._id, res.shiftArr[1]._id]);
+            expect(dbShifts).to.have.lengthOf(2);
+            for(let shift of dbShifts){
+                shift = shift.toObject();
+                expect(shift).to.have.property('status', 'FINISHED');
+            }
         });
 
         it('add shift by manager', async function () {
@@ -244,14 +291,14 @@ describe('shift unit test', function () {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             res = await shiftService.addShiftComment(manager.sessionId, shifts[0]._id, "not user");
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift comment not exist shift id', async function () {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             res = await shiftService.addShiftComment(salesman.sessionId, mongoose.Types.ObjectId("notexisting1"), "new comment");
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift comment salesman not an owner', async function () {
@@ -264,7 +311,7 @@ describe('shift unit test', function () {
             res = await shiftService.addShifts(manager.sessionId, shifts);
             res = await shiftService.addShiftComment(salesmanNotOwner.sessionId, shifts[0]._id, "new comment");
             expect(res).to.have.property('code', 401);
-            expect(res).to.have.property('err', 'user not authorized');
+            expect(res).to.have.property('err', constantString.permssionDenied);
         });
 
         it('add shift comment by salesman', async function () {
@@ -306,7 +353,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(manager.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('start shift not by salesman owner', async function(){
@@ -330,7 +377,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(salesman2.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('start shift not exist shift', async function(){
@@ -349,7 +396,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(salesman.sessionId, shifts[1]);
             expect(result).to.have.property('code', 404);
-            expect(result).to.have.property('err', 'shift not found');
+            expect(result).to.have.property('err', constantString.shiftDoedNotExist);
         });
 
         it('start shift not published', async function(){
@@ -362,7 +409,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.startShift(salesman.sessionId, shifts[0]);
             expect(result).to.have.property('code', 403);
-            expect(result).to.have.property('err', 'shift not published');
+            expect(result).to.have.property('err', constantString.shiftDoesNotPublished);
         });
 
         it('start shift valid', async function(){
@@ -418,7 +465,7 @@ describe('shift unit test', function () {
             let result = await shiftService.editShift(salesman2.sessionId, shifts[0]);
 
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('edit shift already started', async function(){
@@ -440,7 +487,7 @@ describe('shift unit test', function () {
             let result = await shiftService.editShift(manager.sessionId, shifts[0]);
 
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'permission denied shift already started');
+            expect(result).to.have.property('err', constantString.shiftAlreadyStarted);
         });
 
         it('edit shift valid', async function(){
@@ -666,7 +713,7 @@ describe('shift unit test', function () {
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
             shifts[1] = (await dal.addShift(shifts[1])).toObject();
 
-            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId);
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shift');
             expect(result.shift.status).to.be.equal('PUBLISHED');
@@ -698,7 +745,7 @@ describe('shift unit test', function () {
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
 
 
-            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId);
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shift');
             expect(result.shift.status).to.be.equal('STARTED');
@@ -750,7 +797,7 @@ describe('shift unit test', function () {
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
             shifts[1] = (await dal.addShift(shifts[1])).toObject();
 
-            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId);
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 409);
             expect(result).to.have.property('err');
         });
@@ -1065,12 +1112,13 @@ describe('shift unit test', function () {
 
             shift = (await dal.addShift(shift)).toObject();
 
-            let result = await shiftService.reportExpenses(salesman.sessionId, shift._id.toString(), km, parking);
+            let result = await shiftService.reportExpenses(salesman.sessionId, shift._id.toString(), km, parking, extraExpenses);
             expect(result).to.have.property('code', 200);
 
             shift = (await dal.getShiftsByIds([shift._id]))[0];
             expect(shift).to.have.property('numOfKM', km);
             expect(shift).to.have.property('parkingCost', parking);
+            expect(shift).to.have.property('extraExpenses', extraExpenses);
         });
 
         it("report expenses by manager", async function(){
@@ -1089,7 +1137,7 @@ describe('shift unit test', function () {
 
             let quantity = 2;
             let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
-            let result = await shiftService.reportExpenses(manager.sessionId, shift._id.toString(), km, parking);
+            let result = await shiftService.reportExpenses(manager.sessionId, shift._id.toString(), km, parking, extraExpenses);
             expect(result).to.have.property('code', 401);
         });
 
@@ -1115,7 +1163,7 @@ describe('shift unit test', function () {
 
             let quantity = 2;
             let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
-            let result = await shiftService.reportExpenses(salesman2.sessionId, shift._id.toString(), km, parking);
+            let result = await shiftService.reportExpenses(salesman2.sessionId, shift._id.toString(), km, parking, extraExpenses);
             expect(result).to.have.property('code', 401);
         });
 
@@ -1135,9 +1183,72 @@ describe('shift unit test', function () {
 
             let quantity = 2;
             let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
-            let result = await shiftService.reportExpenses('invalid sessionid', shift._id.toString(), km, parking);
+            let result = await shiftService.reportExpenses('invalid sessionid', shift._id.toString(), km, parking, extraExpenses);
             expect(result).to.have.property('code', 401);
         });
+
+        it("report expenses invalid shift id", async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':product1._id.toString(),'quantity':quantity}];
+            let result = await shiftService.reportExpenses(salesman.sessionId, "invalid8shif", km, parking, extraExpenses);
+            expect(result).to.have.property('code', 409);
+        });
+
+        it("report expenses invalid km or parking", async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':"invalid8shif",'quantity':quantity}];
+            let result = await shiftService.reportExpenses(user1.sessionId, shift._id.toString(), km, -1, extraExpenses);
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', constantString.illegalkmOrParkingCost);
+        });
+
+        it("report extraExpenses invalid km or parking", async function(){
+            let shift = shifts[0];
+            shift.status = "STARTED";
+
+            shift.startTime = new Date();
+            shift.endTime = new Date();
+            shift.salesReport = await createNewSalesReport();
+            shift = shift_object_to_model(shift);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shift.salesmanId = user1._id.toString();
+
+            shift = (await dal.addShift(shift)).toObject();
+
+            let quantity = 2;
+            let opens = [{'productId':"invalid8shif",'quantity':quantity}];
+            let result = await shiftService.reportExpenses(user1.sessionId, shift._id.toString(), km, 2 , -1);
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', constantString.illegalkmOrParkingCost);
+        });
+
 
         it("report expenses invalid shift id", async function(){
             let shift = shifts[0];
@@ -1177,7 +1288,7 @@ describe('shift unit test', function () {
             let opens = [{'productId':"invalid8shif",'quantity':quantity}];
             let result = await shiftService.reportExpenses(user1.sessionId, shift._id.toString(), km, -1);
             expect(result).to.have.property('code', 404);
-            expect(result).to.have.property('err', 'illegal km or parking cost');
+            expect(result).to.have.property('err', constantString.illegalkmOrParkingCost);
         });
     });
 
@@ -1211,9 +1322,9 @@ describe('shift unit test', function () {
                 if(earnedEnc.encouragement.toString() == enc1._id.toString())
                     expect(earnedEnc.count).to.be.equal(3);
                 if(earnedEnc.encouragement.toString() == enc2._id.toString())
-                    expect(earnedEnc.count).to.be.equal(1);
+                    expect(earnedEnc.count).to.be.equal(9);
                 if(earnedEnc.encouragement.toString() == enc3._id.toString())
-                    expect(earnedEnc.count).to.be.equal(1);
+                    expect(earnedEnc.count).to.be.equal(11);
                 if(earnedEnc.encouragement.toString() == enc4._id.toString())
                     expect(earnedEnc.count).to.be.equal(3);
             }
@@ -1272,6 +1383,103 @@ describe('shift unit test', function () {
         });
     });
 
+    describe('test get shifts of range', function() {
+        it('get shifts of date valid', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear()-1);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 1);
+
+
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+
+
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shifts');
+            expect(result.shifts).to.have.length(shifts.length);
+        });
+
+        it('get shifts of date - get only part of the shifts', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = shifts[0].startTime;
+            let endDate = shifts[0].endTime;
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shifts');
+            expect(result.shifts).to.have.length(1);
+        });
+
+        it('get shifts of date invalid dates', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() + 1);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() - 1);
+
+
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+
+
+            expect(result).to.have.property('code', 409);
+            expect(result).to.not.have.property('shifts');
+            expect(result).to.have.property('err');
+        });
+
+        it('get shifts of date - range with no shifts', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() + 21);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 22);
+
+
+            let result = await shiftService.getShiftsOfRange(manager.sessionId, startDate, endDate);
+
+
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shifts');
+            expect(result.shifts).to.have.length(0);
+        });
+
+        it('get shifts of date invalid sessionId', async function() {
+            for(let shift of shifts){
+                shift = shift_object_to_model(shift);
+                shift.salesmanId = salesman._id;
+                let res = await dal.addShift(shift);
+            }
+            let startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() + 1);
+            let endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() - 1);
+
+
+            let result = await shiftService.getShiftsOfRange("invalid session id", startDate, endDate);
+
+
+            expect(result).to.have.property('code', 401);
+            expect(result).to.not.have.property('shifts');
+            expect(result).to.have.property('err');
+        });
+
+    });
+
     describe('test get shifts from date', function(){
         it('get shifts from date valid', async function(){
             for(let shift of shifts){
@@ -1280,21 +1488,19 @@ describe('shift unit test', function () {
                 let res = await dal.addShift(shift);
             }
 
-            let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date());
+            let result = await shiftService.getShiftsFromDate(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 200);
             expect(result).to.have.property('shiftArr');
             for(let shift of result.shiftArr){
                 let i;
-                if(shift._id == shifts[0]._id)
+                if(shift._id.equals(shifts[0]._id))
                     i = 0;
                 else
                     i = 1;
-                expect(shift).to.include.all.keys('store', 'startTime', 'endTime', 'status', 'salesman');
-                expect((new Date(shifts[0].startTime)).getTime()).to.be.equal(shift.startTime.getTime());
-                expect((new Date(shifts[0].endTime)).getTime()).to.be.equal(shift.endTime.getTime());
-                expect(shift.store).to.be.a('object');
-                expect(shift.salesman).to.be.a('object');
-
+                shift = shift.toObject();
+                expect(shift).to.include.all.keys('storeId', 'startTime', 'endTime', 'status', 'salesmanId');
+                expect(shift.storeId).to.be.a('object');
+                expect(shift.salesmanId).to.be.a('object');
             }
         });
 
@@ -1310,7 +1516,7 @@ describe('shift unit test', function () {
         });
 
         it('tst get shifts from date with 0 shifts in db', async function(){
-            let result = await shiftService.getShiftsFromDate(manager.sessionId, new Date(0));
+            let result = await shiftService.getShiftsFromDate(salesman.sessionId, new Date(0));
             expect(result).to.have.property('code', 200);
             expect(result.shiftArr).to.have.lengthOf(0);
         })
@@ -1330,7 +1536,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(manager.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('end shift not by salesman owner', async function(){
@@ -1346,7 +1552,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(salesman2.sessionId, shifts[0]);
             expect(result).to.have.property('code', 401);
-            expect(result).to.have.property('err', 'user not authorized');
+            expect(result).to.have.property('err', constantString.permssionDenied);
         });
 
         it('end shift not exist shift', async function(){
@@ -1369,7 +1575,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(salesman.sessionId, shifts[1]);
             expect(result).to.have.property('code', 404);
-            expect(result).to.have.property('err', 'shift not found');
+            expect(result).to.have.property('err', constantString.shiftDoedNotExist);
         });
 
         it('end shift not started', async function(){
@@ -1382,7 +1588,7 @@ describe('shift unit test', function () {
 
             let result = await shiftService.endShift(salesman.sessionId, shifts[0]);
             expect(result).to.have.property('code', 403);
-            expect(result).to.have.property('err', 'shift not started');
+            expect(result).to.have.property('err', constantString.shiftDoesnotStarted);
         });
 
         it('end shift valid', async function(){
@@ -1418,11 +1624,97 @@ describe('shift unit test', function () {
         });
     });
 
+    describe('test manager end shift', function(){
+        it('end shift not by manager', async function(){
+            shifts[0].status = "PUBLISHED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.managerEndShift(salesman.sessionId, shifts[0]._id.toString());
+            expect(result).to.have.property('code', 401);
+            expect(result).to.have.property('err', constantString.permssionDenied);
+        });
+
+        it('end shift not exist shift', async function(){
+            shifts[0].status = "STARTED";
+            shifts[1].status = "STARTED";
+
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[1].startTime = new Date();
+            shifts[1].endTime = new Date();
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[1] = shift_object_to_model(shifts[1]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+            shifts[1].salesmanId = user1._id.toString();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.managerEndShift(manager.sessionId, "unexistngid1");
+            expect(result).to.have.property('code', 404);
+            expect(result).to.have.property('err', constantString.shiftDoedNotExist);
+        });
+
+        it('end shift not started', async function(){
+            shifts[0].status = "NOT-started";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            let result = await shiftService.managerEndShift(manager.sessionId, shifts[0]._id.toString());
+            expect(result).to.have.property('code', 403);
+            expect(result).to.have.property('err', constantString.shiftDoesnotStarted);
+        });
+
+        it('end shift valid', async function(){
+            shifts[0].status = "STARTED";
+            shifts[0].startTime = new Date();
+            shifts[0].endTime = new Date();
+            shifts[0] = shift_object_to_model(shifts[0]);
+            shifts[0].salesmanId = salesman._id.toString();
+            shifts[0].salesReport = [];
+            shifts[0].salesReport.push({'productId': product1._id, 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product2._id, 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0].salesReport.push({'productId': product3._id, 'stockStartShift': 0, 'stockEndShift': 0, 'sold': 0, 'opened': 0});
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                shifts[0].salesReport[i].productId = shifts[0].salesReport[i].productId.toString();
+                shifts[0].salesReport[i].stockStartShift =  2;
+                shifts[0].salesReport[i].opened =  1;
+                shifts[0].salesReport[i].stockEndShift =  1;
+            }
+
+            let result = await shiftService.managerEndShift(manager.sessionId, shifts[0]._id.toString());
+            expect(result).to.have.property('code', 200);
+
+            result = await dal.getShiftsByIds([shifts[0]._id]);
+            expect(result[0]).to.have.property('status', 'FINISHED');
+
+            for(let i = 0 ;  i < shifts[0].salesReport.length; i++){
+                assert.equal(shifts[0].salesReport[i].stockStartShift, 2);
+                assert.equal(shifts[0].salesReport[i].opened, 1);
+                assert.equal(shifts[0].salesReport[i].stockEndShift, 1);
+            }
+        });
+    });
+
     describe('test delete shift', function () {
         it('delete shift not by manager', async function() {
             let res = await shiftService.addShifts(manager.sessionId, shifts);
             let result = await shiftService.deleteShift(salesman.sessionId, 'shiftId');
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
             assert.equal(result.store, null, 'shift return null');
 
@@ -1447,7 +1739,7 @@ describe('shift unit test', function () {
             res.shiftArr[0].status = "STARTED";
             let result = await dal.updateShift(  res.shiftArr[0]);
             result = await shiftService.deleteShift(manager.sessionId, res.shiftArr[0]._id);
-            assert.equal(result.err, 'permission denied shift already started');
+            assert.equal(result.err, constantString.shiftAlreadyStarted);
             assert.equal(result.code, 401, 'code 401');
 
             //get all the shifts to ensure that the product is not removed
@@ -1491,7 +1783,7 @@ describe('shift unit test', function () {
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
             let result = await shiftService.editSale(manager.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, 2);
-            assert.equal(result.err, 'permission denied');
+            assert.equal(result.err, constantString.permssionDenied);
             assert.equal(result.code, 401, 'code 401');
 
             let res = await dal.getShiftsByIds([shift1._id]);
@@ -1512,7 +1804,7 @@ describe('shift unit test', function () {
 
                 shift1 = await dal.addShift(shift_object_to_model(shift1));
                 let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, -1);
-                assert.equal(result.err, 'quantity cannot be negative');
+                assert.equal(result.err, constantString.illegalQuantity);
                 assert.equal(result.code, 400, 'code 400');
 
                 let res = await dal.getShiftsByIds([shift1._id]);
@@ -1533,7 +1825,7 @@ describe('shift unit test', function () {
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
             let result = await shiftService.editSale(salesman.sessionId, "notexisting1", product1._id.toString(), saleTime, 2);
-            assert.equal(result.err, 'shift not found');
+            assert.equal(result.err, constantString.shiftDoedNotExist);
             assert.equal(result.code, 404, 'code 400');
         });
 
@@ -1551,7 +1843,7 @@ describe('shift unit test', function () {
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
             let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),"notexisting1", saleTime, 2);
-            assert.equal(result.err, 'product not found');
+            assert.equal(result.err, constantString.productDoesNotExist);
             assert.equal(result.code, 404, 'code 404');
 
             let res = await dal.getShiftsByIds([shift1._id]);
@@ -1579,4 +1871,5 @@ describe('shift unit test', function () {
             assert.equal(res[0].salesReport[0].sold, 11);
         });
     });
+
 });

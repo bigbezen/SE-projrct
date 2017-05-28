@@ -36,6 +36,8 @@ var SalesmanAssignShiftsContainer = React.createClass({
     },
 
     getInitialState() {
+        this.setSessionId();
+        this.setUserType();
         return {
             shifts: null,
             availability: {}

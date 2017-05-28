@@ -342,6 +342,7 @@ var ShiftDetails = React.createClass({
             this.refs.userBox.value = currShift.salesmanId.username;
         }
         this.refs.storeBox.value = currShift.storeId._id;
+
         this.refs.shiftTypeBox.value =  currShift.type;
         this.refs.dateBox.value =  moment(currShift.startTime).format('YYYY-MM-DD');
         this.refs.startTimeBox.value = moment(currShift.startTime).format('HH:mm');

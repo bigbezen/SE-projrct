@@ -106,14 +106,15 @@ var ShiftsCreateMultipleShifts = React.createClass({
     },
 
     getSalesmanOptions: function(shift){
-        let salesmanId = shift.salesmanId._id;
+        let salesmanId = "";
         var salesmen = this.state.salesmen;
 
         var optionsForDropdown = [];
-        if(salesmanId == ""){
+        if(shift.salesmanId == undefined){
             optionsForDropdown.push(<option selected>{constantsStrings.dropDownChooseString}</option>)
         }
         else{
+            salesmanId = shift.salesmanId._id;
             optionsForDropdown.push(<option>{constantsStrings.dropDownChooseString}</option>)
         }
         for(var salesman of salesmen){
@@ -140,13 +141,6 @@ var ShiftsCreateMultipleShifts = React.createClass({
             salesmanId = salesmanId[0]._id;
         }
         shift.salesmanId = salesmanId;
-        // var newShifts = this.state.newShifts;
-        // for(var shiftIndex in newShifts){
-        //     if(newShifts[shiftIndex].storeId == storeId){
-        //         newShifts[shiftIndex]["salesmanId"] = salesmanId;
-        //     }
-        // }
-        // this.state.newShifts = newShifts;
     },
 
 

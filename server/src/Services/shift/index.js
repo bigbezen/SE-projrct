@@ -641,7 +641,12 @@ let editShift = async function (sessionId, shiftDetails) {
     if(shift[0] != null && shift[0].status == "STARTED")
         return {'code': 401, 'err': constantString.shiftAlreadyStarted};
 
+    if(shiftDetails.salesmanId != undefined && shiftDetails.salesmanId == "")
+        shiftDetails.salesmanId = undefined;
+
+    console.log('bla');
     let res = await dal.editShift(shiftDetails);
+    console.log('bla');
     if(res.ok == 0)
         return {'code':400, 'err': constantString.shiftCannotBeEdited};
 

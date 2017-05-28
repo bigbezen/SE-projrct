@@ -15,13 +15,12 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
 
-    setSessionId: function() {
-        var sessId = localStorage.getItem('sessionId');
-        if (!sessId) {
-            sessId = 0;
+    getInitialState() {
+        this.setSessionId();
+        this.setUserType();
+        return {
+            shifts: null
         }
-        localStorage.setItem('sessionId', sessId);
-        userServices.setSessionId(sessId);
     },
 
     setUserType: function() {
@@ -33,10 +32,13 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         userServices.setUserType(userType);
     },
 
-    getInitialState() {
-        return {
-            shifts: null
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
         }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
 
     componentDidMount() {

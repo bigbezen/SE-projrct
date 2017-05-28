@@ -298,7 +298,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.km, req.body.parking);
+        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.km, req.body.parking, req.body.extraExpenses);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else
@@ -901,7 +901,7 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.post('/manager/getOrderEventReportXl', async function(req, res){
+    app.post('/manager/getEventsReportXl', async function(req, res){
         let result = await reportsService.getOrderEventReportXL(req.body.sessionId, req.body.year, req.body.month);
         if(result.code == 200)
             res.status(200).send();

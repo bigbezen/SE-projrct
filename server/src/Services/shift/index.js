@@ -84,6 +84,7 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.salesReport = newSalesReportSchema;
         newShift.sales = [];
         newShift.numOfKm = 0;
+        newShift.extraExpenses = 0;
         newShift.parkingCost = 0;
         newShift.constraints = [];
         newShift.shiftComments = [];
@@ -368,7 +369,7 @@ let getActiveShift = async function(sessionId, shiftId){
     return {'code': 200, 'shift': shift.toObject()};
 };
 
-let reportExpenses = async function(sessionId, shiftId, km, parking){
+let reportExpenses = async function(sessionId, shiftId, km, parking, extraExpenses){
     logger.info('Services.shift.index.reportExpenses', {'session-id': sessionId});
     let salesman = await permissions.validatePermissionForSessionId(sessionId, 'reportExpenses', null);
 
@@ -381,10 +382,11 @@ let reportExpenses = async function(sessionId, shiftId, km, parking){
         return {'code': 401, 'err': 'user not authorized'};
     }
 
-    if(km < 0 || parking < 0)
+    if(km < 0 || parking < 0 || extraExpenses < 0)
         return {'code': 404, 'err': constantString.illegalkmOrParkingCost};
     shift.numOfKM = km;
     shift.parkingCost = parking;
+    shift.extraExpenses = extraExpenses;
 
     let res = await dal.updateShift(shift);
     if(res.ok == 0)

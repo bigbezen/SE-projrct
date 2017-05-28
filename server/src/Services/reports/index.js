@@ -184,36 +184,42 @@ let getSalesmanListXL = async function(sessionId){
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(6).value = salesman.contact.address.street;
                     row.getCell(6).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(7).value = salesman.contact.address.number;
+                    row.getCell(7).value = salesman.contact.address.street;
                     row.getCell(7).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(8).value = salesman.contact.address.city;
+                    row.getCell(8).value = salesman.contact.address.number;
                     row.getCell(8).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(9).value = salesman.contact.address.zip;
+                    row.getCell(9).value = salesman.contact.address.city;
                     row.getCell(9).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(10).value = salesman.contact.phone;
+                    row.getCell(10).value = salesman.contact.address.zip;
                     row.getCell(10).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(11).value = salesman.contact.phone;
+                    row.getCell(11).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},

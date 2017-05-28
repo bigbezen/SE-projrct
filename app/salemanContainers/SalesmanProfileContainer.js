@@ -33,9 +33,11 @@ var SalesmanProfileContainer = React.createClass({
     },
 
     getInitialState() {
-      return({
-          profile: null
-      })
+        this.setSessionId();
+        this.setUserType();
+        return({
+            profile: null
+        })
     },
 
     componentDidMount() {

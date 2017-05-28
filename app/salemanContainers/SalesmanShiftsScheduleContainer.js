@@ -16,13 +16,12 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
 
-    setSessionId: function() {
-        var sessId = localStorage.getItem('sessionId');
-        if (!sessId) {
-            sessId = 0;
+    getInitialState() {
+        this.setSessionId();
+        this.setUserType();
+        return {
+            shifts: null
         }
-        localStorage.setItem('sessionId', sessId);
-        userServices.setSessionId(sessId);
     },
 
     setUserType: function() {
@@ -34,10 +33,13 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         userServices.setUserType(userType);
     },
 
-    getInitialState() {
-        return {
-            shifts: null
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
         }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
 
     componentDidMount() {
@@ -130,9 +132,21 @@ var SalesmanShiftsScheduleContainer = React.createClass({
             </div>
         )
     },
-
+    renderNoShifts:function () {
+        return(
+            <div>
+                <div className="text-center">
+                    <p className="w3-xxlarge"><b>{constantsStrings.noShifts_string}</b></p>
+                </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
     render: function () {
-        if(this.state.shifts != null)
+        if(this.state.shifts != null && this.state.shifts.length == 0){
+            return this.renderNoShifts();
+        }
+        else if(this.state.shifts != null)
         {
             return this.renderTable();
         }

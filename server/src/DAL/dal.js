@@ -175,7 +175,6 @@ module.exports = {
 
     getShiftsByStatus: function(status){
         return shiftModel.find({'status': status}, {'salesReport': 0})
-            .populate('salesmanId')
             .populate('storeId');
     },
 

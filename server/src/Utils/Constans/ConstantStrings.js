@@ -33,5 +33,10 @@ module.exports = {
     serverError: "שגיאה התרחשה בשרת. אנסה נסה שוב מאוחר יותר",
     noSuchShiftStatus: 'סוג משמרת זה לא קיים במערכת. אנה נסה שנית',
     shiftsForAgentTitle_string: "שלום רב. להלן המשמרות הקרובות המיועדים לחנויות שלך.",
+    date_string: "תאריך",
+    hours_string: "שעות",
+    city_string: "עיר",
+    storeName_string: "שם החנות",
+    salesmanName_string: "שם הדייל",
     eventSalary: 42
 };

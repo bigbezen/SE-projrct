@@ -54,23 +54,22 @@ let addShifts = async function(sessionId, shiftArr){
     let newSalesReportSchema = await _createNewSalesReport();
 
     let resultAddShift = [];
-
     //create model for each shift
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
-        if('salesmanId' in shift) {
+        if('salesmanId' in shift && shift.salesmanId != "") {
             let shiftDB = await dal.getShiftsOfRangeForSalesman(shift.startTime, shift.endTime, shift.salesmanId);
             if(shiftDB != null) {
                 return {'code': 409, 'err': constantString.userCannotHaveMoreThanOneShiftAtDay};
-        }
+            }
 
             newShift.salesmanId = shift.salesmanId;
             let salesman = await dal.getUserByobjectId(shift.salesmanId);
             sendMailOfShift(salesman, shift, storeDict[shift.storeId].name);
+            let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         }
         newShift.storeId = shift.storeId;
-        let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.type = shift.type;
@@ -234,11 +233,10 @@ let _sendEmailsToAgents = async function(shifts){
         let content = constantString.shiftsForAgentTitle_string + "\n\n";
         for(let shift of shiftsOfEmails){
             content += constantString.date_string + ": " + moment(shift.startTime).format('DD-MM-YYYY') + "\n";
-            content += constantString.hours_string + ": " + moment(shift.startTime).format('mm:HH') + " - " + moment(shift.endTime).format('mm:HH') + "\n";
+            content += constantString.hours_string + ": " + moment(shift.startTime).format('HH:mm') + " - " + moment(shift.endTime).format('HH:mm') + "\n";
             content += constantString.city_string + ": " + shift.storeId.city + "\n";
             content += constantString.storeName_string + ": " + shift.storeId.name + "\n";
             content += constantString.salesmanName_string + ": " + shift.salesmanId.personal.firstName + shift.salesmanId.personal.lastName + "\n\n"
-            console.log('bla');
         }
         await mailer.sendMail([email], "IBBLS - new shifts", content);
     }

@@ -173,6 +173,12 @@ module.exports = {
         return shiftModel.findOne({$and: [{'startTime': {$gte: startDate}}, {'salesmanId': salesmanId}, {'endTime': {$lte: new Date(endDate)}}]})
     },
 
+    getShiftsByStatus: function(status){
+        return shiftModel.find({'status': status}, {'salesReport': 0})
+            .populate('salesmanId')
+            .populate('storeId');
+    },
+
     updateShift: async function(shift){
         return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },
@@ -203,8 +209,24 @@ module.exports = {
     },
 
     getSalesmanCurrentShift: async function(salesmanId, date){
+        // let publishedShifts = await shiftModel.find({
+        //     $and: [{'salesmanId': salesmanId}, {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}]
+        // });
+        // console.log('bla');
+        // if(!publishedShifts)
+        //     return null;
+        // if(publishedShifts.length == 0)
+        //     return null;
+        // let HALF_HOUR_IN_MS = 1800000;
+        // let currentShifts = publishedShifts.filter((shift) =>
+        //         (((new Date(date)).getTime() >= ((new Date(shift.startTime)).getTime() - HALF_HOUR_IN_MS)) &&
+        //         ((new Date(shift.endTime)).getTime() >= (new Date(date).getTime()))))
+        //     .sort((shift1, shift2) => (new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime());
+        // console.log('bla');
+        // return currentShifts[0];
+
         let startOfDay = new Date((new Date(date)).setHours(0, 0, 0));
-        let endOfDay = new Date((new Date(date)).setHours(23, 59, 59));
+        let endOfDay = new Date((new Date(startOfDay)).setDate(startOfDay.getDate() + 1));
 
         return shiftModel.findOne({$and: [{'salesmanId': salesmanId},
             {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}, {'startTime': {$gte: startOfDay, $lt: endOfDay}}]});
@@ -243,6 +265,18 @@ module.exports = {
             .populate('salesmanId')
             .populate('storeId')
             .populate('salesReport.productId');
+    },
+
+    removeConstraints: function(date, area, salesmanId){
+        return shiftModel.find({'startTime': date, 'status': 'CREATED'})
+            .populate('storeId', null, {'area': area})
+            .update({}, {$pull: {'constraints': {'salesmanId': salesmanId}}});
+    },
+//, {$pullAll: {'constraints.salesmanId': salesmanId}}
+    setConstraints: function(date, area, constraint){
+        return shiftModel.find({'startTime': date, 'status': 'CREATED'})
+            .populate('storeId', null, {'area': area})
+            .update({}, {$push: {'constraints': constraint}});
     },
 
     // ------------------------------------------------- MESSAGES -----------------------------------------------

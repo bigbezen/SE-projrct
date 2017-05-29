@@ -696,9 +696,9 @@ describe('shift unit test', function () {
             shifts[1].status = "CREATED";
 
             shifts[0].startTime = new Date();
-            shifts[0].endTime = new Date();
+            shifts[0].endTime = (new Date()).setHours(shifts[0].startTime.getHours() + 1);
             shifts[1].startTime = new Date();
-            shifts[1].endTime = new Date();
+            shifts[1].endTime = (new Date()).setHours(shifts[1].startTime.getHours() + 1);
 
             shifts[0] = shift_object_to_model(shifts[0]);
             shifts[1] = shift_object_to_model(shifts[1]);
@@ -729,11 +729,12 @@ describe('shift unit test', function () {
 
         });
 
-        it('getCurrentShiftOnSTARTEDShift_retrievesCurrentShift', async function(){
-             shifts[0].status = "STARTED";
+        it('get current shift - shift until 23:59:59 - valid', async function(){
+            shifts[0].status = "PUBLISHED";
 
-             shifts[0].startTime = new Date();
-             shifts[0].endTime = new Date();
+            let now = new Date();
+            shifts[0].startTime = (new Date()).setHours(23,0,0);
+            shifts[0].endTime = (new Date()).setHours(23,59,59);
 
             shifts[0] = shift_object_to_model(shifts[0]);
 
@@ -744,6 +745,33 @@ describe('shift unit test', function () {
 
             shifts[0] = (await dal.addShift(shifts[0])).toObject();
 
+            let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, (new Date()).setHours(23,30,0));
+            expect(result).to.have.property('code', 200);
+            expect(result).to.have.property('shift');
+            expect(result.shift.status).to.be.equal('PUBLISHED');
+            expect(result.shift).to.include.all.keys('store', 'salesReport');
+            let productNames = result.shift.salesReport.map(x => x.name);
+            expect(productNames).to.include(product1.name, product2.name, product3.name);
+
+            //make sure the database shifts remains untouched
+            let shift0 = (await dal.getShiftsByIds([shifts[0]._id]))[0];
+            expect(shift0.toObject()).to.have.property('status', 'PUBLISHED');
+        });
+
+        it('getCurrentShiftOnSTARTEDShift_retrievesCurrentShift', async function(){
+             shifts[0].status = "STARTED";
+
+             shifts[0].startTime = new Date();
+             shifts[0].endTime = (new Date()).setHours(shifts[0].startTime.getHours() + 1);
+
+            shifts[0] = shift_object_to_model(shifts[0]);
+
+            let user1 = await dal.getUserByUsername('matan');
+            shifts[0].salesmanId = user1._id.toString();
+
+            shifts[0].salesReport = await createNewSalesReport();
+
+            shifts[0] = (await dal.addShift(shifts[0])).toObject();
 
             let result = await shiftService.getSalesmanCurrentShift(salesman.sessionId, new Date());
             expect(result).to.have.property('code', 200);

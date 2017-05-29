@@ -11,6 +11,13 @@ let shiftModel       = require('../../Models/shift');
 
 let encouragementServices = require('../../Services/encouragements');
 
+let SHIFT_STATUS = {
+    'CREATED': true,
+    'PUBLISHED': true,
+    'STARTED': true,
+    'FINISHED': true
+};
+
 
 let addShifts = async function(sessionId, shiftArr){
     logger.info('Services.shift.index.addShifts', {'session-id': sessionId});
@@ -124,20 +131,24 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
 
     let newSaleReportSchema = await _createNewSalesReport();
     let resultAddShifts = [];
-
     for(let store of allStores){
         let newShift = new shiftModel();
         newShift.storeId = store._id;
+        newShift.salesmanId = store.defaultSalesman;
         newShift.startTime = startTime;
         newShift.endTime = endTime;
+        newShift.type = "טעימה";
         newShift.status = "CREATED";
         newShift.salesReport = newSaleReportSchema;
         newShift.sales = [];
+        newShift.numOfKm = 0;
+        newShift.parkingCost = 0;
         newShift.constraints = [];
         newShift.shiftComments = [];
+        newShift.encouragements = [];
         resultAddShifts.push(await dal.addShift(newShift));
-    }
 
+    }
     resultAddShifts = resultAddShifts.map(function(shift){
         shift = shift.toObject();
         shift.store = storeDict[shift.storeId];
@@ -197,6 +208,23 @@ let publishShifts = async function(sessionId, shiftArr){
     else
         return {'code': 200, 'nonSavedShifts': nonSavedShifts};
 
+};
+
+let getAllShiftsByStatus = async function(sessionId, status){
+    logger.info('Services.shift.index.getAllShiftsByStatus', {'session-id': sessionId, 'status': status});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getAllShiftsByStatus', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': constantString.permssionDenied};
+
+    if(SHIFT_STATUS[status] == undefined){
+        return {code: 409, err: constantString.noSuchShiftStatus};
+    }
+
+    let shifts = await dal.getShiftsByStatus(status);
+    if(!shifts){
+        return {code: 500, err: constantString.serverError};
+    }
+    return {code: 200, shifts: shifts};
 };
 
 let _sendEmailsToAgents = async function(shifts){
@@ -633,7 +661,12 @@ let editShift = async function (sessionId, shiftDetails) {
     if(shift[0] != null && shift[0].status == "STARTED")
         return {'code': 401, 'err': constantString.shiftAlreadyStarted};
 
+    if(shiftDetails.salesmanId != undefined && shiftDetails.salesmanId == "")
+        shiftDetails.salesmanId = undefined;
+
+    console.log('bla');
     let res = await dal.editShift(shiftDetails);
+    console.log('bla');
     if(res.ok == 0)
         return {'code':400, 'err': constantString.shiftCannotBeEdited};
 
@@ -739,6 +772,25 @@ let managerEndShift = async function(sessionId, shiftId){
         return {'code': 200};
 };
 
+let submitConstraints = async function(sessionId, constraints){
+    logger.info('Services.shift.index.submitConstrains', {'session-id': sessionId});
+
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'submitConstraints');
+    if(user == null)
+        return {'code': 401, 'err':constantString.permssionDenied};
+
+    for(let date in constraints){
+        for(let area in constraints[date]){
+            let constraint = constraints[date][area];
+            constraint.salesmanId = user._id;
+            let remove = await dal.removeConstraints(new Date(date), area, user._id);
+            let add = await dal.setConstraints(new Date(date), area, constraints[date][area]);
+        }
+    }
+    return {'code': 200};
+
+};
+
 let _createNewSalesReport = async function(){
     let report = [];
     let productsIds = await dal.getAllProducts();
@@ -799,4 +851,5 @@ module.exports.getSalesmanShifts = getSalesmanShifts;
 module.exports.reportExpenses = reportExpenses;
 module.exports.getShiftsOfRange = getShiftsOfRange;
 module.exports.getSalesmanLiveShift = getSalesmanLiveShift;
-
+module.exports.getAllShiftsByStatus = getAllShiftsByStatus;
+module.exports.submitConstraints = submitConstraints;

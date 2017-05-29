@@ -16,6 +16,7 @@ var Product                 = require('../containers/ProductDetails');
 var Store                   = require('../containers/StoreDetails');
 var User                    = require('../containers/UserDetails');
 var Shifts                  = require('../containers/ShiftsContainer');
+var ShiftsCreation          = require('../containers/ShiftsCreationContainer');
 var Shift                   = require('../containers/ShiftDetails');
 var CreateShifts            = require('../containers/ShiftsGenerator');
 var MultipleShiftsCreation  = require('../containers/ShiftsCreateMultipleShifts');
@@ -38,6 +39,7 @@ var MonthlyHoursReport      = require('../containers/ReportsMonthlyHours');
 var HumanResourcesReport    = require('../containers/ReportsHumanResources');
 var SalesmanShiftsExpenses  = require('../salemanContainers/shiftExpensesContainer');
 var SalesmanProfile         = require('../salemanContainers/SalesmanProfileContainer');
+var SalesmanAssignShifts    = require('../salemanContainers/AssignShiftsContainer');
 var SalesmanShiftSchedule   = require('../salemanContainers/SalesmanShiftsScheduleContainer');
 var SalesmanBase            = require('../salemanContainers/SalesmanBaseContainer');
 
@@ -51,6 +53,7 @@ var routes = (
             <Route path='stores' component={Stores} />
             <Route path='products' component={Products} />
             <Route path='shifts' component={Shifts} />
+            <Route path='shiftsCreation' component={ShiftsCreation} />
             <Route path='product' component={Product} />
             <Route path='store' component={Store} />
             <Route path='user' component={User} />
@@ -77,6 +80,7 @@ var routes = (
             <Route path='profile' component={SalesmanProfile}/>
             <Route path='shiftSchedule' component={SalesmanShiftSchedule}/>
             <Route path='shiftsExpenses' component={SalesmanShiftsExpenses}/>
+            <Route path='assignShifts' component={SalesmanAssignShifts}/>
             <Route path='changePassword' component={ChangePass}/>
         </Route>
 

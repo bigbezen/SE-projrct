@@ -113,9 +113,14 @@ var helpers = {
         return connection.managementRequests.deleteShift(shift);
     },
 
-    addAllShifts: function(startTime, endTime) {
+    generateShiftsForDate: function(startTime, endTime) {
         console.log('managementervices- AddAllShifts');
-        return connection.managementRequests.AddAllShifts(startTime, endTime);
+        return connection.managementRequests.generateShiftsForDate(startTime, endTime);
+    },
+
+    getShiftsByStatus: function(status) {
+        console.log('managementervices- getShiftsByStatus');
+        return connection.managementRequests.getShiftsByStatus(status);
     },
 
     publishShifts: function(shift){

@@ -38,7 +38,7 @@ function timeFormatter(cell, row) {
     return moment(cell).format('H:mm');
 }
 
-var ShiftsContainer = React.createClass({
+var ShiftsCreationContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -86,7 +86,7 @@ var ShiftsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
-            result = result.filter((shift) => shift.status != "CREATED");
+            result = result.filter((shift) => shift.status == "CREATED");
             let areas = new Set(result.map((shift) => shift.storeId.area));
             let areaToShifts = {};
             for(let area of areas){
@@ -187,6 +187,12 @@ var ShiftsContainer = React.createClass({
     onClickAddShiftsButton: function(){
         this.context.router.push({
             pathname: paths.manager_createShifts_path
+        })
+    },
+
+    onClickMoveToSetSalesmen: function(){
+        this.context.router.push({
+            pathname: paths.manager_createMultipleShifts_path
         })
     },
 
@@ -312,6 +318,9 @@ var ShiftsContainer = React.createClass({
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
                 <div className="col-sm-12">
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round-xlarge" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round-xlarge" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
                     <p style={styles.dateLabel}>{constantStrings.startDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.startDate} ref="startDateBox" onChange= {this.changeDate} />
                     <p style={styles.dateLabel}>{constantStrings.endDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.endDate} ref="endDateBox" onChange={this.changeDate} />
                 </div>
@@ -342,4 +351,4 @@ var ShiftsContainer = React.createClass({
     }
 });
 
-module.exports = ShiftsContainer;
+module.exports = ShiftsCreationContainer;

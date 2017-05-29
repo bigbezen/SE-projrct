@@ -34,6 +34,10 @@ class ConstantStrings extends React.Component {
     static selectedProducts_string = 'המוצרים שנבחרו';
     static createPublishShifts_string = 'יצירה ופרסום משמרות';
     static managePublishedShifts_string = 'ניהול משמרות מפורסמות';
+    static constraints_string = 'אילוצי דיילים';
+    static available_string = 'זמין למשמרת';
+    static notAvailable_string = 'לא זמין למשמרת';
+    static submitConstraints_string = 'הגש/י אילוצים';
 
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';
@@ -132,6 +136,14 @@ class ConstantStrings extends React.Component {
     static shiftType_string = 'סוג משמרת';
     static eventType_string = 'סוג אירוע';
     static addMultipleShifts_string = 'הוספת מספר משמרות';
+    static setSalesmanAndPublish_string = 'שיבוץ דיילים ופרסום';
+    static publishShifts_string = 'פרסום המשמרות';
+    static SHIFT_STATUS = {
+        CREATED: 'CREATED',
+        PUBLISHED: 'PUBLISHED',
+        STARTED: 'STARTED',
+        FINISHED: 'FINISHED'
+    };
 
     //reports
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
@@ -274,6 +286,7 @@ class ConstantStrings extends React.Component {
     static badActionMessage_string = 'הפעולה נכשלה. נא לוודא כי כל השדות חוקיים';
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
     static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
+    static shiftWillNotPublish_string = 'משמרת זו לא תפורסם';
     static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
     static mailSentSuccess_string = 'הדוח נשלח לאימייל בהצלחה!';
     static close_string = "סגירה";
@@ -312,6 +325,7 @@ class ConstantStrings extends React.Component {
     static profile_string ='פרופיל';
     static shiftSchedule_string ='לוח משמרות';
     static expenses_string ='הוצאות';
+    static assignShifts_string ='לחץ כאן לשיבוץ משמרות';
 
     static numberToMonth = {
         '1': 'ינואר',

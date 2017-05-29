@@ -468,7 +468,7 @@ var managementRequests = {
         })
     },
 
-    AddAllShifts: function(startTime, endTime) {
+    generateShiftsForDate: function(startTime, endTime) {
         return axios.post(serverUrl + 'management/generateShifts', {
             sessionId:sessionId,
             startTime:startTime,
@@ -476,6 +476,20 @@ var managementRequests = {
         }).then(function (info) {
             return info.data;
         }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getShiftsByStatus: function(status) {
+        console.log('get shifts of range');
+        return axios.get(serverUrl + 'management/getShiftsByStatus?status=' + status, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })
@@ -851,6 +865,18 @@ var salesmanRequests = {
     shiftRegister: function(){
         return axios.post(serverUrl + 'salesman/shiftRegister', {
             sessionId:sessionId
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    submitConstraints: function(constraints){
+        return axios.post(serverUrl + 'salesman/submitConstraints', {
+            sessionId:sessionId,
+            constraints: constraints
         }).then(function (info) {
             return info.data;
         }).catch(function (err) {

@@ -389,7 +389,7 @@ var ShiftMakeSalesContainer = React.createClass({
                            ref="searchInput" placeholder={constantStrings.productSearch_string}
                             />
                 </div>
-                <div>
+                <div style={{marginBottom: '50px'}}>
                     {this.renderAllProductsOrSearchProducts()}
 
                 </div>

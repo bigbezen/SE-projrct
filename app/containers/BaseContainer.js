@@ -30,11 +30,11 @@ var BaseContainer = React.createClass({
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
         userServices.logout().then(function (n) {
-                localStorage.setItem('sessionId', 0);
-                localStorage.setItem('userType', 0);
-                context.router.push({
-                    pathname: paths.login_path
-                })
+            localStorage.setItem('sessionId', 0);
+            localStorage.setItem('userType', 0);
+            context.router.push({
+                pathname: paths.login_path
+            })
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
@@ -63,10 +63,10 @@ var BaseContainer = React.createClass({
 
     getReportsOptions: function(){
         var options = [
-           constantsStrings.reportsSalesReportTitle_string,
-           constantsStrings.reportsHumanResourcesReportTitle_string,
-           constantsStrings.reportsMonthlyAnalysisReportTitle_string,
-           constantsStrings.reportsMonthlyUserHoursReportTitle_string
+            constantsStrings.reportsSalesReportTitle_string,
+            constantsStrings.reportsHumanResourcesReportTitle_string,
+            constantsStrings.reportsMonthlyAnalysisReportTitle_string,
+            constantsStrings.reportsMonthlyUserHoursReportTitle_string
         ];
         return options;
     },
@@ -100,54 +100,38 @@ var BaseContainer = React.createClass({
         }
     },
 
-    getShiftsOptions: function (){
-        return [
-            constantsStrings.createPublishShifts_string,
-            constantsStrings.managePublishedShifts_string
-        ];
-    },
-
-    onChangeShifts: function(event){
-        switch (event.value){
-            case constantsStrings.managePublishedShifts_string:
-                this.context.router.push({
-                    pathname: paths.manager_shifts_path
-                });
-                break;
-        }
-    },
-
-    getDefaultShiftOption: function() {
-        return <button type="input" style={{background: 'none', border: '#FFFFFF'}}>{constantsStrings.shifts_string}</button>
-    },
-
     render: function () {
         return (
             <div className='main-container'>
-                <ul className="w3-navbar w3-top w3-large w3-theme-d4 w3-left-align w3-card-4">
-                    <li className="w3-hide-medium w3-hide-large w3-theme-d4 w3-opennav w3-right">
-                        <a href="javascript:void(0);" onClick={this.handleMenuBar}>☰</a>
-                    </li>
-                    <li className="w3-right" style={styles.navbarButtons}> <a className="w3-hover-none" href={'/#'+paths.manager_home_path}>ראשי</a></li>
-                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a></li>
-                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
-                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>
-                    <li className="w3-hide-small w3-right" style={styles.navbarButtons}><a className="w3-hover-none" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a></li>
-                    <li className="w3-hide-small w3-right text-right" style={Object.assign({marginTop: '8px'}, styles.navbarButtons)}>
-                        <span style={{marginRight: '10px'}}><Shifts/></span>
-                        <div className="w3-left" style={{marginRight: '5px'}}>
-                            <Dropdown className="text-right w3-left" options={this.getShiftsOptions()} onChange={this.onChangeShifts} placeholder={this.getDefaultShiftOption()} />
+
+                <div className="w3-bar w3-theme-d4 w3-card-4 w3-large">
+                    <a href={'/#'+paths.manager_home_path} className="w3-bar-item w3-button w3-hover-none w3-right">ראשי</a>
+                    <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a>
+                    <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a>
+                    <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a>
+                    <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a>
+                    <div style={styles.navbarButtons} className="w3-dropdown-hover w3-right">
+                        <button className="w3-button w3-hover-opacity"><Shifts/>{constantsStrings.shifts_string}</button>
+                        <div className="w3-dropdown-content w3-bar-block w3-card-4 w3-theme-d4">
+                            <a href={'/#'+paths.manager_shifts_creation_path} className="w3-button w3-hover-opacity">{constantsStrings.createPublishShifts_string}</a>
+                            <a href={'/#'+paths.manager_shifts_path} className="w3-button w3-hover-opacity">{constantsStrings.managePublishedShifts_string}</a>
                         </div>
-                    </li>
-                    <li className="w3-hide-small w3-right text-right" style={{marginTop: '8px'}}>
-                        <span style={{marginRight: '10px'}}> <Reports /> </span>
-                        <div className="w3-left" style={{marginRight: '5px'}}>
-                            <Dropdown className="text-right w3-left" options={this.getReportsOptions()} onChange={this.onChangeReport} placeholder={this.getDefaultReportOption()}/>
+                    </div>
+                    <div className="w3-dropdown-hover w3-right">
+                        <button className="w3-button  w3-hover-opacity"><Reports/>{constantsStrings.reports_string}</button>
+                        <div className="w3-dropdown-content w3-bar-block w3-card-4 w3-theme-d4">
+                            <a href={'/#'+paths.manager_salesReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsSalesReportTitle_string}</a>
+                            <a href={'/#'+paths.manager_humanResourcesReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsHumanResourcesReportTitle_string}</a>
+                            <a href={'/#'+paths.manager_monthlyAnalysisReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsMonthlyAnalysisReportTitle_string}</a>
+                            <a href={'/#'+paths.manager_monthlyHoursReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsMonthlyUserHoursReportTitle_string}</a>
                         </div>
-                    </li>
-                    <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a></li>
-                    <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleChangePassword}>{constantsStrings.changePass_string}</a></li>
-                </ul>
+                    </div>
+                    <a className="w3-hover-opacity w3-left w3-bar-item w3-button" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a>
+                    <a className="w3-hover-opacity w3-left w3-bar-item w3-button" href="javascript:void(0);" onClick={this.handleChangePassword}>{constantsStrings.changePass_string}</a>
+
+
+                </div>
+
 
                 <div ref="demo" value={this.props.children} className="w3-hide w3-hide-large w3-hide-medium">
                     <ul className="w3-navbar w3-top w3-left-align w3-large w3-theme-d4">

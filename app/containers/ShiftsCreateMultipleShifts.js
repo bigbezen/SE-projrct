@@ -13,6 +13,7 @@ var constantStrings     = require('../utils/ConstantStrings');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
 var CloseIcon           = require('react-icons/lib/fa/close');
+var underscore          = require('underscore');
 
 var ShiftsCreateMultipleShifts = React.createClass({
 
@@ -24,62 +25,25 @@ var ShiftsCreateMultipleShifts = React.createClass({
         this.setSessionId();
         this.setUserType();
         return {
-            stores: [],
             newShifts: [],
             salesmen: [],
-            startTime: undefined,
-            endTime: undefined
         }
     },
 
     componentDidMount: function(){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
-        var startTime = moment(this.props.location.query.startTime).format('YYYY-MM-DD HH:mm Z');
-        var endTime = moment(this.props.location.query.endTime).format('YYYY-MM-DD HH:mm Z');
-        managementServices.getAllStores()
-            .then(function(stores) {
-                var newShifts = [];
+
+        managementServices.getShiftsByStatus(constantsStrings.SHIFT_STATUS.CREATED)
+            .then(function(shifts){
                 managementServices.getAllUsers()
                     .then(function(users){
-                        var usersDict = {};
-                        users = users.filter((user) => user.jobDetails.userType == 'salesman');
-                        for(var user of users)
-                            usersDict[user._id] = user;
-                        for(var store of stores){
-                            var shift = new shiftInfo();
-                            shift.storeId = store._id;
-                            shift["store"] = store;
-                            if(store.defaultSalesman != undefined) {
-                                shift.salesmanId = store.defaultSalesman._id;
-                                shift["salesman"] = usersDict[store.defaultSalesman._id];
-                            }
-                            else{
-                                shift.salesmanId = "";
-                            }
-                            shift.startTime = startTime;
-                            shift.endTime = endTime;
-                            shift.type = constantStrings.shiftType_taste;
-                            newShifts.push(shift);
-                        }
+                        let salesmen = users.filter((user) => user.jobDetails.userType == 'salesman');
                         self.setState({
-                            stores: stores,
-                            newShifts: newShifts,
-                            salesmen: users,
-                            startTime: startTime,
-                            endTime: endTime
+                            newShifts: shifts,
+                            salesmen: salesmen
                         })
-
                     })
-                    .catch(function(err){
-                        notificationSystem.clearNotifications();
-                        notificationSystem.addNotification({
-                            message: err,
-                            level: 'error',
-                            autoDismiss: 0,
-                            position: 'tc'
-                        });
-                    });
             })
             .catch(function(err){
                 notificationSystem.clearNotifications();
@@ -113,39 +77,18 @@ var ShiftsCreateMultipleShifts = React.createClass({
     onClickSubmitShifts: function(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        var missingSalesman = this.state.newShifts.filter((shift) => shift.salesmanId == "");
-        if(missingSalesman.length > 0){
-            notificationSystem.clearNotifications();
-            notificationSystem.addNotification({
-                message: constantsStrings.mustChooseSalesman_string,
-                level: 'error',
-                autoDismiss: 0,
-                position: 'tc'
-            });
-        }
-        else {
-            managementServices.addMultipleShifts(this.state.newShifts)
-                .then(function (data) {
-                    managementServices.publishMultipleShifts(data)
-                        .then(function(data){
-                            notificationSystem.clearNotifications();
-                            notificationSystem.addNotification({
-                                message: constantsStrings.addSuccessMessage_string,
-                                level: 'success',
-                                autoDismiss: 1,
-                                position: 'tc',
-                                onRemove: function (notification) {
-                                    self.context.router.push({
-                                        pathname: paths.manager_shifts_path
-                                    });
-                                }
-                            });
-                        })
-                        .catch(function(err){
-                            throw err;
-                        })
+        let shiftsToPublish = this.state.newShifts.filter((shift) => shift.salesmanId != undefined);
+        if(shiftsToPublish.length > 0){
+            managementServices.publishMultipleShifts(shiftsToPublish)
+                .then(function(result){
+                    let a = 2;
+                    console.log(2);
+                    console.log(a-2);
+                    self.context.router.push({
+                        pathname: paths.manager_shifts_creation_path
+                    })
                 })
-                .catch(function (err) {
+                .catch(function(err){
                     notificationSystem.clearNotifications();
                     notificationSystem.addNotification({
                         message: err,
@@ -153,17 +96,25 @@ var ShiftsCreateMultipleShifts = React.createClass({
                         autoDismiss: 0,
                         position: 'tc'
                     });
-                })
+                });
+        }
+        else{
+            this.context.router.push({
+                pathname: paths.manager_shifts_creation_path
+            })
         }
     },
 
-    getSalesmanOptions: function(salesmanId){
+    getSalesmanOptions: function(shift){
+        let salesmanId = "";
         var salesmen = this.state.salesmen;
+
         var optionsForDropdown = [];
-        if(salesmanId == ""){
+        if(shift.salesmanId == undefined){
             optionsForDropdown.push(<option selected>{constantsStrings.dropDownChooseString}</option>)
         }
         else{
+            salesmanId = shift.salesmanId._id;
             optionsForDropdown.push(<option>{constantsStrings.dropDownChooseString}</option>)
         }
         for(var salesman of salesmen){
@@ -179,72 +130,163 @@ var ShiftsCreateMultipleShifts = React.createClass({
         return optionsForDropdown;
     },
 
-    onChangeSalesman: function(storeId){
-        var salesmanId = "";
-        if(this.refs[storeId].value != constantsStrings.dropDownChooseString) {
-            var firstName = this.refs[storeId].value.split(' ')[0];
-            var lastName = this.refs[storeId].value.split(' ')[1];
+    onChangeSalesman: function(shift){
+        var salesmanId = undefined;
+        let salesmanName = this.refs[shift._id].value;
+        if(salesmanName != constantsStrings.dropDownChooseString) {
+            var firstName = salesmanName.split(' ')[0];
+            var lastName = salesmanName.split(' ')[1];
             salesmanId = this.state.salesmen.filter((salesman) => salesman.personal.firstName == firstName &&
                                                     salesman.personal.lastName == lastName);
             salesmanId = salesmanId[0]._id;
         }
-        var newShifts = this.state.newShifts;
-        for(var shiftIndex in newShifts){
-            if(newShifts[shiftIndex].storeId == storeId){
-                newShifts[shiftIndex]["salesmanId"] = salesmanId;
-            }
-        }
-        this.state.newShifts = newShifts;
+        shift.salesmanId = salesmanId;
     },
 
-    onClickRemoveShift: function(storeId){
+
+    getConstraints: function(salesmen, shifts){
+        let blabla = salesmen;
+        console.log(blabla);
+        let salesmenObj = {};
+        for(let salesman of salesmen){
+            salesmenObj[salesman._id] = salesman;
+        }
+        let constraints = [];
+        for(let shift of shifts){
+            constraints = constraints.concat(shift.constraints);
+        }
+        // transform into an object to remove duplicates
+        let constraintsObj = {};
+        for(let constraint of constraints){
+            if(constraint.isAvailable == false || (constraint.comment != undefined && constraint.comment.length > 0))
+                constraintsObj[constraint.salesmanId] = constraint;
+        }
+        // move back into an array of objects
+        constraints = [];
+        for(let key in constraintsObj){
+            constraints.push(constraintsObj[key]);
+        }
+
+        // Add only if we want all salesmen to show
+        // let nonPresentSalesmen = underscore.difference(
+        //     salesmen.map((salesman) => salesman._id),
+        //     constraints.map((constraint) => constraint.salesmanId)
+        // );
+        // for(let salesmanId of nonPresentSalesmen){
+        //     constraints.push({
+        //         salesmanId: salesmanId,
+        //         isAvailable: true,
+        //         comment: ""
+        //     });
+        // }
+
+        for(let constraint of constraints){
+            constraint.salesman = salesmenObj[constraint.salesmanId];
+        }
+        return constraints.sort(function(cons1, cons2) {
+            if(cons1.isAvailable && !cons2.isAvailable)
+                return -1;
+            else if(!cons1.isAvailable && cons2.isAvailable)
+                return 1;
+            else
+                return 0;
+        });
+    },
+
+    onClickRemoveShift: function(shiftId){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
+        self.setState({
+            newShifts: self.state.newShifts.filter((shift) => shift._id != shiftId)
+        });
         notificationSystem.clearNotifications();
         notificationSystem.addNotification({
-            message: constantStrings.areYouSure_string,
+            message: constantStrings.shiftWillNotPublish_string,
             level: 'info',
-            autoDismiss: 0,
+            autoDismiss: 2,
             position: 'tc',
-            action: {
-                label: constantStrings.yes_string,
-                callback:
-                    function(){
-                        self.setState({
-                            newShifts: self.state.newShifts.filter((shift) => shift.storeId != storeId)
-                        });
-                    }
-            }
         });
     },
 
     renderShiftsOfArea: function(shift, index) {
         return (
-            <div className="col-xs-11 w3-theme-d3 w3-card-4 w3-round-large" style={{fontSize: '20px', marginTop: '5px'}}>
-                <p className="col-sm-3">{shift.store.name}</p>
+            <div className="col-xs-12 w3-theme-d3 w3-card-4 w3-round-large" style={{fontSize: '15px', marginTop: '5px'}}>
+                <p className="col-sm-3">{shift.storeId.name}</p>
                 <select style={{color: 'black', marginTop: '3px'}}
-                        className="col-sm-6 w3-round-large" ref={shift.storeId}
-                        onChange={() => this.onChangeSalesman(shift.storeId)}>{this.getSalesmanOptions(shift.salesmanId)}</select>
-                <p className="col-sm-1 col-sm-offset-2" onClick={() => this.onClickRemoveShift(shift.storeId)}>
+                        className="col-sm-4 w3-round-large" ref={shift._id}
+                        onChange={() => this.onChangeSalesman(shift)}>
+                    {this.getSalesmanOptions(shift)}
+                </select>
+                <a className="col-sm-1 col-sm-offset-4" href="javascript:void(0)" onClick={() => this.onClickRemoveShift(shift._id)}>
                     <CloseIcon />
-                </p>
+                </a>
+            </div>
+        )
+    },
+
+    renderConstraint: function(constraint){
+        let w3_theme = constraint.isAvailable ? "w3-theme-l4" : "w3-theme-d3";
+        return (
+            <div className={"col-sm-12 w3-card-4 w3-round-large " + w3_theme} style={{fontSize: '15px', marginTop:'5px'}}>
+                <p className="col-sm-3">{constraint.salesman.personal.firstName + " " + constraint.salesman.personal.lastName}</p>
+                <p className="col-sm-3">{constraint.isAvailable ? constantsStrings.available_string : constantsStrings.notAvailable_string}</p>
+                <p className="col-sm-6">{constraint.comment}</p>
             </div>
         )
     },
 
     renderArea: function(area, index){
-        var shifts = area.shifts;
+        let shifts = area.shifts;
+        let salesmen = this.state.salesmen;
+
+        let constraints = this.getConstraints(salesmen, shifts);
+
         if(shifts.length > 0) {
             return (
-                <div className="col-sm-offset-1 col-sm-5">
-                    <h2>{area.area}</h2>
-                    {shifts.map(this.renderShiftsOfArea)}
+                <div>
+                    <div className="col-sm-5">
+                        <h2>{area.area}</h2>
+                        <div>
+                            {shifts.map(this.renderShiftsOfArea)}
+                        </div>
+                    </div>
+                    <div className="col-sm-offset-2 col-sm-5">
+                        <h2>{constantsStrings.constraints_string}</h2>
+                        <div>
+                            {constraints.map(this.renderConstraint)}
+                        </div>
+                    </div>
                 </div>
             )
         }
         else return (
             <div></div>
         )
+    },
+
+    renderShiftsOfDate: function(date){
+        let shifts = this.state.newShifts
+            .filter((shift) => (new Date(shift.startTime)).getTime() - (new Date(date)).getTime() == 0);
+        date = moment(date).format('YYYY-MM-DD');
+
+        let areas = new Set(shifts.map((shift) => shift.storeId.area));
+        let areaToShifts = [];
+        for(let area of areas) {
+            areaToShifts.push({
+                'area': area,
+                'shifts': shifts.filter((shift) => shift.storeId.area == area)
+            });
+        }
+        return (
+            <div className="w3-container" style={{borderBottom: '2px solid #CCC', marginBottom: '20px'}}>
+                <div className="col-sm-12 text-center">
+                    <h1>{date}</h1>
+                </div>
+                <div style={{marginTop: '10px', marginBottom: '10px'}} className="col-sm-12">
+                    {areaToShifts.map(this.renderArea)}
+                </div>
+            </div>
+        );
     },
 
     render: function () {
@@ -256,36 +298,24 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 </div>
             );
         else {
-            var areas = new Set(this.state.stores.map((store) => store.area));
-            var categoryToShifts = [];
-            for(var area of areas){
-                categoryToShifts.push({
-                    'area': area,
-                    'shifts': this.state.newShifts.filter((shift) => shift.store.area == area)
+            let dates = Array.from(new Set(this.state.newShifts.map((shift) => shift.startTime)))
+                .sort(function(shift1, shift2){
+                    return (new Date(shift1)).getTime() - (new Date(shift2)).getTime();
                 });
-            }
-            var date = moment(this.props.location.query.startTime).format('DD-MM-YY');
-            var start = moment(this.props.location.query.startTime).format('H:mm');
-            var end = moment(this.props.location.query.endTime).format('H:mm');
             return (
-                <div className="w3-container">
-                    <div className="col-sm-12 text-center">
-                        <h1>{date}</h1>
-                        <h2>{end}  -  {start}</h2>
-                    </div>
-                    <div style={{marginTop: '50px'}} className="col-sm-12">
-                        {categoryToShifts.map(this.renderArea)}
-
-                    </div>
-                    <div className="text-center col-sm-12" style={{marginTop: '30px'}}>
+                <div>
+                    <div className="text-center col-sm-12" style={{marginBottom: '30px'}}>
                         <button className="w3-button w3-round-xlarge w3-card-4 w3-theme-d5"
                                 onClick={this.onClickSubmitShifts}>
-                            {constantStrings.add_string}
+                            {constantStrings.publishShifts_string}
                         </button>
+                    </div>
+                    <div>
+                        {dates.map(this.renderShiftsOfDate)}
                     </div>
                     <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
                 </div>
-            );
+            )
         }
     }
 });

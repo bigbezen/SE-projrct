@@ -84,6 +84,11 @@ var helpers = {
     shiftRegister: function(){
         console.log('salesmanServices- shiftRegister');
         return connection.salesmanRequests.shiftRegister();
+    },
+
+    submitConstraints: function(constraints){
+        console.log('salesmanServices- submitConstraints');
+        return connection.salesmanRequests.submitConstraints(constraints);
     }
 };
 

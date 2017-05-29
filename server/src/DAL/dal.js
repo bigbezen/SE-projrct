@@ -154,6 +154,13 @@ module.exports = {
         return shiftModel.find({'_id': {$in: shiftIds}});
     },
 
+    getShiftsByIdsWithStores: async function(shiftIds){
+        shiftIds = shiftIds.map(x => mongoose.Types.ObjectId(x));
+        return shiftModel.find({'_id': {$in: shiftIds}}, {'salesReport': 0})
+            .populate('storeId')
+            .populate('salesmanId');
+    },
+
     getShiftsFromDate: async function(fromDate, salesmanId){
         return shiftModel.find({$and: [{'startTime': {$gte: fromDate}}, {'salesmanId': salesmanId}]})
             .populate('salesmanId')

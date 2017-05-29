@@ -16,6 +16,7 @@ let addStore = async function(sessionId, storeDetails) {
             store.name = storeDetails.name;
             store.managerName = storeDetails.managerName;
             store.phone = storeDetails.phone;
+            store.managerEmail = storeDetails.managerEmail;
             store.city = storeDetails.city;
             store.address = storeDetails.address;
             store.area = storeDetails.area;

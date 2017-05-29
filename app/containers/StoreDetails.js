@@ -90,6 +90,7 @@ var StoreDetails = React.createClass({
         newStore.name = this.refs.nameBox.value;
         newStore.managerName = this.refs.managerNameBox.value;
         newStore.phone = this.refs.phoneBox.value;
+        newStore.managerEmail = this.refs.emailBox.value;
         newStore.city = this.refs.cityBox.value;
         newStore.address = this.refs.addressBox.value;
         newStore.area = this.state.area;
@@ -201,6 +202,15 @@ var StoreDetails = React.createClass({
                         />
                     </div>
 
+                    <div className="form-group ">
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.email_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <input type="text" min={0}
+                               className="col-xs-4 col-xs-offset-2"
+                               ref="emailBox"
+                        />
+                    </div>
 
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.city_string}:</label>
@@ -258,16 +268,17 @@ var StoreDetails = React.createClass({
     },
 
     setFields: function () {
-        this.currSrure = this.props.location.query;
-        this.state.area =  this.currSrure.area;
-        this.state.channel = this.currSrure.channel;
-        this.refs.nameBox.value = this.currSrure.name;
-        this.refs.managerNameBox.value = this.currSrure.managerName;
-        this.refs.phoneBox.value = this.currSrure.phone;
-        this.refs.cityBox.value = this.currSrure.city;
-        this.refs.addressBox.value = this.currSrure.address;
-        this.refs.areaBox.value = this.currSrure.area;
-        this.refs.channelBox.value = this.currSrure.channel;
+        let currStore = this.props.location.query;
+        this.state.area =  currStore.area;
+        this.state.channel = currStore.channel;
+        this.refs.nameBox.value = currStore.name;
+        this.refs.managerNameBox.value = currStore.managerName;
+        this.refs.phoneBox.value = currStore.phone;
+        this.refs.emailBox.value = currStore.managerEmail;
+        this.refs.cityBox.value = currStore.city;
+        this.refs.addressBox.value = currStore.address;
+        this.refs.areaBox.value = currStore.area;
+        this.refs.channelBox.value = currStore.channel;
     },
 
     render: function () {

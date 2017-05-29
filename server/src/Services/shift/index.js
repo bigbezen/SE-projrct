@@ -189,11 +189,31 @@ let publishShifts = async function(sessionId, shiftArr){
         shift.status = 'PUBLISHED';
     let nonSavedShifts = await dal.publishShifts(shiftArr);
 
-    if(nonSavedShifts.length == 0)
+    if(nonSavedShifts.length == 0) {
+        let shifts = await dal.getShiftsByIdsWithStores(shiftIds);
+        _sendEmailsToAgents(shifts);
         return {'code': 200};
+    }
     else
         return {'code': 200, 'nonSavedShifts': nonSavedShifts};
 
+};
+
+let _sendEmailsToAgents = async function(shifts){
+    let emails = new Set(shifts.map((shift) => shift.storeId.managerEmail));
+    for(let email of emails){
+        let shiftsOfEmails = shifts.filter((shift) => shift.storeId.managerEmail == email);
+        let content = constantString.shiftsForAgentTitle_string + "\n\n";
+        for(let shift of shiftsOfEmails){
+            content += constantString.date_string + ": " + moment(shift.startTime).format('DD-MM-YYYY') + "\n";
+            content += constantString.hours_string + ": " + moment(shift.startTime).format('mm:HH') + " - " + moment(shift.endTime).format('mm:HH') + "\n";
+            content += constantString.city_string + ": " + shift.storeId.city + "\n";
+            content += constantString.storeName_string + ": " + shift.storeId.name + "\n";
+            content += constantString.salesmanName_string + ": " + shift.salesmanId.personal.firstName + shift.salesmanId.personal.lastName + "\n\n"
+            console.log('bla');
+        }
+        await mailer.sendMail([email], "IBBLS - new shifts", content);
+    }
 };
 
 let getSalesmanFinishedShifts = async function(sessionId, salesmanId){

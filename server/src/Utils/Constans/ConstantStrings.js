@@ -30,5 +30,6 @@ module.exports = {
     productAlreadyExist: "החנות כבר קיימת",
     productWithTheSameNameAndCategoryAlreadyExist: "לא ניתן להוסיף מוצר עם אותו הקטגוריה ואותו השם",
     productCannotBeEdited: "לא ניתן לערוך את המוצר",
+    shiftsForAgentTitle_string: "שלום רב. להלן המשמרות הקרובות המיועדים לחנויות שלך.",
     eventSalary: 42
 };

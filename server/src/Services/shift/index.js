@@ -10,6 +10,7 @@ let moment          = require('moment');
 let shiftModel       = require('../../Models/shift');
 
 let encouragementServices = require('../../Services/encouragements');
+let reportService = require('../../Services/reports/index.js');
 
 
 let addShifts = async function(sessionId, shiftArr){
@@ -546,7 +547,6 @@ let endShift = async function(sessionId, shift){
         return {'code': 409, 'err': 'not a full sales report'};
 
 
-
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'FINISHED';
 
@@ -565,9 +565,15 @@ let endShift = async function(sessionId, shift){
         for(let manager of managers){
             emails.push(manager.contact.email);
         }
-        let content = ' מצורף דוח טעימות של:' + salesman.username;
-        mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime + ' ' + salesman.username + '.xlsx');
-        return {'code': 200};
+        result = await reportService.createXLSaleReport(shift._id.toString());
+        if(result.code == 200) {
+            let content = ' מצורף דוח טעימות של:' + salesman.username;
+            mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של ' + salesman.username, content, 'salesReports/sale report ' + shift.startTime + ' ' + salesman.username + '.xlsx');
+            return {'code': 200};
+        }
+        else {
+            return {'code': 500, 'err': constantString.somthingBadHappend};
+        }
     }
 };
 

@@ -14,6 +14,7 @@ var NotificationSystem  = require('react-notification-system');
 var TrashIcon           = require('react-icons/lib/fa/trash-o');
 var EditIcon            = require('react-icons/lib/md/edit');
 var userServices        = require('../communication/userServices');
+var sorting             = require('../utils/SortingMethods');
 
 function dateFormatter(cell, row) {
     return moment(cell).format('YYYY-MM-DD');
@@ -79,7 +80,7 @@ var UsersContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllUsers().then(function (n) {
-            var flatUsers = flatList(n);
+            var flatUsers = flatList(n.sort(sorting.salesmenSortingMethod));
             self.setState({
                 users: flatUsers
             });

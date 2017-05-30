@@ -9,6 +9,9 @@ var userServices        = require('../communication/userServices');
 var constantStrings     = require('../utils/ConstantStrings');
 var styles              = require('../styles/managerStyles/homeStyles');
 var NotificationSystem  = require('react-notification-system');
+var scheduler           = require('node-schedule');
+var sorting             = require('../utils/SortingMethods');
+
 
 var HomeContainer = React.createClass({
 
@@ -24,7 +27,8 @@ var HomeContainer = React.createClass({
             productsNum: 0,
             storesNum: 0,
             salesmen: undefined,
-            chosenShift: undefined
+            chosenShift: undefined,
+            asyncScheduler: undefined
         }
     },
 
@@ -70,13 +74,7 @@ var HomeContainer = React.createClass({
             result = result.filter((user) => user.jobDetails.userType == 'salesman');
             self.setState({
                 salesmenNum: result.length,
-                salesmen: result.sort(function(a, b) {
-                    if((a.personal.firstName + a.personal.lastName) > (b.personal.firstName + b.personal.lastName))
-                        return 1;
-                    else if((a.personal.firstName + a.personal.lastName) < (b.personal.firstName + b.personal.lastName))
-                        return -1;
-                    return 0;
-                })
+                salesmen: result.sort(sorting.salesmenSortingMethod)
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -103,6 +101,8 @@ var HomeContainer = React.createClass({
     },
 
     salesmanChanged: function(event){
+        if(this.state.asyncScheduler != undefined)
+            this.state.asyncScheduler.cancel();
         if(event.target.selectedIndex == 0) {
             this.setState({
                 chosenShift: undefined
@@ -129,7 +129,20 @@ var HomeContainer = React.createClass({
                 }
                 else{
                     self.setState({
-                        chosenShift: result
+                        chosenShift: result,
+                        asyncScheduler: scheduler.scheduleJob('10 * * * * *', function(){
+                            managementServices.getSalesmanLiveShift(salesman._id)
+                                .then(function(result){
+                                    if(result != ""){
+                                        self.setState({
+                                            chosenShift: result
+                                        });
+                                    }
+                                })
+                                .catch(function(result) {
+
+                                })
+                        })
                     });
                 }
             }).catch(function (errMess) {

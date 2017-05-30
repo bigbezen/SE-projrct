@@ -11,6 +11,7 @@ var NotificationSystem  = require('react-notification-system');
 var EditIcon            = require('react-icons/lib/md/edit');
 var salesChart          = undefined;
 var userServices        = require('../communication/userServices');
+var sorting             = require('../utils/SortingMethods');
 
 var ReportsSalesReport = React.createClass({
 
@@ -57,13 +58,7 @@ var ReportsSalesReport = React.createClass({
             .then(function(result) {
                 var salesmen = result.filter(function(user){
                     return user.jobDetails.userType == 'salesman'
-                }).sort(function(a, b) {
-                    if((a.personal.firstName + a.personal.lastName) > (b.personal.firstName + b.personal.lastName))
-                        return 1;
-                    else if((a.personal.firstName + a.personal.lastName) < (b.personal.firstName + b.personal.lastName))
-                        return -1;
-                    return 0;
-                });
+                }).sort(sorting.salesmenSortingMethod);
                 self.setState({
                     salesmen: salesmen
                 });
@@ -303,12 +298,12 @@ var ReportsSalesReport = React.createClass({
                 <div className="w3-container">
                     <div className="col-sm-offset-1">
                         <div className="row">
-                            <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-3 w3-large w3-card-4 w3-round-large">
+                            <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-2 w3-large w3-card-4 w3-round-large">
                                 {this.getSalesmenOptions()}
                             </select>
                         </div>
                         <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
-                            <select onChange={this.shiftChanged} ref="selectShift" className="col-sm-3 w3-large w3-card-4 w3-round-large">
+                            <select onChange={this.shiftChanged} ref="selectShift" className="col-sm-2 w3-large w3-card-4 w3-round-large">
                                 {this.getShiftsOptions()}
                             </select>
                         </div>

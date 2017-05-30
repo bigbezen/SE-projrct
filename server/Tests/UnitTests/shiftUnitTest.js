@@ -1870,6 +1870,7 @@ describe('shift unit test', function () {
                 'quantity': 2});
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
+            console.log('bla');
             let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),"notexisting1", saleTime, 2);
             assert.equal(result.err, constantString.productDoesNotExist);
             assert.equal(result.code, 404, 'code 404');
@@ -1891,12 +1892,12 @@ describe('shift unit test', function () {
                 'quantity': 2});
 
             shift1 = await dal.addShift(shift_object_to_model(shift1));
-            let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(), product1._id.toString(), saleTime, 0);
+            let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(), product1._id.toString(), saleTime, "1");
             assert.equal(result.code, 200, 'code 404');
 
             let res = await dal.getShiftsByIds([shift1._id]);
-            assert.equal(res[0].sales[0].quantity, 0);
-            assert.equal(res[0].salesReport[0].sold, 11);
+            assert.equal(res[0].sales[0].quantity, 1);
+            assert.equal(res[0].salesReport[0].sold, 12);
         });
     });
 

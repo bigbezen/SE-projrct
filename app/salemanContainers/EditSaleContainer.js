@@ -12,6 +12,8 @@ var styles                  = require('../styles/salesmanStyles/editSaleStyles')
 var moment                  = require('moment');
 var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
+var CloseIcon               = require('react-icons/lib/fa/close');
+
 
 const cellEditProp = {
     mode: 'click',
@@ -91,10 +93,10 @@ var EditSaleContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (currShift) {
-            self.setState(
-                {shift: currShift,
-                    sales: currShift.sales
-                });
+            self.setState({
+                shift: currShift,
+                sales: currShift.sales
+            });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
@@ -131,12 +133,26 @@ var EditSaleContainer = React.createClass({
         this.updateShift();
     },
 
+    deleteButton: function(cell, row, enumObject, rowIndex) {
+        let self = this;
+        return (
+            <a href="javascript:void(0)" onClick={() => self.onUpdateAmount(row, "0")}>
+                <CloseIcon/>
+            </a>
+        )
+    },
+
     renderSales: function () {
         return(
             <div>
                 <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
                     <h1><b>{constantStrings.press_quantity_for_edit}</b></h1>
                     <BootstrapTable data={this.state.sales} hover bordered={false} cellEdit={ cellEditProp }>
+                        <TableHeaderColumn
+                            dataAlign = 'right'
+                            tdStyle={{width: '10%'}}
+                            editable={false}
+                            dataFormat = {this.deleteButton}/>
                         <TableHeaderColumn
                             dataField = 'name'
                             dataAlign = 'right'

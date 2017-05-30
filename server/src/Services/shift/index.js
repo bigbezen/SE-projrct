@@ -687,13 +687,17 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
 
     let found = false;
     let diffQuant;
-    for(let sale of shift.sales){
-        let saleDate = new Date(sale.timeOfSale).getTime();
+    for(let idx in shift.toObject().sales){
+        let saleDate = new Date(shift.sales[idx].timeOfSale).getTime();
         let getTime = new Date(time).getTime();
-        if(sale.productId.toString() == (productId) &&  saleDate == getTime){
-            diffQuant = sale.quantity - quantity;
-            sale.quantity = quantity;
+        if(!found && shift.sales[idx].productId.toString() == (productId) &&  saleDate == getTime){
+            diffQuant = shift.sales[idx].quantity - quantity;
+            shift.sales[idx].quantity = quantity;
             found = true;
+            if(quantity == 0){
+                console.log('bla');
+                shift.sales.splice(idx, 1);
+            }
         }
     }
 

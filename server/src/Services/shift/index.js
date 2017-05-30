@@ -611,15 +611,8 @@ let endShift = async function(sessionId, shift){
         for(let manager of managers){
             emails.push(manager.contact.email);
         }
-        result = await reportService.createXLSaleReport(shift._id.toString());
-        if(result.code == 200) {
-            let content = ' מצורף דוח טעימות של:' + salesman.username;
-            mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של ' + salesman.username, content, 'salesReports/sale report ' + shift.startTime + ' ' + salesman.username + '.xlsx');
-            return {'code': 200};
-        }
-        else {
-            return {'code': 500, 'err': constantString.somthingBadHappend};
-        }
+        result = reportService.createXLSaleReport(shift._id.toString(), emails);
+        return {'code': 200};
     }
 };
 

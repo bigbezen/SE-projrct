@@ -703,13 +703,12 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
-    app.get('/management/getStoreFinishedShifts', async function(req, res){
-        if(!('sessionid' in req.headers) || (!('storeId' in req.query))) {
+    app.get('/management/getStoreShiftsByStatus', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('storeId' in req.query)) || (!('status' in req.query))) {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.getStoreFinishedShifts(req.headers.sessionid, req.query.storeId);
-
+        let result = await shiftService.getStoreShiftsByStatus(req.headers.sessionid, req.query.storeId, req.query.status);
         if(result.code == 200)
             res.status(200).send(result.shifts);
         else

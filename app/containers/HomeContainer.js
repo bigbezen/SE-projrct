@@ -87,7 +87,8 @@ var HomeContainer = React.createClass({
         });
         managementServices.getAllStores().then(function (result) {
             self.setState({
-                storesNum: result.length
+                storesNum: result.length,
+                stores: result.sort(sorting.storeSortingMethod)
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -100,9 +101,67 @@ var HomeContainer = React.createClass({
         })
     },
 
+    fixShiftForStore: function(shift){
+        shift.salesReport = shift.salesReport.map(function(product){
+            product.productId = product.product;
+            return product;
+        });
+        return shift;
+    },
+
+    storeChanged: function(event){
+        if(this.state.asyncScheduler != undefined)
+            this.state.asyncScheduler.cancel();
+        this.refs.selectSalesman.selectedIndex = 0;
+        if(event.target.selectedIndex == 0){
+            this.setState({
+                chosenShift: undefined
+            })
+            return ;
+        }
+        let self = this;
+        let notificationSystem = this.refs.notificationSystem;
+        let store = this.state.stores[event.target.selectedIndex - 1];
+        managementServices.getStoreShiftsByStatus(store._id, 'STARTED')
+            .then(function(result){
+                if(result.length == 0){
+                    notificationSystem.clearNotifications();
+                    notificationSystem.addNotification({
+                        message: constantStrings.noShifts_string,
+                        level: 'error',
+                        autoDismiss: 2,
+                        position: 'tc',
+                    });
+                }
+                else {
+                    let shift = self.fixShiftForStore(result[0]);
+                    self.setState({
+                        chosenShift: shift,
+                        asyncScheduler: scheduler.scheduleJob('10 * * * * *', function(){
+                            managementServices.getStoreShiftsByStatus(store._id, 'STARTED')
+                                .then(function(result){
+                                    if(result.length != 0){
+                                        self.setState({
+                                            chosenShift: self.fixShiftForStore(result[0])
+                                        });
+                                    }
+                                })
+                                .catch(function(result) {
+
+                                })
+                        })
+                    });
+                }
+            })
+            .catch(function(err){
+
+            })
+    },
+
     salesmanChanged: function(event){
         if(this.state.asyncScheduler != undefined)
             this.state.asyncScheduler.cancel();
+        this.refs.selectStore.selectedIndex = 0;
         if(event.target.selectedIndex == 0) {
             this.setState({
                 chosenShift: undefined
@@ -164,6 +223,18 @@ var HomeContainer = React.createClass({
             optionsForDropdown.push(<option className="w3-round-large" key={"salesman" + i}>
                                         {salesmen[i].personal.firstName + " " + salesmen[i].personal.lastName}
                                     </option>)
+        }
+        return optionsForDropdown;
+    },
+
+    getStoresOptions: function() {
+        var optionsForDropdown = [];
+        optionsForDropdown.push(<option className="w3-round-large" key="defaultStore">{constantStrings.defaultStoreDropDown_string}</option>);
+        var stores = this.state.stores;
+        for(var i=0; i<stores.length; i++){
+            optionsForDropdown.push(<option className="w3-round-large" key={"store" + i}>
+                {stores[i].area + " - " + stores[i].city + " - " + stores[i].name + " - " + stores[i].address}
+            </option>)
         }
         return optionsForDropdown;
     },
@@ -273,7 +344,7 @@ var HomeContainer = React.createClass({
     },
 
     renderLiveSalesReport: function(){
-        if(this.state.salesmen == undefined){
+        if(this.state.salesmen == undefined || this.state.stores == undefined){
             return (
                 <div>
 
@@ -287,10 +358,18 @@ var HomeContainer = React.createClass({
                         <div className="text-center">
                             <h1>{constantStrings.liveSalesReport_string}</h1>
                         </div>
-                        <select onChange={this.salesmanChanged} ref="selectSalesman" style={{marginTop: '30px'}}
-                                className="col-sm-4 col-sm-offset-4 w3-large w3-card-4 w3-round-large">
-                            {this.getSalesmenOptions()}
-                        </select>
+                        <div className="col-sm-6">
+                            <select onChange={this.salesmanChanged} ref="selectSalesman" style={{marginTop: '30px'}}
+                                    className="col-sm-8 col-sm-offset-2 w3-large w3-card-4 w3-round-large">
+                                {this.getSalesmenOptions()}
+                            </select>
+                        </div>
+                        <div className="col-sm-6">
+                            <select onChange={this.storeChanged} ref="selectStore" style={{marginTop: '30px'}}
+                                    className="col-sm-8 col-sm-offset-2 w3-large w3-card-4 w3-round-large">
+                                {this.getStoresOptions()}
+                            </select>
+                        </div>
                     </div>
                     <div style={{marginBottom: '30px'}}>
                         {this.renderSalesReportList()}

@@ -138,9 +138,9 @@ var helpers = {
         return connection.managementRequests.getSalesmanFinishedShifts(salesmanId);
     },
 
-    getStoreFinishedShifts: function(storeId) {
-        console.log('managementServices - getSalesmanFinishedShifts');
-        return connection.managementRequests.getStoreFinishedShifts(storeId);
+    getStoreShiftsByStatus: function(storeId, status) {
+        console.log('managementServices - getStoreShiftsByStatus');
+        return connection.managementRequests.getStoreShiftsByStatus(storeId, status);
     },
 
     getSalesmanLiveShift: function(salesmanId){

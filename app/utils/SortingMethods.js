@@ -25,6 +25,15 @@ module.exports = {
         else
             return ((new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime());
 
+    },
+
+    storeSortingMethod: function(store1, store2) {
+        if(store1.area + store1.city + store1.name < store2.area + store2.city + store2.name)
+            return -1;
+        else if(store1.area + store1.city + store1.name > store2.area + store2.city + store2.name)
+            return 1;
+        else
+            return 0;
     }
 
 };

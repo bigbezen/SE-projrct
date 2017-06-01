@@ -250,20 +250,20 @@ let _sendEmailsToAgents = async function(shifts){
     }
 };
 
-let getStoreFinishedShifts = async function(sessionId, storeId){
+let getStoreShiftsByStatus = async function(sessionId, storeId, status){
 
     logger.info('Services.shift.index.getSalesmanFinishedShifts', {'session-id': sessionId, 'storeId': storeId});
-    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanFinishedShifts', null);
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getStoreShiftsByStatus', null);
     if(isAuthorized == null)
         return {'code': 401, 'err': constantString.permssionDenied};
-
+    if(SHIFT_STATUS[status] == undefined){
+        return {code: 409, err: constantString.noSuchShiftStatus};
+    }
     let store = await dal.getStoresByIds([storeId]);
     if(store.length == 0)
         return {'code': 401, 'err': constantString.storeDoesNotExist};
     store = store[0];
-
-    let storeShifts = await dal.getShiftsByStatus('FINISHED');
-
+    let storeShifts = await dal.getShiftsByStatus(status);
     let productsDict = {};
     let products = await dal.getAllProducts();
     for(let product of products)
@@ -274,7 +274,6 @@ let getStoreFinishedShifts = async function(sessionId, storeId){
     for(let shiftIndex in storeShifts){
         storeShifts[shiftIndex] = storeShifts[shiftIndex].toObject();
     }
-
     for(let currentShift of storeShifts){
         //currentShift = currentShift.toObject();
         currentShift.store = store;
@@ -286,9 +285,9 @@ let getStoreFinishedShifts = async function(sessionId, storeId){
             product.name = productDetails.name;
             product.category = productDetails.category;
             product.subCategory = productDetails.subCategory;
+            product.product = productDetails;
         }
     }
-
     return {'code': 200, 'shifts': storeShifts};
 };
 
@@ -906,4 +905,4 @@ module.exports.getShiftsOfRange = getShiftsOfRange;
 module.exports.getSalesmanLiveShift = getSalesmanLiveShift;
 module.exports.getAllShiftsByStatus = getAllShiftsByStatus;
 module.exports.submitConstraints = submitConstraints;
-module.exports.getStoreFinishedShifts = getStoreFinishedShifts;
+module.exports.getStoreShiftsByStatus = getStoreShiftsByStatus;

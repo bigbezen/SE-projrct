@@ -65,7 +65,7 @@ var ReportsSalesReport = React.createClass({
                     .then(function(stores){
                         self.setState({
                             salesmen: salesmen,
-                            stores: stores
+                            stores: stores.sort(sorting.storeSortingMethod)
                         })
                     });
 
@@ -94,7 +94,7 @@ var ReportsSalesReport = React.createClass({
         this.refs.selectSalesman.selectedIndex = 0;
         var store = this.state.stores[event.target.selectedIndex - 1];
 
-        managementServices.getStoreFinishedShifts(store._id)
+        managementServices.getStoreShiftsByStatus(store._id, 'FINISHED')
             .then(function(result){
                 if(result.length == 0){
                     notificationSystem.clearNotifications();
@@ -329,7 +329,7 @@ var ReportsSalesReport = React.createClass({
         optionsForDropdown.push(<option className="w3-round-large" key="defaultSalesman">{constantStrings.defaultStoreDropDown_string}</option>);
         var stores = this.state.stores;
         for(var i=0; i<stores.length; i++){
-            optionsForDropdown.push(<option className="w3-round-large" key={"store" + i}>{stores[i].name + " - " + stores[i].city + " - " + stores[i].address}</option>)
+            optionsForDropdown.push(<option className="w3-round-large" key={"store" + i}>{stores[i].area + " - " + stores[i].city + " - " + stores[i].name + " - " + stores[i].address}</option>)
         }
         return optionsForDropdown;
     },

@@ -302,6 +302,12 @@ var ShiftsCreateMultipleShifts = React.createClass({
                     <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
                 </div>
             );
+        else if(this.state.newShifts.length == 0)
+            return (
+                <div className="w3-xxxlarge text-center">
+                    <h1>{constantsStrings.noShifts_string}</h1>
+                </div>
+            );
         else {
             let dates = Array.from(new Set(this.state.newShifts.map((shift) => shift.startTime)))
                 .sort(function(shift1, shift2){

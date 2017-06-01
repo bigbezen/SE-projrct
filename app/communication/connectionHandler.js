@@ -439,9 +439,9 @@ var managementRequests = {
         })
     },
 
-    getStoreFinishedShifts: function(storeId){
-        console.log('get finished shifts of salesman');
-        return axios.get(serverUrl + 'management/getStoreFinishedShifts?storeId=' + storeId, {
+    getStoreShiftsByStatus: function(storeId, status){
+        console.log('get shifts of salesman by status');
+        return axios.get(serverUrl + 'management/getStoreShiftsByStatus?storeId=' + storeId + '&status=' + status, {
             headers: {
                 sessionId: sessionId
             }

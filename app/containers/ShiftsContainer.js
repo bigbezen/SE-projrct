@@ -18,6 +18,7 @@ var EditIcon            = require('react-icons/lib/md/edit');
 var DownloadIcon        = require('react-icons/lib/md/email');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
+var salesmanServices    = require('../communication/salesmanServices')
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -168,7 +169,24 @@ var ShiftsContainer = React.createClass({
             });
         })
     },
-
+    handleFinishShift: function(row){
+        this.setState({
+            shifts: null
+        });
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
+        salesmanServices.finishShift(row).then(function (n) {
+            self.updateShifts(self.state.startDate, self.state.endDate);
+        }).catch(function (errMess) {
+            notificationSystem.clearNotifications();
+            notificationSystem.addNotification({
+                message: errMess,
+                level: 'error',
+                autoDismiss: 0,
+                position: 'tc'
+            });
+        })
+    },
     onClickAddShift: function(){
         this.context.router.push({
             pathname: paths.manager_shiftDetails_path
@@ -180,7 +198,25 @@ var ShiftsContainer = React.createClass({
             pathname: paths.manager_createShifts_path
         })
     },
+    onClickFinishShift(cell, row, rowIndex) {
+        var notificationSystem = this.refs.notificationSystem;
 
+        var self = this;
+        notificationSystem.clearNotifications();
+        notificationSystem.addNotification({
+            message: constantStrings.areYouSureFinishShift_string,
+            level: 'info',
+            autoDismiss: 0,
+            position: 'tc',
+            action: {
+                label: constantStrings.yes_string,
+                callback:
+                    function(){
+                        self.handleFinishShift(row)
+                    }
+            }
+        });
+    },
     editButton: function(cell, row, enumObject, rowIndex) {
         var isFinished = (row.status == 'FINISHED');
         var isStarted = (row.status == 'STARTED');
@@ -202,6 +238,16 @@ var ShiftsContainer = React.createClass({
                     onClick={() =>
                         this.onClickEditButton(cell, row, rowIndex)}>
                     <EditIcon/>
+                </button>
+            )
+        } else {
+            return (
+                <button
+                    className="w3-card-2"
+                    type="button"
+                    onClick={() =>
+                        this.onClickFinishShift(cell, row, rowIndex)}>
+                    סיים
                 </button>
             )
         }

@@ -175,7 +175,7 @@ var ShiftsContainer = React.createClass({
         });
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.finishShift(row).then(function (n) {
+        managerServices.managerFinishShift(row._id).then(function (n) {
             self.updateShifts(self.state.startDate, self.state.endDate);
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();

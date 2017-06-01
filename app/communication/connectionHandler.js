@@ -653,6 +653,17 @@ var managerRequests = {
         })
     },
 
+    managerFinishShift : function(shiftId) {
+    return axios.post(serverUrl + 'manager/finishShift', {
+        sessionId: sessionId,
+        shiftId: shiftId
+    }).then(function (info) {
+        return info.data;
+    }).catch(function (err) {
+        errorMessage('Error:', err.response.data);
+        throw err.response.data;
+    })
+},
 };
 
 var salesmanRequests = {

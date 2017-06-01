@@ -17,4 +17,14 @@ module.exports = {
             return 0;
     },
 
+    shiftSortingByAgent: function(shift1, shift2){
+        if(shift1.storeId.managerName < shift2.storeId.managerName)
+            return -1;
+        else if(shift1.storeId.managerName > shift2.storeId.managerName)
+            return 1;
+        else
+            return ((new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime());
+
+    }
+
 };

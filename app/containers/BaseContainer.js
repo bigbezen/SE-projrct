@@ -124,6 +124,7 @@ var BaseContainer = React.createClass({
                             <a href={'/#'+paths.manager_humanResourcesReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsHumanResourcesReportTitle_string}</a>
                             <a href={'/#'+paths.manager_monthlyAnalysisReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsMonthlyAnalysisReportTitle_string}</a>
                             <a href={'/#'+paths.manager_monthlyHoursReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsMonthlyUserHoursReportTitle_string}</a>
+                            <a href={'/#'+paths.manager_orderEventsReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsOrderEventsReportTitle_string}</a>
                         </div>
                     </div>
                     <a className="w3-hover-opacity w3-left w3-bar-item w3-button" href="javascript:void(0);" onClick={this.handleLogoutUser}>{constantsStrings.logout_string}</a>

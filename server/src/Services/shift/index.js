@@ -221,6 +221,13 @@ let getAllShiftsByStatus = async function(sessionId, status){
     }
 
     let shifts = await dal.getShiftsByStatus(status);
+    shifts = shifts.map(function(shift) {
+        shift = shift.toObject();
+        shift.salesman = shift.salesmanId;
+        if(shift.salesmanId != undefined)
+            shift.salesmanId = shift.salesman._id;
+        return shift;
+    });
     if(!shifts){
         return {code: 500, err: constantString.serverError};
     }
@@ -241,6 +248,48 @@ let _sendEmailsToAgents = async function(shifts){
         }
         await mailer.sendMail([email], "IBBLS - new shifts", content);
     }
+};
+
+let getStoreFinishedShifts = async function(sessionId, storeId){
+
+    logger.info('Services.shift.index.getSalesmanFinishedShifts', {'session-id': sessionId, 'storeId': storeId});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getSalesmanFinishedShifts', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': constantString.permssionDenied};
+
+    let store = await dal.getStoresByIds([storeId]);
+    if(store.length == 0)
+        return {'code': 401, 'err': constantString.storeDoesNotExist};
+    store = store[0];
+
+    let storeShifts = await dal.getShiftsByStatus('FINISHED');
+
+    let productsDict = {};
+    let products = await dal.getAllProducts();
+    for(let product of products)
+        productsDict[product._id.toString()] = product;
+
+    storeShifts = storeShifts.filter((shift) => shift.storeId._id.toString() == storeId);
+
+    for(let shiftIndex in storeShifts){
+        storeShifts[shiftIndex] = storeShifts[shiftIndex].toObject();
+    }
+
+    for(let currentShift of storeShifts){
+        //currentShift = currentShift.toObject();
+        currentShift.store = store;
+        currentShift.storeId = store._id;
+
+        for(let product of currentShift.salesReport) {
+
+            let productDetails = productsDict[product.productId.toString()];
+            product.name = productDetails.name;
+            product.category = productDetails.category;
+            product.subCategory = productDetails.subCategory;
+        }
+    }
+
+    return {'code': 200, 'shifts': storeShifts};
 };
 
 let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
@@ -668,9 +717,7 @@ let editShift = async function (sessionId, shiftDetails) {
     if(shiftDetails.salesmanId != undefined && shiftDetails.salesmanId == "")
         shiftDetails.salesmanId = undefined;
 
-    console.log('bla');
     let res = await dal.editShift(shiftDetails);
-    console.log('bla');
     if(res.ok == 0)
         return {'code':400, 'err': constantString.shiftCannotBeEdited};
 
@@ -701,7 +748,6 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
             shift.sales[idx].quantity = quantity;
             found = true;
             if(quantity == 0){
-                console.log('bla');
                 shift.sales.splice(idx, 1);
             }
         }
@@ -734,7 +780,6 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
     for(let i in salesReport){
 
         if(salesReport[i].productId.toString() == productId){
-            console.log('debug');
             salesReport[i].sold = newSold;
             salesReport[i].opened = newOpened;
         }
@@ -861,3 +906,4 @@ module.exports.getShiftsOfRange = getShiftsOfRange;
 module.exports.getSalesmanLiveShift = getSalesmanLiveShift;
 module.exports.getAllShiftsByStatus = getAllShiftsByStatus;
 module.exports.submitConstraints = submitConstraints;
+module.exports.getStoreFinishedShifts = getStoreFinishedShifts;

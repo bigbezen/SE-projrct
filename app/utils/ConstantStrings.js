@@ -108,7 +108,7 @@ class ConstantStrings extends React.Component {
     static storeName_string ='שם חנות';
     static addStore_string = 'הוספת חנות חדשה';
     static editStore_string = 'עריכת חנות קיימת';
-    static managerName_string = 'מנהל';
+    static managerName_string = 'סוכן שטח';
     static phone_string = 'טלפון';
     static address_string = 'כתובת';
     static city_string = 'עיר';
@@ -117,6 +117,7 @@ class ConstantStrings extends React.Component {
 
     //filter strings
     static enterStoreName_string = 'הכנס שם חנות..';
+    static enterAgentName_string = 'הכנס שם סוכן..';
     static enterManagerName_string = 'הכנס שם מנהל..';
     static enterPhone_string = 'הכנס טלפון..';
     static enterAddress_string = 'הכנס כתובת..';
@@ -147,7 +148,9 @@ class ConstantStrings extends React.Component {
 
     //reports
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
+    static defaultStoreDropDown_string = 'בחר/י חנות';
     static defaultShiftDropDown_string = 'בחר/י משמרת';
+    static defaultDateDropDown_string = 'בחר/י תאריך';
     static noShifts_string = 'לא קיימות משמרות להצגה';
     static noShiftToday_string = 'לא קיימת משמרת להיום';
     static editReport_string = 'ערוך דוח';
@@ -158,6 +161,7 @@ class ConstantStrings extends React.Component {
     static reportsMonthlyAnalysisReportTitle_string = 'סיכום ערוץ דיול חודשי';
     static reportsHumanResourcesReportTitle_string = 'דוח כוח אדם';
     static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
+    static reportsOrderEventsReportTitle_string = 'דוח הזמנת אירועים';
     static reportsShowReport_string = 'הצג דוח';
     static totalSalesmanHours_string = 'סך שעות דיול';
 

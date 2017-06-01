@@ -584,7 +584,7 @@ let getOrderEventReportXL = async function(sessionId, year, month){
             return workbook.xlsx.writeFile('monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
    });
     let content = 'מורף הזמנת עבודה לחודש ' + (month + 1) + ' ' + year;
-    mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח הזמנת עבודה ' + (month + 1) + ' ' + year, content, 'monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח הזמנת עבודה ' + (month + 1) + ' ' + year, content, 'monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
 
     return {'code': 200};
 };

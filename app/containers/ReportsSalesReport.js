@@ -42,6 +42,7 @@ var ReportsSalesReport = React.createClass({
         this.setUserType();
         return{
             salesmen: undefined,
+            stores: undefined,
             shifts: [],
             chosenShift: undefined
         }
@@ -59,9 +60,15 @@ var ReportsSalesReport = React.createClass({
                 var salesmen = result.filter(function(user){
                     return user.jobDetails.userType == 'salesman'
                 }).sort(sorting.salesmenSortingMethod);
-                self.setState({
-                    salesmen: salesmen
-                });
+
+                managementServices.getAllStores()
+                    .then(function(stores){
+                        self.setState({
+                            salesmen: salesmen,
+                            stores: stores
+                        })
+                    });
+
             })
             .catch(function(err) {
                 notificationSystem.clearNotifications();
@@ -70,6 +77,47 @@ var ReportsSalesReport = React.createClass({
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc',
+                });
+            });
+    },
+
+    storeChanged: function(event) {
+        if(event.target.selectedIndex == 0)
+            return;
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem
+        this.setState({
+            chosenShift: undefined,
+            shifts: []
+        });
+
+        this.refs.selectSalesman.selectedIndex = 0;
+        var store = this.state.stores[event.target.selectedIndex - 1];
+
+        managementServices.getStoreFinishedShifts(store._id)
+            .then(function(result){
+                if(result.length == 0){
+                    notificationSystem.clearNotifications();
+                    notificationSystem.addNotification({
+                        message: constantStrings.noShifts_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc',
+                    });
+                }
+                else{
+                    self.setState({
+                        shifts: result
+                    });
+                }
+            })
+            .catch(function (errMess) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
                 });
             });
     },
@@ -83,6 +131,8 @@ var ReportsSalesReport = React.createClass({
             chosenShift: undefined,
             shifts: []
         });
+
+        this.refs.selectStore.selectedIndex = 0;
 
         var salesman = this.state.salesmen[event.target.selectedIndex - 1];
         managementServices.getSalesmanFinishedShifts(salesman._id)
@@ -102,18 +152,21 @@ var ReportsSalesReport = React.createClass({
                     });
                 }
             }).catch(function (errMess) {
-            notificationSystem.clearNotifications();
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 0,
-                position: 'tc'
-            });
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
+                });
         })
     },
 
     shiftChanged: function(event) {
         var selectedIndex = event.target.selectedIndex;
+        this.setState({
+            chosenShift: undefined
+        });
         if(selectedIndex > 0) {
             var chosenShift = this.state.shifts[selectedIndex - 1];
             this.setState({
@@ -203,8 +256,8 @@ var ReportsSalesReport = React.createClass({
                  style={{marginTop: '10px', height: '45px'}}>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
-                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
-                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} value={product.sold} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} value={product.opened} />
                 <p className="w3-xlarge col-sm-1" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
             </div>
         )
@@ -271,9 +324,19 @@ var ReportsSalesReport = React.createClass({
         return optionsForDropdown;
     },
 
+    getStoresOptions: function() {
+        var optionsForDropdown = [];
+        optionsForDropdown.push(<option className="w3-round-large" key="defaultSalesman">{constantStrings.defaultStoreDropDown_string}</option>);
+        var stores = this.state.stores;
+        for(var i=0; i<stores.length; i++){
+            optionsForDropdown.push(<option className="w3-round-large" key={"store" + i}>{stores[i].name + " - " + stores[i].city + " - " + stores[i].address}</option>)
+        }
+        return optionsForDropdown;
+    },
+
     getShiftsOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option className="w3-round-large" key="defaultShift">{constantStrings.defaultShiftDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round-large" key="defaultShift">{constantStrings.defaultDateDropDown_string}</option>);
         var shifts = this.state.shifts;
         for(var i=0; i<shifts.length; i++){
             optionsForDropdown.push(<option className="w3-round-large" key={"shift" + i}>{moment(shifts[i].startTime).format('YYYY-MM-DD')}</option>)
@@ -296,16 +359,33 @@ var ReportsSalesReport = React.createClass({
         else {
             return (
                 <div className="w3-container">
-                    <div className="col-sm-offset-1">
-                        <div className="row">
-                            <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-2 w3-large w3-card-4 w3-round-large">
-                                {this.getSalesmenOptions()}
-                            </select>
+                    <div className="col-sm-6">
+                        <div className="col-sm-offset-1">
+                            <div className="row">
+                                <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                    {this.getSalesmenOptions()}
+                                </select>
+                            </div>
+                            <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
+                                <select onChange={this.shiftChanged} ref="selectShiftSalesman" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                    {this.getShiftsOptions()}
+                                </select>
+                            </div>
                         </div>
-                        <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
-                            <select onChange={this.shiftChanged} ref="selectShift" className="col-sm-2 w3-large w3-card-4 w3-round-large">
-                                {this.getShiftsOptions()}
-                            </select>
+                    </div>
+
+                    <div className="col-sm-6">
+                        <div className="col-sm-offset-1">
+                            <div className="row">
+                                <select onChange={this.storeChanged} ref="selectStore" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                    {this.getStoresOptions()}
+                                </select>
+                            </div>
+                            <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
+                                <select onChange={this.shiftChanged} ref="selectShiftStore" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                    {this.getShiftsOptions()}
+                                </select>
+                            </div>
                         </div>
                     </div>
 

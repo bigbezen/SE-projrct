@@ -138,6 +138,11 @@ var helpers = {
         return connection.managementRequests.getSalesmanFinishedShifts(salesmanId);
     },
 
+    getStoreFinishedShifts: function(storeId) {
+        console.log('managementServices - getSalesmanFinishedShifts');
+        return connection.managementRequests.getStoreFinishedShifts(storeId);
+    },
+
     getSalesmanLiveShift: function(salesmanId){
         console.log('managementServices - getSalesmanLiveShift');
         return connection.managementRequests.getSalesmanLiveShift(salesmanId);

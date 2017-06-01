@@ -703,6 +703,19 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.get('/management/getStoreFinishedShifts', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('storeId' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getStoreFinishedShifts(req.headers.sessionid, req.query.storeId);
+
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.get('/management/getSalesmanLiveShift', async function(req, res){
         if(!('sessionid' in req.headers) || (!('salesmanId' in req.query))) {
             res.status(404).send('invalid parameters');
@@ -895,6 +908,18 @@ function _setapApiEndpoints() {
         //     return;
         // }
         let result = await reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/manager/exportOrderEventsReport', async function(req, res){
+        // if(!validator.exportMonthlyHoursReport(req.body)){
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getOrderEventReportXL(req.body.sessionId, req.body.year, req.body.month);
         if(result.code == 200)
             res.status(200).send(result.report);
         else

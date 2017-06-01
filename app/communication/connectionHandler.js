@@ -439,6 +439,20 @@ var managementRequests = {
         })
     },
 
+    getStoreFinishedShifts: function(storeId){
+        console.log('get finished shifts of salesman');
+        return axios.get(serverUrl + 'management/getStoreFinishedShifts?storeId=' + storeId, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     getSalesmanLiveShift: function(salesmanId){
         console.log('get salesman live shifts');
         return axios.get(serverUrl + 'management/getSalesmanLiveShift?salesmanId=' + salesmanId, {
@@ -656,6 +670,19 @@ var managerRequests = {
 
     exportSalaryForHumanResourceReport: function(year, month){
         return axios.post(serverUrl + 'manager/getSalaryForHumanResourceReport', {
+            sessionId: sessionId,
+            year: year,
+            month: month
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    exportOrderEventsReport: function(year, month){
+        return axios.post(serverUrl + 'manager/exportOrderEventsReport', {
             sessionId: sessionId,
             year: year,
             month: month

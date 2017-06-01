@@ -18,6 +18,7 @@ var EditIcon            = require('react-icons/lib/md/edit');
 var DownloadIcon        = require('react-icons/lib/md/email');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
+var sorting             = require('../utils/SortingMethods');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -90,7 +91,8 @@ var ShiftsCreationContainer = React.createClass({
             let areas = new Set(result.map((shift) => shift.storeId.area));
             let areaToShifts = {};
             for(let area of areas){
-                areaToShifts[area] = result.filter((shift) => shift.storeId.area == area);
+                areaToShifts[area] = result.filter((shift) => shift.storeId.area == area)
+                    .sort(sorting.shiftSortingByAgent);
                 areaToShifts[area] = flatList(areaToShifts[area]);
             }
             //var flatShifts = flatList(result);
@@ -255,9 +257,14 @@ var ShiftsCreationContainer = React.createClass({
                                 containerStyle={{border: '#000000 2.0px solid'}}
                 >
                     <TableHeaderColumn
+                        dataField = 'storeId.managerName'
+                        dataAlign = 'right'
+                        filter = { {type: 'TextFilter', placeholder:constantStrings.enterAgentName_string} }>
+                        {constantStrings.managerName_string}
+                    </TableHeaderColumn>
+                    <TableHeaderColumn
                         dataField = 'storeId.name'
                         dataAlign = 'right'
-                        dataSort = {true}
                         filter = { {type: 'TextFilter', placeholder:constantStrings.enterStoreName_string} }
                         isKey = {true}>
                         {constantStrings.storeName_string}
@@ -283,7 +290,6 @@ var ShiftsCreationContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'status'
                         dataAlign = 'right'
-                        dataSort = {true}
                         filter={ { type: 'TextFilter', placeholder:constantStrings.enterStatus_string} }>
                         {constantStrings.status_string}
                     </TableHeaderColumn>

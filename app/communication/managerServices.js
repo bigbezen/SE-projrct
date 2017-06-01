@@ -92,6 +92,11 @@ var helpers = {
     exportSalaryForHumanResourceReport: function(year, month) {
         console.log('managerService - exportSalaryForHumanResourceReport');
         return connection.managerRequests.exportSalaryForHumanResourceReport(year, month)
+    },
+
+    exportOrderEventsReport: function(year, month) {
+        console.log('managerService - exportSalaryForHumanResourceReport');
+        return connection.managerRequests.exportOrderEventsReport(year, month)
     }
 };
 

@@ -1792,7 +1792,7 @@ describe('shift unit test', function () {
             //get all the shifts to ensure that the product is not removed
             let date =  new Date();
             let dbShifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
-            expect(dbShifts).to.have.lengthOf(1);
+            expect(dbShifts).to.have.lengthOf(0);
         });
     });
 

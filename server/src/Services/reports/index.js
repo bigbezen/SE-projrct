@@ -135,7 +135,7 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     return {'code': 200};
 };
 
-let createXLSaleReport =  async function(shiftId){
+let createXLSaleReport =  async function(shiftId, emails){
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if(shift == null)
@@ -248,6 +248,8 @@ let createXLSaleReport =  async function(shiftId){
             return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
         });
 
+    let content = ' מצורף דוח טעימות של:' + salesman.username;
+    mailer.sendMailWithFile([emails], 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
     return {'code': 200};
 };
 

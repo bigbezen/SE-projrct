@@ -253,7 +253,7 @@ var ShiftsContainer = React.createClass({
         } else {
             return (
                 <button
-                    className="w3-card-2"
+                    className="w3-card-2 w3-text-black"
                     type="button"
                     onClick={() =>
                         this.onClickFinishShift(cell, row, rowIndex)}>

@@ -102,6 +102,7 @@ var HomeContainer = React.createClass({
     },
 
     fixShiftForStore: function(shift){
+        shift.storeId = shift.store;
         shift.salesReport = shift.salesReport.map(function(product){
             product.productId = product.product;
             return product;
@@ -323,7 +324,9 @@ var HomeContainer = React.createClass({
                 <div>
                     <div className="col-sm-12 text-center">
                         <h1>{this.state.chosenShift.storeId.name} - {this.state.chosenShift.storeId.city}</h1>
+                        <h1>{this.state.chosenShift.salesmanId.personal.firstName + " " + this.state.chosenShift.salesmanId.personal.lastName}</h1>
                     </div>
+
                     <div style={styles.marginBottom} className="col-sm-12">
                         <div className="text-center col-sm-12">
                             <h1>

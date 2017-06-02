@@ -359,8 +359,11 @@ var ReportsSalesReport = React.createClass({
         else {
             return (
                 <div className="w3-container">
+                    <div className="text-center">
+                        <h1>{constantStrings.reportsSalesReportTitle_string}</h1>
+                    </div>
                     <div className="col-sm-6">
-                        <div className="col-sm-offset-1">
+                        <div className="col-sm-offset-2">
                             <div className="row">
                                 <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-8 w3-large w3-card-4 w3-round-large">
                                     {this.getSalesmenOptions()}
@@ -375,7 +378,7 @@ var ReportsSalesReport = React.createClass({
                     </div>
 
                     <div className="col-sm-6">
-                        <div className="col-sm-offset-1">
+                        <div className="col-sm-offset-2">
                             <div className="row">
                                 <select onChange={this.storeChanged} ref="selectStore" className="col-sm-8 w3-large w3-card-4 w3-round-large">
                                     {this.getStoresOptions()}

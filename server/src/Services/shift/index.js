@@ -803,6 +803,9 @@ let managerEndShift = async function(sessionId, shiftId){
         return {'code': 403, 'err': constantString.shiftDoesnotStarted};
 
     shiftDb.status = 'FINISHED';
+    for(let product of shiftDb.salesReport){
+        product.stockEndShift = product.stockStartShift;
+    }
 
     let encouragements = await encouragementServices.calculateEncouragements(shiftDb.salesReport);
     if(encouragements == null)
@@ -829,9 +832,10 @@ let submitConstraints = async function(sessionId, constraints){
             let constraint = constraints[date][area];
             constraint.salesmanId = user._id;
             let remove = await dal.removeConstraints(new Date(date), area, user._id);
-            let add = await dal.setConstraints(new Date(date), area, constraints[date][area]);
+            let add = await dal.setConstraints(new Date(date), area, constraint);
         }
     }
+    console.log('bla');
     return {'code': 200};
 
 };

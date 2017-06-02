@@ -12,6 +12,7 @@ var paths               = require('../utils/Paths');
 var NotificationSystem  = require('react-notification-system');
 var styles              = require('../styles/managerStyles/styles');
 var userServices        = require('../communication/userServices');
+var sorting             = require('../utils/SortingMethods');
 
 var ReactBootstrap          = require('react-bootstrap');
 var Collapse                = ReactBootstrap.Collapse;
@@ -89,11 +90,11 @@ var ShiftDetails = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getAllStores().then(function (val) {
-            var arrayOfObjects = val;
+            var arrayOfObjects = val.sort(sorting.storeSortingMethod);
             optionsForDropDown.push(<option disabled selected>{constantsStrings.dropDownChooseString}</option>);
             for (var i = 0; i < arrayOfObjects.length; i++) {
                 var currOption = arrayOfObjects[i];
-                optionsForDropDown.push(<option value={currOption._id}>{currOption.name}</option>);
+                optionsForDropDown.push(<option value={currOption._id}>{currOption.area + " - " + currOption.city + " - " + currOption.name + " - " + currOption.address}</option>);
             }
             self.setState({storesForDropDown: optionsForDropDown});
             if (self.state.editing) {

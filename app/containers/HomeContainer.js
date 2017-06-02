@@ -113,10 +113,10 @@ var HomeContainer = React.createClass({
         if(this.state.asyncScheduler != undefined)
             this.state.asyncScheduler.cancel();
         this.refs.selectSalesman.selectedIndex = 0;
+        this.setState({
+            chosenShift: undefined
+        });
         if(event.target.selectedIndex == 0){
-            this.setState({
-                chosenShift: undefined
-            })
             return ;
         }
         let self = this;
@@ -162,10 +162,10 @@ var HomeContainer = React.createClass({
         if(this.state.asyncScheduler != undefined)
             this.state.asyncScheduler.cancel();
         this.refs.selectStore.selectedIndex = 0;
+        this.setState({
+            chosenShift: undefined
+        });
         if(event.target.selectedIndex == 0) {
-            this.setState({
-                chosenShift: undefined
-            });
             return;
         }
         var self = this;

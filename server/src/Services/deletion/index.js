@@ -243,7 +243,6 @@ let initiateProductsDb =  async function(){
             wine: 'יין'
         };
     try {
-        console.log('bla');
         for (let product of productsSpirit) {
             let prod = new products();
             prod.name = product.name;
@@ -254,9 +253,7 @@ let initiateProductsDb =  async function(){
             prod.minRequiredAmount = 1;
             prod.notifyManager = false;
 
-            console.log('bla');
             let result = await prod.save();
-            console.log('bla');
         }
         for (let product of productsWine) {
             let prod = new products();

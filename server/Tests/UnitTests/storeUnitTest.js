@@ -24,8 +24,8 @@ describe('store unit test', function () {
         notManager.jobDetails.userType = 'salesman';
         res = await dal.addUser(notManager);
 
-        newStoreDetails = {'name': 'bana', 'managerName': 'shahaf', 'phone': '0542458658', 'city': 'beersheva', 'address': 'rager12', 'area': 'south', 'channel': 'hot'};
-        editStoreDetails = {'name': 'bana-update', 'managerName': 'blabla', 'phone': '0542450958', 'city': 'rishon', 'address': 'rager142', 'area': 'center', 'channel': 'cold'};
+        newStoreDetails = {'name': 'bana', 'managerName': 'shahaf', 'phone': '0542458658', 'managerEmail': 's@gmail.com', 'city': 'beersheva', 'address': 'rager12', 'area': 'south', 'channel': 'hot'};
+        editStoreDetails = {'name': 'bana-update', 'managerName': 'blabla', 'phone': '0542450958', 'managerEmail': 'g@gmail.com', 'city': 'rishon', 'address': 'rager142', 'area': 'center', 'channel': 'cold'};
     });
 
     afterEach(async function () {

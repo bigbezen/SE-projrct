@@ -39,7 +39,7 @@ function timeFormatter(cell, row) {
     return moment(cell).format('H:mm');
 }
 
-var ShiftsContainer = React.createClass({
+var ShiftsCreationContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -87,7 +87,7 @@ var ShiftsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
-            result = result.filter((shift) => shift.status != "CREATED");
+            result = result.filter((shift) => shift.status == "CREATED");
             let areas = new Set(result.map((shift) => shift.storeId.area));
             let areaToShifts = {};
             for(let area of areas){
@@ -179,24 +179,7 @@ var ShiftsContainer = React.createClass({
             });
         })
     },
-    handleFinishShift: function(row){
-        this.setState({
-            shifts: null
-        });
-        var self = this;
-        var notificationSystem = this.refs.notificationSystem;
-        managerServices.managerFinishShift(row._id).then(function (n) {
-            self.updateShifts(self.state.startDate, self.state.endDate);
-        }).catch(function (errMess) {
-            notificationSystem.clearNotifications();
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 0,
-                position: 'tc'
-            });
-        })
-    },
+
     onClickAddShift: function(){
         this.context.router.push({
             pathname: paths.manager_shiftDetails_path
@@ -208,25 +191,13 @@ var ShiftsContainer = React.createClass({
             pathname: paths.manager_createShifts_path
         })
     },
-    onClickFinishShift(cell, row, rowIndex) {
-        var notificationSystem = this.refs.notificationSystem;
 
-        var self = this;
-        notificationSystem.clearNotifications();
-        notificationSystem.addNotification({
-            message: constantStrings.areYouSureFinishShift_string,
-            level: 'info',
-            autoDismiss: 0,
-            position: 'tc',
-            action: {
-                label: constantStrings.yes_string,
-                callback:
-                    function(){
-                        self.handleFinishShift(row)
-                    }
-            }
-        });
+    onClickMoveToSetSalesmen: function(){
+        this.context.router.push({
+            pathname: paths.manager_createMultipleShifts_path
+        })
     },
+
     editButton: function(cell, row, enumObject, rowIndex) {
         var isFinished = (row.status == 'FINISHED');
         var isStarted = (row.status == 'STARTED');
@@ -248,16 +219,6 @@ var ShiftsContainer = React.createClass({
                     onClick={() =>
                         this.onClickEditButton(cell, row, rowIndex)}>
                     <EditIcon/>
-                </button>
-            )
-        } else {
-            return (
-                <button
-                    className="w3-card-2"
-                    type="button"
-                    onClick={() =>
-                        this.onClickFinishShift(cell, row, rowIndex)}>
-                    סיים
                 </button>
             )
         }
@@ -363,6 +324,9 @@ var ShiftsContainer = React.createClass({
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
                 <div className="col-sm-12">
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round-xlarge" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
+                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round-xlarge" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
                     <p style={styles.dateLabel}>{constantStrings.startDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.startDate} ref="startDateBox" onChange= {this.changeDate} />
                     <p style={styles.dateLabel}>{constantStrings.endDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.endDate} ref="endDateBox" onChange={this.changeDate} />
                 </div>
@@ -393,4 +357,4 @@ var ShiftsContainer = React.createClass({
     }
 });
 
-module.exports = ShiftsContainer;
+module.exports = ShiftsCreationContainer;

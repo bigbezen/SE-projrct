@@ -34,6 +34,10 @@ class ConstantStrings extends React.Component {
     static selectedProducts_string = 'המוצרים שנבחרו';
     static createPublishShifts_string = 'יצירה ופרסום משמרות';
     static managePublishedShifts_string = 'ניהול משמרות מפורסמות';
+    static constraints_string = 'אילוצי דיילים';
+    static available_string = 'זמין למשמרת';
+    static notAvailable_string = 'לא זמין למשמרת';
+    static submitConstraints_string = 'הגש/י אילוצים';
 
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';
@@ -104,7 +108,7 @@ class ConstantStrings extends React.Component {
     static storeName_string ='שם חנות';
     static addStore_string = 'הוספת חנות חדשה';
     static editStore_string = 'עריכת חנות קיימת';
-    static managerName_string = 'מנהל';
+    static managerName_string = 'סוכן שטח';
     static phone_string = 'טלפון';
     static address_string = 'כתובת';
     static city_string = 'עיר';
@@ -113,6 +117,7 @@ class ConstantStrings extends React.Component {
 
     //filter strings
     static enterStoreName_string = 'הכנס שם חנות..';
+    static enterAgentName_string = 'הכנס שם סוכן..';
     static enterManagerName_string = 'הכנס שם מנהל..';
     static enterPhone_string = 'הכנס טלפון..';
     static enterAddress_string = 'הכנס כתובת..';
@@ -132,10 +137,21 @@ class ConstantStrings extends React.Component {
     static shiftType_string = 'סוג משמרת';
     static eventType_string = 'סוג אירוע';
     static addMultipleShifts_string = 'הוספת מספר משמרות';
+    static setSalesmanAndPublish_string = 'שיבוץ דיילים ופרסום';
+    static publishShifts_string = 'פרסום המשמרות';
+    static finish = 'סיים';
+    static SHIFT_STATUS = {
+        CREATED: 'CREATED',
+        PUBLISHED: 'PUBLISHED',
+        STARTED: 'STARTED',
+        FINISHED: 'FINISHED'
+    };
 
     //reports
     static defaultSalesmanDropDown_string = 'בחר/י דייל';
+    static defaultStoreDropDown_string = 'בחר/י חנות';
     static defaultShiftDropDown_string = 'בחר/י משמרת';
+    static defaultDateDropDown_string = 'בחר/י תאריך';
     static noShifts_string = 'לא קיימות משמרות להצגה';
     static noShiftToday_string = 'לא קיימת משמרת להיום';
     static editReport_string = 'ערוך דוח';
@@ -146,6 +162,7 @@ class ConstantStrings extends React.Component {
     static reportsMonthlyAnalysisReportTitle_string = 'סיכום ערוץ דיול חודשי';
     static reportsHumanResourcesReportTitle_string = 'דוח כוח אדם';
     static reportsMonthlyUserHoursReportTitle_string = 'גאנט דיול ערוץ חודשי';
+    static reportsOrderEventsReportTitle_string = 'דוח הזמנת אירועים';
     static reportsShowReport_string = 'הצג דוח';
     static totalSalesmanHours_string = 'סך שעות דיול';
 
@@ -275,6 +292,7 @@ class ConstantStrings extends React.Component {
     static goodActionMessage_string = 'הפעולה התבצעה בהצלחה!';
     static areYouSure_string = 'האם אתה בטוח כי ברצונך למחוק?';
     static areYouSureFinishShift_string = 'האם אתה בטוח כי ברצונך לסיים את המשמרת?';
+    static shiftWillNotPublish_string = 'משמרת זו לא תפורסם';
     static cannotDeleteSelf_string = "לא ניתן למחוק את משתמש זה";
     static mailSentSuccess_string = 'הדוח נשלח לאימייל בהצלחה!';
     static close_string = "סגירה";
@@ -313,6 +331,7 @@ class ConstantStrings extends React.Component {
     static profile_string ='פרופיל';
     static shiftSchedule_string ='לוח משמרות';
     static expenses_string ='הוצאות';
+    static assignShifts_string ='לחץ כאן לשיבוץ משמרות';
 
     static numberToMonth = {
         '1': 'ינואר',

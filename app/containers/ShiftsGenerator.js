@@ -10,6 +10,8 @@ var styles              = require('../styles/managerStyles/styles');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
 
+var managementServices  = require('../communication/managementServices');
+
 var ShiftDetails = React.createClass({
 
     contextTypes: {
@@ -42,15 +44,37 @@ var ShiftDetails = React.createClass({
 
     handleSubmitShift: function (e) {
         e.preventDefault();
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
+
         var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
         startTime = moment(startTime).format('YYYY-MM-DD HH:mm Z');
         var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
-        endTime = moment(endTime).format('YYYY-MM-DD HH-mm Z');
+        endTime = moment(endTime).format('YYYY-MM-DD HH:mm Z');
 
-        this.context.router.push({
-            pathname: paths.manager_createMultipleShifts_path,
-            query: {'startTime': startTime, 'endTime': endTime}
-        })
+        managementServices.generateShiftsForDate(startTime, endTime)
+            .then(function(result){
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: constantsStrings.addSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc'
+                });
+                self.context.router.push({
+                    pathname: paths.manager_shifts_creation_path
+                })
+            })
+            .catch(function(errMsg){
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
+                });
+        });
+
     },
 
     onChangeStarTime: function(){

@@ -10,6 +10,14 @@ let moment          = require('moment');
 let shiftModel       = require('../../Models/shift');
 
 let encouragementServices = require('../../Services/encouragements');
+let reportService = require('../../Services/reports/index.js');
+
+let SHIFT_STATUS = {
+    'CREATED': true,
+    'PUBLISHED': true,
+    'STARTED': true,
+    'FINISHED': true
+};
 
 
 let addShifts = async function(sessionId, shiftArr){
@@ -47,23 +55,22 @@ let addShifts = async function(sessionId, shiftArr){
     let newSalesReportSchema = await _createNewSalesReport();
 
     let resultAddShift = [];
-
     //create model for each shift
    for(let shift of shiftArr){
         let newShift = new shiftModel();
         newShift.storeId = shift.storeId;
-        if('salesmanId' in shift) {
+        if('salesmanId' in shift && shift.salesmanId != "") {
             let shiftDB = await dal.getShiftsOfRangeForSalesman(shift.startTime, shift.endTime, shift.salesmanId);
             if(shiftDB != null) {
                 return {'code': 409, 'err': constantString.userCannotHaveMoreThanOneShiftAtDay};
-        }
+            }
 
             newShift.salesmanId = shift.salesmanId;
             let salesman = await dal.getUserByobjectId(shift.salesmanId);
             sendMailOfShift(salesman, shift, storeDict[shift.storeId].name);
+            let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         }
         newShift.storeId = shift.storeId;
-        let updateStore = await dal.setStoreDefaultUser(shift.storeId, shift.salesmanId);
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.type = shift.type;
@@ -124,20 +131,24 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
 
     let newSaleReportSchema = await _createNewSalesReport();
     let resultAddShifts = [];
-
     for(let store of allStores){
         let newShift = new shiftModel();
         newShift.storeId = store._id;
+        newShift.salesmanId = store.defaultSalesman;
         newShift.startTime = startTime;
         newShift.endTime = endTime;
+        newShift.type = "טעימה";
         newShift.status = "CREATED";
         newShift.salesReport = newSaleReportSchema;
         newShift.sales = [];
+        newShift.numOfKm = 0;
+        newShift.parkingCost = 0;
         newShift.constraints = [];
         newShift.shiftComments = [];
+        newShift.encouragements = [];
         resultAddShifts.push(await dal.addShift(newShift));
-    }
 
+    }
     resultAddShifts = resultAddShifts.map(function(shift){
         shift = shift.toObject();
         shift.store = storeDict[shift.storeId];
@@ -189,11 +200,95 @@ let publishShifts = async function(sessionId, shiftArr){
         shift.status = 'PUBLISHED';
     let nonSavedShifts = await dal.publishShifts(shiftArr);
 
-    if(nonSavedShifts.length == 0)
+    if(nonSavedShifts.length == 0) {
+        let shifts = await dal.getShiftsByIdsWithStores(shiftIds);
+        _sendEmailsToAgents(shifts);
         return {'code': 200};
+    }
     else
         return {'code': 200, 'nonSavedShifts': nonSavedShifts};
 
+};
+
+let getAllShiftsByStatus = async function(sessionId, status){
+    logger.info('Services.shift.index.getAllShiftsByStatus', {'session-id': sessionId, 'status': status});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getAllShiftsByStatus', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': constantString.permssionDenied};
+
+    if(SHIFT_STATUS[status] == undefined){
+        return {code: 409, err: constantString.noSuchShiftStatus};
+    }
+
+    let shifts = await dal.getShiftsByStatus(status);
+    shifts = shifts.map(function(shift) {
+        shift = shift.toObject();
+        shift.salesman = shift.salesmanId;
+        if(shift.salesmanId != undefined)
+            shift.salesmanId = shift.salesman._id;
+        return shift;
+    });
+    if(!shifts){
+        return {code: 500, err: constantString.serverError};
+    }
+    return {code: 200, shifts: shifts};
+};
+
+let _sendEmailsToAgents = async function(shifts){
+    let emails = new Set(shifts.map((shift) => shift.storeId.managerEmail));
+    for(let email of emails){
+        let shiftsOfEmails = shifts.filter((shift) => shift.storeId.managerEmail == email);
+        let content = constantString.shiftsForAgentTitle_string + "\n\n";
+        for(let shift of shiftsOfEmails){
+            content += constantString.date_string + ": " + moment(shift.startTime).format('DD-MM-YYYY') + "\n";
+            content += constantString.hours_string + ": " + moment(shift.startTime).format('HH:mm') + " - " + moment(shift.endTime).format('HH:mm') + "\n";
+            content += constantString.city_string + ": " + shift.storeId.city + "\n";
+            content += constantString.storeName_string + ": " + shift.storeId.name + "\n";
+            content += constantString.salesmanName_string + ": " + shift.salesmanId.personal.firstName + shift.salesmanId.personal.lastName + "\n\n"
+        }
+        await mailer.sendMail([email], "IBBLS - new shifts", content);
+    }
+};
+
+let getStoreShiftsByStatus = async function(sessionId, storeId, status){
+
+    logger.info('Services.shift.index.getSalesmanFinishedShifts', {'session-id': sessionId, 'storeId': storeId});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getStoreShiftsByStatus', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': constantString.permssionDenied};
+    if(SHIFT_STATUS[status] == undefined){
+        return {code: 409, err: constantString.noSuchShiftStatus};
+    }
+    let store = await dal.getStoresByIds([storeId]);
+    if(store.length == 0)
+        return {'code': 401, 'err': constantString.storeDoesNotExist};
+    store = store[0];
+    let storeShifts = await dal.getShiftsByStatus(status);
+    let productsDict = {};
+    let products = await dal.getAllProducts();
+    for(let product of products)
+        productsDict[product._id.toString()] = product;
+
+    storeShifts = storeShifts.filter((shift) => shift.storeId._id.toString() == storeId);
+
+    for(let shiftIndex in storeShifts){
+        storeShifts[shiftIndex] = storeShifts[shiftIndex].toObject();
+    }
+    for(let currentShift of storeShifts){
+        //currentShift = currentShift.toObject();
+        currentShift.store = store;
+        currentShift.storeId = store._id;
+
+        for(let product of currentShift.salesReport) {
+
+            let productDetails = productsDict[product.productId.toString()];
+            product.name = productDetails.name;
+            product.category = productDetails.category;
+            product.subCategory = productDetails.subCategory;
+            product.product = productDetails;
+        }
+    }
+    return {'code': 200, 'shifts': storeShifts};
 };
 
 let getSalesmanFinishedShifts = async function(sessionId, salesmanId){
@@ -546,7 +641,6 @@ let endShift = async function(sessionId, shift){
         return {'code': 409, 'err': 'not a full sales report'};
 
 
-
     shiftDb.salesReport = shift.salesReport;
     shiftDb.status = 'FINISHED';
 
@@ -565,8 +659,7 @@ let endShift = async function(sessionId, shift){
         for(let manager of managers){
             emails.push(manager.contact.email);
         }
-        let content = ' מצורף דוח טעימות של:' + salesman.username;
-        mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime + ' ' + salesman.username + '.xlsx');
+        result = reportService.createXLSaleReport(shift._id.toString(), emails);
         return {'code': 200};
     }
 };
@@ -613,6 +706,9 @@ let editShift = async function (sessionId, shiftDetails) {
     if(shift[0] != null && shift[0].status == "STARTED")
         return {'code': 401, 'err': constantString.shiftAlreadyStarted};
 
+    if(shiftDetails.salesmanId != undefined && shiftDetails.salesmanId == "")
+        shiftDetails.salesmanId = undefined;
+
     let res = await dal.editShift(shiftDetails);
     if(res.ok == 0)
         return {'code':400, 'err': constantString.shiftCannotBeEdited};
@@ -636,13 +732,16 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
 
     let found = false;
     let diffQuant;
-    for(let sale of shift.sales){
-        let saleDate = new Date(sale.timeOfSale).getTime();
+    for(let idx in shift.toObject().sales){
+        let saleDate = new Date(shift.sales[idx].timeOfSale).getTime();
         let getTime = new Date(time).getTime();
-        if(sale.productId.toString() == (productId) &&  saleDate == getTime){
-            diffQuant = sale.quantity - quantity;
-            sale.quantity = quantity;
+        if(!found && shift.sales[idx].productId.toString() == (productId) &&  saleDate == getTime){
+            diffQuant = shift.sales[idx].quantity - quantity;
+            shift.sales[idx].quantity = quantity;
             found = true;
+            if(quantity == 0){
+                shift.sales.splice(idx, 1);
+            }
         }
     }
 
@@ -673,7 +772,6 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
     for(let i in salesReport){
 
         if(salesReport[i].productId.toString() == productId){
-            console.log('debug');
             salesReport[i].sold = newSold;
             salesReport[i].opened = newOpened;
         }
@@ -717,6 +815,25 @@ let managerEndShift = async function(sessionId, shiftId){
         return {'code': 500, 'err': constantString.somthingBadHappend};
     else
         return {'code': 200};
+};
+
+let submitConstraints = async function(sessionId, constraints){
+    logger.info('Services.shift.index.submitConstrains', {'session-id': sessionId});
+
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'submitConstraints');
+    if(user == null)
+        return {'code': 401, 'err':constantString.permssionDenied};
+
+    for(let date in constraints){
+        for(let area in constraints[date]){
+            let constraint = constraints[date][area];
+            constraint.salesmanId = user._id;
+            let remove = await dal.removeConstraints(new Date(date), area, user._id);
+            let add = await dal.setConstraints(new Date(date), area, constraints[date][area]);
+        }
+    }
+    return {'code': 200};
+
 };
 
 let _createNewSalesReport = async function(){
@@ -779,4 +896,6 @@ module.exports.getSalesmanShifts = getSalesmanShifts;
 module.exports.reportExpenses = reportExpenses;
 module.exports.getShiftsOfRange = getShiftsOfRange;
 module.exports.getSalesmanLiveShift = getSalesmanLiveShift;
-
+module.exports.getAllShiftsByStatus = getAllShiftsByStatus;
+module.exports.submitConstraints = submitConstraints;
+module.exports.getStoreShiftsByStatus = getStoreShiftsByStatus;

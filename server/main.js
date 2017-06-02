@@ -328,8 +328,23 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/salesman/shiftRegister', function (req, res) {
-        res.status(200).send('registration to shift');
+    app.post('/salesman/submitConstraints', async function (req, res) {
+        if(!validator.submitConstraints(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result;
+        try {
+            result = await shiftService.submitConstraints(req.body.sessionId, req.body.constraints);
+        }
+        catch(err){
+            res.status(500).send(err);
+            return;
+        }
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
 //Management Services
@@ -632,9 +647,10 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.automateGenerateShifts(req.body.sessionId, req.body.starttime, req.body.endTime);
+
+        let result = await shiftService.automateGenerateShifts(req.body.sessionId, req.body.startTime, req.body.endTime);
         if(result.code == 200)
-            res.status(200).send(result.shifts);
+            res.status(200).send(result.shiftArr);
         else
             res.status(result.code).send(result.err);
     });
@@ -663,12 +679,36 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.get('/management/getShiftsByStatus', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('status' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getAllShiftsByStatus(req.headers.sessionid, req.query.status);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.get('/management/getSalesmanFinishedShifts', async function(req, res){
         if(!('sessionid' in req.headers) || (!('salesmanId' in req.query))) {
             res.status(404).send('invalid parameters');
             return;
         }
         let result = await shiftService.getSalesmanFinishedShifts(req.headers.sessionid, req.query.salesmanId);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.get('/management/getStoreShiftsByStatus', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('storeId' in req.query)) || (!('status' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getStoreShiftsByStatus(req.headers.sessionid, req.query.storeId, req.query.status);
         if(result.code == 200)
             res.status(200).send(result.shifts);
         else
@@ -867,6 +907,18 @@ function _setapApiEndpoints() {
         //     return;
         // }
         let result = await reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/manager/exportOrderEventsReport', async function(req, res){
+        // if(!validator.exportMonthlyHoursReport(req.body)){
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getOrderEventReportXL(req.body.sessionId, req.body.year, req.body.month);
         if(result.code == 200)
             res.status(200).send(result.report);
         else

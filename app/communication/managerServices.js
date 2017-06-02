@@ -97,6 +97,11 @@ var helpers = {
     managerFinishShift: function(shiftId) {
         console.log('managerService - managerFinishShift');
         return connection.managerRequests.managerFinishShift(shiftId)
+    },
+
+    exportOrderEventsReport: function(year, month) {
+        console.log('managerService - exportSalaryForHumanResourceReport');
+        return connection.managerRequests.exportOrderEventsReport(year, month)
     }
 };
 

@@ -7,7 +7,8 @@ var React = require('react');
 class Helpers extends React.Component {
 
     enumFormatter = function (cell, row, enumObject) {
-        return enumObject[cell];};
+        return enumObject[cell];
+    };
 
 }
 

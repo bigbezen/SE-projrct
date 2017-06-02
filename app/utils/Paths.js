@@ -9,6 +9,7 @@ class Paths extends React.Component {
     static manager_stores_path = '/manager/stores';
     static manager_products_path = '/manager/products';
     static manager_shifts_path = '/manager/shifts';
+    static manager_shifts_creation_path = '/manager/shiftsCreation';
     static manager_productDetails_path = '/manager/product';
     static manager_storeDetails_path = '/manager/store';
     static manager_userDetails_path = '/manager/user';
@@ -26,17 +27,19 @@ class Paths extends React.Component {
     static manager_changePass_path = '/manager/changePassword';
     static salesman_changePass_path = '/salesman/home/changePassword';
     static salesman_editShift_path = '/salesman/shift/editSale';
+    static salesman_assignShifts_path = '/salesman/home/assignShifts';
     static salesman_shift_encouragements_path = '/salesman/shift/encouragements';
     static manager_incentives_path = '/manager/incentives';
     static manager_incentiveDetails_path = 'manager/incentive';
     static manager_reports_path = 'manager/reports';
     static salesman_profile_path = '/salesman/home/profile';
     static salesman_shiftSchedule_path = '/salesman/home/shiftSchedule';
-    static manager_incentiveDetails_path = '/manager/incentive';
     static manager_salesReport_path = '/manager/salesReport';
     static manager_monthlyAnalysisReport_path = '/manager/monthlyAnalysisReport';
     static manager_monthlyHoursReport_path = '/manager/monthlyHoursReport';
-    static manager_humanResourcesReport_path = '/manager/humanResourcesReport'
+    static manager_humanResourcesReport_path = '/manager/humanResourcesReport';
+    static manager_orderEventsReport_path = '/manager/orderEventsReport';
+
 
 }
 

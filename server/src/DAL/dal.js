@@ -267,16 +267,29 @@ module.exports = {
             .populate('salesReport.productId');
     },
 
-    removeConstraints: function(date, area, salesmanId){
-        return shiftModel.find({'startTime': date, 'status': 'CREATED'})
-            .populate('storeId', null, {'area': area})
-            .update({}, {$pull: {'constraints': {'salesmanId': salesmanId}}});
+    removeConstraints: async function(date, area, salesmanId){
+        let shifts = await shiftModel.find({'startTime': date, 'status': 'CREATED'})
+            .populate('storeId');
+        for(let shift of shifts){
+            if(shift.storeId.area == area){
+                shift.constraints = shift.constraints.filter((constraint) => constraint.salesmanId.toString() != salesmanId.toString());
+                await shift.save();
+            }
+
+        }
+
     },
 //, {$pullAll: {'constraints.salesmanId': salesmanId}}
-    setConstraints: function(date, area, constraint){
-        return shiftModel.find({'startTime': date, 'status': 'CREATED'})
-            .populate('storeId', null, {'area': area})
-            .update({}, {$push: {'constraints': constraint}});
+    setConstraints: async function(date, area, constraint){
+        let shifts = await shiftModel.find({'startTime': date, 'status': 'CREATED'})
+            .populate('storeId');
+        for(let shift of shifts){
+            if(shift.storeId.area == area){
+                shift.constraints.push(constraint);
+                await shift.save();
+            }
+        }
+
     },
 
     // ------------------------------------------------- MESSAGES -----------------------------------------------

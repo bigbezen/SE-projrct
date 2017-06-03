@@ -151,7 +151,6 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     getConstraints: function(salesmen, shifts){
         let blabla = salesmen;
-        console.log(blabla);
         let salesmenObj = {};
         for(let salesman of salesmen){
             salesmenObj[salesman._id] = salesman;

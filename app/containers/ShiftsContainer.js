@@ -233,27 +233,30 @@ var ShiftsContainer = React.createClass({
         if (isFinished) {
             return (
                 <button
-                    className="w3-card-2 w3-theme-l5"
+                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                    style={styles.buttonStyle}
                     type="button"
                     onClick={() =>
                         this.onClickGetReportButton(cell, row, rowIndex)}>
-                    <DownloadIcon/>
+                    <DownloadIcon style={styles.iconStyle}/>
                 </button>
             )
         } else if (!isStarted) {
             return (
                 <button
-                    className="w3-card-2  w3-theme-l5"
+                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                    style={styles.buttonStyle}
                     type="button"
                     onClick={() =>
                         this.onClickEditButton(cell, row, rowIndex)}>
-                    <EditIcon/>
+                    <EditIcon style={styles.iconStyle}/>
                 </button>
             )
         } else {
             return (
                 <button
-                    className="w3-card-2"
+                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                    style={styles.buttonStyle}
                     type="button"
                     onClick={() =>
                         this.onClickFinishShift(cell, row, rowIndex)}>
@@ -269,12 +272,13 @@ var ShiftsContainer = React.createClass({
         if (!isFinished && !isStarted) {
             return (
                 <button
-                    className="w3-card-2 w3-theme-l5"
+                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                    style={styles.buttonStyle}
                     type="button"
                     disabled= {isFinished}
                     onClick={() =>
                         this.onClickDeleteButton(cell, row, rowIndex)}>
-                    <TrashIcon/>
+                    <TrashIcon style={styles.iconStyle}/>
                 </button>
             )
         }
@@ -289,11 +293,11 @@ var ShiftsContainer = React.createClass({
     renderAreaTable: function(area){
         let shiftsOfArea = this.state.shifts[area];
         return (
-            <div>
+            <div className="w3-round w3-card-2" style={styles.shiftTableStyle}>
                 <h1>{area}</h1>
                 <BootstrapTable data={shiftsOfArea} options={options} bordered={false} hover search
-                                searchPlaceholder={constantStrings.search_string} trClassName="w3-theme-d1"
-                                containerStyle={{border: '#000000 2.0px solid'}}
+                                searchPlaceholder={constantStrings.search_string}
+                                containerStyle={{border: '2px solid rgba(0, 0, 0, 0.28)'}}
                 >
                     <TableHeaderColumn
                         dataField = 'storeId.managerName'

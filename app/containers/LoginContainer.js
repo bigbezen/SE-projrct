@@ -5,7 +5,7 @@ var React               = require('react');
 var userServices        = require('../communication/userServices');
 var constantsStrings    = require('../utils/ConstantStrings');
 var paths               = require('../utils/Paths');
-var styles              = require('../styles/managerStyles/styles');
+var styles              = require('../styles/managerStyles/loginStyles');
 var NotificationSystem  = require('react-notification-system');
 
 var LoginContainer = React.createClass({
@@ -97,40 +97,40 @@ var LoginContainer = React.createClass({
 
     render: function () {
         return (
-            <div className="container">
+            <div className="container" style={styles.mainContainerStyle}>
                 <div className="container">
                     <div className="row text-center" style={styles.marginTop}>
                         <img src="http://www.panelsfeedback.co.il/media/logos/ibbls.png" style={{marginRight: '-20px'}}/>
                     </div>
 
                 </div>
-                <div className="w3-theme-l5 col-xs-offset-2 col-xs-8 text-center img-rounded" style={styles.marginTop} >
+                <div className="col-xs-offset-2 col-xs-8 text-center w3-round" style={styles.credentialsContainerStyle} >
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group ">
                             <input type="text"
-                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-round w3-xxlarge"
                                    ref="usernameTextBox"
                                    placeholder="שם משתמש"
                                    value={this.username} />
                         </div>
                         <div className="form-group">
                             <input type="password"
-                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-round w3-xxlarge"
                                    ref="passwordTextBox"
                                    placeholder="סיסמא"
                                    value={this.password}/>
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn w3-ripple btn w3-theme-d5 col-lg-4 col-lg-offset-4
-                                    col-xs-8 col-xs-offset-2 w3-xxlarge w3-round-xlarge w3-card-4"
+                                className="w3-btn w3-ripple btn col-lg-6 col-lg-offset-3 col-xs-12 w3-xxlarge w3-round w3-card-4"
+                                style={styles.buttonStyle}
                                 type="submit">
                                 {constantsStrings.login_string}
                             </button>
                         </div>
                         <div className="form-group" style={styles.marginTop}>
                             <p
-                                className="w3-xxxlarge w3-hover-text-blue col-sm-8 col-lg-6 col-lg-offset-3
+                                className="w3-xlarge w3-hover-text-blue col-sm-8 col-lg-6 col-lg-offset-3
                                                 col-sm-offset-2"
                                 onClick={this.handleRetrievePass}>
                                 <u>

@@ -133,8 +133,8 @@ var IncentivesContainer = React.createClass({
     },
     renderCard: function(incentive, i){
         return (
-            <div className="w3-card-4 col-xs-3" style={styles.incentiveCard} key={i}>
-                <header className="w3-container w3-theme-d3">
+            <div className="w3-card-2 col-xs-3" style={styles.incentiveCard} key={i}>
+                <header className="w3-container" style={styles.incentiveHeaderStyle}>
                     <h3 className="w3-right">
                         {incentive.name}
                     </h3>
@@ -152,7 +152,7 @@ var IncentivesContainer = React.createClass({
                     <p><b>{constantsStrings.incentiveRate_string}</b>: {incentive.rate}</p>
                 </div>
 
-                <button className="w3-button w3-block w3-theme-l1" onClick={() => this.onClickEdit(incentive)}>
+                <button className="w3-button w3-block" style={styles.editStyle} onClick={() => this.onClickEdit(incentive)}>
                     + Edit
                 </button>
             </div>
@@ -162,7 +162,7 @@ var IncentivesContainer = React.createClass({
     render: function () {
         return (
             <div className="col-xs-12">
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}>+</button>
+                <button className="w3-card-4 w3-button w3-circle w3-xlarge w3-ripple" style={styles.addButtonStyle} onClick={this.onClickAddButton}>+</button>
                 <div className="row" style={styles.incentiveRow}>
                     {this.state.incentives.map(this.renderCard)}
                 </div>

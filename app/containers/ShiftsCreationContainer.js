@@ -204,21 +204,21 @@ var ShiftsCreationContainer = React.createClass({
         if (isFinished) {
             return (
                 <button
-                    className="w3-card-2 w3-theme-l5"
-                    type="button"
+                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                    style={styles.buttonStyle}
                     onClick={() =>
                         this.onClickGetReportButton(cell, row, rowIndex)}>
-                    <DownloadIcon/>
+                    <DownloadIcon style={styles.iconStyle}/>
                 </button>
             )
         } else if (!isStarted) {
             return (
                 <button
-                    className="w3-card-2  w3-theme-l5"
-                    type="button"
+                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                    style={styles.buttonStyle}
                     onClick={() =>
                         this.onClickEditButton(cell, row, rowIndex)}>
-                    <EditIcon/>
+                    <EditIcon style={styles.iconStyle}/>
                 </button>
             )
         }
@@ -230,12 +230,12 @@ var ShiftsCreationContainer = React.createClass({
         if (!isFinished && !isStarted) {
             return (
                 <button
-                    className="w3-card-2 w3-theme-l5"
-                    type="button"
+                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                    style={styles.buttonStyle}
                     disabled= {isFinished}
                     onClick={() =>
                         this.onClickDeleteButton(cell, row, rowIndex)}>
-                    <TrashIcon/>
+                    <TrashIcon style={styles.iconStyle}/>
                 </button>
             )
         }
@@ -250,11 +250,11 @@ var ShiftsCreationContainer = React.createClass({
     renderAreaTable: function(area){
         let shiftsOfArea = this.state.shifts[area];
         return (
-            <div>
+            <div style={styles.shiftTableStyle} className="w3-round w3-card-2">
                 <h1>{area}</h1>
                 <BootstrapTable data={shiftsOfArea} options={options} bordered={false} hover search
-                                searchPlaceholder={constantStrings.search_string} trClassName="w3-theme-d1"
-                                containerStyle={{border: '#000000 2.0px solid'}}
+                                searchPlaceholder={constantStrings.search_string}
+                                containerStyle={{border: '2px solid rgba(0, 0, 0, 0.28)'}}
                 >
                     <TableHeaderColumn
                         dataField = 'storeId.managerName'
@@ -322,11 +322,11 @@ var ShiftsCreationContainer = React.createClass({
 
     renderTable: function () {
         return (
-            <div className="col-xs-12" style={styles.marginBottom}>
+            <div className="col-xs-12">
                 <div className="col-sm-12">
-                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
-                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round-xlarge" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
-                    <button style={styles.addButton} className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round-xlarge" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
+                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
+                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
+                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
                     <p style={styles.dateLabel}>{constantStrings.startDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.startDate} ref="startDateBox" onChange= {this.changeDate} />
                     <p style={styles.dateLabel}>{constantStrings.endDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.endDate} ref="endDateBox" onChange={this.changeDate} />
                 </div>

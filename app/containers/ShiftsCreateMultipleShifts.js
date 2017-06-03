@@ -215,10 +215,10 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     renderShiftsOfArea: function(shift, index) {
         return (
-            <div className="col-xs-12 w3-theme-d3 w3-card-4 w3-round-large" style={{fontSize: '15px', marginTop: '5px'}}>
+            <div className="col-xs-12 w3-card-2 w3-round" style={styles.shiftRowStyle}>
                 <p className="col-sm-3">{shift.storeId.name}</p>
                 <select style={{color: 'black', marginTop: '3px'}}
-                        className="col-sm-4 w3-round-large" ref={shift._id}
+                        className="col-sm-4 w3-round" ref={shift._id}
                         onChange={() => this.onChangeSalesman(shift)}>
                     {this.getSalesmanOptions(shift)}
                 </select>
@@ -230,9 +230,8 @@ var ShiftsCreateMultipleShifts = React.createClass({
     },
 
     renderConstraint: function(constraint){
-        let w3_theme = constraint.isAvailable ? "w3-theme-l4" : "w3-theme-d3";
         return (
-            <div className={"col-sm-12 w3-card-4 w3-round-large " + w3_theme} style={{fontSize: '15px', marginTop:'5px'}}>
+            <div className="col-sm-12 w3-card-4 w3-round" style={constraint.isAvailable ? styles.constAvailable : styles.constUnavailable}>
                 <p className="col-sm-3">{constraint.salesman.personal.firstName + " " + constraint.salesman.personal.lastName}</p>
                 <p className="col-sm-3">{constraint.isAvailable ? constantsStrings.available_string : constantsStrings.notAvailable_string}</p>
                 <p className="col-sm-6">{constraint.comment}</p>
@@ -316,7 +315,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
             return (
                 <div>
                     <div className="text-center col-sm-12" style={{marginBottom: '30px'}}>
-                        <button className="w3-button w3-round-xlarge w3-card-4 w3-theme-d5"
+                        <button className="w3-button w3-round w3-card-4 w3-ripple" style={styles.createShiftsButton}
                                 onClick={this.onClickSubmitShifts}>
                             {constantStrings.publishShifts_string}
                         </button>

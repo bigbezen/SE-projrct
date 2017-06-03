@@ -186,7 +186,7 @@ var ProductDetails = React.createClass({
 
     addNewProduct: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-card-4" style={styles.editBodyStyle}>
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right w3-text-black">
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
@@ -245,7 +245,7 @@ var ProductDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-button w3-card-4 btn w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-button w3-card-4 col-xs-4 col-xs-offset-2 w3-round w3-ripple" style={styles.editStyle}
                             type="submit">
                             {this.getButtonString()}
                         </button>

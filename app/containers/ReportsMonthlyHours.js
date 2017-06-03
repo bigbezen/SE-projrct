@@ -122,16 +122,16 @@ var ReportsMonthlyHours = React.createClass({
 
     renderSalesmanData: function(salesman, index){
         return (
-            <div className="col-sm-offset-1 col-sm-8 w3-theme-d3 w3-card-4 w3-round-xlarge">
+            <div className="col-sm-offset-1 col-sm-8 w3-card-4 w3-round">
                 <p className="col-sm-3">{salesman.user.personal.firstName + " " + salesman.user.personal.lastName}</p>
                 <input type="number" ref={index + "numOfHours"} min="0" style={{marginTop: '3px'}}
-                       className="col-sm-2 w3-round-large w3-text-black" defaultValue={salesman.numOfHours}
+                       className="col-sm-2 w3-round w3-text-black" defaultValue={salesman.numOfHours}
                         onChange={() => this.onChangeValue(index, "numOfHours")} />
                 <input type="number" ref={index + "sales"} min="0" style={{marginTop: '3px'}}
-                       className="col-sm-2 w3-round-large w3-text-black" defaultValue={salesman.sales}
+                       className="col-sm-2 w3-round w3-text-black" defaultValue={salesman.sales}
                        onChange={() => this.onChangeValue(index, "sales")} />
                 <input type="number" ref={index + "opened"} min="0" style={{marginTop: '3px'}}
-                       className="col-sm-2 w3-round-large w3-text-black" defaultValue={salesman.opened}
+                       className="col-sm-2 w3-round w3-text-black" defaultValue={salesman.opened}
                        onChange={() => this.onChangeValue(index, "opened")} />
 
             </div>
@@ -148,7 +148,7 @@ var ReportsMonthlyHours = React.createClass({
             var report = this.state.report;
             return (
                 <div className="w3-container" style={styles.marginTop}>
-                    <div className="col-sm-offset-1 col-sm-8 w3-theme-d3 w3-card-4 w3-round-xlarge" style={{fontSize: '20px'}}>
+                    <div className="col-sm-offset-1 col-sm-8 w3-card-4 w3-round" style={styles.reportRowStyle}>
                         <p className="col-sm-3"><b>{constantStrings.fullName_string}</b></p>
                         <p className="col-sm-2"><b>{constantStrings.totalSalesmanHours_string}</b></p>
                         <p className="col-sm-2"><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
@@ -169,10 +169,10 @@ var ReportsMonthlyHours = React.createClass({
                         <h2>{constantStrings.reportsMonthlyUserHoursReportTitle_string}</h2>
                     </div>
                     <div className="row">
-                        <input className="col-sm-2 w3-card-4 w3-round-xlarge" ref="datepicker" type="month"/>
-                        <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickGetReport}>{constantStrings.reportsShowReport_string}</button>
-                        <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickEditReport}>{constantStrings.editReport_string}</button>
-                        <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
+                        <input className="col-sm-2 w3-card-4 w3-round" ref="datepicker" type="month"/>
+                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickGetReport}>{constantStrings.reportsShowReport_string}</button>
+                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickEditReport}>{constantStrings.editReport_string}</button>
+                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
 
                     </div>
                     {this.renderReport()}

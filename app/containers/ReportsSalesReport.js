@@ -196,7 +196,7 @@ var ReportsSalesReport = React.createClass({
 
     renderComment: function(comment){
         return (
-            <p className="col-sm-10 col-sm-offset-1 w3-round-xlarge w3-theme-l4 w3-large">{comment}</p>
+            <p className="col-sm-10 col-sm-offset-1 w3-round w3-large" style={styles.commentStyle}>{comment}</p>
         )
     },
 
@@ -215,13 +215,13 @@ var ReportsSalesReport = React.createClass({
                 <div>
                     <div className="text-center">
                         <h1 className="w3-xxlarge">{constantStrings.reportsSalesReportTitle_string}</h1>
-                        <button className="w3-btn w3-round-xlarge w3-theme-d5 w3-card-4" onClick={this.onClickExportReport}>
+                        <button className="w3-button w3-round w3-card-4 w3-ripple" style={styles.editStyle} onClick={this.onClickExportReport}>
                             {constantStrings.getReport_string}
                         </button>
                     </div>
-                    <div style={styles.marginBottom} className="col-sm-12">
+                    <div style={styles.marginBottom} className="col-sm-10 col-sm-offset-1 w3-card-2 w3-round">
                         <div className="text-center col-sm-12">
-                            <h1>{constantStrings.commentsFromShift_string}</h1>
+                            <h4>{constantStrings.commentsFromShift_string}</h4>
                         </div>
                         {this.state.chosenShift.shiftComments.map(this.renderComment)}
                     </div>
@@ -238,7 +238,7 @@ var ReportsSalesReport = React.createClass({
         return (
             <div className="w3-container col-sm-6">
                 <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
-                <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
+                <div className="row col-sm-10 col-sm-offset-1 w3-round w3-card-2 w3-text-black" style={styles.headerStyle}>
                     <p className="col-sm-4" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
                     <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
@@ -250,15 +250,15 @@ var ReportsSalesReport = React.createClass({
     },
 
     renderSalesProducts: function(product, i){
-        let w3_theme = (product.sold > 0 || product.opened > 0) ? "w3-theme-d1" : "";
         return (
-            <div className={"row col-sm-12 w3-round-large w3-card-4 " + w3_theme}
-                 style={{marginTop: '10px', height: '45px'}}>
+            <div className="row col-sm-10 col-sm-offset-1 w3-round w3-card-2 w3-text-black "
+                 style={(product.sold || product.opened) > 0 ? styles.soldProdRowStyle : styles.prodRowStyle }>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
                 <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} value={product.sold} />
                 <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} value={product.opened} />
-                <p className="w3-xlarge col-sm-1" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
+                <p className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                   style={styles.buttonStyle} onClick={() => this.onClickEditButton(product, i)}><EditIcon style={styles.iconStyle}/></p>
             </div>
         )
     },
@@ -316,30 +316,30 @@ var ReportsSalesReport = React.createClass({
 
     getSalesmenOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option className="w3-round-large" key="defaultSalesman">{constantStrings.defaultSalesmanDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round" key="defaultSalesman">{constantStrings.defaultSalesmanDropDown_string}</option>);
         var salesmen = this.state.salesmen;
         for(var i=0; i<salesmen.length; i++){
-            optionsForDropdown.push(<option className="w3-round-large" key={"salesman" + i}>{salesmen[i].personal.firstName + " " + salesmen[i].personal.lastName}</option>)
+            optionsForDropdown.push(<option className="w3-round" key={"salesman" + i}>{salesmen[i].personal.firstName + " " + salesmen[i].personal.lastName}</option>)
         }
         return optionsForDropdown;
     },
 
     getStoresOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option className="w3-round-large" key="defaultSalesman">{constantStrings.defaultStoreDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round" key="defaultSalesman">{constantStrings.defaultStoreDropDown_string}</option>);
         var stores = this.state.stores;
         for(var i=0; i<stores.length; i++){
-            optionsForDropdown.push(<option className="w3-round-large" key={"store" + i}>{stores[i].area + " - " + stores[i].city + " - " + stores[i].name + " - " + stores[i].address}</option>)
+            optionsForDropdown.push(<option className="w3-round" key={"store" + i}>{stores[i].area + " - " + stores[i].city + " - " + stores[i].name + " - " + stores[i].address}</option>)
         }
         return optionsForDropdown;
     },
 
     getShiftsOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option className="w3-round-large" key="defaultShift">{constantStrings.defaultDateDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round" key="defaultShift">{constantStrings.defaultDateDropDown_string}</option>);
         var shifts = this.state.shifts;
         for(var i=0; i<shifts.length; i++){
-            optionsForDropdown.push(<option className="w3-round-large" key={"shift" + i}>{moment(shifts[i].startTime).format('YYYY-MM-DD')}</option>)
+            optionsForDropdown.push(<option className="w3-round" key={"shift" + i}>{moment(shifts[i].startTime).format('YYYY-MM-DD')}</option>)
         }
         return optionsForDropdown;
     },
@@ -362,12 +362,12 @@ var ReportsSalesReport = React.createClass({
                     <div className="col-sm-6">
                         <div className="col-sm-offset-1">
                             <div className="row">
-                                <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-8 w3-large w3-card-4 w3-round">
                                     {this.getSalesmenOptions()}
                                 </select>
                             </div>
                             <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
-                                <select onChange={this.shiftChanged} ref="selectShiftSalesman" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                <select onChange={this.shiftChanged} ref="selectShiftSalesman" className="col-sm-8 w3-large w3-card-4 w3-round">
                                     {this.getShiftsOptions()}
                                 </select>
                             </div>
@@ -377,12 +377,12 @@ var ReportsSalesReport = React.createClass({
                     <div className="col-sm-6">
                         <div className="col-sm-offset-1">
                             <div className="row">
-                                <select onChange={this.storeChanged} ref="selectStore" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                <select onChange={this.storeChanged} ref="selectStore" className="col-sm-8 w3-large w3-card-4 w3-round">
                                     {this.getStoresOptions()}
                                 </select>
                             </div>
                             <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
-                                <select onChange={this.shiftChanged} ref="selectShiftStore" className="col-sm-8 w3-large w3-card-4 w3-round-large">
+                                <select onChange={this.shiftChanged} ref="selectShiftStore" className="col-sm-8 w3-large w3-card-4 w3-round">
                                     {this.getShiftsOptions()}
                                 </select>
                             </div>

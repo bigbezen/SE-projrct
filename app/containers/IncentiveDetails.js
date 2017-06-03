@@ -184,7 +184,7 @@ var IncentiveDetails = React.createClass({
         if(this.state.editedIncentive == undefined)
             return constantsStrings.add_string;
         else
-            return constantsStrings.edit_string;
+            return constantsStrings.save_string;
     },
 
     handleSubmitIncentive: function () {
@@ -285,7 +285,7 @@ var IncentiveDetails = React.createClass({
 
     addNewIncentive: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-card-4" style={styles.editBodyStyle}>
                 <form className="form-horizontal text-right w3-text-black" onSubmit={function(e){
                     e.preventDefault();
                 }}>
@@ -326,7 +326,7 @@ var IncentiveDetails = React.createClass({
 
                     <div className="form-group">
                         <div className="row">
-                            <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" onClick={this.addProduct}>+</button>
+                            <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" style={styles.addBottleButtonStyle} onClick={this.addProduct}>+</button>
                         </div>
                     </div>
 
@@ -354,8 +354,9 @@ var IncentiveDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-button w3-card-4 btn w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-button w3-card-4 btn col-xs-6 col-xs-offset-2"
                             type="submit"
+                            style={styles.saveButtonStyle}
                         onClick={this.handleSubmitIncentive}>
                             {this.renderEditOrAddString()}
                         </button>

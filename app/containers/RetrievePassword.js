@@ -84,12 +84,12 @@ var RetrievePassContainer = React.createClass({
 
     render: function () {
         return (
-            <div className="container">
+            <div className="container" style={styles.mainContainerStyle} >
                 <div className="container">
                     <div className="row" style={styles.topBuffer}>
                     </div>
                 </div>
-                <div className="w3-theme-l5 col-sm-offset-2 col-sm-8 text-center img-rounded" >
+                <div className="col-sm-offset-2 col-sm-8 text-center img-rounded" style={styles.credentialsContainerStyle} >
                     <h1 className="h1 w3-jumbo">{constantsStrings.retrievePassTitle_string}</h1>
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group ">
@@ -108,7 +108,8 @@ var RetrievePassContainer = React.createClass({
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 w3-card-4 col-sm-4 col-sm-offset-4 w3-round-large w3-xxlarge"
+                                className="w3-button w3-card-4 col-sm-4 col-sm-offset-4 w3-round w3-large w3-ripple"
+                                style={styles.editStyle}
                                 type="submit">
                                 {constantsStrings.retrievePassButton_string}
                             </button>
@@ -117,8 +118,9 @@ var RetrievePassContainer = React.createClass({
                     </form>
                     <div className="" style={styles.marginTop}>
                         <button
-                            className="w3-btn btn w3-theme-d5 w3-card-4 col-sm-2 col-sm-offset-5 w3-round-large
-                                w3-xxlarge" onClick={this.onReturn}>
+                            className="w3-button w3-card-4 col-sm-2 col-sm-offset-5 w3-round w3-ripple w3-large"
+                            style={styles.editStyle}
+                            onClick={this.onReturn}>
                             {constantsStrings.cancel_string}
                         </button>
                     </div>

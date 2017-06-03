@@ -74,8 +74,8 @@ var ReportOrderEvents = React.createClass({
                         <h2>{constantStrings.reportsOrderEventsReportTitle_string}</h2>
                     </div>
                     <div className="row">
-                        <input className="col-sm-2 w3-card-4 w3-round-xlarge" ref="datepicker" type="month"/>
-                        <button className="col-sm-1 w3-round-xlarge w3-btn w3-theme-d5 w3-card-4" style={{width: '100px', marginRight: '20px'}} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
+                        <input className="col-sm-2 w3-card-4 w3-round" ref="datepicker" type="month"/>
+                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
                     </div>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

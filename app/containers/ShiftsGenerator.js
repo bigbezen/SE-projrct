@@ -83,7 +83,7 @@ var ShiftDetails = React.createClass({
 
     createAllShifts: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-l4 text-center">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 text-center" style={styles.editBodyStyle}>
                 <h1>יצירת קבוצת משמרות</h1>
                 <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
 
@@ -114,9 +114,10 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-xs-4 col-xs-offset-4"
+                            className="w3-button col-xs-5 col-xs-offset-4 w3-round w3-ripple"
+                            style={styles.editStyle}
                             type="submit">
-                            {constantsStrings.add_string}
+                            {constantsStrings.save_string}
                         </button>
                     </div>
                 </form>

@@ -122,33 +122,34 @@ var ChangePassContainer = React.createClass({
                     <div className="row" style={styles.topBuffer}>
                     </div>
                 </div>
-                <div className="w3-theme-l5 col-sm-offset-2 col-sm-8 text-center img-rounded" >
+                <div className="col-sm-offset-2 col-sm-8 text-center w3-round" style={styles.editBodyStyle} >
                     <h1 className="h1 w3-jumbo">{constantsStrings.changePassTitle_string}</h1>
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group">
                             <input type="password"
-                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-large"
                                    ref="prevPasswordTextBox"
                                    placeholder="סיסמא נוכחית"
                                    value={this.password}/>
                         </div>
                         <div className="form-group">
                             <input type="password"
-                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-large"
                                    ref="newPasswordTextBox1"
                                    placeholder="הזן סיסמא חדשה"
                                    value={this.password}/>
                         </div>
                         <div className="form-group">
                             <input type="password"
-                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-xxlarge"
+                                   className="col-xs-12 col-lg-6 col-lg-offset-3 w3-large"
                                    ref="newPasswordTextBox2"
                                    placeholder="הזן סיסמא חדשה שנית"
                                    value={this.password}/>
                         </div>
                         <div className="form-group">
                             <button
-                                className="w3-btn btn w3-theme-d5 col-sm-6 col-sm-offset-3 w3-xxlarge w3-round-xlarge"
+                                className="w3-button col-sm-6 col-sm-offset-3 w3-large w3-round w3-card-4 w3-ripple"
+                                style={styles.editStyle}
                                 type="submit">
                                 {constantsStrings.changePassButton_string}
                             </button>

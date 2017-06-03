@@ -40,7 +40,8 @@ var styles = {
         marginRight: '10px'
     },
     incentiveCardDivider: {
-        minHeight: '96px'
+        minHeight: '96px',
+        background: 'rgba(255, 255, 255, 0.62)'
     },
     productSelect: {
         marginBottom: '10px'
@@ -50,7 +51,9 @@ var styles = {
         padding: 0
     },
     getReportButtonStyle:{
-        marginLeft: '10px'
+        margin: '10px',
+        background: 'rgb(243, 207, 2)',
+        color: 'white'
     },
     marginTop: {
         marginTop: '50px'
@@ -76,9 +79,110 @@ var styles = {
     addButton: {
         float: 'left',
         marginBottom: '15px',
-        marginRight: '50px'
-    }
+        marginRight: '50px',
+        background: '#b79446',
+        color: 'white'
+    },
+    buttonStyle: {
+        margin: '5px',
+        padding: '5px',
+        background: 'rgb(183, 148, 70)',
+        color: 'white'
+    },
+    iconStyle : {
+        height: '2em',
+        width: '2em'
 
+    },
+    tableStyle: {
+        background: 'rgba(255, 255, 255, 0.62)',
+        marginBottom: '60px',
+        padding: '5px'
+    },
+    addButtonStyle : {
+        margin: '10px',
+        background: 'rgb(243, 207, 2)',
+        color:'white'
+    },
+    incentiveHeaderStyle : {
+        background: 'rgba(84, 80, 75, 0.75)',
+        color: 'white'
+    },
+    editStyle : {
+        background: '#b79446',
+        color: 'white'
+    },
+    reportsButtonStyle: {
+        width: '100px',
+        marginRight: '20px',
+        background: '#b79446',
+        color: 'white',
+        padding: '10px'
+    },
+    editBodyStyle: {
+        background: 'rgba(255, 255, 255, 0.62)'
+    },
+    saveButtonStyle: {
+        background: '#b79446',
+        color: 'white'
+    },
+    addBottleButtonStyle : {
+        background: 'rgb(243, 207, 2)',
+        color:'white'
+    },
+    shiftTableStyle: {
+        marginTop: '80px',
+        background: 'rgba(255, 255, 255, 0.62)',
+        padding: '5px'
+    },
+    shiftRowStyle : {
+        fontSize: '15px',
+        marginTop: '5px',
+        color: 'white',
+        background: '#b79446'
+    },
+    constAvailable : {
+        fontSize: '15px',
+        marginTop:'5px',
+        background: 'rgba(183, 148, 70, 0.5)'
+    },
+    constUnavailable: {
+        fontSize: '15px',
+        marginTop:'5px',
+        background: 'rgba(107, 103, 95, 0.45)'
+    },
+    createShiftsButton: {
+        background: 'rgb(243, 207, 2)',
+        color: 'white'
+    },
+    headerStyle : {
+        background: '#b79446'
+    },
+    prodRowStyle : {
+        marginTop: '10px',
+        height: '45px',
+        background: '#faebd7'
+    },
+    soldProdRowStyle : {
+        marginTop: '10px',
+        height: '45px',
+        background: 'rgb(243, 207, 2)'
+    },
+    mainContainerStyle: {
+        height: '100%',
+        width: '100%',
+        background: '-webkit-linear-gradient(#1d1c1c, #ffe8c0)',
+        overflow: 'auto',
+    },
+    credentialsContainerStyle: {
+        marginTop: '50px',
+        background: 'rgba(192, 194, 195, 0.13)',
+        padding: '100px'
+    },
+    reportRowStyle: {
+        fontSize: '20px',
+        background: '#faebd7'
+    }
 };
 
 module.exports = styles;

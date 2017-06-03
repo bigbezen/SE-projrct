@@ -8,13 +8,21 @@ var styles = {
         li_hover:{"backgroundColor":"yellow"}
     },
     space: {
-        height: '50px'
+        height: '20px'
     },
     hoverBackground: {
         backgroundColor:'w3-theme-l5'
     },
     navbarDivider: {
         borderLeft: '1px solid gray'
+    },
+    navbarStyle: {
+        background: '#54504b',
+        color: 'white'
+    },
+    dropdownStyle: {
+        background: 'rgb(158, 158, 158)',
+        color: 'white'
     }
 
 };

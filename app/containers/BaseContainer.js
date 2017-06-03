@@ -104,22 +104,22 @@ var BaseContainer = React.createClass({
         return (
             <div className='main-container'>
 
-                <div className="w3-bar w3-theme-d4 w3-card-4 w3-large">
-                    <a href={'/#'+paths.manager_home_path} className="w3-bar-item w3-button w3-hover-none w3-right">ראשי</a>
+                <div className="w3-bar w3-card-4 w3-large" style={styles.navbarStyle}>
+                    <a href={'/#'+paths.manager_home_path} style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-none w3-right">ראשי</a>
                     <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a>
                     <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a>
                     <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a>
                     <a style={styles.navbarButtons} className="w3-bar-item w3-button w3-hover-opacity w3-right" href={'/#'+paths.manager_incentives_path}><Incentives/>{constantsStrings.encouragements_string}</a>
                     <div style={styles.navbarButtons} className="w3-dropdown-hover w3-right">
                         <button className="w3-button w3-hover-opacity"><Shifts/>{constantsStrings.shifts_string}</button>
-                        <div className="w3-dropdown-content w3-bar-block w3-card-4 w3-theme-d4">
+                        <div className="w3-dropdown-content w3-bar-block w3-card-4" style={styles.dropdownStyle}>
                             <a href={'/#'+paths.manager_shifts_creation_path} className="w3-button w3-hover-opacity">{constantsStrings.createPublishShifts_string}</a>
                             <a href={'/#'+paths.manager_shifts_path} className="w3-button w3-hover-opacity">{constantsStrings.managePublishedShifts_string}</a>
                         </div>
                     </div>
                     <div className="w3-dropdown-hover w3-right">
                         <button className="w3-button  w3-hover-opacity"><Reports/>{constantsStrings.reports_string}</button>
-                        <div className="w3-dropdown-content w3-bar-block w3-card-4 w3-theme-d4">
+                        <div className="w3-dropdown-content w3-bar-block w3-card-4" style={styles.dropdownStyle}>
                             <a href={'/#'+paths.manager_salesReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsSalesReportTitle_string}</a>
                             <a href={'/#'+paths.manager_humanResourcesReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsHumanResourcesReportTitle_string}</a>
                             <a href={'/#'+paths.manager_monthlyAnalysisReport_path} className="w3-button w3-hover-opacity">{constantsStrings.reportsMonthlyAnalysisReportTitle_string}</a>
@@ -145,7 +145,7 @@ var BaseContainer = React.createClass({
                         <li className="w3-hide-small w3-left"><a className="w3-hover-none" href="javascript:void(0);" onClick={this.handleChangePassword}>{constantsStrings.changePass_string}</a></li>
                     </ul>
                 </div>
-                <div style={styles.space} className="w3-theme-l5" />
+                <div style={styles.space} />
                 {this.props.children}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

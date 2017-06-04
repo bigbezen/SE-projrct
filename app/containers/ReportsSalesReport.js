@@ -255,8 +255,8 @@ var ReportsSalesReport = React.createClass({
                  style={(product.sold || product.opened) > 0 ? styles.soldProdRowStyle : styles.prodRowStyle }>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
-                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} value={product.sold} />
-                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} value={product.opened} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
                 <p className="w3-card-2 w3-button w3-small w3-round w3-ripple"
                    style={styles.buttonStyle} onClick={() => this.onClickEditButton(product, i)}><EditIcon style={styles.iconStyle}/></p>
             </div>

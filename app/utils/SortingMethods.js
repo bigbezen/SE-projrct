@@ -34,6 +34,21 @@ module.exports = {
             return 1;
         else
             return 0;
+    },
+
+    constraintsSortingMethod: function(cons1, cons2) {
+        if(cons1.isAvailable && !cons2.isAvailable)
+            return -1;
+        else if(!cons1.isAvailable && cons2.isAvailable)
+            return 1;
+        else {
+            if (cons1.salesman.personal.firstName + cons1.salesman.personal.lastName < cons2.salesman.personal.firstName + cons2.salesman.personal.lastName)
+                return -1;
+            else if(cons1.salesman.personal.firstName + cons1.salesman.personal.lastName > cons2.salesman.personal.firstName + cons2.salesman.personal.lastName)
+                return 1;
+            else
+                return 0;
+        }
     }
 
 };

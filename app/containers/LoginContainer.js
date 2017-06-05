@@ -100,7 +100,7 @@ var LoginContainer = React.createClass({
             <div className="container" style={styles.mainContainerStyle}>
                 <div className="container">
                     <div className="row text-center" style={styles.marginTop}>
-                        <img src="http://www.panelsfeedback.co.il/media/logos/ibbls.png" style={{marginRight: '-20px'}}/>
+                        <img src="http://www.panelsfeedback.co.il/media/logos/ibbls.png"/>
                     </div>
 
                 </div>

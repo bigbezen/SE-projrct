@@ -238,7 +238,7 @@ var ReportsSalesReport = React.createClass({
         return (
             <div className="w3-container col-sm-6">
                 <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
-                <div className="row col-sm-10 col-sm-offset-1 w3-round w3-card-2 w3-text-black" style={styles.headerStyle}>
+                <div className="row col-sm-12 w3-round w3-card-2 w3-text-black" style={styles.headerStyle}>
                     <p className="col-sm-4" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
                     <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
@@ -251,7 +251,7 @@ var ReportsSalesReport = React.createClass({
 
     renderSalesProducts: function(product, i){
         return (
-            <div className="row col-sm-10 col-sm-offset-1 w3-round w3-card-2 w3-text-black "
+            <div className="row col-sm-12 w3-round w3-card-2 w3-text-black "
                  style={(product.sold || product.opened) > 0 ? styles.soldProdRowStyle : styles.prodRowStyle }>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>

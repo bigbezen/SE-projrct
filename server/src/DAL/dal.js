@@ -251,7 +251,8 @@ module.exports = {
     getShiftsOfRange: async function(startDate, endDate){
         startDate = new Date((new Date(startDate)).setHours(0, 0, 0));
         endDate = new Date((new Date(endDate)).setHours(23, 59, 59));
-        return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lte: new Date(endDate)}}]})
+        return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lte: new Date(endDate)}}]},
+            {'salesReport': 0})
             .populate('salesmanId')
             .populate('storeId');
     },

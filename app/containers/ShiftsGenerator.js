@@ -68,7 +68,7 @@ var ShiftDetails = React.createClass({
             .catch(function(errMsg){
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
-                    message: errMess,
+                    message: errMsg,
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'

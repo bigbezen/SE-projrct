@@ -277,8 +277,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     renderShiftsOfDate: function(date){
         let shifts = this.state.newShifts
-            .filter((shift) => (new Date(shift.startTime)).getTime() - (new Date(date)).getTime() == 0);
-        date = moment(date).format('YYYY-MM-DD');
+            .filter((shift) => (new Date(moment(shift.startTime).format('DD-MM-YYYY'))).getTime()
+                - (new Date(date)).getTime() == 0);
+        date = moment(date).format('DD-MM-YYYY');
 
         let areas = new Set(shifts.map((shift) => shift.storeId.area));
         let areaToShifts = [];
@@ -315,9 +316,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 </div>
             );
         else {
-            let dates = Array.from(new Set(this.state.newShifts.map((shift) => shift.startTime)))
+            let dates = Array.from(new Set(this.state.newShifts.map((shift) => moment(shift.startTime).format('DD-MM-YYYY'))))
                 .sort(function(shift1, shift2){
-                    return (new Date(shift1)).getTime() - (new Date(shift2)).getTime();
+                    return (new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime();
                 });
             return (
                 <div>

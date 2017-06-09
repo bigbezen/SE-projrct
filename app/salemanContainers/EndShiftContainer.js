@@ -158,21 +158,21 @@ var EndShiftContainer = React.createClass({
     renderEndShift: function () {
         return (
         <div>
-            <div className="w3-theme-d5 col-xs-12" style={styles.top__title}>
+            <div className="col-xs-12" style={styles.top__title}>
                 <h1 className="w3-xxxlarge">{constantsStrings.storeStatus_string}</h1>
                 <div style={styles.start__button}>
                         <span className="w3-xxxlarge"
                               onClick={this.onReturn}>
                             <BackButtonIcon/>
                         </span>
-                    <button className="col-xs-offset-7 w3-theme-d4 w3-card-4 w3-xxxlarge btn"
+                    <button className="col-xs-offset-7 w3-card-4 w3-xxxlarge btn" style={styles.endShiftButton}
                             onClick={this.handleSubmitReport} type="submit">
                         {constantsStrings.endShift_string}
                         <StartShiftIcon/>
                     </button>
                 </div>
             </div>
-            <div style={styles.space} className="w3-theme-l5">
+            <div style={styles.space}>
             </div>
             <div className="w3-container text-center" style={{'paddingBottom': '80px'}}>
                 {this.state.productDictionary.map(this.renderEachSubCategory)}

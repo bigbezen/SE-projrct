@@ -9,6 +9,8 @@ var startShiftStyles = {
     top__title: {
         'position': 'fixed',
         'zIndex': '2',
+        background: '#54504b',
+        color: 'white'
     },
     bottom__title: {
         'bottom': '0',
@@ -22,22 +24,21 @@ var startShiftStyles = {
         'paddingBottom': '80px'
     },
     start__button: {
-        'marginBottom': '10px',
+        'marginBottom': '10px'
     },
     subCategory :{
-        margin: '20px',
-        'backgroundColor': '#ffffff',
+        margin: '20px 20px 40px 20px',
+        background: 'rgba(140, 137, 133, 0.43)',
+        padding: '10px 10px 0px'
     },
     product: {
         display: 'flex',
         flexDirection: 'row',
-        width:'100%',
+        width: '100%',
         height: '120px',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '10px 0px 10px 0px',
-        background: 'white',
-        borderBottom: '1px solid '
+        borderBottom: '1px solid black'
     },
     checkbox__detail: {
         'width': '20%',
@@ -63,6 +64,14 @@ var startShiftStyles = {
     },
     center__align: {
         'textAlign': 'center'
+    },
+    buttonStyle: {
+        background: '#b79446',
+        color: 'white'
+    },
+    endShiftButton: {
+        background: '#b79446',
+        color: 'white'
     }
 };
 

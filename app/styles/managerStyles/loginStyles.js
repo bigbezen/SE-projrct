@@ -32,7 +32,8 @@ var styles = {
         padding: '100px'
     },
     buttonStyle: {
-        background: '#b79446'
+        background: '#b79446',
+        color: 'white'
     }
 };
 

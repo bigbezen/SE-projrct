@@ -11,7 +11,7 @@ var styles = {
         height: '20px'
     },
     hoverBackground: {
-        backgroundColor:'w3-theme-l5'
+        backgroundColor:'gray'
     },
     navbarDivider: {
         borderLeft: '1px solid gray'

@@ -138,7 +138,7 @@ var BaseContainer = React.createClass({
 
 
                 <div ref="demo" value={this.props.children} className="w3-hide w3-hide-large w3-hide-medium">
-                    <ul className="w3-navbar w3-top w3-left-align w3-large w3-theme-d4">
+                    <ul className="w3-navbar w3-top w3-left-align w3-large">
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>

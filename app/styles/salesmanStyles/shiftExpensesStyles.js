@@ -26,6 +26,7 @@ var styles = {
         marginRight: '25px',
         marginTop: '10px',
         marginBottom: '10px',
+        background: 'rgba(250, 235, 215, 0.43)'
     },
     notificationStyle: {
         NotificationItem: {
@@ -61,6 +62,15 @@ var styles = {
         paddingBottom: '5px',
         paddingLeft: '20px',
         paddingRight: '20px',
+        background: 'rgb(183, 148, 70)',
+        color: 'white'
+    },
+    headerStyle: {
+        color: 'white',
+        background: 'rgb(132, 132, 132)'
+    },
+    expContainerStyle: {
+        marginTop: '10px'
     }
 };
 

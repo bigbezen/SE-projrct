@@ -52,7 +52,7 @@ var styles = {
     },
     getReportButtonStyle:{
         margin: '10px',
-        background: 'rgb(243, 207, 2)',
+        background: '#b79446',
         color: 'white'
     },
     marginTop: {
@@ -101,7 +101,7 @@ var styles = {
     },
     addButtonStyle : {
         margin: '10px',
-        background: 'rgb(243, 207, 2)',
+        background: '#b79446',
         color:'white'
     },
     incentiveHeaderStyle : {
@@ -127,7 +127,7 @@ var styles = {
         color: 'white'
     },
     addBottleButtonStyle : {
-        background: 'rgb(243, 207, 2)',
+        background: '#b79446',
         color:'white'
     },
     shiftTableStyle: {
@@ -152,7 +152,7 @@ var styles = {
         background: 'rgba(107, 103, 95, 0.45)'
     },
     createShiftsButton: {
-        background: 'rgb(243, 207, 2)',
+        background: '#b79446',
         color: 'white'
     },
     headerStyle : {
@@ -166,7 +166,7 @@ var styles = {
     soldProdRowStyle : {
         marginTop: '10px',
         height: '45px',
-        background: 'rgb(243, 207, 2)'
+        background: '#b79446'
     },
     mainContainerStyle: {
         height: '100%',
@@ -182,6 +182,11 @@ var styles = {
     reportRowStyle: {
         fontSize: '20px',
         background: '#faebd7'
+    },
+    changePassBodyStyle: {
+        padding: '50px',
+        background: 'rgba(255, 255, 255, 0.62)'
+
     }
 };
 

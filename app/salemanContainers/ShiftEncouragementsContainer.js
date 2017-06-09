@@ -118,7 +118,7 @@ var ShiftEncouragementsContainer = React.createClass({
     renderEachEncouragement: function(encouragementStatus, i) {
         return (
             <div key={i} className="row w3-card-4 w3-round-large" style={styles.encouragementStyle}>
-                <header className="w3-container w3-theme-d3 w3-round-large">
+                <header className="w3-container w3-round-large" style={styles.headerStyle}>
                     <p className="w3-xxxlarge" style={styles.encName}>{encouragementStatus.encouragement.name} :</p>
                     <p className="w3-xxxlarge" style={styles.encStatus}> {encouragementStatus.amountSold}/{encouragementStatus.encouragement.numOfProducts}</p>
                 </header>
@@ -134,7 +134,7 @@ var ShiftEncouragementsContainer = React.createClass({
     renderList:function () {
         return(
             <div className='main-container'>
-                <div className="row w3-card-4 w3-theme-d5 w3-xxxlarge w3-round-large" style={styles.encouragementTopStyle}>
+                <div className="row w3-card-4 w3-xxxlarge w3-round-large" style={styles.encouragementTopStyle}>
                     <p> {constantsStrings.encouragementsStatus_string} : {this.state.totalEncouragementsStatus} {constantsStrings.ils_string} </p>
                 </div>
                 <div className="w3-container" style={styles.bodyStyle}>

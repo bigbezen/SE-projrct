@@ -39,6 +39,7 @@ var styles = {
         marginRight: '25px',
         marginTop: '10px',
         marginBottom: '10px',
+        background: 'rgba(250, 235, 215, 0.43)'
     },
     buttonStyle: {
         marginBottom: '50px',
@@ -46,7 +47,9 @@ var styles = {
         paddingBottom: '5px',
         paddingLeft: '20px',
         paddingRight: '20px',
-        paddingTop: '5px'
+        paddingTop: '5px',
+        background: '#b79446',
+        color: 'white'
     },
     notificationStyle: {
         NotificationItem: {
@@ -63,6 +66,16 @@ var styles = {
                 fontSize: '50px'
             },
         }
+    },
+    assignButton: {
+        padding: '20px',
+        margin: '20px',
+        background: '#b79446',
+        color: 'white'
+    },
+    headerStyle: {
+        color: 'white',
+        background: 'rgb(132, 132, 132)'
     },
 
 

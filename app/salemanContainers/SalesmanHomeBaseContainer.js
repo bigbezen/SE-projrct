@@ -67,7 +67,7 @@ var SalesmanHomeBaseContainer = React.createClass({
     render: function () {
         return (
             <div className='main-container'>
-                <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}>
+                <div className="header navbar-fixed-top" style={styles.navbarStyle}>
                     <ul>
                         <li>
                             <button style={{color:'white'}} className="btn-link w3-xxlarge col-xs-2 col-xs-offset-10" onClick={this.handleLogoutUser}>
@@ -76,13 +76,13 @@ var SalesmanHomeBaseContainer = React.createClass({
                         </li>
                     </ul>
                 </div>
-                <div style={styles.space} className="w3-theme-l5" />
+                <div style={styles.space} />
                 {this.props.children}
-                <div className="footer navbar-fixed-bottom w3-theme-d4" style={styles.FooterSpace}>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleProfile}><Profile/><br/>{constantsStrings.profile_string}</button>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleCurrentShift}><Current/><br/>{constantsStrings.currentShift_string}</button>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleShiftSchedule}><Calendar/><br/>{constantsStrings.shiftSchedule_string}</button>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleExpenses}><Expenses/><br/>{constantsStrings.expenses_string}</button>
+                <div className="footer navbar-fixed-bottom" style={styles.footerStyle}>
+                    <button style={styles.footerButtons} onClick={this.handleProfile}><Profile/><br/>{constantsStrings.profile_string}</button>
+                    <button style={styles.footerButtons} onClick={this.handleCurrentShift}><Current/><br/>{constantsStrings.currentShift_string}</button>
+                    <button style={styles.footerButtons} onClick={this.handleShiftSchedule}><Calendar/><br/>{constantsStrings.shiftSchedule_string}</button>
+                    <button style={styles.footerButtons} onClick={this.handleExpenses}><Expenses/><br/>{constantsStrings.expenses_string}</button>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

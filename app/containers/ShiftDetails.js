@@ -17,6 +17,9 @@ var sorting             = require('../utils/SortingMethods');
 var ReactBootstrap          = require('react-bootstrap');
 var Collapse                = ReactBootstrap.Collapse;
 
+import 'react-date-picker/index.css';
+import { DateField, DatePicker } from 'react-date-picker';
+
 var ShiftDetails = React.createClass({
 
     contextTypes: {
@@ -161,9 +164,10 @@ var ShiftDetails = React.createClass({
         newShift.type = this.state.shiftType +
             (this.state.shiftType == constantsStrings.shiftType_event ? (" " + this.refs.eventType.value) : "");
         newShift.salesmanId = this.state.salesmanId;
-        newShift.startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
+        let date = this.refs.dateBox.state.value;
+        newShift.startTime = moment(date).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
         newShift.startTime = moment(newShift.startTime).format('YYYY-MM-DD HH:mm Z');
-        newShift.endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
+        newShift.endTime = moment(date).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
         newShift.endTime = moment(newShift.endTime).format('YYYY-MM-DD HH:mm Z');
 
         var context = this.context;
@@ -293,10 +297,17 @@ var ShiftDetails = React.createClass({
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.date_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <input type="date"
-                               className="col-xs-4 col-xs-offset-2"
-                               ref="dateBox"
-                        />
+                        <div className="col-xs-offset-2">
+                            <DateField
+                                dateFormat="DD-MM-YYYY"
+                                forceValidDate={true}
+                                defaultValue={(new Date()).getTime()}
+                                ref="dateBox"
+                                updateOnDateClick={true}
+                                collapseOnDateClick={true}
+                            >
+                            </DateField>
+                        </div>
                     </div>
 
                     <div className="form-group ">
@@ -346,7 +357,7 @@ var ShiftDetails = React.createClass({
         this.refs.storeBox.value = currShift.storeId._id;
 
         this.refs.shiftTypeBox.value =  currShift.type;
-        this.refs.dateBox.value =  moment(currShift.startTime).format('YYYY-MM-DD');
+        this.refs.dateBox.state.value =  moment(currShift.startTime).toDate().getTime();
         this.refs.startTimeBox.value = moment(currShift.startTime).format('HH:mm');
         this.refs.endTimeBox.value = moment(currShift.endTime).format('HH:mm');
     },

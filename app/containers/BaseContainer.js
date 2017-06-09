@@ -115,6 +115,9 @@ var BaseContainer = React.createClass({
                         <div className="w3-dropdown-content w3-bar-block w3-card-4" style={styles.dropdownStyle}>
                             <a href={'/#'+paths.manager_shifts_creation_path} className="w3-button w3-hover-opacity">{constantsStrings.createPublishShifts_string}</a>
                             <a href={'/#'+paths.manager_shifts_path} className="w3-button w3-hover-opacity">{constantsStrings.managePublishedShifts_string}</a>
+                            <a href={'/#'+paths.manager_shifts_events_path} className="w3-button w3-hover-opacity">{constantsStrings.managerEventsShifts_string}</a>
+                            <a href={'/#'+paths.manager_shifts_finished_path} className="w3-button w3-hover-opacity">{constantsStrings.managerFinishedShifts_string}</a>
+
                         </div>
                     </div>
                     <div className="w3-dropdown-hover w3-right">

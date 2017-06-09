@@ -42,7 +42,7 @@ function timeFormatter(cell, row) {
     return moment(cell).format('H:mm');
 }
 
-var ShiftsContainer = React.createClass({
+var ShiftsFinishedContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -90,7 +90,7 @@ var ShiftsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
-            result = result.filter((shift) => shift.status != "CREATED" && shift.status != "FINISHED");
+            result = result.filter((shift) => shift.status == "FINISHED" && !(shift.type.includes(constantStrings.shiftType_event)));
             let areas = new Set(result.map((shift) => shift.storeId.area));
             let areaToShifts = {};
             for(let area of areas){
@@ -427,4 +427,4 @@ var ShiftsContainer = React.createClass({
     }
 });
 
-module.exports = ShiftsContainer;
+module.exports = ShiftsFinishedContainer;

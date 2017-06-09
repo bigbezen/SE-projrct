@@ -26,7 +26,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
         this.setSessionId();
         this.setUserType();
         return {
-            newShifts: [],
+            newShifts: undefined,
             salesmen: [],
         }
     },
@@ -277,7 +277,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     renderShiftsOfDate: function(date){
         let shifts = this.state.newShifts
-            .filter((shift) => (new Date(moment(shift.startTime).format('DD-MM-YYYY'))).getTime()
+            .filter((shift) => (new Date(moment(shift.startTime).format('YYYY-MM-DD'))).getTime()
                 - (new Date(date)).getTime() == 0);
         date = moment(date).format('DD-MM-YYYY');
 
@@ -290,9 +290,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
             });
         }
         return (
-            <div className="w3-container" style={{borderBottom: '2px solid #CCC', marginBottom: '20px'}}>
+            <div className="w3-container" style={{borderBottom: '6px solid #BBB', marginBottom: '20px'}}>
                 <div className="col-sm-12 text-center">
-                    <h1>{date}</h1>
+                    <h1><b>{date}</b></h1>
                 </div>
                 <div style={{marginTop: '10px', marginBottom: '10px'}} className="col-sm-12">
                     {areaToShifts.map(this.renderArea)}
@@ -316,9 +316,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 </div>
             );
         else {
-            let dates = Array.from(new Set(this.state.newShifts.map((shift) => moment(shift.startTime).format('DD-MM-YYYY'))))
-                .sort(function(shift1, shift2){
-                    return (new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime();
+            let dates = Array.from(new Set(this.state.newShifts.map((shift) => moment(shift.startTime).format('YYYY-MM-DD'))))
+                .sort(function(date1, date2){
+                    return (new Date(date1)).getTime() - (new Date(date2)).getTime();
                 });
             return (
                 <div>

@@ -17,6 +17,7 @@ class ConstantStrings extends React.Component {
     static saleReport_string = 'טעימות';
     static edit_string = 'עריכה';
     static delete_string = 'מחיקה';
+    static deleteSelectedShifts_string = 'מחיקת המשמרות המסומנות';
     static search_string = 'חיפוש';
     static productSearch_string = 'חיפוש מוצר';
     static add_string = 'הוספה';
@@ -34,6 +35,8 @@ class ConstantStrings extends React.Component {
     static selectedProducts_string = 'המוצרים שנבחרו';
     static createPublishShifts_string = 'יצירה ופרסום משמרות';
     static managePublishedShifts_string = 'ניהול משמרות מפורסמות';
+    static managerFinishedShifts_string = 'משמרות שהסתיימו';
+    static managerEventsShifts_string = 'ניהול משמרות אירועים';
     static constraints_string = 'אילוצי דיילים';
     static available_string = 'זמין למשמרת';
     static notAvailable_string = 'לא זמין למשמרת';

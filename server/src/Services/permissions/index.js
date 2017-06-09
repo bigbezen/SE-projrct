@@ -65,7 +65,8 @@ let funcNameToPermission = {
     'getOrderEventReportXL': ['manager'],
     'getAllShiftsByStatus': ['manager', 'salesman'],
     'submitConstraints': ['salesman'],
-    'getStoreShiftsByStatus': ['manager']
+    'getStoreShiftsByStatus': ['manager'],
+    'deleteCreatedShifts': ['manager']
 };
 
 module.exports.validatePermissionForSessionId = validatePermissionForSessionId;

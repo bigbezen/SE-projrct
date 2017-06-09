@@ -128,6 +128,11 @@ var helpers = {
         return connection.managementRequests.publishShifts(shift);
     },
 
+    deleteCreatedShifts: function(idsArr){
+        console.log('managementServices- deleteCreatedShifts');
+        return connection.managementRequests.deleteCreatedShifts(idsArr);
+    },
+
     getShiftsFromDate:function(fromDate) {
         console.log('managementServices- getShiftsFromDate');
         return connection.managementRequests.getShiftsFromDate(fromDate);

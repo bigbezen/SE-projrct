@@ -111,12 +111,12 @@ var ShiftsExpensesContainer = React.createClass({
         var ShiftDateFormated = shiftDate.toLocaleDateString('en-GB');
         return (
 
-        <div key={i} className="row w3-card-4 w3-round-large" style={styles.expStyle}>
-            <header className="w3-container w3-theme-d3 w3-round-large">
+        <div key={i} className="row w3-card-4 w3-round" style={styles.expStyle}>
+            <header className="w3-container w3-round" style={styles.headerStyle}>
                 <p className="w3-xxxlarge" style={styles.storeStyle}>{shift.store.name}</p>
                 <p className="w3-xxxlarge" style={styles.dateStyle}> {ShiftDateFormated}</p>
             </header>
-            <div className="w3-container">
+            <div className="w3-container" style={styles.expContainerStyle}>
                 <p><b>{constantStrings.km_string}</b>:&nbsp;
                     <input type="number" min="0" style={styles.inputStyle}  ref={"numOfKM" + i} defaultValue={shift.numOfKM} />
                 </p>
@@ -128,7 +128,7 @@ var ShiftsExpensesContainer = React.createClass({
                 </p>
             </div>
             <div className="text-center">
-                <button className="w3-card-4 w3-round-large w3-theme-d5" style={styles.buttonStyle} onClick={() => this.onClickEditButton(shift, i)}>
+                <button className="w3-button w3-card-4 w3-round w3-ripple" style={styles.buttonStyle} onClick={() => this.onClickEditButton(shift, i)}>
                     {constantStrings.save_string}
                 </button>
             </div>

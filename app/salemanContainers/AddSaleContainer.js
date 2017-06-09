@@ -240,9 +240,9 @@ var AddSaleContainer = React.createClass({
         };
         return(
             <div className='main-container'>
-                <div className="w3-theme-d5 col-xs-12" style={styles.endShiftButton}>
+                <div className="col-xs-12" style={styles.endShiftButton}>
                     <div className="col-xs-offset-7">
-                        <button className="w3-theme-d5 w3-xxxlarge btn"
+                        <button className="w3-xxxlarge btn"
                                 onClick={this.handleFinishShift} type="submit">
                             {constantStrings.endShift_string}
                             <StartShiftIcon/>
@@ -252,10 +252,10 @@ var AddSaleContainer = React.createClass({
 
                 <div style={styles.reportTopContainer}>
                     <div style={styles.reportButtonsContainer}>
-                        <button onClick={this.handleAddSale} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8" > {constantStrings.reportSale_string}</button>
+                        <button onClick={this.handleAddSale} style={styles.reportButtonStyle} className="w3-round-xxlarge w3-xxxlarge w3-card-8" > {constantStrings.reportSale_string}</button>
                     </div>
                     <div style={styles.reportButtonsContainer}>
-                        <button onClick={this.handleOpenBottle} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8">{constantStrings.reportOpen_string}</button>
+                        <button onClick={this.handleOpenBottle} className="w3-round-xxlarge w3-xxxlarge w3-card-8">{constantStrings.reportOpen_string}</button>
                     </div>
                 </div>
                 <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
@@ -329,9 +329,9 @@ var AddSaleContainer = React.createClass({
         };
         return(
             <div>
-                <div className="w3-theme-d5 col-xs-12">
+                <div className="col-xs-12">
                     <div className="col-xs-offset-7">
-                        <button className="w3-theme-d5 w3-xxxlarge btn"
+                        <button className="w3-xxxlarge btn" style={styles.endShiftButton}
                                 onClick={this.handleFinishShift} type="submit">
                             {constantStrings.endShift_string}
                             <StartShiftIcon/>

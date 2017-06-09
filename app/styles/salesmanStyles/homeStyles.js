@@ -45,6 +45,10 @@ var styles = {
             },
         }
     },
+    startButtonStyle : {
+        background: '#b79446',
+        color: 'white'
+    }
 
 };
 

@@ -270,15 +270,15 @@ var ShiftMakeSalesContainer = React.createClass({
             let soldProducts = Object.keys(this.state.soldProducts).map((id) => this.state.soldProducts[id]);
             return(
                 <div>
-                    <div className="navbar-fixed-top w3-theme-d4" style={styles.reportTopContainer}>
+                    <div className="navbar-fixed-top" style={styles.reportTopContainer}>
                         <div className="w3-ripple" style={styles.reportButtonsContainer}>
-                            <button onClick={this.onClickAddSale} className="w3-round-xlarge w3-theme-d5 w3-xxxlarge w3-card-8" style={{border: '#FFFFFF'}}> {constantStrings.reportSale_string}</button>
+                            <button onClick={this.onClickAddSale} className="w3-round-xlarge w3-xxxlarge w3-card-8" style={styles.reportButtonStyle}> {constantStrings.reportSale_string}</button>
                         </div>
                         <div className="w3-ripple" style={styles.reportButtonsContainer}>
-                            <button onClick={this.onClickOpenBottle} className="w3-round-xlarge w3-theme-d5 w3-xxxlarge w3-card-8" style={{border: '#FFFFFF'}}>{constantStrings.reportOpen_string}</button>
+                            <button onClick={this.onClickOpenBottle} className="w3-round-xlarge w3-xxxlarge w3-card-8" style={styles.reportButtonStyle}>{constantStrings.reportOpen_string}</button>
                         </div>
                     </div>
-                    <div className="navbar-fixed-top w3-theme-d4" style={{marginTop: '191px'}}>
+                    <div className="navbar-fixed-top" style={styles.selectedStringContainerStyle}>
                         <h1 className="text-center"><b>{constantStrings.selectedProducts_string}</b></h1>
                         {soldProducts.map(this.renderEachSoldProduct)}
                     </div>
@@ -293,8 +293,8 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderEachSoldProduct: function(productAndQuantity){
         return (
-            <div className="col-sm-10 col-sm-offset-1 w3-round-xlarge w3-theme-l4 w3-xxxlarge w3-card-4"
-                style={styles.productSaleRow}>
+            <div className="col-sm-10 col-sm-offset-1 w3-round-xlarge w3-xxxlarge w3-card-4"
+                style={styles.soldProductRow}>
                 <span style={{float: 'right', marginTop: '15px'}}>{productAndQuantity.product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}}>
                     <span onClick={() => this.onClickPlus(productAndQuantity.product.productId)}><PlusIcon/></span>
@@ -307,7 +307,7 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderEachProduct: function(product){
         return (
-            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge w3-card-4 w3-ripple"
+            <div className="col-sm-12 w3-round-xlarge w3-xxxlarge w3-card-4 w3-ripple"
                  style={styles.productSaleRow}  onClick={() => this.onClickProduct(product)}>
                 <span style={{float: 'right', marginTop: '15px'}}>{product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}} className="w3-xxxlarge"><PlusIcon /></span>
@@ -338,7 +338,7 @@ var ShiftMakeSalesContainer = React.createClass({
         productsAndCategory.products = productsAndCategory.products.sort(this.productSortingMethod);
         return (
             <div className="col-sm-12" key={category} style={{marginTop: '15px'}}>
-                <button className="w3-btn w3-round-xlarge w3-theme-d3 col-sm-12 text-center" style={{marginBottom: '10px'}} onClick={function(){
+                <button className="w3-btn w3-round-xlarge col-sm-12 text-center" style={{marginBottom: '10px', background:'rgba(121, 97, 43, 0.63)'}} onClick={function(){
                     let subCategoriesOpen = self.state.subCategoriesOpen;
                     subCategoriesOpen[category] = !subCategoriesOpen[category];
                     self.setState({subCategoriesOpen: subCategoriesOpen});
@@ -347,7 +347,7 @@ var ShiftMakeSalesContainer = React.createClass({
                     {this.renderArrow(self.state.subCategoriesOpen[category])}
                 </button>
                 <Collapse in={this.state.subCategoriesOpen[category]}>
-                    <div className="col-sm-10">
+                    <div className="col-sm-10 col-sm-offset-1">
                         {productsAndCategory.products.map(this.renderEachProduct)}
                     </div>
                 </Collapse>
@@ -375,10 +375,10 @@ var ShiftMakeSalesContainer = React.createClass({
 
         return(
             <div>
-                <div className="w3-theme-d5 col-xs-12">
-                    <button className="col-xs-offset-7 w3-theme-d4 btn navbar-fixed-top"
+                <div className="col-xs-12" style={styles.headerStyle}>
+                    <button className="col-xs-offset-7 btn navbar-fixed-top"
                             onClick={this.handleFinishShift} type="submit"
-                            style={{fontSize:'40px'}}>
+                            style={{fontSize:'40px', background:'#54504b', color:'white'}}>
                         {constantStrings.endShift_string}
                         <StartShiftIcon/>
                     </button>

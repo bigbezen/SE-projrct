@@ -170,7 +170,7 @@ var SalesmanAssignShiftsContainer = React.createClass({
         return (
             <div key={date} className="row w3-card-4 w3-round-large"
                  style={Object.assign(styles.shiftStyle, {paddingBottom: '30px'})}>
-                <header className="w3-container w3-theme-d3 w3-round-large text-center">
+                <header className="w3-container w3-round-large text-center">
                     <p className="w3-xxxlarge">{shownDate}</p>
                 </header>
                 {areas.map((area) => this.renderArea(area, date))}
@@ -189,7 +189,7 @@ var SalesmanAssignShiftsContainer = React.createClass({
             <div className='main-container' style={styles.bodyStyle}>
                 {dates.map(this.renderByDate)}
                 <div className="col-sm-12 text-center">
-                    <button className="w3-ripple w3-theme-d3 w3-round-xlarge w3-xxlarge w3-card-4" style={styles.buttonStyle} onClick={this.onClickSubmit}>
+                    <button className="w3-ripple w3-round w3-xxlarge w3-card-4 w3-button" style={styles.buttonStyle} onClick={this.onClickSubmit}>
                         {constantsStrings.submitConstraints_string}
                     </button>
                 </div>

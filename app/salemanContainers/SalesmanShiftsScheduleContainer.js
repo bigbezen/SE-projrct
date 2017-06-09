@@ -101,12 +101,12 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         var endTime = moment(shift.endTime).format('H:mm');
         return(
             <div key={i} className="row w3-card-4 w3-round-large" style={styles.shiftStyle}>
-                <header className="w3-container w3-theme-d3 w3-round-large">
+                <header className="w3-container w3-round" style={styles.headerStyle}>
                     <p className="w3-xxxlarge" style={styles.textStyleRight}>{shiftDate}</p>
                     <p className="w3-xxxlarge" style={styles.textStyleLeft}> {startTime}-{endTime}</p>
                 </header>
 
-                <div className="w3-container text-center">
+                <div className="w3-container text-center" >
                     <p className="w3-xxxlarge">{constantsStrings.shiftType_string}: {shift.type}</p>
                     <p className="w3-xxxlarge" >{constantsStrings.storeName_string}: {shift.storeId.name}</p>
                     <p className="w3-xxxlarge" >{constantsStrings.city_string}: {shift.storeId.city}</p>
@@ -119,8 +119,8 @@ var SalesmanShiftsScheduleContainer = React.createClass({
     renderAssignShiftsButton: function() {
         return (
             <div className="navbar-fixed-top text-center" style={{marginTop: '80px'}}>
-                <button className="w3-xxlarge w3-theme-l4 w3-card-4 w3-round-large"
-                        style={{padding: '20px'}} onClick={this.handleMoveToAssignShifts}>
+                <button className="w3-button w3-xxlarge w3-round w3-card-4 w3-ripple" style={styles.assignButton}
+                        onClick={this.handleMoveToAssignShifts}>
                     {constantsStrings.assignShifts_string}
                 </button>
             </div>
@@ -131,7 +131,7 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         return (
             <div className='main-container' style={styles.bodyStyle}>
                 {this.renderAssignShiftsButton()}
-                <div className="w3-container" style={{marginTop: '100px'}}>
+                <div className="w3-container" style={{marginTop: '130px'}}>
                     {this.state.shifts.map(this.renderEachShift)}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
@@ -143,7 +143,7 @@ var SalesmanShiftsScheduleContainer = React.createClass({
             <div>
                 <div className="text-center">
                     {this.renderAssignShiftsButton()}
-                    <p className="w3-xxlarge" style={{marginTop: '100px'}}><b>{constantsStrings.noShifts_string}</b></p>
+                    <p className="w3-xxlarge" style={{marginTop: '120px'}}><b>{constantsStrings.noShifts_string}</b></p>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

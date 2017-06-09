@@ -41,6 +41,8 @@ class ConstantStrings extends React.Component {
     static available_string = 'זמין למשמרת';
     static notAvailable_string = 'לא זמין למשמרת';
     static submitConstraints_string = 'הגש/י אילוצים';
+    static diselectAll_string = 'הסר את כל המשמרות';
+    static selectAll_string = 'סמנ/י את כל המשמרות';
 
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';

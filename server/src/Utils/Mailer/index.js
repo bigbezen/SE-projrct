@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer');
 
-var transporter = nodemailer.createTransport('smtps://IBBLSServices%40gmail.com:0192837465@smtp.gmail.com');
+var transporter = nodemailer.createTransport('smtps://IBBLSServices%40gmail.com:ibbls!234@smtp.gmail.com');
 
 var subjects = {
     'retrievePassword': 'IBBLS Services - Retrieved Details'

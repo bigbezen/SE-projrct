@@ -167,6 +167,7 @@ var ShiftDetails = React.createClass({
         newShift.endTime = moment(newShift.endTime).format('YYYY-MM-DD HH:mm Z');
 
         var context = this.context;
+        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         if (this.state.editing) {
             newShift._id = this.props.location.query._id;
@@ -179,7 +180,7 @@ var ShiftDetails = React.createClass({
                     position: 'tc',
                     onRemove: function (notification) {
                         context.router.push({
-                            pathname: paths.manager_shifts_path
+                            pathname: self.props.location.query.status != "CREATED" ? paths.manager_shifts_path : paths.manager_shifts_creation_path
                         })
                     }
                 });

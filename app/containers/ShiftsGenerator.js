@@ -12,6 +12,9 @@ var userServices        = require('../communication/userServices');
 
 var managementServices  = require('../communication/managementServices');
 
+import 'react-date-picker/index.css';
+import { DateField, DatePicker } from 'react-date-picker';
+
 var ShiftDetails = React.createClass({
 
     contextTypes: {
@@ -21,7 +24,9 @@ var ShiftDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
-        return {}
+        return {
+            chosenDate: new Date()
+        }
     },
 
     setSessionId: function() {
@@ -44,12 +49,15 @@ var ShiftDetails = React.createClass({
 
     handleSubmitShift: function (e) {
         e.preventDefault();
+        console.log(e);
+        if(this.refs.startTimeBox.value == "" || this.refs.endTimeBox.value == "")
+            return;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-
-        var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
+        let date = this.refs.dateBox.state.activeDate == undefined ? new Date() : this.refs.dateBox.state.activeDate._d;
+        var startTime = moment(date).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
         startTime = moment(startTime).format('YYYY-MM-DD HH:mm Z');
-        var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
+        var endTime = moment(date).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
         endTime = moment(endTime).format('YYYY-MM-DD HH:mm Z');
 
         managementServices.generateShiftsForDate(startTime, endTime)
@@ -77,22 +85,34 @@ var ShiftDetails = React.createClass({
 
     },
 
-    onChangeStarTime: function(){
+    onChangeStartTime: function(){
         this.refs.endTimeBox.value = this.refs.startTimeBox.value;
     },
+
+    onChangeDate: function(a, b) {
+        console.log(a);
+        console.log(b);
+        this.state.chosenDate = new Date(a);
+    },
+
 
     createAllShifts: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 text-center" style={styles.editBodyStyle}>
                 <h1>יצירת קבוצת משמרות</h1>
                 <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
-
-                    <div className="form-group ">
+                    <div className="form-group">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
-                        <input type="date"
-                               className="col-xs-5"
-                               ref="dateBox"
-                        />
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            defaultValue={1496939224532}
+                            ref="dateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp}) => {this.onChangeDate(dateString, dateMoment, timestamp)}}
+                        >
+                        </DateField>
                     </div>
 
                     <div className="form-group ">
@@ -100,7 +120,7 @@ var ShiftDetails = React.createClass({
                         <input type="time"
                                className="col-xs-5"
                                ref="startTimeBox"
-                               onChange={this.onChangeStarTime}
+                               onChange={this.onChangeStartTime}
                         />
                     </div>
 

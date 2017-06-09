@@ -58,7 +58,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('46 * * * *', _genarateMonthlyReport);
+let monthlyJob  = scheduler.scheduleJob('* * 1 * *', _genarateMonthlyReport);
 
 console.log('server is now running on port: ', {'port': port});
 function _connectToDb(){
@@ -661,6 +661,19 @@ function _setapApiEndpoints() {
             return;
         }
         let result = await shiftService.publishShifts(req.body.sessionId, req.body.shiftArr);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+    });
+
+
+    app.post('/management/deleteCreatedShifts', async function(req, res) {
+        if(!('sessionId' in req.body)){
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.deleteCreatedShifts(req.body.sessionId, req.body.idsArr);
         if(result.code == 200)
             res.status(200).send();
         else

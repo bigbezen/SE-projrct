@@ -20,6 +20,9 @@ var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
 var sorting             = require('../utils/SortingMethods');
 
+import 'react-date-picker/index.css';
+import { DateField, DatePicker } from 'react-date-picker';
+
 var options = {
     noDataText: constantStrings.NoDataText_string
 };
@@ -70,7 +73,8 @@ var ShiftsCreationContainer = React.createClass({
         return{
             shifts: null,
             startDate: currentDate,
-            endDate:currentDate
+            endDate:currentDate,
+            shiftsToDelete: []
         }
     },
 
@@ -198,6 +202,44 @@ var ShiftsCreationContainer = React.createClass({
         })
     },
 
+    onClickDeleteShifts: function() {
+        let notificationSystem = this.refs.notificationSystem;
+        let self = this;
+        notificationSystem.clearNotifications();
+        notificationSystem.addNotification({
+            message: constantStrings.areYouSure_string,
+            level: 'info',
+            autoDismiss: 0,
+            position: 'tc',
+            action: {
+                label: constantStrings.yes_string,
+                callback:
+                    function(){
+                        self.handleDeleteShifts()
+                    }
+            }
+        });
+    },
+
+    handleDeleteShifts: function() {
+        let notificationSystem = this.refs.notificationSystem;
+        let self = this;
+        managementServices.deleteCreatedShifts(this.state.shiftsToDelete)
+            .then(function(result) {
+                self.updateShifts(self.state.startDate, self.state.endDate);
+            })
+            .catch(function(errMsg) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMsg,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
+                });
+                self.updateShifts(self.state.startDate, self.state.endDate);
+            })
+    },
+
     editButton: function(cell, row, enumObject, rowIndex) {
         var isFinished = (row.status == 'FINISHED');
         var isStarted = (row.status == 'STARTED');
@@ -241,10 +283,47 @@ var ShiftsCreationContainer = React.createClass({
         }
     },
 
-    changeDate: function () {
-        var startDateValue = this.refs.startDateBox.value;
-        var endDateValue = this.refs.endDateBox.value;
+    changeStartDate: function (date) {
+        var startDateValue = moment(date).toDate();
+        var endDateValue = moment(this.refs.endDateBox.state.value).toDate();
         this.updateShifts(startDateValue,endDateValue);
+    },
+    changeEndDate: function (date) {
+        var startDateValue = moment(this.refs.startDateBox.state.value).toDate();
+        var endDateValue = moment(date).toDate();
+        this.updateShifts(startDateValue,endDateValue);
+    },
+
+    onRowSelect: function(shift, isSelected, e){
+        if (isSelected) {
+            this.state.shiftsToDelete.push(shift._id);
+        }
+        else {
+            this.state.shiftsToDelete = this.state.shiftsToDelete.filter((id) => id != shift._id);
+        }
+    },
+
+    onSelectAll: function(isSelected, shifts){
+        if (isSelected) {
+            let newIds = shifts.map((shift) => shift._id);
+            this.state.shiftsToDelete = this.state.shiftsToDelete.concat(newIds);
+        }
+        else {
+            let newShifts = this.state.shiftsToDelete;
+            for(let shift of shifts) {
+                newShifts = newShifts.filter((id) => id != shift._id);
+            }
+            this.state.shiftsToDelete = newShifts;
+        }
+    },
+
+    selectRowProp:function() {
+        return {
+            mode: 'checkbox',
+            clickToSelect: true,
+            onSelect: this.onRowSelect,
+            onSelectAll: this.onSelectAll
+        }
     },
 
     renderAreaTable: function(area){
@@ -252,10 +331,10 @@ var ShiftsCreationContainer = React.createClass({
         return (
             <div style={styles.shiftTableStyle} className="w3-round w3-card-2">
                 <h1>{area}</h1>
-                <BootstrapTable data={shiftsOfArea} options={options} bordered={false} hover search
+                <BootstrapTable selectRow={this.selectRowProp()}
+                                data={shiftsOfArea} options={options} bordered={false} hover search
                                 searchPlaceholder={constantStrings.search_string}
-                                containerStyle={{border: '2px solid rgba(0, 0, 0, 0.28)'}}
-                >
+                                containerStyle={{border: '2px solid rgba(0, 0, 0, 0.28)'}}>
                     <TableHeaderColumn
                         dataField = 'storeId.managerName'
                         dataAlign = 'right'
@@ -265,8 +344,7 @@ var ShiftsCreationContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'storeId.name'
                         dataAlign = 'right'
-                        filter = { {type: 'TextFilter', placeholder:constantStrings.enterStoreName_string} }
-                        isKey = {true}>
+                        filter = { {type: 'TextFilter', placeholder:constantStrings.enterStoreName_string} }>
                         {constantStrings.storeName_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
@@ -315,6 +393,12 @@ var ShiftsCreationContainer = React.createClass({
                         dataField = 'button'
                         width = '50'
                         dataFormat = {this.deleteButton}/>
+                    <TableHeaderColumn
+                        dataField = '_id'
+                        dataAlign = 'right'
+                        width = '0'
+                        isKey = {true}
+                    />
                 </BootstrapTable>
             </div>
         )
@@ -327,8 +411,32 @@ var ShiftsCreationContainer = React.createClass({
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
-                    <p style={styles.dateLabel}>{constantStrings.startDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.startDate} ref="startDateBox" onChange= {this.changeDate} />
-                    <p style={styles.dateLabel}>{constantStrings.endDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.endDate} ref="endDateBox" onChange={this.changeDate} />
+                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
+                    <div>
+                        <p className="col-sm-2" style={styles.dateLabel}>{constantStrings.startDate_string}:</p>
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            defaultValue={(new Date(this.state.startDate)).getTime()}
+                            ref="startDateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp }) => this.changeStartDate(dateMoment)}>
+                        </DateField>
+                    </div>
+                    <div>
+                        <p className="col-sm-2" style={styles.dateLabel}>{constantStrings.endDate_string}:</p>
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            defaultValue={(new Date(this.state.endDate)).getTime()}
+                            ref="endDateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp }) => this.changeEndDate(dateMoment)}>
+                        </DateField>
+                    </div>
+
                 </div>
                 {Object.keys(this.state.shifts).map(this.renderAreaTable)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

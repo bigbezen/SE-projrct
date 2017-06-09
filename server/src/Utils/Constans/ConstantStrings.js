@@ -14,6 +14,7 @@ module.exports = {
     storeAlreadyExist: "החנות קיימת כבר במערכת",
     duplicateStore: "חנות באותו השם ובאותו האזור קיימת כבר במערכת",
     shiftsCurrentTimeError: "לא ניתן להוסיף משמרת לפני התאריך הנוכחי",
+    invalidDateRange: "התאריכים שניתנו אינם תקינים",
     userCannotHaveMoreThanOneShiftAtDay: "לדייל לא יכולה להיות יותר ממשמרת אחת ליום",
     shiftTypeEvemt: "אירוע",
     shiftWirhoutSalesmanError:"יש לשבץ לכל משמרת דייל",
@@ -38,5 +39,6 @@ module.exports = {
     city_string: "עיר",
     storeName_string: "שם החנות",
     salesmanName_string: "שם הדייל",
+    deleteError: "קרתה תקלה בעת המחיקה",
     eventSalary: 42
 };

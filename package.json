@@ -28,6 +28,7 @@
     "react": "^15.4.1",
     "react-bootstrap": "^0.30.7",
     "react-bootstrap-table": "^3.1.0",
+    "react-date-picker": "^5.3.28",
     "react-dom": "^15.4.1",
     "react-fusioncharts": "^1.0.4",
     "react-icons": "^2.2.3",

@@ -1222,9 +1222,9 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
 let _calcEventCost = function(numOfHours, expensesCost){
     let totalCost = constantString.eventSalary
                     + constantString.eventSalary * 0.1276
-                    + constantString.eventSalary * (0.1433 + 0.09)
+                    + constantString.eventSalary * (0.1433 + 0.009)
                     + ((expensesCost * 0.0376)/numOfHours);
-    return totalCost * numOfHours;
+    return Math.round(totalCost * numOfHours);
 };
 
 

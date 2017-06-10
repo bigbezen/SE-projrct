@@ -103,7 +103,8 @@ var ShiftsCreationContainer = React.createClass({
             self.setState({
                 shifts: areaToShifts,
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                shiftsToDelete: []
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -295,26 +296,32 @@ var ShiftsCreationContainer = React.createClass({
     },
 
     onRowSelect: function(shift, isSelected, e){
+        let newShifts = this.state.shiftsToDelete;
         if (isSelected) {
-            this.state.shiftsToDelete.push(shift._id);
+            newShifts.push(shift._id);
         }
         else {
-            this.state.shiftsToDelete = this.state.shiftsToDelete.filter((id) => id != shift._id);
+            newShifts = this.state.shiftsToDelete.filter((id) => id != shift._id);
         }
+        this.setState({
+            shiftsToDelete: newShifts
+        })
     },
 
     onSelectAll: function(isSelected, shifts){
+        let newShifts = this.state.shiftsToDelete;
         if (isSelected) {
             let newIds = shifts.map((shift) => shift._id);
-            this.state.shiftsToDelete = this.state.shiftsToDelete.concat(newIds);
+            newShifts = this.state.shiftsToDelete.concat(newIds);
         }
         else {
-            let newShifts = this.state.shiftsToDelete;
             for(let shift of shifts) {
                 newShifts = newShifts.filter((id) => id != shift._id);
             }
-            this.state.shiftsToDelete = newShifts;
         }
+        this.setState({
+            shiftsToDelete: newShifts
+        });
     },
 
     selectRowProp:function() {
@@ -349,6 +356,7 @@ var ShiftsCreationContainer = React.createClass({
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'startTime'
+                        sort = {true}
                         dataAlign = 'right'
                         dataFormat={ dateFormatter }>
                         {constantStrings.date_string}
@@ -404,6 +412,17 @@ var ShiftsCreationContainer = React.createClass({
         )
     },
 
+    renderDeletebutton: function() {
+        if(this.state.shiftsToDelete.length > 0)
+            return (
+                <button style={styles.deleteButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
+            );
+        else
+            return (
+                <button disabled style={styles.deleteButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
+            );
+    },
+
     renderTable: function () {
         return (
             <div className="col-xs-12">
@@ -411,6 +430,7 @@ var ShiftsCreationContainer = React.createClass({
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
+                    {this.renderDeletebutton()}
                     <div>
                         <p className="col-sm-2" style={styles.dateLabel}>{constantStrings.startDate_string}:</p>
                         <DateField
@@ -436,9 +456,6 @@ var ShiftsCreationContainer = React.createClass({
                         </DateField>
                     </div>
 
-                </div>
-                <div className="col-xs-12">
-                    <button style={styles.deleteButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
                 </div>
                 {Object.keys(this.state.shifts).map(this.renderAreaTable)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

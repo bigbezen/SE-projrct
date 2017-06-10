@@ -364,7 +364,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
                         </button>
                     </div>
                     <div className="col-sm-12">
-                        <label>{(this.state.selectAll ? constantStrings.diselectAll_string : constantsStrings.selectAll_string) + ":"}</label>
+                        <label className="col-sm-2">{(this.state.selectAll ? constantStrings.diselectAll_string : constantsStrings.selectAll_string) + ":"}</label>
                         <input type="checkbox" checked={this.state.selectAll} style={{height: '20px', width: '20px'}}
                                onChange={this.onChangeSelectAll} />
                     </div>

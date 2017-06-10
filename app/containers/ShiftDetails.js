@@ -245,6 +245,38 @@ var ShiftDetails = React.createClass({
         return constantsStrings.add_string;
     },
 
+    renderShiftType: function() {
+        if(this.state.editing)
+            return (
+                <select className="col-xs-4 col-xs-offset-2" disabled
+                        onChange={this.handleShiftTypeChange} ref="shiftTypeBox">
+                    {this.getOptionsForShiftType()}
+                </select>
+            );
+        else
+            return (
+                <select className="col-xs-4 col-xs-offset-2"
+                        onChange={this.handleShiftTypeChange} ref="shiftTypeBox">
+                    {this.getOptionsForShiftType()}
+                </select>
+            );
+    },
+
+    renderEventType: function() {
+        if(this.state.editing)
+            return (
+                <input type="text" disabled
+                       className="col-xs-4 col-xs-offset-2"
+                       ref="eventType"/>
+            );
+        else
+            return (
+                <input type="text"
+                       className="col-xs-4 col-xs-offset-2"
+                       ref="eventType"/>
+            );
+    },
+
     addNewShift: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 w3-card-4" style={styles.editBodyStyle}>
@@ -282,10 +314,7 @@ var ShiftDetails = React.createClass({
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.shiftType_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <select className="col-xs-4 col-xs-offset-2"
-                                onChange={this.handleShiftTypeChange} ref="shiftTypeBox">
-                            {this.getOptionsForShiftType()}
-                        </select>
+                        {this.renderShiftType()}
                     </div>
 
                     <Collapse in={this.state.shiftTypeEvent}>
@@ -294,9 +323,7 @@ var ShiftDetails = React.createClass({
                                 <label className="col-xs-4 col-xs-offset-2">{constantsStrings.eventType_string}:</label>
                             </div>
                             <div className="form-group">
-                                <input type="text"
-                                       className="col-xs-4 col-xs-offset-2"
-                                       ref="eventType"/>
+                                {this.renderEventType()}
                             </div>
                         </div>
                     </Collapse>
@@ -364,7 +391,16 @@ var ShiftDetails = React.createClass({
         }
         this.refs.storeBox.value = currShift.storeId._id;
 
-        this.refs.shiftTypeBox.value =  currShift.type;
+        if(currShift.type.includes(constantsStrings.shiftType_event)) {
+            this.refs.shiftTypeBox.value = currShift.type.split(' ')[0];
+            if(currShift.type.split(' ').length > 1) {
+                this.refs.eventType.value = currShift.type.split(' ')[1];
+                this.state.shiftTypeEvent = true;
+            }
+        }
+        else
+            this.refs.shiftTypeBox.value =  currShift.type;
+
         this.refs.dateBox.state.value =  moment(currShift.startTime).toDate().getTime();
         this.refs.startTimeBox.value = moment(currShift.startTime).format('HH:mm');
         this.refs.endTimeBox.value = moment(currShift.endTime).format('HH:mm');

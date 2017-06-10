@@ -69,12 +69,14 @@ var EditSaleContainer = React.createClass({
             });
         })
     },
-
     onUpdateAmount: function (row, i) {
-        var amount = this.refs["quantity" + i].value;
+        var quantity = this.refs["quantity" + i].value;
+        this.updateAmount(row,quantity);
+    },
+    updateAmount:function (sale,quantity){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount)
+        salesmanServices.editSale(this.state.shift._id, sale.productId, sale.timeOfSale, quantity)
             .then(function (n) {
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
@@ -84,7 +86,7 @@ var EditSaleContainer = React.createClass({
                     position: 'tc'
                 });
                 self.updateShift();
-        }).catch(function (errMess) {
+            }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
@@ -93,7 +95,6 @@ var EditSaleContainer = React.createClass({
                 position: 'tc'
             });
         });
-        this.updateShift();
     },
 
     renderEachSale: function(sale, i){
@@ -103,6 +104,11 @@ var EditSaleContainer = React.createClass({
 
             <div key={i} className="row w3-card-4 w3-round" style={styles.saleContStyle}>
                 <header className="w3-container w3-round" style={styles.headerStyle}>
+                    <div className="w3-xxlarge">
+                        <a href="javascript:void(0)" onClick={() => this.updateAmount(sale, "0")}>
+                            <CloseIcon/>
+                        </a>
+                    </div>
                     <p className="w3-xxxlarge" style={styles.storeStyle}>{sale.name}</p>
                     <p className="w3-xxxlarge" style={styles.dateStyle}> {saleTimeFormated}</p>
                 </header>

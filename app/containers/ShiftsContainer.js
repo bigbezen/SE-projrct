@@ -323,6 +323,7 @@ var ShiftsContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'startTime'
                         dataAlign = 'right'
+                        dataSort = {true}
                         dataFormat={ dateFormatter }>
                         {constantStrings.date_string}
                     </TableHeaderColumn>

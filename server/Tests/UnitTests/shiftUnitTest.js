@@ -1839,6 +1839,26 @@ describe('shift unit test', function () {
                 assert.equal(res[0].sales[0].quantity, 2);
         });
 
+        it('edit sale zero quantety', async function() {
+            let saleTime = new Date();
+            shift1.salesReport = [{
+                'productId': product1,
+                'stockStartShift': 4,
+                'stockEndShift': 4,
+                'sold': 13,
+                'opened': 0}];
+            shift1.sales.push({'productId':product1,
+                'timeOfSale': saleTime,
+                'quantity': 2});
+
+            shift1 = await dal.addShift(shift_object_to_model(shift1));
+            let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, 0);
+            assert.equal(result.code, 200, 'code 200');
+
+            result = await dal.getShiftsByIds([shift1._id]);
+            assert.equal(result[0].sales[0].quantity, 0);
+        });
+
         it('edit sale shift not found', async function() {
             let saleTime = new Date();
             shift1.salesReport = [{

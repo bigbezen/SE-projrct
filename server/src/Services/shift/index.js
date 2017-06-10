@@ -751,9 +751,9 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
             diffQuant = shift.sales[idx].quantity - quantity;
             shift.sales[idx].quantity = quantity;
             found = true;
-            if(quantity == 0){
-                shift.sales.splice(idx, 1);
-            }
+           // if(quantity == 0){
+           //     shift.sales.splice(idx, 1);
+          //  }
         }
     }
 

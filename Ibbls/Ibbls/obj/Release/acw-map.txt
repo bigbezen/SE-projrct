@@ -1,0 +1,8 @@
+Ibbls.MainActivity, Ibbls;md575080a4522ab97c1f26b2aaba42ff496.MainActivity
+Ibbls.MainActivity, Ibbls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md575080a4522ab97c1f26b2aaba42ff496.MainActivity
+Ibbls.MainActivity;md575080a4522ab97c1f26b2aaba42ff496.MainActivity
+ibbls.MainActivity;md575080a4522ab97c1f26b2aaba42ff496.MainActivity
+Ibbls.MainActivity/HelloWebViewClient, Ibbls;md575080a4522ab97c1f26b2aaba42ff496.MainActivity_HelloWebViewClient
+Ibbls.MainActivity+HelloWebViewClient, Ibbls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md575080a4522ab97c1f26b2aaba42ff496.MainActivity_HelloWebViewClient
+Ibbls.MainActivity.HelloWebViewClient;md575080a4522ab97c1f26b2aaba42ff496.MainActivity_HelloWebViewClient
+ibbls.MainActivity_HelloWebViewClient;md575080a4522ab97c1f26b2aaba42ff496.MainActivity_HelloWebViewClient

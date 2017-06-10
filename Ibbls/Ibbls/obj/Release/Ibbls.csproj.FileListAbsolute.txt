@@ -1,0 +1,15 @@
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\bin\Release\Ibbls.dll
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\bin\Release\Ibbls.pdb
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\bin\Release\Ibbls.Ibbls.apk
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\bin\Release\Ibbls.Ibbls-Signed.apk
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\Ibbls.dll
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\Ibbls.pdb
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\android\bin\Ibbls.Ibbls.apk
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\res\layout\main.xml
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\res\values\strings.xml
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\res\drawable\icon.png
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\R.cs.flag
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\uploadflags.txt
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\bin\Release\Ibbls.dll.mdb
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\android\assets\Ibbls.dll.mdb
+C:\Personal\project\SE-prorject\Ibbls\Ibbls\obj\Release\Ibbls.csprojResolveAssemblyReference.cache

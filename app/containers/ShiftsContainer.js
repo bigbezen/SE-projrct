@@ -24,7 +24,9 @@ import 'react-date-picker/index.css';
 import { DateField, DatePicker } from 'react-date-picker';
 
 var options = {
-    noDataText: constantStrings.NoDataText_string
+    noDataText: constantStrings.NoDataText_string,
+    defaultSortName: 'startTime',  // default sort column name
+    defaultSortOrder: 'desc'  // default sort order
 };
 
 function flatList(shifts) {

@@ -189,11 +189,6 @@ var ProductsContainer = React.createClass({
                             {constantStrings.subCategory_string}
                         </TableHeaderColumn>
                         <TableHeaderColumn
-                            dataField = 'notifyManager'
-                            dataAlign = 'right'>
-                            {constantStrings.notifyManager_string}
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
                             dataAlign = 'right'
                             dataField = 'button'
                             width = '50'

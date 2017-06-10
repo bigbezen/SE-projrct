@@ -111,7 +111,7 @@ var ShiftEncouragementsContainer = React.createClass({
 
     renderProductRow: function(product, i) {
         return (
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;{product.name}</p>
+            <p>&nbsp;&nbsp;<label style={{fontSize:'30px'}}>{product.subCategory}</label>{" - " + product.name}</p>
         )
     },
 

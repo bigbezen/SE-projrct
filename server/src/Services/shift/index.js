@@ -727,11 +727,11 @@ let editShift = async function (sessionId, shiftDetails) {
     return {'code':200, 'err': null};
 };
 
-let editSale = async function(sessionId, shiftId, productId, time, quantity){
+let editSale = async function(sessionId, shiftId, productId, time, quantityStr){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'editSale');
     if(user == null)
         return {'code': 401, 'err': constantString.permssionDenied};
-
+    let quantity = parseInt(quantityStr);
     if(quantity < 0)
         return ({'code': 400, 'err': constantString.illegalQuantity});
 
@@ -740,7 +740,6 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
         return {'code': 404, 'err': constantString.shiftDoedNotExist};
 
     shift = shift[0];
-
     let found = false;
     let diffQuant;
     for(let idx in shift.toObject().sales){
@@ -750,22 +749,26 @@ let editSale = async function(sessionId, shiftId, productId, time, quantity){
             diffQuant = shift.sales[idx].quantity - quantity;
             shift.sales[idx].quantity = quantity;
             found = true;
-           // if(quantity == 0){
-           //     shift.sales.splice(idx, 1);
-          //  }
+            if(quantity == 0){
+                shift.sales.splice(idx, 1);
+            }
+            break;
         }
     }
 
     if(!found)
         return {'code': 404, 'err': constantString.productDoesNotExist};
-
     for(let saleR of shift.salesReport){
         if(saleR.productId.equals(productId)){
             saleR.sold -= diffQuant;
         }
     }
-
-    let res = await dal.updateShift(shift);
+    try {
+        let res = await dal.updateShift(shift);
+    }
+    catch(err){
+        console.log('bla');
+    }
     return ({'code': 200});
 };
 

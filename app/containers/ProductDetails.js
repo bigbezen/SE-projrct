@@ -116,7 +116,7 @@ var ProductDetails = React.createClass({
         newProduct.category = this.state.category;
         newProduct.subCategory = this.state.subCategory;
         newProduct.minRequiredAmount =  0;
-        newProduct.notifyManager = this.refs.notifyBox.checked;
+        newProduct.notifyManager = false;
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
@@ -235,14 +235,6 @@ var ProductDetails = React.createClass({
                         </select>
                     </div>
 
-                    <div className="form-group ">
-                        <label className="col-xs-3 col-xs-offset-2">{constantsStrings.notifyManager_string}:</label>
-                        <input type="checkbox"
-                               className="col-xs-1"
-                               ref="notifyBox"
-                        />
-                    </div>
-
                     <div className="form-group">
                         <button
                             className="w3-button w3-card-4 col-xs-4 col-xs-offset-2 w3-round w3-ripple" style={styles.editStyle}
@@ -266,7 +258,7 @@ var ProductDetails = React.createClass({
         this.refs.categoryBox.value = this.currProduct.category;
         //this.refs.subCategoryBox.value = this.currProduct.subCategory;
         //this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;
-        this.refs.notifyBox.checked = this.currProduct.notifyManager;
+        //this.refs.notifyBox.checked = this.currProduct.notifyManager;
     },
 
     render: function () {

@@ -77,6 +77,40 @@ var editSaleStyles = {
             },
         }
     },
+    storeStyle: {
+        textAlign:'right',
+        float:'right'
+    },
+    dateStyle: {
+        textAlign:'left',
+        float:'left'
+    },
+    inputStyle: {
+        marginTop: '3px',
+        width: '120px'
+    },
+    buttonStyle: {
+        margin: '15px',
+        paddingTop: '5px',
+        paddingBottom: '5px',
+        paddingLeft: '20px',
+        paddingRight: '20px',
+        background: 'rgb(183, 148, 70)',
+        color: 'white'
+    },
+    headerStyle: {
+        color: 'white',
+        background: 'rgb(132, 132, 132)'
+    },
+    expContainerStyle: {
+        marginTop: '10px'
+    },
+    saleContStyle: {
+        marginTop: '20px'
+    },
+    bodyStyle: {
+        'marginBottom': '150px'
+    }
 };
 
 module.exports = editSaleStyles;

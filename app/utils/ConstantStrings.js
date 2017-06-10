@@ -43,7 +43,7 @@ class ConstantStrings extends React.Component {
     static submitConstraints_string = 'הגש/י אילוצים';
     static diselectAll_string = 'הסר את כל המשמרות';
     static selectAll_string = 'סמנ/י את כל המשמרות';
-
+    static quantity_string = 'כמות';
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';
     static numberOfStores = 'סך החנויות בחברה';

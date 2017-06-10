@@ -187,12 +187,12 @@ var SalesmanAssignShiftsContainer = React.createClass({
 
         return (
             <div className='main-container' style={styles.bodyStyle}>
-                {dates.map(this.renderByDate)}
                 <div className="col-sm-12 text-center">
                     <button className="w3-ripple w3-round w3-xxlarge w3-card-4 w3-button" style={styles.buttonStyle} onClick={this.onClickSubmit}>
                         {constantsStrings.submitConstraints_string}
                     </button>
                 </div>
+                {dates.map(this.renderByDate)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )

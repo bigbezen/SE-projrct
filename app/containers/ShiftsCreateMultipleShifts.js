@@ -172,7 +172,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
         // transform into an object to remove duplicates
         let constraintsObj = {};
         for(let constraint of constraints){
-            if(constraint.isAvailable == false || (constraint.comment != undefined && constraint.comment.length > 0))
+            if(constraint.isAvailable == true || (constraint.comment != undefined && constraint.comment.length > 0))
                 constraintsObj[constraint.salesmanId] = constraint;
         }
         // move back into an array of objects
@@ -275,17 +275,10 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
         let constraints = this.getConstraints(salesmen, shifts);
         let constraintSalesmen = constraints.map((cons) => cons.salesman);
-        let nonAvailableSalesmen = {};
-        for(let salesman of constraintSalesmen)
-            nonAvailableSalesmen[salesman._id] = salesman;
         let availableSalesmen = {};
-        for(let salesman of salesmen) {
-            if(nonAvailableSalesmen[salesman._id] == undefined) {
-                availableSalesmen[salesman._id] = salesman;
-            }
+        for(let salesman of constraintSalesmen) {
+            availableSalesmen[salesman._id] = salesman;
         }
-
-
 
         if(shifts.length > 0) {
             return (

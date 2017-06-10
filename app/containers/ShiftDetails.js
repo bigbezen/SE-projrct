@@ -183,8 +183,16 @@ var ShiftDetails = React.createClass({
                     autoDismiss: 1,
                     position: 'tc',
                     onRemove: function (notification) {
+                        var path = ""
+                        if(self.props.location.query.status != "CREATED" && self.props.location.query.type == "טעימה") {
+                            path = paths.manager_shifts_path
+                        } else if(self.props.location.query.status != "CREATED") {
+                            path = paths.manager_shifts_events_path
+                        } else {
+                            path = paths.manager_shifts_creation_path
+                        }
                         context.router.push({
-                            pathname: self.props.location.query.status != "CREATED" ? paths.manager_shifts_path : paths.manager_shifts_creation_path
+                            pathname: path
                         })
                     }
                 });

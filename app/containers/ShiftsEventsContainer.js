@@ -231,20 +231,6 @@ var ShiftsEventsContainer = React.createClass({
         });
     },
     editButton: function(cell, row, enumObject, rowIndex) {
-        var isFinished = (row.status == 'FINISHED');
-        var isStarted = (row.status == 'STARTED');
-        if (isFinished) {
-            return (
-                <button
-                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
-                    style={styles.buttonStyle}
-                    type="button"
-                    onClick={() =>
-                        this.onClickGetReportButton(cell, row, rowIndex)}>
-                    <DownloadIcon style={styles.iconStyle}/>
-                </button>
-            )
-        } else if (!isStarted) {
             return (
                 <button
                     className="w3-card-2 w3-button w3-small w3-round w3-ripple"
@@ -255,36 +241,19 @@ var ShiftsEventsContainer = React.createClass({
                     <EditIcon style={styles.iconStyle}/>
                 </button>
             )
-        } else {
-            return (
-                <button
-                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
-                    style={styles.buttonStyle}
-                    type="button"
-                    onClick={() =>
-                        this.onClickFinishShift(cell, row, rowIndex)}>
-                    סיים
-                </button>
-            )
-        }
     },
 
     deleteButton: function(cell, row, enumObject, rowIndex) {
-        var isFinished = (row.status == 'FINISHED');
-        var isStarted = (row.status == 'STARTED');
-        if (!isFinished && !isStarted) {
             return (
                 <button
                     className="w3-card-2 w3-button w3-small w3-round w3-ripple"
                     style={styles.buttonStyle}
                     type="button"
-                    disabled= {isFinished}
                     onClick={() =>
                         this.onClickDeleteButton(cell, row, rowIndex)}>
                     <TrashIcon style={styles.iconStyle}/>
                 </button>
             )
-        }
     },
 
     changeStartDate: function (date) {

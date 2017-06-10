@@ -104,8 +104,8 @@ var ShiftComments = React.createClass({
                         <h1>{constantsStrings.addCommentContent_string}</h1>
                         <input ref="commentContent" className="col-xs-10 col-offset-xs-2 w3-input w3-xxlarge"  type="text"/>
                         <div className="text-center">
-                            <button className="w3-theme-d5 w3-xxlarge btn w3-card-8" style={styles.CommentsButtons} onClick={this.handleAddComment}> {constantsStrings.add_string}</button>
-                            <button className="w3-theme-d5 w3-xxlarge btn w3-card-8" style={styles.CommentsButtons} onClick={this.changeStateToViewMode}> {constantsStrings.close_string}</button>
+                            <button className="w3-xxlarge btn w3-card-8" style={styles.CommentsButtons} onClick={this.handleAddComment}> {constantsStrings.add_string}</button>
+                            <button className="w3-xxlarge btn w3-card-8" style={styles.CommentsButtons} onClick={this.changeStateToViewMode}> {constantsStrings.close_string}</button>
                         </div>
                     </div>
                     {this.state.shift.shiftComments.map(this.renderEachComment)}
@@ -120,7 +120,7 @@ var ShiftComments = React.createClass({
             <div className='main-container'>
                 <div className="w3-container" style={styles.containerStyle}>
                     <div className="text-center">
-                        <button className="w3-theme-d5 w3-xxlarge btn w3-card-8" style={styles.CommentsButtons} onClick={this.changeStateToAddMode}> {constantsStrings.addComment_string}</button>
+                        <button className="w3-xxlarge btn w3-card-4 w3-ripple" style={styles.CommentsButtons} onClick={this.changeStateToAddMode}> {constantsStrings.addComment_string}</button>
                     </div>
                     {this.state.shift.shiftComments.map(this.renderEachComment)}
                 </div>

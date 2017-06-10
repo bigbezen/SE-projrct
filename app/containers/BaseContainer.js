@@ -115,6 +115,9 @@ var BaseContainer = React.createClass({
                         <div className="w3-dropdown-content w3-bar-block w3-card-4" style={styles.dropdownStyle}>
                             <a href={'/#'+paths.manager_shifts_creation_path} className="w3-button w3-hover-opacity">{constantsStrings.createPublishShifts_string}</a>
                             <a href={'/#'+paths.manager_shifts_path} className="w3-button w3-hover-opacity">{constantsStrings.managePublishedShifts_string}</a>
+                            <a href={'/#'+paths.manager_shifts_events_path} className="w3-button w3-hover-opacity">{constantsStrings.managerEventsShifts_string}</a>
+                            <a href={'/#'+paths.manager_shifts_finished_path} className="w3-button w3-hover-opacity">{constantsStrings.managerFinishedShifts_string}</a>
+
                         </div>
                     </div>
                     <div className="w3-dropdown-hover w3-right">
@@ -135,7 +138,7 @@ var BaseContainer = React.createClass({
 
 
                 <div ref="demo" value={this.props.children} className="w3-hide w3-hide-large w3-hide-medium">
-                    <ul className="w3-navbar w3-top w3-left-align w3-large w3-theme-d4">
+                    <ul className="w3-navbar w3-top w3-left-align w3-large">
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_products_path}><Products/>{constantsStrings.products_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_stores_path}><Stores/>{constantsStrings.stores_string}</a></li>
                         <li><a className="w3-hover-none" href={'/#'+paths.manager_users_path}><Users/>{constantsStrings.users_string}</a></li>

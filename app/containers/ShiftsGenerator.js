@@ -54,7 +54,7 @@ var ShiftDetails = React.createClass({
             return;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        let date = this.refs.dateBox.state.activeDate == undefined ? new Date() : this.refs.dateBox.state.activeDate._d;
+        let date = this.refs.dateBox.state.value;
         var startTime = moment(date).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
         startTime = moment(startTime).format('YYYY-MM-DD HH:mm Z');
         var endTime = moment(date).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
@@ -106,7 +106,7 @@ var ShiftDetails = React.createClass({
                         <DateField
                             dateFormat="DD-MM-YYYY"
                             forceValidDate={true}
-                            defaultValue={1496939224532}
+                            defaultValue={(new Date()).getTime()}
                             ref="dateBox"
                             updateOnDateClick={true}
                             collapseOnDateClick={true}

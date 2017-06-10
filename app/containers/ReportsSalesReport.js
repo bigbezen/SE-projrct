@@ -339,7 +339,7 @@ var ReportsSalesReport = React.createClass({
         optionsForDropdown.push(<option className="w3-round" key="defaultShift">{constantStrings.defaultDateDropDown_string}</option>);
         var shifts = this.state.shifts;
         for(var i=0; i<shifts.length; i++){
-            optionsForDropdown.push(<option className="w3-round" key={"shift" + i}>{moment(shifts[i].startTime).format('YYYY-MM-DD')}</option>)
+            optionsForDropdown.push(<option className="w3-round" key={"shift" + i}>{moment(shifts[i].startTime).format('DD-MM-YYYY')}</option>)
         }
         return optionsForDropdown;
     },

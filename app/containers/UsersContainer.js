@@ -17,7 +17,7 @@ var userServices        = require('../communication/userServices');
 var sorting             = require('../utils/SortingMethods');
 
 function dateFormatter(cell, row) {
-    return moment(cell).format('YYYY-MM-DD');
+    return moment(cell).format('DD-MM-YYYY');
 }
 
 function flatList(users) {

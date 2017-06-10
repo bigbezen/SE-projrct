@@ -122,7 +122,7 @@ var ChangePassContainer = React.createClass({
                     <div className="row" style={styles.topBuffer}>
                     </div>
                 </div>
-                <div className="col-sm-offset-2 col-sm-8 text-center w3-round" style={styles.editBodyStyle} >
+                <div className="col-sm-offset-2 col-sm-8 text-center w3-round" style={styles.changePassBodyStyle} >
                     <h1 className="h1 w3-jumbo">{constantsStrings.changePassTitle_string}</h1>
                     <form onSubmit={this.handleSubmitUser} className="form-horizontal">
                         <div className="form-group">

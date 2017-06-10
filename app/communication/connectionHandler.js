@@ -482,6 +482,19 @@ var managementRequests = {
         })
     },
 
+    deleteCreatedShifts: function(idsArr){
+        console.log('delete created shifts');
+        return axios.post(serverUrl + 'management/deleteCreatedShifts', {
+            sessionId: sessionId,
+            idsArr: idsArr
+        }).then(function (info) {
+            return info.data;
+        }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     generateShiftsForDate: function(startTime, endTime) {
         return axios.post(serverUrl + 'management/generateShifts', {
             sessionId:sessionId,

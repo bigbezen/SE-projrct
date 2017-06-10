@@ -26,8 +26,10 @@ var ShiftsCreateMultipleShifts = React.createClass({
         this.setSessionId();
         this.setUserType();
         return {
-            newShifts: [],
+            newShifts: undefined,
             salesmen: [],
+            shiftsFilter: {},
+            selectAll: true
         }
     },
 
@@ -40,9 +42,13 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 managementServices.getAllUsers()
                     .then(function(users){
                         let salesmen = users.filter((user) => user.jobDetails.userType == 'salesman');
+                        let shiftsFilter = {};
+                        for(let shift of shifts)
+                            shiftsFilter[shift._id] = true;
                         self.setState({
                             newShifts: shifts,
-                            salesmen: salesmen
+                            salesmen: salesmen,
+                            shiftsFilter: shiftsFilter
                         })
                     })
             })
@@ -78,7 +84,8 @@ var ShiftsCreateMultipleShifts = React.createClass({
     onClickSubmitShifts: function(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        let shiftsToPublish = this.state.newShifts.filter((shift) => shift.salesmanId != undefined);
+        let shiftsToPublish = this.state.newShifts.filter((shift) => (shift.salesmanId != undefined)
+                                                        && this.state.shiftsFilter[shift._id]);
         if(shiftsToPublish.length > 0){
             managementServices.publishMultipleShifts(shiftsToPublish)
                 .then(function(result){
@@ -208,18 +215,46 @@ var ShiftsCreateMultipleShifts = React.createClass({
         });
     },
 
+    onChangeShiftsFilter: function(shiftId){
+        let shiftsFilter = this.state.shiftsFilter;
+        let newSelectAll = this.state.selectAll;
+        shiftsFilter[shiftId] = !shiftsFilter[shiftId];
+        if (!shiftsFilter[shiftId]) {
+            newSelectAll = false;
+        }
+        this.setState({
+            shiftsFilter: shiftsFilter,
+            selectAll: newSelectAll
+        });
+    },
+
+    onChangeSelectAll: function(e){
+        let newSelectAll = !this.state.selectAll;
+        let shiftsFilter = this.state.shiftsFilter;
+
+        for(let id of Object.keys(shiftsFilter)){
+            shiftsFilter[id] = newSelectAll;
+        }
+        this.setState({
+            shiftsFilter: shiftsFilter,
+            selectAll: newSelectAll
+        })
+
+    },
+
     renderShiftsOfArea: function(shift, availableSalesmen) {
+        let self = this;
         return (
             <div className="col-xs-12 w3-card-2 w3-round" style={styles.shiftRowStyle}>
+                <input className="col-sm-1" style={{height: '20px'}} type="checkbox" ref={shift._id} checked={this.state.shiftsFilter[shift._id]}
+                    onChange={() => this.onChangeShiftsFilter(shift._id)}/>
                 <p className="col-sm-3">{shift.storeId.name}</p>
                 <select style={{color: 'black', marginTop: '3px'}}
                         className="col-sm-4 w3-round" ref={shift._id}
                         onChange={() => this.onChangeSalesman(shift)}>
                     {this.getSalesmanOptions(shift, availableSalesmen)}
                 </select>
-                <a className="col-sm-1 col-sm-offset-4" href="javascript:void(0)" onClick={() => this.onClickRemoveShift(shift._id)}>
-                    <CloseIcon />
-                </a>
+
             </div>
         )
     },
@@ -277,7 +312,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     renderShiftsOfDate: function(date){
         let shifts = this.state.newShifts
-            .filter((shift) => (new Date(moment(shift.startTime).format('DD-MM-YYYY'))).getTime()
+            .filter((shift) => (new Date(moment(shift.startTime).format('YYYY-MM-DD'))).getTime()
                 - (new Date(date)).getTime() == 0);
         date = moment(date).format('DD-MM-YYYY');
 
@@ -290,9 +325,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
             });
         }
         return (
-            <div className="w3-container" style={{borderBottom: '2px solid #CCC', marginBottom: '20px'}}>
+            <div className="w3-container" style={{borderBottom: '6px solid #BBB', marginBottom: '20px'}}>
                 <div className="col-sm-12 text-center">
-                    <h1>{date}</h1>
+                    <h1><b>{date}</b></h1>
                 </div>
                 <div style={{marginTop: '10px', marginBottom: '10px'}} className="col-sm-12">
                     {areaToShifts.map(this.renderArea)}
@@ -316,9 +351,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 </div>
             );
         else {
-            let dates = Array.from(new Set(this.state.newShifts.map((shift) => moment(shift.startTime).format('DD-MM-YYYY'))))
-                .sort(function(shift1, shift2){
-                    return (new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime();
+            let dates = Array.from(new Set(this.state.newShifts.map((shift) => moment(shift.startTime).format('YYYY-MM-DD'))))
+                .sort(function(date1, date2){
+                    return (new Date(date1)).getTime() - (new Date(date2)).getTime();
                 });
             return (
                 <div>
@@ -327,6 +362,11 @@ var ShiftsCreateMultipleShifts = React.createClass({
                                 onClick={this.onClickSubmitShifts}>
                             {constantStrings.publishShifts_string}
                         </button>
+                    </div>
+                    <div className="col-sm-12">
+                        <label className="col-sm-2">{(this.state.selectAll ? constantStrings.diselectAll_string : constantsStrings.selectAll_string) + ":"}</label>
+                        <input type="checkbox" checked={this.state.selectAll} style={{height: '20px', width: '20px'}}
+                               onChange={this.onChangeSelectAll} />
                     </div>
                     <div>
                         {dates.map(this.renderShiftsOfDate)}

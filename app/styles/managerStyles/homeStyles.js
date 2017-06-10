@@ -41,7 +41,7 @@ var styles = {
     soldProdRowStyle : {
         marginTop: '10px',
         height: '45px',
-        background: 'rgb(243, 207, 2)'
+        background: '#b79446'
     },
     commentStyle: {
         borderBottom: '1px solid rgb(204, 204, 204)'

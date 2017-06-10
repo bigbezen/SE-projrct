@@ -30,7 +30,7 @@ var editSaleStyles = {
         height: '100px'
     },
     products_table_container: {
-        backgroundColor: 'RGB(255,255,255)',
+        backgroundColor: 'rgba(140, 137, 133, 0.43)',
         marginBottom: '150px',
         fontSize: '50px'
     },

@@ -18,6 +18,8 @@ var styles = {
         marginRight: '25px',
         marginTop: '5px',
         marginBottom: '5px',
+        background: '#b79446',
+        color: 'white'
     },
     encouragementStyle: {
         paddingLeft: '0px',
@@ -50,6 +52,10 @@ var styles = {
     encStatus: {
         textAlign:'left',
         float:'left'
+    },
+    headerStyle: {
+        background: 'rgba(84, 80, 75, 0.75)',
+        color: 'white'
     }
 };
 

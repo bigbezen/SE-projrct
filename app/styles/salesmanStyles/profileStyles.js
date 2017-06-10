@@ -13,10 +13,8 @@ var styles = {
         'marginRight': '2px'
     },
     profileStyle: {
-        marginLeft: '100px',
-        marginRight: '100px',
-        marginTop: '100px',
-        marginBottom: '10px',
+        width: '80%',
+        margin: '50px auto auto'
     },
     notificationStyle: {
         NotificationItem: {
@@ -34,7 +32,9 @@ var styles = {
     },
     buttonStyle: {
         marginBottom: '50px',
-        marginTop: '20px'
+        marginTop: '20px',
+        background: '#b79446',
+        color: 'white'
     }
 };
 

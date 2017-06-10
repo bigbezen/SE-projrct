@@ -20,6 +20,9 @@ var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
 var sorting             = require('../utils/SortingMethods');
 
+import 'react-date-picker/index.css';
+import { DateField, DatePicker } from 'react-date-picker';
+
 var options = {
     noDataText: constantStrings.NoDataText_string
 };
@@ -87,7 +90,7 @@ var ShiftsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
-            result = result.filter((shift) => shift.status != "CREATED");
+            result = result.filter((shift) => shift.status != "CREATED" && shift.status != "FINISHED");
             let areas = new Set(result.map((shift) => shift.storeId.area));
             let areaToShifts = {};
             for(let area of areas){
@@ -284,9 +287,14 @@ var ShiftsContainer = React.createClass({
         }
     },
 
-    changeDate: function () {
-        var startDateValue = this.refs.startDateBox.value;
-        var endDateValue = this.refs.endDateBox.value;
+    changeStartDate: function (date) {
+        var startDateValue = moment(date).toDate();
+        var endDateValue = moment(this.refs.endDateBox.state.value).toDate();
+        this.updateShifts(startDateValue,endDateValue);
+    },
+    changeEndDate: function (date) {
+        var startDateValue = moment(this.refs.startDateBox.state.value).toDate();
+        var endDateValue = moment(date).toDate();
         this.updateShifts(startDateValue,endDateValue);
     },
 
@@ -315,6 +323,7 @@ var ShiftsContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'startTime'
                         dataAlign = 'right'
+                        dataSort = {true}
                         dataFormat={ dateFormatter }>
                         {constantStrings.date_string}
                     </TableHeaderColumn>
@@ -367,8 +376,30 @@ var ShiftsContainer = React.createClass({
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
                 <div className="col-sm-12">
-                    <p style={styles.dateLabel}>{constantStrings.startDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.startDate} ref="startDateBox" onChange= {this.changeDate} />
-                    <p style={styles.dateLabel}>{constantStrings.endDate_string}:</p><input style={styles.dateInput} type="date" value={this.state.endDate} ref="endDateBox" onChange={this.changeDate} />
+                    <div>
+                        <p className="col-xs-2" style={styles.dateLabel}>{constantStrings.startDate_string}:</p>
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            defaultValue={(new Date(this.state.startDate)).getTime()}
+                            ref="startDateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp }) => this.changeStartDate(dateMoment)}>
+                        </DateField>
+                    </div>
+                    <div>
+                        <p className="col-xs-2" style={styles.dateLabel}>{constantStrings.endDate_string}:</p>
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            defaultValue={(new Date(this.state.endDate)).getTime()}
+                            ref="endDateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp }) => this.changeEndDate(dateMoment)}>
+                        </DateField>
+                    </div>
                 </div>
                 {Object.keys(this.state.shifts).map(this.renderAreaTable)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

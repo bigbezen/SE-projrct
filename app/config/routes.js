@@ -16,7 +16,9 @@ var Product                 = require('../containers/ProductDetails');
 var Store                   = require('../containers/StoreDetails');
 var User                    = require('../containers/UserDetails');
 var Shifts                  = require('../containers/ShiftsContainer');
+var ShiftsFinished          = require('../containers/ShiftsFinishedContainer');
 var ShiftsCreation          = require('../containers/ShiftsCreationContainer');
+var ShiftsEvents            = require('../containers/ShiftsEventsContainer');
 var Shift                   = require('../containers/ShiftDetails');
 var CreateShifts            = require('../containers/ShiftsGenerator');
 var MultipleShiftsCreation  = require('../containers/ShiftsCreateMultipleShifts');
@@ -54,7 +56,9 @@ var routes = (
             <Route path='stores' component={Stores} />
             <Route path='products' component={Products} />
             <Route path='shifts' component={Shifts} />
+            <Route path='shiftsFinished' component={ShiftsFinished} />
             <Route path='shiftsCreation' component={ShiftsCreation} />
+            <Route path='shiftsEvents' component={ShiftsEvents} />
             <Route path='product' component={Product} />
             <Route path='store' component={Store} />
             <Route path='user' component={User} />

@@ -5,14 +5,16 @@
 var styles = {
     commentsStyle: {
         'marginTop': '10px',
-        'background': 'white',
+        'background': 'rgba(245, 236, 219, 0.75)',
         'wordWrap': 'break-word'
     },
     commentsMargin: {
         'marginTop': '10px',
     },
     CommentsButtons: {
-        'margin': '10px'
+        margin: '10px',
+        background: '#b79446',
+        color: 'white'
     },
     containerStyle: {
         'marginBottom': '120px'

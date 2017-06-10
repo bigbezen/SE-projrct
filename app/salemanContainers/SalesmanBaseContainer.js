@@ -14,10 +14,10 @@ var SalesmanBaseContainer = React.createClass({
     render: function () {
         return (
             <div className='main-container'>
-                <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}></div>
-                <div style={styles.space} className="w3-theme-l5" />
+                <div className="header navbar-fixed-top" style={styles.navbarStyle}></div>
+                <div style={styles.space} />
                 {this.props.children}
-                <div className="footer navbar-fixed-bottom w3-theme-d4" style={styles.FooterSpace}></div>
+                <div className="footer navbar-fixed-bottom" style={styles.footerStyle}></div>
             </div>
 
         )

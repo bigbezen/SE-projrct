@@ -179,6 +179,16 @@ module.exports = {
             .populate('salesmanId');
     },
 
+    getShiftsByStatusFiltered: function(status){
+        return shiftModel.find({'status': status}, {'salesReport': 0, 'sales': 0})
+            .populate('storeId')
+            .populate('salesmanId');
+    },
+
+    removeCreatedShifts: function(idsArr){
+        return shiftModel.remove({'_id': {$in: idsArr}});
+    },
+
     updateShift: async function(shift){
         return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },

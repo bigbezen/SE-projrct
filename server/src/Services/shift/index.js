@@ -220,7 +220,7 @@ let getAllShiftsByStatus = async function(sessionId, status){
         return {code: 409, err: constantString.noSuchShiftStatus};
     }
 
-    let shifts = await dal.getShiftsByStatus(status);
+    let shifts = await dal.getShiftsByStatusFiltered(status);
     shifts = shifts.map(function(shift) {
         shift = shift.toObject();
         shift.salesman = shift.salesmanId;
@@ -357,7 +357,7 @@ let getShiftsOfRange = async function(sessionId, startDate, endDate) {
     if(isAuthorized == null)
         return {'code': 401, 'err': constantString.permssionDenied};
     if((new Date(endDate)).getTime() - (new Date(startDate)).getTime() < 0)
-        return {'code': 409, 'err': constantString.shiftsCurrentTimeError};
+        return {'code': 409, 'err': constantString.invalidDateRange};
     let shifts = await dal.getShiftsOfRange(startDate, endDate);
     if(shifts == null){
         return {'code': 409, 'err': constantString.somthingBadHappend};
@@ -620,7 +620,6 @@ let finishStartedShifts = async function (){
     let shifts = await  dal.getShiftsByStatus('STARTED');
     if(shifts.length == 0)
         return {'code': 200};
-
     for(let shift of shifts){
         let res = await _endShift(shift._id.toString());
         if(res.code != 200)
@@ -825,8 +824,24 @@ let submitConstraints = async function(sessionId, constraints){
             let add = await dal.setConstraints(new Date(date), area, constraint);
         }
     }
-    console.log('bla');
     return {'code': 200};
+
+};
+
+let deleteCreatedShifts = async function(sessionId, idsArr) {
+    logger.info('Services.shift.index.deleteCreatedShifts', {'session-id': sessionId});
+
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'deleteCreatedShifts');
+    if(user == null)
+        return {'code': 401, 'err':constantString.permssionDenied};
+    try {
+        let result = await dal.removeCreatedShifts(idsArr);
+        return {code: 200};
+    }
+    catch(err){
+        return {code: 500, err: constantString.deleteError};
+    }
+
 
 };
 
@@ -928,3 +943,4 @@ module.exports.getAllShiftsByStatus = getAllShiftsByStatus;
 module.exports.submitConstraints = submitConstraints;
 module.exports.getStoreShiftsByStatus = getStoreShiftsByStatus;
 module.exports.finishStartedShifts = finishStartedShifts;
+module.exports.deleteCreatedShifts = deleteCreatedShifts;

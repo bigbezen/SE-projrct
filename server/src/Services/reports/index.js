@@ -249,7 +249,7 @@ let createXLSaleReport =  async function(shiftId, emails){
         });
 
     let content = ' מצורף דוח טעימות של:' + salesman.username;
-    mailer.sendMailWithFile([emails], 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+    mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
     return {'code': 200};
 };
 

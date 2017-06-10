@@ -411,7 +411,6 @@ var ShiftsCreationContainer = React.createClass({
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
                     <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
-                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
                     <div>
                         <p className="col-sm-2" style={styles.dateLabel}>{constantStrings.startDate_string}:</p>
                         <DateField
@@ -437,6 +436,9 @@ var ShiftsCreationContainer = React.createClass({
                         </DateField>
                     </div>
 
+                </div>
+                <div className="col-xs-12">
+                    <button style={styles.deleteButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
                 </div>
                 {Object.keys(this.state.shifts).map(this.renderAreaTable)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

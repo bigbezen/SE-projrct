@@ -616,6 +616,17 @@ let addShiftComment = async function(sessionId, shiftId, content){
         return {'code': 200}
 };
 
+let finishStartedShifts = async function (){
+    let shifts = await  dal.getShiftsByStatus('STARTED');
+    if(shifts.length == 0)
+        return {'code': 200};
+    for(let shift of shifts){
+        let res = await _endShift(shift._id.toString());
+        if(res.code != 200)
+            return res
+    }
+};
+
 let endShift = async function(sessionId, shift){
     logger.info('Services.shift.index.endShift', {'session-id': sessionId});
 
@@ -794,30 +805,8 @@ let managerEndShift = async function(sessionId, shiftId){
     if(user == null)
         return {'code': 401, 'err':constantString.permssionDenied};
 
-    let shiftDb = await dal.getShiftsByIds([shiftId]);
-    shiftDb = shiftDb[0];
-    if(shiftDb == null)
-        return {'code': 404, 'err': constantString.shiftDoedNotExist};
-
-    if(shiftDb.status != 'STARTED')
-        return {'code': 403, 'err': constantString.shiftDoesnotStarted};
-
-    shiftDb.status = 'FINISHED';
-    for(let product of shiftDb.salesReport){
-        product.stockEndShift = product.stockStartShift;
-    }
-
-    let encouragements = await encouragementServices.calculateEncouragements(shiftDb.salesReport);
-    if(encouragements == null)
-        return {'code': 500, 'err': constantString.somthingBadHappend};
-
-    shiftDb.encouragements = encouragements;
-
-    let result = await dal.updateShift(shiftDb);
-    if(result.ok != 1)
-        return {'code': 500, 'err': constantString.somthingBadHappend};
-    else
-        return {'code': 200};
+    let res  = await _endShift(shiftId);
+    return res
 };
 
 let submitConstraints = async function(sessionId, constraints){
@@ -835,7 +824,6 @@ let submitConstraints = async function(sessionId, constraints){
             let add = await dal.setConstraints(new Date(date), area, constraint);
         }
     }
-    console.log('bla');
     return {'code': 200};
 
 };
@@ -895,6 +883,40 @@ let _fillStoreDetails = async function(shift){
     return shift;
 };
 
+let _endShift = async function(shiftId){
+    let shiftDb = await dal.getShiftsByIds([shiftId]);
+    shiftDb = shiftDb[0];
+    if(shiftDb == null)
+        return {'code': 404, 'err': constantString.shiftDoedNotExist};
+
+    if(shiftDb.status != 'STARTED')
+        return {'code': 403, 'err': constantString.shiftDoesnotStarted};
+
+    shiftDb.status = 'FINISHED';
+    for(let product of shiftDb.salesReport){
+        product.stockEndShift = product.stockStartShift;
+    }
+
+    let encouragements = await encouragementServices.calculateEncouragements(shiftDb.salesReport);
+    if(encouragements == null)
+        return {'code': 500, 'err': constantString.somthingBadHappend};
+
+    shiftDb.encouragements = encouragements;
+
+    let result = await dal.updateShift(shiftDb);
+    if(result.ok != 1)
+        return {'code': 500, 'err': constantString.somthingBadHappend};
+    else{
+        let managers = await dal.getManagers();
+        let emails  = [];
+        for(let manager of managers){
+            emails.push(manager.contact.email);
+        }
+        result = reportService.createXLSaleReport(shiftId, emails);
+        return {'code': 200};
+    }
+};
+
 module.exports.addShifts = addShifts;
 module.exports.publishShifts = publishShifts;
 module.exports.getSalesmanCurrentShift = getSalesmanCurrentShift;
@@ -920,4 +942,5 @@ module.exports.getSalesmanLiveShift = getSalesmanLiveShift;
 module.exports.getAllShiftsByStatus = getAllShiftsByStatus;
 module.exports.submitConstraints = submitConstraints;
 module.exports.getStoreShiftsByStatus = getStoreShiftsByStatus;
+module.exports.finishStartedShifts = finishStartedShifts;
 module.exports.deleteCreatedShifts = deleteCreatedShifts;

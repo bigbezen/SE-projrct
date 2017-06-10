@@ -363,7 +363,7 @@ var ShiftMakeSalesContainer = React.createClass({
             );
         else
             return (
-                <div className="col-sm-10">
+                <div className="col-sm-10 col-sm-offset-1">
                     {this.state.searchProducts.map(this.renderEachProduct)}
                 </div>
             )

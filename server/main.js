@@ -58,7 +58,8 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('* * 1 * *', _genarateMonthlyReport);
+let monthlyReportJob  = scheduler.scheduleJob('* * 11 * *', _genarateMonthlyReport);
+let finishShiftsJob = scheduler.scheduleJob('* 0 * * *', _finishStartedShifts);
 
 console.log('server is now running on port: ', {'port': port});
 function _connectToDb(){
@@ -80,7 +81,9 @@ async function _genarateMonthlyReport(){
     let res = await reportsService.genarateMonthlyUserHoursReport();
     res = await reportsService.genarateMonthAnalysisReport();
 }
-
+async function _finishStartedShifts(){
+    let res = await shiftService.finishStartedShifts();
+}
 
 function _setapApiEndpoints() {
     app.use('/scripts', express.static(path.join(__dirname, '/../scripts')));
@@ -259,7 +262,6 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        console.log('bla');
         let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, req.query.date);
         if(result.code == 200)
             res.status(200).send(result.shift);
@@ -273,7 +275,6 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        console.log('bla');
         let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, new Date().toISOString());
         if(result.code == 200)
             res.status(200).send(result.shift);

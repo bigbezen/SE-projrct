@@ -83,6 +83,13 @@ var styles = {
         background: '#b79446',
         color: 'white'
     },
+    deleteButton: {
+        float: 'right',
+        marginBottom: '15px',
+        marginRight: '50px',
+        background: '#fed224',
+        color: 'white'
+    },
     buttonStyle: {
         margin: '5px',
         padding: '5px',
@@ -131,7 +138,7 @@ var styles = {
         color:'white'
     },
     shiftTableStyle: {
-        marginTop: '80px',
+        marginTop: '140px',
         background: 'rgba(255, 255, 255, 0.62)',
         padding: '5px'
     },

@@ -43,7 +43,7 @@ class ConstantStrings extends React.Component {
     static submitConstraints_string = 'הגש/י אילוצים';
     static diselectAll_string = 'הסר את כל המשמרות';
     static selectAll_string = 'סמנ/י את כל המשמרות';
-
+    static quantity_string = 'כמות';
     //home page
     static numberOfUUsers = 'סך המשתמשים בחברה';
     static numberOfStores = 'סך החנויות בחברה';
@@ -195,6 +195,7 @@ class ConstantStrings extends React.Component {
         'אפרטיף-אניס': 'אפרטיף-אניס',
         'אפרטיף-ביטר': 'אפרטיף-ביטר',
         'אפרטיף-וורמוט': 'אפרטיף-וורמוט',
+        'דזסטיף-ליקרים': 'דזסטיף-ליקרים',
         'מונין': 'מונין',
         'פיבר טרי' : 'פיבר טרי',
         'אדמה' : 'אדמה',
@@ -249,7 +250,7 @@ class ConstantStrings extends React.Component {
     static categoryForDropdown = ["ספיריט", "יין"];
 
     static subCategoryForDropdown = ["בלנד ויסקי סקוטי", "סינגל מאלט סקוטי", "וויסקי אמריקאי/קנדי", "ויסקי אירי",
-        "ג'ין", "וודקה","רום", "טקילה", "קוניאק", "אפרטיף-אניס", "אפרטיף-ביטר","אפרטיף-וורמוט", "מונין", "פיבר טרי",
+        "ג'ין", "וודקה","רום", "טקילה", "קוניאק", "אפרטיף-אניס", "אפרטיף-ביטר","אפרטיף-וורמוט","דזסטיף-ליקרים", "מונין", "פיבר טרי",
         "אדמה", "הר", "פנינים", "פרמיום","סינגל וויניארד" , "L.E/מלכיה"];
 
     static subCategoryForDropdown_wine =  ["אדמה", "הר", "פנינים", "פרמיום","סינגל וויניארד" , "L.E/מלכיה"];

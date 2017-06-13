@@ -58,7 +58,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyReportJob  = scheduler.scheduleJob('* * 11 * *', _genarateMonthlyReport);
+let monthlyReportJob  = scheduler.scheduleJob('* * 18 * *', _genarateMonthlyReport);
 let finishShiftsJob = scheduler.scheduleJob('* 0 * * *', _finishStartedShifts);
 
 console.log('server is now running on port: ', {'port': port});

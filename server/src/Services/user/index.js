@@ -72,7 +72,6 @@ let login = async function(username, password){
     else
         return {'code': '500', 'err': 'something went wrong'};
 
-
 };
 
 let logout = async function(sessionId) {

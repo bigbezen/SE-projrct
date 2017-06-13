@@ -40,5 +40,11 @@ module.exports = {
     storeName_string: "שם החנות",
     salesmanName_string: "שם הדייל",
     deleteError: "קרתה תקלה בעת המחיקה",
-    eventSalary: 42
+    eventSalary: 42,
+    encCatagoryManager: "תמריץ מנהלת",
+    encCatagorywiskey: "קטגוריית וויסקי",
+    encCatagoryCampary:  "גרופו קמפרי",
+    encCatagoryVodks: "קטגוריית וודקה",
+    encCatagoryTavor: "שיווק תבור",
+    encCatagoryBerdens: "רזרב ברנדס"
 };

@@ -16,6 +16,11 @@ var helpers = {
         return connection.salesmanRequests.startShift(shift);
     },
 
+    getFinishedShifts: function(){
+        console.log('salesmanServices- getFinishedShifts ');
+        return connection.managementRequests.getShiftsByStatus('FINISHED');
+    },
+
     getActiveShift: function(shiftId) {
         console.log('salesmanServices- getActiveShift ');
         return connection.salesmanRequests.getActiveShift(shiftId);

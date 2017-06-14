@@ -52,10 +52,10 @@ var ShiftsExpensesContainer = React.createClass({
     updateShifts(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.getAllShifts().then(function (shifts) {
+        salesmanServices.getFinishedShifts().then(function (shifts) {
             var filteredShifts = shifts.filter(function (shift) {
-                var currentMonth = moment().format('MMMM')
-                var shiftsMonth = moment(shift.startTime).format('MMMM')
+                var currentMonth = moment().format('MMMM');
+                var shiftsMonth = moment(shift.startTime).format('MMMM');
                 return shiftsMonth === currentMonth ;
             });
             filteredShifts.sort(function(a,b){
@@ -113,7 +113,7 @@ var ShiftsExpensesContainer = React.createClass({
 
         <div key={i} className="row w3-card-4 w3-round" style={styles.expStyle}>
             <header className="w3-container w3-round" style={styles.headerStyle}>
-                <p className="w3-xxxlarge" style={styles.storeStyle}>{shift.store.name}</p>
+                <p className="w3-xxxlarge" style={styles.storeStyle}>{shift.storeId.name}</p>
                 <p className="w3-xxxlarge" style={styles.dateStyle}> {ShiftDateFormated}</p>
             </header>
             <div className="w3-container" style={styles.expContainerStyle}>

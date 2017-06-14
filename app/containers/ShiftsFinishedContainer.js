@@ -315,12 +315,14 @@ var ShiftsFinishedContainer = React.createClass({
     changeStartDate: function (date) {
         var startDateValue = moment(date).toDate();
         var endDateValue = moment(this.refs.endDateBox.state.value).toDate();
-        this.updateShifts(startDateValue,endDateValue);
+        if(startDateValue.getTime() < endDateValue.getTime())
+            this.updateShifts(startDateValue,endDateValue);
     },
     changeEndDate: function (date) {
         var startDateValue = moment(this.refs.startDateBox.state.value).toDate();
         var endDateValue = moment(date).toDate();
-        this.updateShifts(startDateValue,endDateValue);
+        if(startDateValue.getTime() < endDateValue.getTime())
+            this.updateShifts(startDateValue,endDateValue);
     },
 
     renderAreaTable: function(area){

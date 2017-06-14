@@ -83,6 +83,9 @@ var LoginContainer = React.createClass({
             localStorage.setItem('userType', userType);
             if(userType == 'manager')
             {
+                let today = moment().format('YYYY-MM-DD');
+                localStorage.setItem('shiftStartDate', today);
+                localStorage.setItem('shiftEndDate', today);
                 context.router.push({
                     pathname: paths.manager_home_path
                 })

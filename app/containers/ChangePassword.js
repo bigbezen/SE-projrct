@@ -7,6 +7,7 @@ var constantsStrings    = require('../utils/ConstantStrings');
 var paths               = require('../utils/Paths');
 var styles              = require('../styles/managerStyles/styles');
 var NotificationSystem  = require('react-notification-system');
+var moment              = require('moment');
 
 var ChangePassContainer = React.createClass({
 
@@ -17,13 +18,28 @@ var ChangePassContainer = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return {
             prevPass: '',
             newPass1: '',
             newPass2: '',
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {

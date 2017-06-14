@@ -11,7 +11,7 @@ var styles              = require('../styles/managerStyles/homeStyles');
 var NotificationSystem  = require('react-notification-system');
 var scheduler           = require('node-schedule');
 var sorting             = require('../utils/SortingMethods');
-
+var moment              = require('moment');
 
 var HomeContainer = React.createClass({
 
@@ -22,6 +22,8 @@ var HomeContainer = React.createClass({
     getInitialState() {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return{
             salesmenNum: 0,
             productsNum: 0,
@@ -41,6 +43,20 @@ var HomeContainer = React.createClass({
         userServices.setUserType(userType);
     },
 
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {

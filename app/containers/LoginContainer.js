@@ -7,6 +7,7 @@ var constantsStrings    = require('../utils/ConstantStrings');
 var paths               = require('../utils/Paths');
 var styles              = require('../styles/managerStyles/loginStyles');
 var NotificationSystem  = require('react-notification-system');
+var moment              = require('moment');
 
 var LoginContainer = React.createClass({
 
@@ -33,7 +34,20 @@ var LoginContainer = React.createClass({
             password: '',
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {

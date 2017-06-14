@@ -71,6 +71,8 @@ var ShiftsContainer = React.createClass({
     getInitialState() {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         var currentDate = moment().format('YYYY-MM-DD');
         return{
             shifts: null,
@@ -78,16 +80,36 @@ var ShiftsContainer = React.createClass({
             endDate:currentDate
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     componentDidMount: function() {
         let month = (new Date()).getMonth();
         let year = (new Date()).getFullYear();
-        let beginningOfMonth = moment(new Date(year, month, 1)).format('YYYY-MM-DD');
-        let endOfMonth = moment(new Date(year, month + 1, 0)).format('YYYY-MM-DD');
-        this.updateShifts(beginningOfMonth, endOfMonth);
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment(new Date(year, month, 1)).format('YYYY-MM-DD');
+        }
+        let endOfMonth = localStorage.getItem('shiftEndDate');
+        if (!endOfMonth) {
+            endOfMonth = moment(new Date(year, month + 1, 0)).format('YYYY-MM-DD');
+        }
+        this.updateShifts(shiftStartDate, endOfMonth);
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     updateShifts(startDate, endDate) {
+        localStorage.setItem('shiftStartDate', startDate);
+        localStorage.setItem('shiftEndDate', endDate);
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
 

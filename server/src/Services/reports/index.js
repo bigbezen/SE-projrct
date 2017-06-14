@@ -249,6 +249,10 @@ let createXLSaleReport =  async function(shiftId, emails){
             return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
         });
 
+    let agentEmail = store.managerEmail;
+    if(agentEmail != null)
+        emails.push(agentEmail);
+
     let content = ' מצורף דוח טעימות של:' + salesman.username;
     mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};

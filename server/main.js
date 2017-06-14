@@ -1032,6 +1032,18 @@ function _setapApiEndpoints() {
             res.status(404).send("unauthorized");
     });
 
+    app.get('/super/cleanFinshedShifts', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanFInishedShifts();
+            if(result.result.ok == 1)
+                res.status(200).send("shiftd are successfully deleted");
+            else
+                res.status(500).send("could not delete");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
     app.get('/super/cleanAnalyzeReports', async function(req, res){
         if(req.query.super == "ibblsservice"){
             let result = await deletionService.cleanMAReports();

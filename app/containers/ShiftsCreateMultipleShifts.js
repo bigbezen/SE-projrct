@@ -25,6 +25,8 @@ var ShiftsCreateMultipleShifts = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return {
             newShifts: undefined,
             salesmen: [],
@@ -32,7 +34,20 @@ var ShiftsCreateMultipleShifts = React.createClass({
             selectAll: true
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     componentDidMount: function(){
         var notificationSystem = this.refs.notificationSystem;
         var self = this;

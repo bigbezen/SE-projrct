@@ -24,11 +24,26 @@ var ShiftDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
         return {
             chosenDate: new Date()
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {

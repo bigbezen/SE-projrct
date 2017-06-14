@@ -32,15 +32,29 @@ var ReportHumanResources = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     getInitialState() {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return{
             report: undefined
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = 0;
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     onClickExportReport: function() {
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');

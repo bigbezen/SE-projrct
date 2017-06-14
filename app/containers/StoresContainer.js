@@ -11,6 +11,7 @@ var TrashIcon           = require('react-icons/lib/fa/trash-o');
 var EditIcon            = require('react-icons/lib/md/edit');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
+var moment              = require('moment');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -24,12 +25,27 @@ var StoresContainer = React.createClass({
 
     getInitialState() {
         this.setSessionId();
+        this.setShiftsEndDate();
         this.setUserType();
+        this.setShiftsStartDate();
         return{
             stores: null
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {

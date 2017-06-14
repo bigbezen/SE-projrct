@@ -10,6 +10,7 @@ var paths               = require('../utils/Paths');
 var styles              = require('../styles/managerStyles/styles');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
+var moment              = require('moment');
 
 var StoreDetails = React.createClass({
 
@@ -20,13 +21,21 @@ var StoreDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
         return {
             editing: false,
             area:'',
             channel:''
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -35,7 +44,13 @@ var StoreDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {

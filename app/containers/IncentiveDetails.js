@@ -10,6 +10,7 @@ var paths               = require('../utils/Paths');
 var managementServices  = require('../communication/managementServices');
 var userServices        = require('../communication/userServices');
 var DeleteIcon          = require('react-icons/lib/fa/close');
+var moment              = require('moment');
 
 var IncentiveDetails = React.createClass({
 
@@ -20,6 +21,8 @@ var IncentiveDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return {
             productsForIncentive: [1],
             products: [],
@@ -28,7 +31,13 @@ var IncentiveDetails = React.createClass({
             productsOfSubCategory: []
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -36,6 +45,13 @@ var IncentiveDetails = React.createClass({
         }
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
+    },
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
     },
 
     setSessionId: function() {

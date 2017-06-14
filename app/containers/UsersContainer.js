@@ -36,16 +36,30 @@ var UsersContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     getInitialState() {
         this.setSessionId();
+        this.setShiftsEndDate();
         this.setUserType();
+        this.setShiftsStartDate();
         return{
             users: null,
             username: null
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {

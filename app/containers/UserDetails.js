@@ -25,6 +25,8 @@ var UserDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
         return {
             editing: false,
             gender: '',
@@ -32,7 +34,20 @@ var UserDetails = React.createClass({
             prevUsername:''
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {

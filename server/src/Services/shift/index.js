@@ -501,8 +501,8 @@ let startShift = async function(sessionId, shift){
     productsDb = productsDb.map(x=>x._id.toString());
     let productsParam = shift.salesReport.map(x=>x.productId);
 
-    if((us.difference(productsDb, productsParam).length != 0) || (us.difference(productsParam, productsDb).length != 0))
-        return {'code': 409, 'err': 'not a full sales report'};
+    //if((us.difference(productsDb, productsParam).length != 0) || (us.difference(productsParam, productsDb).length != 0))
+     //   return {'code': 409, 'err': 'not a full sales report'};
 
 
     shiftDb.salesReport = shift.salesReport;
@@ -648,8 +648,8 @@ let endShift = async function(sessionId, shift){
     productsDb = productsDb.map(x=>x._id.toString());
     let productsParam = shift.salesReport.map(x=>x.productId);
 
-    if((us.difference(productsDb, productsParam).length != 0) || (us.difference(productsParam, productsDb).length != 0))
-        return {'code': 409, 'err': 'not a full sales report'};
+    //if((us.difference(productsDb, productsParam).length != 0) || (us.difference(productsParam, productsDb).length != 0))
+       // return {'code': 409, 'err': 'not a full sales report'};
 
 
     shiftDb.salesReport = shift.salesReport;

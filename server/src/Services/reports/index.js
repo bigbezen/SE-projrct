@@ -11,6 +11,7 @@ let constantString  = require('../../Utils/Constans/ConstantStrings.js');
 let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
 let monthAnalysisReportModel = require('../../Models/Reports/monthAnalysisReport');
 let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+let encCategory = [constantString.encCatagoryManager, constantString.encCatagorywiskey,constantString.encCatagoryCampary, constantString.encCatagoryVodks, constantString.encCatagoryTavor, constantString.encCatagoryBerdens];
 let encouragementFactor = 0.0376;
 
 let getSaleReportXl =  async function(sessionId, shiftId){
@@ -127,11 +128,11 @@ let getSaleReportXl =  async function(sessionId, shiftId){
                     row.commit();
                 }
             }
-            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
         });
 
     let content = ' מצורף דוח טעימות של:' + salesman.username;
-    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};
 };
 
@@ -245,11 +246,15 @@ let createXLSaleReport =  async function(shiftId, emails){
                     row.commit();
                 }
             }
-            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
         });
 
+    let agentEmail = store.managerEmail;
+    if(agentEmail != null)
+        emails.push(agentEmail);
+
     let content = ' מצורף דוח טעימות של:' + salesman.username;
-    mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+    mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};
 };
 
@@ -610,9 +615,9 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
             row.getCell(3).value = 'ניתוח כללי ' + year;
             let monthRow = 4;
             let encouragement = await dal.getAllEncouragements();
-            for(let i = 0; i < encouragement.length; i++){
+            for(let i = 0; i < encCategory.length; i++){
                 row = worksheet.getRow(monthRow);
-                row.getCell(6 + i).value = encouragement[i].name;
+                row.getCell(6 + i).value = encCategory[i];
             }
 
             let monthCol;
@@ -629,9 +634,9 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
                 monthCol++;
 
                 //write all the encouragement
-                for(let j = 0; j < encouragement.length; j++){
+                for(let j = 0; j < encCategory.length; j++){
                     for(let enc of monthData.monthlyEncoragement){
-                        if(enc.encouragement._id.equals(encouragement[j]._id)){
+                        if(enc.encouragement.name.includes(encCategory[j])){
                             row.getCell(monthCol).value = enc.amount;
                             monthCol++;
                         }
@@ -800,6 +805,8 @@ let genarateMonthAnalysisReport = async function() {
                 yearReport.monthData[month].openedCount.organized+= sale.opened;
             }
         }
+
+        //create all the enc
         for(let shiftEnc of currentShift.encouragements){
             for(let encReport of yearReport.monthData[month].monthlyEncoragement){
                 if(encReport.encouragement._id.equals(shiftEnc.encouragement._id)){
@@ -1156,9 +1163,9 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
         let maxEncCol;
         //write the encouragements names
         let allEnc = await dal.getAllEncouragements();
-        for(let i = 0; i < allEnc.length; i++){
+        for(let i = 0; i < encCategory.length; i++){
             row = worksheet.getRow(7);
-            row.getCell(17 + i).value = allEnc[i].name;//R+i7
+            row.getCell(17 + i).value = encCategory[i];//R+i7
             maxEncCol = 17 + i;
         }
         //add all the shifts and the encouragements
@@ -1192,7 +1199,7 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
             row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
             for(let enc of currentShift.encouragements){
                 for(let k = 18; k <= maxEncCol; k++){
-                    if(worksheet.getRow(7).getCell(k).value == enc.encouragement.name){
+                    if(enc.encouragement.name.includes(worksheet.getRow(7).getCell(k).value )){
                         row.getCell(k).value = enc.encouragement.rate * enc.count;
                     }
                 }

@@ -1854,9 +1854,6 @@ describe('shift unit test', function () {
             shift1 = await dal.addShift(shift_object_to_model(shift1));
             let result = await shiftService.editSale(salesman.sessionId, shift1._id.toString(),product1._id.toString(), saleTime, 0);
             assert.equal(result.code, 200, 'code 200');
-
-            result = await dal.getShiftsByIds([shift1._id]);
-            assert.equal(result[0].sales[0].quantity, 0);
         });
 
         it('edit sale shift not found', async function() {

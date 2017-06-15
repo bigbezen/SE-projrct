@@ -58,7 +58,7 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyReportJob  = scheduler.scheduleJob('* * 11 * *', _genarateMonthlyReport);
+let monthlyReportJob  = scheduler.scheduleJob('* * 18 * *', _genarateMonthlyReport);
 let finishShiftsJob = scheduler.scheduleJob('* 0 * * *', _finishStartedShifts);
 
 console.log('server is now running on port: ', {'port': port});
@@ -1025,6 +1025,18 @@ function _setapApiEndpoints() {
             let result = await deletionService.cleanEncs();
             if(result.result.ok == 1)
                 res.status(200).send("encouragements are successfully deleted");
+            else
+                res.status(500).send("could not delete");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanFinshedShifts', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanFInishedShifts();
+            if(result.result.ok == 1)
+                res.status(200).send("shiftd are successfully deleted");
             else
                 res.status(500).send("could not delete");
         }

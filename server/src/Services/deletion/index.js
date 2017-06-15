@@ -62,6 +62,11 @@ let cleanSMHReport = async function(){
     return result;
 };
 
+let cleanFInishedShifts = async function(){
+    let result = await shifts.remove({'status': 'FINISHED'});
+    return result;
+};
+
 let initiateProductsDb =  async function(){
     let productsSpirit = [
         {
@@ -284,6 +289,7 @@ module.exports.cleanEncs = cleanEncs;
 module.exports.cleanMAReports = cleanMAReport;
 module.exports.cleanSMHReports = cleanSMHReport;
 module.exports.initiateProducts = initiateProductsDb;
+module.exports.cleanFInishedShifts = cleanFInishedShifts;
 
 
 

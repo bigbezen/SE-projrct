@@ -6,6 +6,109 @@ let productServices            = require('../../src/Services/product/index');
 let userModel                  = require('../../src/Models/user');
 let mongoose                   = require('mongoose');
 
+describe('encouragements calculation unit test', function() {
+    let manager;
+    beforeEach(async function() {
+        manager = new userModel();
+        manager.username = 'shahaf';
+        manager.sessionId = '123456';
+        manager.jobDetails.userType = 'manager';
+        let res = await dal.addUser(manager);
+    });
+    afterEach(async function() {
+        let res= await dal.cleanDb();
+    });
+
+    describe('test calculate encouragements', function() {
+        it('calculate encouragements - 1 product at each encouragement - retrieve encouragements', async function() {
+            let result;
+            let prod1 = { 'name': 'absulut2',
+                'retailPrice': '122',
+                'salePrice': '133',
+                'category': 'vodka',
+                'subCategory': 'vodka',
+                'minRequiredAmount': '111',
+                'notifyManager': 'false'
+            };
+            result = await productServices.addProduct(manager.sessionId,prod1);
+            prod1 = result.product;
+            let enc1 = {'name':'wein', 'active': false, 'numOfProducts': '1', 'rate': '5', 'products': [prod1._id]};
+            let enc2 = {'name':'wein', 'active': false, 'numOfProducts': '2', 'rate': '10', 'products': [prod1._id]};
+            let enc3 = {'name':'wein', 'active': false, 'numOfProducts': '10', 'rate': '125', 'products': [prod1._id]};
+
+
+            let soldProd1 = 13;
+            let salesReport = [
+                {
+                    'productId': prod1._id,
+                    'sold': soldProd1
+                }
+            ] ;
+            result = await encouragementServices.addEncouragement(manager.sessionId, enc1);
+            enc1 = result.encouragement;
+            result = await encouragementServices.addEncouragement(manager.sessionId, enc2);
+            enc2 = result.encouragement;
+            result = await encouragementServices.addEncouragement(manager.sessionId, enc3);
+            enc3 = result.encouragement;
+            result = await encouragementServices.calculateEncouragements(salesReport);
+
+            expect(result).to.have.length(3);
+            expect(result.map((enc) => enc.encouragement)).to.include.all(enc1._id, enc2._id, enc3._id);
+        });
+
+        it('calculate encouragements - 2 product at each encouragement - retrieve encouragements', async function() {
+            let result;
+            let prod1 = { 'name': 'absulut2',
+                'retailPrice': '122',
+                'salePrice': '133',
+                'category': 'vodka',
+                'subCategory': 'vodka',
+                'minRequiredAmount': '111',
+                'notifyManager': 'false'
+            };
+            let prod2 = { 'name': 'jhony walker',
+                'retailPrice': '2222',
+                'salePrice': '555',
+                'category': 'wiskey',
+                'subCategory': 'wiskey',
+                'minRequiredAmount': '12',
+                'notifyManager': 'true'
+            };
+            result = await productServices.addProduct(manager.sessionId,prod1);
+            prod1 = result.product;
+            result = await productServices.addProduct(manager.sessionId,prod2);
+            prod2 = result.product;
+            let enc1 = {'name':'wein', 'active': false, 'numOfProducts': '1', 'rate': '5', 'products': [prod1._id, prod2._id]};
+            let enc2 = {'name':'wein', 'active': false, 'numOfProducts': '2', 'rate': '10', 'products': [prod1._id, prod2._id]};
+            let enc3 = {'name':'wein', 'active': false, 'numOfProducts': '10', 'rate': '125', 'products': [prod1._id, prod2._id]};
+
+            let salesReport = [
+                {
+                    'productId': prod1._id,
+                    'sold': 10
+                },
+                {
+                    'productId': prod2._id,
+                    'sold': 3
+                }
+            ] ;
+            result = await encouragementServices.addEncouragement(manager.sessionId, enc1);
+            enc1 = result.encouragement;
+            result = await encouragementServices.addEncouragement(manager.sessionId, enc2);
+            enc2 = result.encouragement;
+            result = await encouragementServices.addEncouragement(manager.sessionId, enc3);
+            enc3 = result.encouragement;
+            result = await encouragementServices.calculateEncouragements(salesReport);
+            expect(result).to.have.length(3);
+            expect(result.map((enc) => enc.encouragement)).to.include.all(enc1._id, enc2._id, enc3._id);
+            expect(result[0].count).to.be.equal(1);
+            expect(result[1].count).to.be.equal(1);
+            expect(result[2].count).to.be.equal(1);
+
+        });
+    })
+});
+
 describe('encouragements unit test', function () {
 
     let manager;
@@ -334,66 +437,5 @@ describe('encouragements unit test', function () {
             expect(result).to.have.length(0);
         });
 
-        it('calculate encouragements - 2 products in 1 encouragemnet - retrieve encouragemnets', async function() {
-           let result;
-           let soldProd1 = 10;
-           let soldProd2 = 4;
-           let salesReport = [
-                {
-                    'productId': product1._id,
-                    'sold': soldProd1
-                },
-                {
-                    'productId': product2._id,
-                    'sold': soldProd2
-                }
-            ] ;
-           encouragement3.products.push(product1._id);
-           editEncouragement.products = [];
-           result = await encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
-           editEncouragement = result.encouragement;
-           result = await encouragementServices.addEncouragement(manager.sessionId, encouragement3);
-           encouragement3 = result.encouragement;
-
-           result = await encouragementServices.calculateEncouragements(salesReport);
-
-           let countEnc1 = 0;
-           let countEnc2 = parseInt((soldProd1 + soldProd2) / encouragement3.numOfProducts);
-           expect(result).to.have.length(1);
-
-        });
-
-        it('calculate encouragements - 1 product at each encouragement - retrieve encouragements', async function() {
-            let result;
-            let soldProd1 = 10;
-            let soldProd2 = 4;
-            let salesReport = [
-                {
-                    'productId': product1._id,
-                    'sold': soldProd1
-                },
-                {
-                    'productId': product2._id,
-                    'sold': soldProd2
-                }
-            ] ;
-            result = await encouragementServices.addEncouragement(manager.sessionId, editEncouragement);
-            editEncouragement = result.encouragement;
-            result = await encouragementServices.addEncouragement(manager.sessionId, encouragement3);
-            encouragement3 = result.encouragement;
-
-            result = await encouragementServices.calculateEncouragements(salesReport);
-
-            let countEnc1 = parseInt(soldProd1 / editEncouragement.numOfProducts);
-            let countEnc2 = parseInt(soldProd2 / encouragement3.numOfProducts);
-            expect(result).to.have.length(2);
-            expect(result.filter((enc) => enc.encouragement.toString() == editEncouragement._id.toString())).to.have.length(1);
-            expect(result.filter((enc) => enc.encouragement.toString() == encouragement3._id.toString())).to.have.length(1);
-
-            let resultProduct1 = result.filter((enc) => enc.encouragement.toString() == editEncouragement._id.toString());
-            let resultProduct2 = result.filter((enc) => enc.encouragement.toString() == encouragement3._id.toString());
-            expect(resultProduct1[0].count).to.be.equal(countEnc1);
-            expect(resultProduct2[0].count).to.be.equal(countEnc2);
-        });
     });
 });

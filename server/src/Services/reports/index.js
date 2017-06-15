@@ -18,121 +18,10 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getSaleReportXl');
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
+    let result = await createXLSaleReport(shiftId, [user.contact.email]);
 
-    let shift = await dal.getShiftsByIds([shiftId]);
-    shift = shift[0];
-    if(shift == null)
-        return {'code': 404, 'err': 'shift not exist'};
-
-    let store = await dal.getStoresByIds([shift.storeId]);
-    store = store[0];
-    if(store == null)
-        return {'code': 404, 'err': 'store not exist'};
-
-    if(shift.status != 'FINISHED')
-        return {'code': 404, 'err': 'shift not finished status'};
-
-    let salesman = await dal.getUsersByIds([shift.salesmanId]);
-    salesman = salesman[0];
-
-    let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('saleReport.xlsx')
-        .then(async function() {
-            let worksheet = workbook.getWorksheet(1);
-
-            //write the store name
-            let row = worksheet.getRow(9);
-            row.getCell(2).value = store.name; // B9's value
-            row.commit();
-
-            //write the shift date
-            row = worksheet.getRow(9);
-            row.getCell(5).value = shift.startTime.toDateString(); // E9's value
-            row.commit();
-
-            //write the salesman name
-            row = worksheet.getRow(11);
-            row.getCell(5).value = salesman.username; // E11's value
-            row.commit();
-
-            //write start time
-            row = worksheet.getRow(13);
-            row.getCell(2).value = shift.startTime.toTimeString(); // E11's value
-            row.commit();
-
-            //write finish time
-            row = worksheet.getRow(13);
-            row.getCell(5).value = shift.endTime.toTimeString(); // E11's value
-            row.commit();
-
-           //write the shift comment
-            let comments = "";
-            for (let i = 0; i < shift.shiftComments.length; i++) {
-                comments = comments + shift.shiftComments[i] + "\n";
-            }
-            row = worksheet.getRow(90);
-            row.getCell(1).value = comments; // A90's value
-            row.commit();
-
-            //write the sales
-            let salesSpiritRow = 58;
-            let salesWeinRow = 58;
-            let openedSpritRow = 45;
-            let openedWeinRow = 45;
-            let shortageRow = 18;
-            for (let i = 0; i < shift.salesReport.length; i++) {
-                let product = await dal.getProductById(shift.salesReport[i].productId);
-                if (shift.salesReport[i].sold > 0) {
-                    if(product.category == 'ספיריט') {
-                        row = worksheet.getRow(salesSpiritRow);
-                        row.getCell(1).value = product.subCategory;
-                        row.getCell(2).value = product.name;
-                        row.getCell(4).value = shift.salesReport[i].sold;
-                        salesSpiritRow = salesSpiritRow + 1;
-                    }
-                    else{
-                        row = worksheet.getRow(salesWeinRow);
-                        row.getCell(7).value = product.subCategory;
-                        row.getCell(8).value = product.name;
-                        row.getCell(9).value = shift.salesReport[i].sold;
-                        salesWeinRow = salesWeinRow + 1;
-                    }
-                    row.commit();
-                }
-
-                if(shift.salesReport[i].opened > 0) {
-                    //opened battle
-                    if(product.category == 'ספיריט') {
-                        row = worksheet.getRow(openedSpritRow);
-                        row.getCell(1).value = product.subCategory;
-                        row.getCell(2).value = product.name;
-                        row.getCell(4).value = shift.salesReport[i].opened;
-                        openedSpritRow = openedSpritRow + 1;
-                    }
-                    else {
-                        row = worksheet.getRow(openedWeinRow);
-                        row.getCell(6).value = product.subCategory;
-                        row.getCell(7).value = product.name;
-                        row.getCell(8).value = shift.salesReport[i].opened;
-                        openedWeinRow = openedWeinRow + 1;
-                    }
-                    row.commit();
-                }
-
-                if(shift.salesReport[i].stockEndShift == 0) {
-                    //shortage battle
-                    row = worksheet.getRow(shortageRow);
-                    row.getCell(1).value = product.subCategory;
-                    row.getCell(2).value = product.name;
-                    shortageRow = shortageRow + 1;
-                    row.commit();
-                }
-            }
-            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
-        });
-
-    let content = ' מצורף דוח טעימות של:' + salesman.username;
-    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
+  //  let content = ' מצורף דוח טעימות של:' + salesman.username;
+ //   mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};
 };
 
@@ -154,105 +43,103 @@ let createXLSaleReport =  async function(shiftId, emails){
     salesman = salesman[0];
 
     let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('saleReport.xlsx')
-        .then(async function() {
-            let worksheet = workbook.getWorksheet(1);
+    let saved1 = await workbook.xlsx.readFile('saleReport.xlsx');
+    let worksheet = workbook.getWorksheet(1);
 
-            //write the store name
-            let row = worksheet.getRow(9);
-            row.getCell(2).value = store.name; // B9's value
-            row.commit();
+    //write the store name
+    let row = worksheet.getRow(9);
+    row.getCell(2).value = store.name; // B9's value
+    row.commit();
 
-            //write the shift date
-            row = worksheet.getRow(9);
-            row.getCell(5).value = shift.startTime.toDateString(); // E9's value
-            row.commit();
+    //write the shift date
+    row = worksheet.getRow(9);
+    row.getCell(5).value = shift.startTime.toDateString(); // E9's value
+    row.commit();
 
-            //write the salesman name
-            row = worksheet.getRow(11);
-            row.getCell(5).value = salesman.username; // E11's value
-            row.commit();
+    //write the salesman name
+    row = worksheet.getRow(11);
+    row.getCell(5).value = salesman.username; // E11's value
+    row.commit();
 
-            //write start time
-            row = worksheet.getRow(13);
-            row.getCell(2).value = shift.startTime.toTimeString(); // E11's value
-            row.commit();
+    //write start time
+    row = worksheet.getRow(13);
+    row.getCell(2).value = shift.startTime.toTimeString(); // E11's value
+    row.commit();
 
-            //write finish time
-            row = worksheet.getRow(13);
-            row.getCell(5).value = shift.endTime.toTimeString(); // E11's value
-            row.commit();
+    //write finish time
+    row = worksheet.getRow(13);
+    row.getCell(5).value = shift.endTime.toTimeString(); // E11's value
+    row.commit();
 
-            //write the shift comment
-            let comments = "";
-            for (let i = 0; i < shift.shiftComments.length; i++) {
-                comments = comments + shift.shiftComments[i] + "\n";
+    //write the shift comment
+    let comments = "";
+    for (let i = 0; i < shift.shiftComments.length; i++) {
+        comments = comments + shift.shiftComments[i] + "\n";
+    }
+    row = worksheet.getRow(90);
+    row.getCell(1).value = comments; // A90's value
+    row.commit();
+
+    //write the sales
+    let salesSpiritRow = 58;
+    let salesWeinRow = 58;
+    let openedSpritRow = 45;
+    let openedWeinRow = 45;
+    let shortageRow = 18;
+    for (let i = 0; i < shift.salesReport.length; i++) {
+        let product = await dal.getProductById(shift.salesReport[i].productId);
+        if (shift.salesReport[i].sold > 0) {
+            if(product.category == 'ספיריט') {
+                row = worksheet.getRow(salesSpiritRow);
+                row.getCell(1).value = product.subCategory;
+                row.getCell(2).value = product.name;
+                row.getCell(4).value = shift.salesReport[i].sold;
+                salesSpiritRow = salesSpiritRow + 1;
             }
-            row = worksheet.getRow(90);
-            row.getCell(1).value = comments; // A90's value
-            row.commit();
-
-            //write the sales
-            let salesSpiritRow = 58;
-            let salesWeinRow = 58;
-            let openedSpritRow = 45;
-            let openedWeinRow = 45;
-            let shortageRow = 18;
-            for (let i = 0; i < shift.salesReport.length; i++) {
-                let product = await dal.getProductById(shift.salesReport[i].productId);
-                if (shift.salesReport[i].sold > 0) {
-                    if(product.category == 'ספיריט') {
-                        row = worksheet.getRow(salesSpiritRow);
-                        row.getCell(1).value = product.subCategory;
-                        row.getCell(2).value = product.name;
-                        row.getCell(4).value = shift.salesReport[i].sold;
-                        salesSpiritRow = salesSpiritRow + 1;
-                    }
-                    else{
-                        row = worksheet.getRow(salesWeinRow);
-                        row.getCell(7).value = product.subCategory;
-                        row.getCell(8).value = product.name;
-                        row.getCell(9).value = shift.salesReport[i].sold;
-                        salesWeinRow = salesWeinRow + 1;
-                    }
-                    row.commit();
-                }
-
-                if(shift.salesReport[i].opened > 0) {
-                    //opened battle
-                    if(product.category == 'ספיריט') {
-                        row = worksheet.getRow(openedSpritRow);
-                        row.getCell(1).value = product.subCategory;
-                        row.getCell(2).value = product.name;
-                        row.getCell(4).value = shift.salesReport[i].opened;
-                        openedSpritRow = openedSpritRow + 1;
-                    }
-                    else {
-                        row = worksheet.getRow(openedWeinRow);
-                        row.getCell(6).value = product.subCategory;
-                        row.getCell(7).value = product.name;
-                        row.getCell(8).value = shift.salesReport[i].opened;
-                        openedWeinRow = openedWeinRow + 1;
-                    }
-                    row.commit();
-                }
-
-                if(shift.salesReport[i].stockEndShift == 0) {
-                    //shortage battle
-                    row = worksheet.getRow(shortageRow);
-                    row.getCell(1).value = product.subCategory;
-                    row.getCell(2).value = product.name;
-                    shortageRow = shortageRow + 1;
-                    row.commit();
-                }
+            else{
+                row = worksheet.getRow(salesWeinRow);
+                row.getCell(7).value = product.subCategory;
+                row.getCell(8).value = product.name;
+                row.getCell(9).value = shift.salesReport[i].sold;
+                salesWeinRow = salesWeinRow + 1;
             }
-            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
-        });
+            row.commit();
+        }
+
+        if(shift.salesReport[i].opened > 0) {
+            //opened battle
+            if(product.category == 'ספיריט') {
+                row = worksheet.getRow(openedSpritRow);
+                row.getCell(1).value = product.subCategory;
+                row.getCell(2).value = product.name;
+                row.getCell(4).value = shift.salesReport[i].opened;
+                openedSpritRow = openedSpritRow + 1;
+            }
+            else {
+                row = worksheet.getRow(openedWeinRow);
+                row.getCell(6).value = product.subCategory;
+                row.getCell(7).value = product.name;
+                row.getCell(8).value = shift.salesReport[i].opened;
+                openedWeinRow = openedWeinRow + 1;
+            }
+            row.commit();
+        }
+
+        if(shift.salesReport[i].stockEndShift == 0) {
+            //shortage battle
+            row = worksheet.getRow(shortageRow);
+            row.getCell(1).value = product.subCategory;
+            row.getCell(2).value = product.name;
+            shortageRow = shortageRow + 1;
+            row.commit();
+        }
+    }
+    await workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
 
     let agentEmail = store.managerEmail;
     if(agentEmail != null)
         emails.push(agentEmail);
-
+    console.log('bla');
     let content = ' מצורף דוח טעימות של:' + salesman.username;
     mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};

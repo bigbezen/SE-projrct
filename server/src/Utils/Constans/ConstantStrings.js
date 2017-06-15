@@ -28,7 +28,7 @@ module.exports = {
     shiftAlreadyStarted: "לא ניתן לערוך משמרת שהתחילה",
     shiftCannotBeEdited: "לא ניתן לערוך משמרת זו",
     shiftNotFinished: "לא ניתן לערוך משמרת שאינה הסתיימה",
-    productAlreadyExist: "החנות כבר קיימת",
+    productAlreadyExist: "המוצר כבר קיימת",
     productWithTheSameNameAndCategoryAlreadyExist: "לא ניתן להוסיף מוצר עם אותו הקטגוריה ואותו השם",
     productCannotBeEdited: "לא ניתן לערוך את המוצר",
     serverError: "שגיאה התרחשה בשרת. אנסה נסה שוב מאוחר יותר",

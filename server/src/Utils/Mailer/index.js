@@ -21,12 +21,19 @@ var sendMail = async function(recepientArr, subject, text) {
 var sendMailWithFile = async function(recepientArr, subject, text , filePath) {
     var mailOptions = {
         from: '"IBBLS 👥" <IBBLSServices@gmail.com>', // sender address
-        to: recepientArr.join(', '),
         subject: subject,
         text: text,
         attachments:  [{'path': filePath}]
     };
-    var result = await transporter.sendMail(mailOptions);
+    for(let recepient of recepientArr) {
+        mailOptions["to"] = recepient;
+        try {
+                var result = await transporter.sendMail(mailOptions);
+        }
+        catch(err) {
+            console.log(err);
+        }
+    }
     return result;
 };
 

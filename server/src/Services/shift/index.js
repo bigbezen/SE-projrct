@@ -669,6 +669,7 @@ let endShift = async function(sessionId, shift){
     shiftDb.encouragements = encouragements;
 
     let result = await dal.updateShift(shiftDb);
+    console.log('bla');
     if(result.ok != 1)
         return {'code': 500, 'err': constantString.somthingBadHappend};
     else {
@@ -677,6 +678,7 @@ let endShift = async function(sessionId, shift){
         for(let manager of managers){
             emails.push(manager.contact.email);
         }
+        console.log('bla');
         result = reportService.createXLSaleReport(shift._id.toString(), emails);
         return {'code': 200};
     }

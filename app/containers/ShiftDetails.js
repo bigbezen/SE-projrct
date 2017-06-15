@@ -184,6 +184,7 @@ var ShiftDetails = React.createClass({
         newShift.startTime = moment(newShift.startTime).format('YYYY-MM-DD HH:mm Z');
         newShift.endTime = moment(date).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
         newShift.endTime = moment(newShift.endTime).format('YYYY-MM-DD HH:mm Z');
+        newShift.managerComment = this.refs.managerCommentBox.value;
 
         var context = this.context;
         var self = this;
@@ -380,6 +381,16 @@ var ShiftDetails = React.createClass({
                         />
                     </div>
 
+                    <div className="form-group ">
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.managerComment_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <input type="text"
+                               className="col-xs-8 col-xs-offset-2"
+                               ref="managerCommentBox"
+                        />
+                    </div>
+
                     <div className="form-group">
                         <button
                             className="w3-button w3-card-4 col-xs-4 col-xs-offset-2 w3-round w3-ripple" style={styles.editStyle}
@@ -419,6 +430,7 @@ var ShiftDetails = React.createClass({
         this.refs.dateBox.state.value =  moment(currShift.startTime).toDate().getTime();
         this.refs.startTimeBox.value = moment(currShift.startTime).format('HH:mm');
         this.refs.endTimeBox.value = moment(currShift.endTime).format('HH:mm');
+        this.refs.managerCommentBox.value = currShift.managerComment;
     },
 
     render: function () {

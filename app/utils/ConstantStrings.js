@@ -100,6 +100,7 @@ class ConstantStrings extends React.Component {
     static zip_string = 'מיקוד';
     static startTime_string = 'שעת התחלה';
     static endTime_string = 'שעת סיום';
+    static managerComment_string = 'הערת מנהל/ת';
 
     //filter strings
     static enterID_string = 'הכנס ת״ז..';

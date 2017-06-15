@@ -74,6 +74,7 @@ let addShifts = async function(sessionId, shiftArr){
         newShift.startTime = shift.startTime;
         newShift.endTime = shift.endTime;
         newShift.type = shift.type;
+        newShift.managerComment = shift.managerComment;
         if(shift.type.includes(constantString.shiftTypeEvemt)){
             newShift.status = "FINISHED";
         }
@@ -220,7 +221,14 @@ let getAllShiftsByStatus = async function(sessionId, status){
         return {code: 409, err: constantString.noSuchShiftStatus};
     }
 
-    let shifts = await dal.getShiftsByStatusFiltered(status);
+    let shifts = [];
+    if(isAuthorized.jobDetails.userType == 'manager') {
+        shifts = await dal.getShiftsByStatusFiltered(status);
+    }
+    else if(isAuthorized.jobDetails.userType == 'salesman') {
+        console.log('bla');
+        shifts = await dal.getSalesmanShiftsByStatus(status, isAuthorized._id.toString());
+    }
     shifts = shifts.map(function(shift) {
         shift = shift.toObject();
         shift.salesman = shift.salesmanId;
@@ -444,7 +452,6 @@ let reportExpenses = async function(sessionId, shiftId, km, parking, extraExpens
     shift = shift[0];
     if(shift == null)
         return {'code': 409, 'err': constantString.shiftDoedNotExist};
-
     if(salesman == null || salesman._id.toString() != shift.salesmanId.toString()) {
         return {'code': 401, 'err': 'user not authorized'};
     }

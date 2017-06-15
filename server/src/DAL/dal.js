@@ -185,6 +185,12 @@ module.exports = {
             .populate('salesmanId');
     },
 
+    getSalesmanShiftsByStatus: function(status, id){
+        return shiftModel.find({'status': status, 'salesmanId': mongoose.Types.ObjectId(id)}, {'salesReport': 0, 'sales': 0})
+            .populate('storeId')
+            .populate('salesmanId');
+    },
+
     removeCreatedShifts: function(idsArr){
         return shiftModel.remove({'_id': {$in: idsArr}});
     },

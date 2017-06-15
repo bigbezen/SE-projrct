@@ -106,10 +106,11 @@ var SalesmanShiftsScheduleContainer = React.createClass({
                     <p className="w3-xxxlarge" style={styles.textStyleLeft}> {startTime}-{endTime}</p>
                 </header>
 
-                <div className="w3-container text-center" >
-                    <p className="w3-xxxlarge">{constantsStrings.shiftType_string}: {shift.type}</p>
-                    <p className="w3-xxxlarge" >{constantsStrings.storeName_string}: {shift.storeId.name}</p>
-                    <p className="w3-xxxlarge" >{constantsStrings.city_string}: {shift.storeId.city}</p>
+                <div className="w3-container" >
+                    <p className="w3-xxxlarge"><b>{constantsStrings.shiftType_string}</b>: {shift.type}</p>
+                    <p className="w3-xxxlarge"><b>{constantsStrings.storeName_string}</b>: {shift.storeId.name}</p>
+                    <p className="w3-xxxlarge"><b>{constantsStrings.city_string}</b>: {shift.storeId.city}</p>
+                    <p className="w3-xxxlarge"><b>{constantsStrings.managerComment_string}</b>: {shift.managerComment}</p>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

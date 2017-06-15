@@ -187,7 +187,14 @@ describe('shift unit test', function () {
         let start = new Date();
         start.setDate(start.getDate() + 1);
 
-        shift1  = {'storeId': store._id.toString(), 'startTime':start.toString(), 'endTime': end.toString(), 'type': 'salesman', 'status': 'CREATED', 'salesmanId': salesman._id, 'sales':[]};
+        shift1  = {'storeId': store._id.toString(),
+            'startTime':start.toString(),
+            'endTime': end.toString(),
+            'type': 'salesman',
+            'status': 'CREATED',
+            'managerComment': 'hello world',
+            'salesmanId': salesman._id,
+            'sales':[]};
 
         start.setDate(start.getDate() + 1);
         end.setDate(end.getDate() + 1);
@@ -282,6 +289,7 @@ describe('shift unit test', function () {
             for(let shift of dbShifts){
                 shift = shift.toObject();
                 expect(shift).to.have.property('status', 'CREATED');
+                expect(shift).to.have.property('managerComment', 'hello world');
             }
         });
     });

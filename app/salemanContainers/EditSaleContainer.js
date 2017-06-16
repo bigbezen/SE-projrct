@@ -97,6 +97,15 @@ var EditSaleContainer = React.createClass({
         });
     },
 
+    handleQuantityChange(){
+        var arr = this.state.shift.sales;
+        for(var i=0; i<arr.length; i++){
+            arr[i].quantity = this.refs["quantity" + i].value;
+        }
+        this.setState({
+            sales: arr
+        })
+    },
     renderEachSale: function(sale, i){
         var saleTime = new Date(sale.timeOfSale) ;
         var saleTimeFormated = saleTime.toLocaleTimeString('en-GB');
@@ -114,7 +123,7 @@ var EditSaleContainer = React.createClass({
                 </header>
                 <div className="w3-xxlarge text-center" style={styles.expContainerStyle}>
                     <p><b>{constantStrings.quantity_string}</b>:&nbsp;
-                        <input type="number" min="0" style={styles.inputStyle}  ref={"quantity" + i} defaultValue={sale.quantity} />
+                        <input type="number" min="0" style={styles.inputStyle} ref={"quantity" + i} value={this.state.sales[i].quantity} onChange={this.handleQuantityChange}/>
                     </p>
                 </div>
                 <div className="text-center">

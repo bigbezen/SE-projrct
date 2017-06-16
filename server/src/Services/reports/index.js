@@ -5,7 +5,7 @@ let dal             = require('../../DAL/dal');
 let mailer          = require('../../Utils/Mailer/index');
 let fs              = require('fs');
 let moment          = require('moment');
-var momentTimezone         = require('moment-timezone');
+let momentTz        = require('moment-timezone');
 let Excel           = require('exceljs');
 let userModel       = require('../../Models/user');
 let constantString  = require('../../Utils/Constans/ConstantStrings.js');
@@ -20,7 +20,6 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
     let result = await createXLSaleReport(shiftId, [user.contact.email]);
-
   //  let content = ' מצורף דוח טעימות של:' + salesman.username;
  //   mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};
@@ -61,17 +60,15 @@ let createXLSaleReport =  async function(shiftId, emails){
     row = worksheet.getRow(11);
     row.getCell(5).value = salesman.username; // E11's value
     row.commit();
-
     //write start time
     row = worksheet.getRow(13);
-    row.getCell(2).value = moment(new date(shift.startTime)).tz( 'Asia/Jerusalem').format('HH:MM');// E11's value
+    row.getCell(2).value = moment(new Date(shift.startTime)).tz( 'Asia/Jerusalem').format('HH:mm');// E11's value
     row.commit();
 
     //write finish time
     row = worksheet.getRow(13);
-    row.getCell(5).value = moment(new date(shift.endTime)).tz( 'Asia/Jerusalem').format('HH:MM'); // E11's value
+    row.getCell(5).value = moment(new Date(shift.endTime)).tz( 'Asia/Jerusalem').format('HH:mm'); // E11's value
     row.commit();
-
     //write the shift comment
     let comments = "";
     for (let i = 0; i < shift.shiftComments.length; i++) {
@@ -147,7 +144,6 @@ let createXLSaleReport =  async function(shiftId, emails){
     let agentEmail = store.managerEmail;
     if(agentEmail != null)
         emails.push(agentEmail);
-    console.log('bla');
     let content = ' מצורף דוח טעימות של:' + salesman.username;
     mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};
@@ -1075,8 +1071,8 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
             row.getCell(3).value = shiftStore.name;
             row.getCell(4).value = shiftStore.city;
             row.getCell(5).value = currentShift.type;
-            row.getCell(6).value = moment(new date(currentShift.startTime)).tz( 'Asia/Jerusalem').format('HH:MM');
-            row.getCell(7).value = moment(new date(currentShift.endTime)).tz( 'Asia/Jerusalem').format('HH:MM')
+            row.getCell(6).value = moment(new Date(currentShift.startTime)).tz( 'Asia/Jerusalem').format('HH:mm');
+            row.getCell(7).value = moment(new Date(currentShift.endTime)).tz( 'Asia/Jerusalem').format('HH:mm');
             if(currentShift.numOfKM != null && currentShift.parkingCost != null){
                 row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
             }

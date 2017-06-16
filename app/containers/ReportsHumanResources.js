@@ -45,7 +45,8 @@ var ReportHumanResources = React.createClass({
         this.setShiftsStartDate();
         this.setShiftsEndDate();
         return{
-            report: undefined
+            report: undefined,
+            showLoader: false
         }
     },
     setShiftsStartDate: function() {
@@ -56,8 +57,15 @@ var ReportHumanResources = React.createClass({
         localStorage.setItem('shiftStartDate', shiftStartDate);
     },
     onClickExportReport: function() {
+
+        var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
+        if(datepickerVal.length != 2)
+            return;
+        this.setState({
+            showLoader: true
+        });
         managerServices.exportSalaryForHumanResourceReport(parseInt(datepickerVal[0]), parseInt(datepickerVal[1]) - 1)
             .then(function(data){
                 notificationSystem.clearNotifications();
@@ -66,6 +74,9 @@ var ReportHumanResources = React.createClass({
                     level: 'success',
                     autoDismiss: 1,
                     position: 'tc',
+                });
+                self.setState({
+                    showLoader: false
                 });
             })
             .catch(function(err){
@@ -76,7 +87,25 @@ var ReportHumanResources = React.createClass({
                     autoDismiss: 0,
                     position: 'tc',
                 });
+                self.setState({
+                    showLoader: false
+                });
             });
+    },
+
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
     },
 
     render: function () {
@@ -92,6 +121,7 @@ var ReportHumanResources = React.createClass({
                         <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle}  onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
                     </div>
                 </div>
+                {this.loader()}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )

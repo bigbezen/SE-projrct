@@ -59,7 +59,8 @@ var ReportsSalesReport = React.createClass({
             salesmen: undefined,
             stores: undefined,
             shifts: [],
-            chosenShift: undefined
+            chosenShift: undefined,
+            showLoader: false
         }
     },
 
@@ -280,6 +281,10 @@ var ReportsSalesReport = React.createClass({
 
     onClickExportReport: function(){
         var notificationSystem = this.refs.notificationSystem;
+        var self = this;
+        this.setState({
+            showLoader: true
+        });
         managerServices.getSaleReportXl(this.state.chosenShift)
             .then(function(data) {
                 notificationSystem.clearNotifications();
@@ -289,6 +294,9 @@ var ReportsSalesReport = React.createClass({
                     autoDismiss: 2,
                     position: 'tc',
                 });
+                self.setState({
+                    showLoader: false
+                });
             })
             .catch(function(err){
                 notificationSystem.clearNotifications();
@@ -297,6 +305,9 @@ var ReportsSalesReport = React.createClass({
                     level: 'error',
                     autoDismiss: 1,
                     position: 'tc',
+                });
+                self.setState({
+                    showLoader: false
                 });
             });
     },
@@ -367,6 +378,21 @@ var ReportsSalesReport = React.createClass({
         )
     },
 
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
+    },
+
     render: function () {
         if(this.state.salesmen == undefined){
             return this.renderLoading();
@@ -408,6 +434,7 @@ var ReportsSalesReport = React.createClass({
                     </div>
 
                     <div style={{marginBottom: '30px'}}>
+                        {this.loader()}
                         {this.renderSalesReportList()}
                     </div>
                     <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

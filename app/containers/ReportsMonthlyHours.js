@@ -45,7 +45,8 @@ var ReportsMonthlyHours = React.createClass({
         this.setShiftsStartDate();
         this.setShiftsEndDate();
         return{
-            report: undefined
+            report: undefined,
+            showLoader: false
         }
     },
     setShiftsStartDate: function() {
@@ -58,6 +59,12 @@ var ReportsMonthlyHours = React.createClass({
     onClickExportReport: function() {
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
+        var self = this;
+        if(datepickerVal.length != 2)
+            return;
+        this.setState({
+            showLoader: true
+        });
         managerServices.exportMonthlyHoursReport(datepickerVal[0], datepickerVal[1] - 1)
             .then(function(data){
                 notificationSystem.clearNotifications();
@@ -66,6 +73,9 @@ var ReportsMonthlyHours = React.createClass({
                     level: 'success',
                     autoDismiss: 1,
                     position: 'tc',
+                });
+                self.setState({
+                    showLoader: false
                 });
             })
             .catch(function(err){
@@ -76,6 +86,9 @@ var ReportsMonthlyHours = React.createClass({
                     autoDismiss: 0,
                     position: 'tc',
                 });
+                self.setState({
+                    showLoader: false
+                });
             });
     },
 
@@ -83,6 +96,8 @@ var ReportsMonthlyHours = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
+        if(datepickerVal.length != 2)
+            return;
         managerServices.getMonthlyHoursReportData(parseInt(datepickerVal[0]), parseInt(datepickerVal[1] - 1))
             .then(function(data){
                 self.setState({
@@ -174,6 +189,21 @@ var ReportsMonthlyHours = React.createClass({
         }
     },
 
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
+    },
+
     render: function () {
         var year = (new Date).getFullYear();
         return (
@@ -189,6 +219,7 @@ var ReportsMonthlyHours = React.createClass({
                         <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
 
                     </div>
+                    {this.loader()}
                     {this.renderReport()}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

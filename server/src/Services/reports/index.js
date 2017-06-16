@@ -5,6 +5,7 @@ let dal             = require('../../DAL/dal');
 let mailer          = require('../../Utils/Mailer/index');
 let fs              = require('fs');
 let moment          = require('moment');
+var momentTimezone         = require('moment-timezone');
 let Excel           = require('exceljs');
 let userModel       = require('../../Models/user');
 let constantString  = require('../../Utils/Constans/ConstantStrings.js');
@@ -63,12 +64,12 @@ let createXLSaleReport =  async function(shiftId, emails){
 
     //write start time
     row = worksheet.getRow(13);
-    row.getCell(2).value = shift.startTime.toTimeString(); // E11's value
+    row.getCell(2).value = moment(new date(shift.startTime)).tz( 'Asia/Jerusalem').format('HH:MM');// E11's value
     row.commit();
 
     //write finish time
     row = worksheet.getRow(13);
-    row.getCell(5).value = shift.endTime.toTimeString(); // E11's value
+    row.getCell(5).value = moment(new date(shift.endTime)).tz( 'Asia/Jerusalem').format('HH:MM'); // E11's value
     row.commit();
 
     //write the shift comment
@@ -81,10 +82,10 @@ let createXLSaleReport =  async function(shiftId, emails){
     row.commit();
 
     //write the sales
-    let salesSpiritRow = 58;
-    let salesWeinRow = 58;
-    let openedSpritRow = 45;
-    let openedWeinRow = 45;
+    let salesSpiritRow = 86;
+    let salesWeinRow = 86;
+    let openedSpritRow = 65;
+    let openedWeinRow = 65;
     let shortageRow = 18;
     for (let i = 0; i < shift.salesReport.length; i++) {
         let product = await dal.getProductById(shift.salesReport[i].productId);
@@ -127,13 +128,20 @@ let createXLSaleReport =  async function(shiftId, emails){
 
         if(shift.salesReport[i].stockEndShift == 0) {
             //shortage battle
-            row = worksheet.getRow(shortageRow);
-            row.getCell(1).value = product.subCategory;
-            row.getCell(2).value = product.name;
-            shortageRow = shortageRow + 1;
-            row.commit();
+            if(shortageRow < 57) {
+                row = worksheet.getRow(shortageRow);
+                row.getCell(1).value = product.subCategory;
+                row.getCell(2).value = product.name;
+                shortageRow = shortageRow + 1;
+                row.commit();
+            }
         }
     }
+
+    //write the formulas
+    worksheet.getRow(83).getCell(4).value = {'formula': 'SUM($D$58:$D$81)'};
+    worksheet.getRow(83).getCell(9).value = {'formula': 'SUM(I58:I81)'};
+
     await workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
 
     let agentEmail = store.managerEmail;
@@ -1067,8 +1075,8 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
             row.getCell(3).value = shiftStore.name;
             row.getCell(4).value = shiftStore.city;
             row.getCell(5).value = currentShift.type;
-            row.getCell(6).value = new Date(currentShift.startTime).getHours() + ":" + moment(new Date(currentShift.startTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.startTime).getSeconds()).format("ss");
-            row.getCell(7).value = new Date(currentShift.endTime).getHours() + ":" + moment(new Date(currentShift.endTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.endTime).getSeconds()).format("ss");
+            row.getCell(6).value = moment(new date(currentShift.startTime)).tz( 'Asia/Jerusalem').format('HH:MM');
+            row.getCell(7).value = moment(new date(currentShift.endTime)).tz( 'Asia/Jerusalem').format('HH:MM')
             if(currentShift.numOfKM != null && currentShift.parkingCost != null){
                 row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
             }

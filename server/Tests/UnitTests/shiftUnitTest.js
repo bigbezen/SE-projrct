@@ -289,7 +289,6 @@ describe('shift unit test', function () {
             for(let shift of dbShifts){
                 shift = shift.toObject();
                 expect(shift).to.have.property('status', 'CREATED');
-                expect(shift).to.have.property('managerComment', 'hello world');
             }
         });
     });
@@ -1325,97 +1324,6 @@ describe('shift unit test', function () {
             let result = await shiftService.reportExpenses(user1.sessionId, shift._id.toString(), km, -1);
             expect(result).to.have.property('code', 404);
             expect(result).to.have.property('err', constantString.illegalkmOrParkingCost);
-        });
-    });
-
-    describe('test get active shift encouragements', function(){
-        it('get active shift encouragements valid', async function(){
-            let shift = shifts[0];
-            shift.status = "STARTED";
-
-            shift.salesReport = await createNewSalesReport();
-            for(let product of shift.salesReport)
-            {
-                if(product.productId.toString() == product1._id.toString())
-                    product.sold = 9;
-                if(product.productId.toString() == product2._id.toString())
-                    product.sold = 9;
-                if(product.productId.toString() == product3._id.toString())
-                    product.sold = 15;
-            }
-
-            shift = shift_object_to_model(shift);
-
-            let user1 = await dal.getUserByUsername('matan');
-            shift.salesmanId = user1._id;
-            shift = (await dal.addShift(shift)).toObject();
-
-            let result = await shiftService.getActiveShiftEncouragements(user1.sessionId, shift._id);
-            expect(result).to.have.property('code', 200);
-            expect(result).to.have.property('encouragements');
-
-            for(let earnedEnc of result.encouragements){
-                if(earnedEnc.encouragement.toString() == enc1._id.toString())
-                    expect(earnedEnc.count).to.be.equal(3);
-                if(earnedEnc.encouragement.toString() == enc2._id.toString())
-                    expect(earnedEnc.count).to.be.equal(9);
-                if(earnedEnc.encouragement.toString() == enc3._id.toString())
-                    expect(earnedEnc.count).to.be.equal(11);
-                if(earnedEnc.encouragement.toString() == enc4._id.toString())
-                    expect(earnedEnc.count).to.be.equal(3);
-            }
-        });
-
-        it('get active shift encouragements invalid sessionId', async function(){
-            let shift = shifts[0];
-            shift.status = "STARTED";
-
-            shift.salesReport = await createNewSalesReport();
-            for(let product of shift.salesReport)
-            {
-                if(product.productId.toString() == product1._id.toString())
-                    product.sold = 9;
-                if(product.productId.toString() == product2._id.toString())
-                    product.sold = 9;
-                if(product.productId.toString() == product3._id.toString())
-                    product.sold = 15;
-            }
-
-            shift = shift_object_to_model(shift);
-
-            let user1 = await dal.getUserByUsername('matan');
-            shift.salesmanId = user1._id;
-            shift = (await dal.addShift(shift)).toObject();
-
-            let result = await shiftService.getActiveShiftEncouragements('invalid sessionId', shift._id);
-            expect(result).to.have.property('code', 401);
-
-        });
-
-        it('get active shift encouragements invalid shiftId', async function(){
-            let shift = shifts[0];
-            shift.status = "STARTED";
-
-            shift.salesReport = await createNewSalesReport();
-            for(let product of shift.salesReport)
-            {
-                if(product.productId.toString() == product1._id.toString())
-                    product.sold = 9;
-                if(product.productId.toString() == product2._id.toString())
-                    product.sold = 9;
-                if(product.productId.toString() == product3._id.toString())
-                    product.sold = 15;
-            }
-
-            shift = shift_object_to_model(shift);
-
-            let user1 = await dal.getUserByUsername('matan');
-            shift.salesmanId = user1._id;
-            shift = (await dal.addShift(shift)).toObject();
-
-            let result = await shiftService.getActiveShiftEncouragements(user1.sessionId, 'invalid8shif');
-            expect(result).to.have.property('code', 409);
-
         });
     });
 

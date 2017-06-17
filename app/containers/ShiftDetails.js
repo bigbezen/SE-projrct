@@ -430,7 +430,7 @@ var ShiftDetails = React.createClass({
         this.refs.dateBox.state.value =  moment(currShift.startTime).toDate().getTime();
         this.refs.startTimeBox.value = moment(currShift.startTime).format('HH:mm');
         this.refs.endTimeBox.value = moment(currShift.endTime).format('HH:mm');
-        this.refs.managerCommentBox.value = currShift.managerComment;
+        this.refs.managerCommentBox.value = currShift.managerComment == undefined ? "" : currShift.managerComment;
     },
 
     render: function () {

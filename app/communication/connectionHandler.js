@@ -736,6 +736,20 @@ var salesmanRequests = {
         })
     },
 
+    getSalesmenShiftsByStatus: function(status) {
+        console.log('get shifts of range');
+        return axios.get(serverUrl + 'salesmen/getSalesmanShiftsByStatus?status=' + status, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
     startShift: function(shift) {
         return axios.post(serverUrl + 'salesman/startShift', {
             sessionId:sessionId,

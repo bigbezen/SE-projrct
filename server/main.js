@@ -282,6 +282,18 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.get('/salesmen/getSalesmanShiftsByStatus', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('status' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getSalesmenShiftsByStatus(req.headers.sessionid, req.query.status);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.get('/salesman/getActiveShift', async function (req, res) {
         if(!('sessionid' in req.headers) || (!('shiftId' in req.query))) {
             res.status(404).send('invalid parameters');

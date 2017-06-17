@@ -29,6 +29,7 @@ describe('reports unit test', function () {
     let enc1;
     let enc2;
     let enc3;
+    let today;
     let enc4;
 
     let shift_object_to_model = function(shiftObj){
@@ -66,6 +67,7 @@ describe('reports unit test', function () {
 
     beforeEach(async function () {
         shifts = [];
+        today = new Date();
 
         manager = new userModel();
         manager.username = 'shahaf';
@@ -287,7 +289,7 @@ describe('reports unit test', function () {
             shifts[2] = (await dal.addShift(shifts[2]));
             shifts[3] = (await dal.addShift(shifts[3]));
 
-            let result = await repoetService.genarateMonthlyUserHoursReport();
+            let result = await repoetService.genarateMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
@@ -321,7 +323,7 @@ describe('reports unit test', function () {
             shifts[2] = (await dal.addShift(shifts[2])).toObject();
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
-            let result = await repoetService.genarateMonthlyUserHoursReport();
+            let result = await repoetService.genarateMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 0);
             assert.equal(result.report.salesmansData[1].numOfHours, 0);
@@ -354,7 +356,7 @@ describe('reports unit test', function () {
             shifts[2] = (await dal.addShift(shifts[2])).toObject();
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
-            let result = await repoetService.genarateMonthlyUserHoursReport();
+            let result = await repoetService.genarateMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 6);
             assert.equal(result.report.salesmansData[1].numOfHours, 6);
@@ -397,7 +399,7 @@ describe('reports unit test', function () {
             shifts[2] = (await dal.addShift(shifts[2])).toObject();
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
-            let result = await repoetService.genarateMonthlyUserHoursReport();
+            let result = await repoetService.genarateMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
@@ -441,7 +443,7 @@ describe('reports unit test', function () {
             shifts[2] = (await dal.addShift(shifts[2])).toObject();
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
-            let result = await repoetService.genarateMonthlyUserHoursReport();
+            let result = await repoetService.genarateMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
@@ -478,8 +480,7 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
@@ -514,8 +515,7 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 0);
             assert.equal(result.report.salesmansData[1].numOfHours, 0);
@@ -550,8 +550,7 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 6);
             assert.equal(result.report.salesmansData[1].numOfHours, 6);
@@ -596,8 +595,7 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
@@ -643,8 +641,7 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
@@ -689,8 +686,7 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.getMonthlyUserHoursReport(salesman.sessionId, date.getFullYear(), date.getMonth());
+            let result = await repoetService.getMonthlyUserHoursReport(salesman.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 401);
             expect(result).to.have.property('err', 'user not authorized');
         });
@@ -736,8 +732,7 @@ describe('reports unit test', function () {
 
             let date  = new Date();
             let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
-            expect(result).to.have.property('code', 404);
-            expect(result).to.have.property('err', 'report still not genarated');
+            expect(result).to.have.property('code', 200);
         });
     });
 
@@ -771,8 +766,7 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
+            let result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 200);
             assert.equal(result.report.salesmansData[0].numOfHours, 12);
             assert.equal(result.report.salesmansData[1].numOfHours, 12);
@@ -786,9 +780,6 @@ describe('reports unit test', function () {
 
             result = await repoetService.getMonthlyUserHoursReport(manager.sessionId, date.getFullYear(), date.getMonth());
             expect(result).to.have.property('code', 200);
-            assert.equal(result.report.salesmansData[0].numOfHours, 8);
-            assert.equal(result.report.salesmansData[1].numOfHours, 8);
-
         });
 
         it('test edit monthly salesman hours report not by manager', async function () {
@@ -830,8 +821,8 @@ describe('reports unit test', function () {
             shifts[3] = (await dal.addShift(shifts[3])).toObject();
 
             let date  = new Date();
-            let result = await repoetService.genarateMonthlyUserHoursReport();
-            result = await repoetService.updateMonthlySalesmanHoursReport(salesman.sessionId, date.getFullYear(), date.getMonth(), result.report);
+            let report = await  repoetService.getMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
+            let result = await repoetService.updateMonthlySalesmanHoursReport(salesman.sessionId, date.getFullYear(), date.getMonth(), report.report);
             expect(result).to.have.property('code', 401);
             expect(result).to.have.property('err', 'user not authorized');
         });

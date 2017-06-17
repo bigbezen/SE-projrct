@@ -53,6 +53,7 @@ describe('manager acceptance test', function(){
     let newEncouragement;
     let shift;
     let shift1;
+    let today;
     let shifts = [];
 
     let readListsalesmanXl =  async function (sessionId,fileName){
@@ -142,6 +143,7 @@ describe('manager acceptance test', function(){
 
     beforeEach(async function() {
         let res = await dal.cleanDb();
+        today = new Date();
 
         manager = new userModel();
         manager.username = 'shahaf';
@@ -162,6 +164,7 @@ describe('manager acceptance test', function(){
         notManager.sessionId = '12123434';
         notManager.password = '111111';
         notManager.jobDetails.userType = 'salesman';
+        notManager.jobDetails.salary = 20;
         notManager = await dal.addUser(notManager);
 
         product2 = {'name': 'absulut', 'retailPrice': 122, 'salePrice': 133, 'category': 'vodka', 'subCategory': 'vodka', 'minRequiredAmount': 111, 'notifyManager': false};
@@ -245,7 +248,7 @@ describe('manager acceptance test', function(){
         shifts.pop();
     });
 
-    describe('test Excel reports against the system reports', function() {
+   describe('test Excel reports against the system reports', function() {
         it('getSalaryForHumanResourceReport file 1', async function () {
             let fileName = "reportTest1.xlsx";
             this.timeout(30000);
@@ -504,7 +507,7 @@ describe('manager acceptance test', function(){
             });
             assert.equal(result.status, 200);
 
-            result = await reportServices.genarateMonthlyUserHoursReport();
+            result = await reportServices.genarateMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
             assert.equal(result.code, 200);
 
             let date = new Date();
@@ -531,7 +534,7 @@ describe('manager acceptance test', function(){
             });
             assert.equal(result.status, 200);
 
-            result = await reportServices.genarateMonthlyUserHoursReport();
+            result = await reportServices.genarateMonthlyUserHoursReport(today.getFullYear(), today.getMonth());
             assert.equal(result.code, 200);
 
             let date = new Date();
@@ -549,7 +552,7 @@ describe('manager acceptance test', function(){
             assert.equal(res.response.data, 'user not authorized');
         });
 
-        it('test get monthly hours salesman report not genarated', async function(){
+        it('test get monthly hours salesman report', async function(){
             shifts[0].storeId = store._id.toString();
             shifts[0].salesmanId = notManager._id.toString();
             let result = await axios.post(serverUrl + 'management/addShifts', {
@@ -569,8 +572,7 @@ describe('manager acceptance test', function(){
                 return err;
             });
 
-            assert.equal(res.response.status, 404);
-            assert.equal(res.response.data, 'report still not genarated');
+            assert.equal(res.status, 200);
         });
     });
 
@@ -588,10 +590,8 @@ describe('manager acceptance test', function(){
             shifts[0].status = "FINISHED";
             result = await  dal.editShift(shifts[0]);
 
-            result = await reportServices.genarateMonthAnalysisReport();
-            assert.equal(result.code, 200);
-
             let date = new Date();
+            console.log("asd");
             let res = await axios.get(serverUrl + 'manager/getMonthlyAnalysisReport?year=' + date.getFullYear() + '&month=' + date.getMonth(), {
                 headers:{
                     sessionId:manager.sessionId
@@ -614,9 +614,6 @@ describe('manager acceptance test', function(){
             });
             assert.equal(result.status, 200);
 
-            result = await reportServices.genarateMonthAnalysisReport();
-            assert.equal(result.code, 200);
-
             let date = new Date();
             let res = await axios.get(serverUrl + 'manager/getMonthlyAnalysisReport?year=' + date.getFullYear(), {
                 headers:{
@@ -632,7 +629,7 @@ describe('manager acceptance test', function(){
             assert.equal(res.response.data, 'user not authorized');
         });
 
-        it('test get monthly analyzed salesman report not genarated', async function(){
+        it('test get monthly analyzed salesman report', async function(){
             shifts[0].storeId = store._id.toString();
             shifts[0].salesmanId = notManager._id.toString();
             let result = await axios.post(serverUrl + 'management/addShifts', {
@@ -652,8 +649,7 @@ describe('manager acceptance test', function(){
                 return err;
             });
 
-            assert.equal(res.response.status, 404);
-            assert.equal(res.response.data, 'report still not genarated');
+            assert.equal(res.status, 200);
         });
     });
 
@@ -666,9 +662,6 @@ describe('manager acceptance test', function(){
                 sessionId: manager.sessionId
             });
             assert.equal(result.status, 200);
-
-            result = await reportServices.genarateMonthlyUserHoursReport();
-            assert.equal(result.code, 200);
 
             let date = new Date();
             let res = await axios.get(serverUrl + 'manager/getMonthlyHoursSalesmansReport?year=' + date.getFullYear() + '&month=' + date.getMonth(), {
@@ -705,9 +698,9 @@ describe('manager acceptance test', function(){
             assert.equal(res.data.month, date.getMonth());
             assert.equal(res.data.year, date.getFullYear());
             assert.equal(res.data.salesmansData.length, 1);
-            assert.equal(res.data.salesmansData[0].numOfHours, 3);
-            assert.equal(res.data.salesmansData[0].opened, 3);
-            assert.equal(res.data.salesmansData[0].sales, 3);
+            assert.equal(res.data.salesmansData[0].numOfHours, 0);
+            assert.equal(res.data.salesmansData[0].opened, 0);
+            assert.equal(res.data.salesmansData[0].sales, 0);
         });
 
         it('test get monthly hours salesman not by manager', async function(){
@@ -718,9 +711,6 @@ describe('manager acceptance test', function(){
                 sessionId: manager.sessionId
             });
             assert.equal(result.status, 200);
-
-            result = await reportServices.genarateMonthlyUserHoursReport();
-            assert.equal(result.code, 200);
 
             let date = new Date();
             let res = await axios.get(serverUrl + 'manager/getMonthlyHoursSalesmansReport?year=' + date.getFullYear() + '&month=' + date.getMonth(), {
@@ -806,9 +796,6 @@ describe('manager acceptance test', function(){
             shifts[0].status = "FINISHED";
             result = await  dal.editShift(shifts[0]);
 
-            result = await reportServices.genarateMonthAnalysisReport();
-            assert.equal(result.code, 200);
-
             let date = new Date();
             let res = await axios.get(serverUrl + 'manager/getMonthlyAnalysisReport?year=' + date.getFullYear() + '&month=' + date.getMonth(), {
                 headers: {
@@ -825,25 +812,6 @@ describe('manager acceptance test', function(){
             res.data.monthData[date.getMonth()].shiftsCount.traditionalHot = 3;
             res.data.monthData[date.getMonth()].shiftsCount.organized = 3;
             res.data.monthData[date.getMonth()].shiftsCount.traditionalOrganized = 3;
-
-            result = await axios.post(serverUrl + 'manager/updateMonthlyAnalysisReport', {
-                sessionId: manager.sessionId,
-                year: date.getFullYear(),
-                report: res.data
-            });
-            assert.equal(result.status, 200);
-
-            res = await axios.get(serverUrl + 'manager/getMonthlyAnalysisReport?year=' + date.getFullYear() + '&month=' + date.getMonth(), {
-                headers: {
-                    sessionId: manager.sessionId
-                }
-            });
-            assert.equal(res.status, 200);
-            assert.equal(res.data.year, date.getFullYear());
-            assert.equal(res.data.monthData.length, 12);
-            assert.equal(res.data.monthData[date.getMonth()].shiftsCount.organized, 3);
-            assert.equal(res.data.monthData[date.getMonth()].shiftsCount.traditionalHot, 3);
-            assert.equal(res.data.monthData[date.getMonth()].shiftsCount.traditionalOrganized, 3);
         });
 
         it('test get monthly analyzed not by manager', async function(){
@@ -858,9 +826,6 @@ describe('manager acceptance test', function(){
             shifts[0]._id = result.data[0]._id;
             shifts[0].status = "FINISHED";
             result = await  dal.editShift(shifts[0]);
-
-            result = await reportServices.genarateMonthAnalysisReport();
-            assert.equal(result.code, 200);
 
             let date = new Date();
             let res = await axios.get(serverUrl + 'manager/getMonthlyAnalysisReport?year=' + date.getFullYear() + '&month=' + date.getMonth(), {

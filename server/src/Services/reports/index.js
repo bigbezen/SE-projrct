@@ -22,7 +22,7 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     let result = await createXLSaleReport(shiftId, [user.contact.email]);
   //  let content = ' מצורף דוח טעימות של:' + salesman.username;
  //   mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
-    return {'code': 200};
+    return result;
 };
 
 let createXLSaleReport =  async function(shiftId, emails){
@@ -591,8 +591,7 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
     return {'code': 200};
 };
 
-let genarateMonthAnalysisReport = async function() {
-    let year = new Date().getFullYear();
+let genarateMonthAnalysisReport = async function(year) {
     let month = new Date().getMonth();
     let storeTraditionalHot = new Set();
     let storeTraditionalOrganized = new Set();
@@ -653,6 +652,7 @@ let genarateMonthAnalysisReport = async function() {
         yearReport = await dal.addMonthAnalysisReport(yearReport);
     }
     else{
+        yearReport = yearReport.toObject();
         let monthReport = {'month': (month),
             'salesmanCost':{
                 'traditionalHot': 0,
@@ -802,10 +802,10 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
         return {'code': 401, 'err': 'user not authorized'};
 
     let report = await genarateMonthAnalysisReport(year, month);
-    if(report.report == null)
+    if(report.code != 200)
         return {'code': 404, 'err': 'report still not genarated'};
 
-    let report = report.report;
+    report = report.report;
     let workbook = new Excel.Workbook();
     let write = await workbook.xlsx.readFile('monthlyHoursReport.xlsx');
             let worksheet = workbook.getWorksheet('ריכוז שעות ותמריצים');
@@ -993,21 +993,20 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
     return {'code': 200};
 };
 
-let genarateMonthlyUserHoursReport = async function() {
-    let date = new Date();
+let genarateMonthlyUserHoursReport = async function(year,month) {
     let report = await dal.getMonthlyUserHoursReport(year, month);
-    let exist = false;
+    let exist = true;
     if(report == null){
         report = new monthlyUserHoursReportModel();
-        exist = true;
+        exist = false;
     }
 
-    let shifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
+    let shifts = await dal.getMonthShifts(year, month);
     let users = await dal.getAllUsers();
 
     //add month and year
-    report.month = date.getMonth();
-    report.year = date.getFullYear();
+    report.month = month;
+    report.year = year;
     report.salesmansData = [];
 
     //initilize all users
@@ -1051,7 +1050,7 @@ let getMonthlyUserHoursReport = async function(sessionId, year, month){
     if(aut == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let report = await genarateMonthAnalysisReport(year, month);
+    let report = await genarateMonthlyUserHoursReport(year, month);
     if(report.report == null)
         return {'code': 404, 'err': 'report still not genarated'};
 

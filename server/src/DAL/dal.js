@@ -238,14 +238,14 @@ module.exports = {
         //         (((new Date(date)).getTime() >= ((new Date(shift.startTime)).getTime() - HALF_HOUR_IN_MS)) &&
         //         ((new Date(shift.endTime)).getTime() >= (new Date(date).getTime()))))
         //     .sort((shift1, shift2) => (new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime());
-        // console.log('bla');
+        // console.log('bla');produ
         // return currentShifts[0];
 
         let startOfDay = new Date((new Date(date)).setHours(0, 0, 0));
         let endOfDay = new Date((new Date(startOfDay)).setDate(startOfDay.getDate() + 1));
-
-        return shiftModel.findOne({$and: [{'salesmanId': salesmanId},
+        let shifts = await shiftModel.findOne({$and: [{'salesmanId': salesmanId},
             {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}, {'startTime': {$gte: startOfDay, $lt: endOfDay}}]});
+        return shifts;
     },
 
     deleteShift: async function(shiftId){

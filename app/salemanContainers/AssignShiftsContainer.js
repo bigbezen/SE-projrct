@@ -64,26 +64,40 @@ var SalesmanAssignShiftsContainer = React.createClass({
         var currentDate = moment().format('YYYY-MM-DD');
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        managementService.getShiftsByStatus(constantsStrings.SHIFT_STATUS.CREATED)
-            .then(function (result) {
-                let availability = {};
-                let dates = new Set(result.map((shift) => shift.startTime));
-                for(let date of dates){
-                    availability[date] = {};
-                    let areas = new Set(result.filter((shift) =>
+
+        userServices.getProfile().then(function (salesman) {
+            managementService.getShiftsByStatus(constantsStrings.SHIFT_STATUS.CREATED)
+                .then(function (result) {
+                    let availability = {};
+                    result = result.map(function(shift) {
+                        shift.startTime = moment(shift.startTime).format('YYYY-MM-DD');
+                        return shift;
+                    });
+                    let dates = new Set(result.map((shift) => shift.startTime));
+                    for (let date of dates) {
+                        availability[date] = {};
+                        let areas = new Set(result.filter((shift) =>
                         (new Date(shift.startTime)).getTime() - (new Date(date)).getTime() == 0)
-                        .map((shift) => shift.storeId.area));
-                    for(let area of areas){
-                        availability[date][area] = {
-                            isAvailable: false,
-                            comment: ""
-                        };
+                            .map((shift) => shift.storeId.area));
+                        for (let area of areas) {
+                            availability[date][area] = {
+                                isAvailable: false,
+                                comment: ""
+                            };
+                        }
                     }
-                }
-                self.setState({
-                    shifts: result,
-                    availability: availability
-            });
+                    for (let shift of result) {
+                        for (let constraint of shift.constraints) {
+                            if (constraint.salesmanId == salesman._id) {
+                                availability[shift.startTime][shift.storeId.area] = constraint;
+                            }
+                        }
+                    }
+                    self.setState({
+                        shifts: result,
+                        availability: availability
+                    });
+                })
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
@@ -92,7 +106,8 @@ var SalesmanAssignShiftsContainer = React.createClass({
                 autoDismiss: 0,
                 position: 'tc'
             });
-        })
+        });
+
     },
 
     renderLoading:function () {

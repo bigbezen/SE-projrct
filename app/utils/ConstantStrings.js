@@ -263,7 +263,6 @@ class ConstantStrings extends React.Component {
     static userRoleForDropDown =
         [
             ['salesman', 'דייל'],
-            ['agent', 'סוכן שטח'],
             ['manager', 'מנהל']
         ];
 

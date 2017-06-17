@@ -101,7 +101,7 @@ let addUser = async function(sessionId, userDetails) {
         return {'code': 409, 'err': constansStrings.UsernameOrIdAlreadyExists}
     }
     if(userDetails.personal.id.length < ID_MIN_DIGITS_COUNT){
-        return {'code': 409, 'err': constansStrings.passwordIsIncorrect}
+        return {'code': 409, 'err': constansStrings.PasswortToShort}
     }
     let newUser = new userModel();
     let generatedPassword = userDetails.personal.id; //Math.random().toString(36).substring(2,10);

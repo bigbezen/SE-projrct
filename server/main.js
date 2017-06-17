@@ -18,6 +18,8 @@ let reportsService          = require('./src/Services/reports/index');
 let shiftService            = require('./src/Services/shift/index');
 let deletionService         = require('./src/Services/deletion/index');
 
+let dal                     = require('./src/DAL/dal');
+
 let app = express();
 
 app.use(function (req, res, next) {
@@ -73,6 +75,7 @@ function _connectToDb(){
     });
     db.once('open', function() {
         console.log('connected to db successfuly');
+        dal.cleanDbOnStart();
         userService.setAdminUser();
     });
 }

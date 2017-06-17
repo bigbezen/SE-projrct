@@ -653,7 +653,7 @@ let genarateMonthAnalysisReport = async function(year) {
     }
     else{
         yearReport = yearReport.toObject();
-        let monthReport = {'month': (month),
+        let monthReport = {'month': (month + 1),
             'salesmanCost':{
                 'traditionalHot': 0,
                 'traditionalOrganized': 0,
@@ -801,7 +801,7 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let report = await genarateMonthAnalysisReport(year, month);
+    let report = await genarateMonthlyUserHoursReport(year, month);
     if(report.code != 200)
         return {'code': 404, 'err': 'report still not genarated'};
 
@@ -989,7 +989,7 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
             await workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
 
     let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
-    mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
     return {'code': 200};
 };
 

@@ -61,12 +61,14 @@ var styles = {
     col: {
         position: 'relative',
         float: 'right',
-        paddingRight: '10px',
-        paddingLeft: '10px',
-        marginLeft: '5px',
         marginTop: '10px',
+        paddingLeft: '1px',
+        paddingRightL: '1px',
+        marginLeft: '6px',
+        marginRight: '6px',
         marginBottom: '10px',
         width: '12%',
+        backgroundColor: 'rgba(162, 164, 165, 0.3)'
     },
     dateLabel: {
         float: 'right',

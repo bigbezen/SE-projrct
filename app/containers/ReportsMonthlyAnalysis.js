@@ -94,11 +94,15 @@ var ReportsMonthlyAnalysis = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         var chosenYear = this.refs.datepicker.value;
+        self.setState({
+            showLoader: true
+        });
         managerServices.getMonthlyAnalysisReportData(chosenYear)
             .then(function(data){
                 var report = data;
                 self.setState({
-                    report: report
+                    report: report,
+                    showLoader: false
                 })
             })
             .catch(function(err){
@@ -110,7 +114,8 @@ var ReportsMonthlyAnalysis = React.createClass({
                     position: 'tc',
                 });
                 self.setState({
-                    report: undefined
+                    report: undefined,
+                    showLoader: false
                 })
             })
     },
@@ -159,21 +164,21 @@ var ReportsMonthlyAnalysis = React.createClass({
                 <p><b>{constantStrings.dictionary[sectionData['section']]}</b></p>
                 <div className="col-sm-10" style={{padding: '0'}}>
                     <p className="col-sm-12">{constantStrings.dictionary["traditionalHot"]}</p>
-                    <input type="number" min="0" className="w3-round col-sm-12"
-                        defaultValue={sectionData.traditionalHot} ref={sectionData.month + "#" + sectionData.section + "#traditionalHot"}
-                        onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "traditionalHot")}/>
+                    <b className="w3-round col-sm-12">
+                        {sectionData.traditionalHot}
+                    </b>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
                     <p className="col-sm-12">{constantStrings.dictionary["traditionalOrganized"]}</p>
-                    <input type="number" min="0" className="w3-round col-sm-12"
-                        defaultValue={sectionData.traditionalOrganized} ref={sectionData.month + "#" + sectionData.section + "#traditionalOrganized"}
-                        onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "traditionalOrganized")}/>
+                    <b className="w3-round col-sm-12">
+                        {sectionData.traditionalOrganized}
+                    </b>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
                     <p className="col-sm-12">{constantStrings.dictionary["organized"]}</p>
-                    <input type="number" min="0" className="w3-round col-sm-12"
-                        defaultValue={sectionData.organized} ref={sectionData.month + "#" + sectionData.section + "#organized"}
-                        onChange={() => this.onChangeValue(sectionData.month,sectionData.section, "organized")}/>
+                    <b className="w3-round col-sm-12">
+                        {sectionData.organized}
+                    </b>
                 </div>
 
             </div>
@@ -183,9 +188,11 @@ var ReportsMonthlyAnalysis = React.createClass({
     renderEncouragements: function(encouragement, index){
         return (
             <div style={styles.col} className="w3-round">
-                <p className="col-sm-12">{encouragement.encouragement.name}</p>
-                <input type="number" min="0" className="w3-round col-sm-12" defaultValue={encouragement.amount}
-                    ref={encouragement.month + "#" + index} onChange={() => this.onChangeEncValue(encouragement.month, index)}/>
+                <u className="col-sm-12">{encouragement.encouragement.name}</u>
+                <b className="w3-round col-sm-12">
+                    {encouragement.amount}
+                </b>
+
             </div>
         )
     },
@@ -205,11 +212,13 @@ var ReportsMonthlyAnalysis = React.createClass({
         }
         return (
             <div className="w3-container w3-round w3-card-4" style={styles.marginTop}>
-                <h3 className="col-sm-1">{constantStrings.numberToMonth[monthData.month]}</h3>
                 <div className="row">
+                    <h3 className="col-sm-1">{constantStrings.numberToMonth[monthData.month]}</h3>
+                </div>
+                <div className="row" style={{borderBottom: '1px solid'}}>
                     {dataAsArray.map(this.renderMonthSections)}
                 </div>
-                <div className="row col-sm-offset-1">
+                <div className="row">
                     {monthData.monthlyEncoragement.map(this.renderEncouragements)}
                 </div>
             </div>
@@ -259,7 +268,6 @@ var ReportsMonthlyAnalysis = React.createClass({
                         <input className="col-sm-1 w3-card-4 w3-round" ref="datepicker" type="number" min="2000" max="2099"
                                defaultValue={year}/>
                         <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickGetReport}>{constantStrings.reportsShowReport_string}</button>
-                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickEditReport}>{constantStrings.editReport_string}</button>
                         <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
 
                     </div>

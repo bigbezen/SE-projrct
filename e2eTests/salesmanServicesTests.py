@@ -135,10 +135,9 @@ class SalesmanServices(unittest.TestCase):
         driver.implicitly_wait(300)
         sleep(2)
         self.assertTrue(helper.salesman_editSale in driver.current_url)
-        driver.find_element_by_xpath(containers.salesman_shift.editSaleFocus).click()
-        sleep(2)
         driver.find_element_by_xpath(containers.salesman_shift.editSaleTextbox).clear()
         driver.find_element_by_xpath(containers.salesman_shift.editSaleTextbox).send_keys(2)
+        driver.find_element_by_xpath(containers.salesman_shift.editSaleBtn).click()
         driver.find_element_by_xpath(containers.salesman_shift.mainView).click()
         driver.implicitly_wait(300)
         sleep(2)
@@ -368,31 +367,6 @@ class SalesmanServices(unittest.TestCase):
     def tearDown(self):
         self.driver.close()
 
-    def addCurrShift(self):
-        driver = self.driver
-        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
-        driver.implicitly_wait(300)
-        sleep(2)
-        self.assertEqual(driver.current_url, helper.shiftsContainer)
-        driver.find_element_by_xpath(containers.shifts.add).click()
-        driver.implicitly_wait(300)
-        sleep(2)
-        driver.find_element_by_xpath(containers.shifts.store).send_keys(helper.shiftStore)
-        driver.find_element_by_xpath(containers.shifts.username).send_keys(helper.shiftUser)
-        driver.find_element_by_xpath(containers.shifts.type).send_keys(helper.shiftType)
-        driver.find_element_by_xpath(containers.shifts.date).send_keys(helper.shiftDate)
-        driver.find_element_by_xpath(containers.shifts.startTime).send_keys(helper.shiftStartTime)
-        driver.find_element_by_xpath(containers.shifts.endTime).send_keys(helper.shiftEndTime)
-
-        driver.find_element_by_xpath(containers.shifts.addBtn).click()
-        driver.implicitly_wait(300)
-        sleep(2)
-        driver.find_element_by_xpath(containers.managerHome.logoutTab).click()
-        driver.implicitly_wait(300)
-        sleep(2)
-        self.assertEqual(driver.current_url, helper.url)
-        return
-
     def loginAsSalesman(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.login.username).send_keys(helper.salesmanUsername)
@@ -413,14 +387,48 @@ class SalesmanServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.manager_home)
         return
 
-    def addShiftForTests(self):
-        self.loginAsManager()
-        self.addCurrShift()
+    def createShift(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.managerHome.CreateShiftTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.createShiftContainer)
+        driver.find_element_by_xpath(containers.shifts.add).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.shifts.store).send_keys(helper.shiftStore)
+        driver.find_element_by_xpath(containers.shifts.username).send_keys(helper.shiftUser)
+        driver.find_element_by_xpath(containers.shifts.type).send_keys(helper.shiftType)
+        driver.find_element_by_xpath(containers.shifts.startTime).send_keys(helper.shiftStartTime)
+        driver.find_element_by_xpath(containers.shifts.endTime).send_keys(helper.shiftEndTime)
+
+        driver.find_element_by_xpath(containers.shifts.addBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertEqual(driver.current_url, helper.createShiftContainer)
+        return
+
+    def publishShift(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.shifts.publish).click()
+        sleep(3)
+        self.assertEqual(driver.current_url, helper.createMultipleShifts)
+        driver.find_element_by_xpath(containers.shifts.publishBtn).click()
+        sleep(3)
+        self.assertEqual(driver.current_url, helper.createShiftContainer)
+        driver.find_element_by_xpath(containers.managerHome.logoutTab).click()
+        driver.implicitly_wait(300)
+        sleep(2)
+        self.assertEqual(driver.current_url, helper.url)
         return
 
     def startShift(self):
         driver = self.driver
-        self.addShiftForTests()
+        self.loginAsManager()
+        self.createShift()
+        self.publishShift()
         self.loginAsSalesman()
         driver.find_element_by_xpath(containers.salesmanHome.startShift).click()
         driver.implicitly_wait(300)

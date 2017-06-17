@@ -24,9 +24,7 @@ import 'react-date-picker/index.css';
 import { DateField, DatePicker } from 'react-date-picker';
 
 var options = {
-    noDataText: constantStrings.NoDataText_string,
-    defaultSortName: 'startTime',  // default sort column name
-    defaultSortOrder: 'desc'  // default sort order
+    noDataText: constantStrings.NoDataText_string
 };
 
 function flatList(shifts) {
@@ -44,7 +42,7 @@ function timeFormatter(cell, row) {
     return moment(cell).format('H:mm');
 }
 
-var ShiftsContainer = React.createClass({
+var ShiftsCreationContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -67,18 +65,12 @@ var ShiftsContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
-
-    getInitialState() {
-        this.setSessionId();
-        this.setUserType();
-        this.setShiftsStartDate();
-        this.setShiftsEndDate();
-        var currentDate = moment().format('YYYY-MM-DD');
-        return{
-            shifts: null,
-            startDate: currentDate,
-            endDate:currentDate
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
         }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
     },
     setShiftsEndDate: function() {
         var shiftEndDate = localStorage.getItem('shiftEndDate');
@@ -87,6 +79,20 @@ var ShiftsContainer = React.createClass({
         }
         localStorage.setItem('shiftEndDate', shiftEndDate);
     },
+    getInitialState() {
+        this.setSessionId();
+        this.setUserType();
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
+        var currentDate = moment().format('YYYY-MM-DD');
+        return{
+            shifts: null,
+            startDate: currentDate,
+            endDate:currentDate,
+            shiftsToDelete: []
+        }
+    },
+
     componentDidMount: function() {
         let month = (new Date()).getMonth();
         let year = (new Date()).getFullYear();
@@ -100,13 +106,7 @@ var ShiftsContainer = React.createClass({
         }
         this.updateShifts(shiftStartDate, endOfMonth);
     },
-    setShiftsStartDate: function() {
-        var shiftStartDate = localStorage.getItem('shiftStartDate');
-        if (!shiftStartDate) {
-            shiftStartDate = moment().format('YYYY-MM-DD');
-        }
-        localStorage.setItem('shiftStartDate', shiftStartDate);
-    },
+
     updateShifts(startDate, endDate) {
         localStorage.setItem('shiftStartDate', startDate);
         localStorage.setItem('shiftEndDate', endDate);
@@ -114,7 +114,7 @@ var ShiftsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
-            result = result.filter((shift) => shift.status != "CREATED" && shift.status != "FINISHED");
+            result = result.filter((shift) => shift.status == "CREATED");
             let areas = new Set(result.map((shift) => shift.storeId.area));
             let areaToShifts = {};
             for(let area of areas){
@@ -126,7 +126,8 @@ var ShiftsContainer = React.createClass({
             self.setState({
                 shifts: areaToShifts,
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                shiftsToDelete: []
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -206,24 +207,7 @@ var ShiftsContainer = React.createClass({
             });
         })
     },
-    handleFinishShift: function(row){
-        this.setState({
-            shifts: null
-        });
-        var self = this;
-        var notificationSystem = this.refs.notificationSystem;
-        managerServices.managerFinishShift(row._id).then(function (n) {
-            self.updateShifts(self.state.startDate, self.state.endDate);
-        }).catch(function (errMess) {
-            notificationSystem.clearNotifications();
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 0,
-                position: 'tc'
-            });
-        })
-    },
+
     onClickAddShift: function(){
         this.context.router.push({
             pathname: paths.manager_shiftDetails_path
@@ -235,13 +219,19 @@ var ShiftsContainer = React.createClass({
             pathname: paths.manager_createShifts_path
         })
     },
-    onClickFinishShift(cell, row, rowIndex) {
-        var notificationSystem = this.refs.notificationSystem;
 
-        var self = this;
+    onClickMoveToSetSalesmen: function(){
+        this.context.router.push({
+            pathname: paths.manager_createMultipleShifts_path
+        })
+    },
+
+    onClickDeleteShifts: function() {
+        let notificationSystem = this.refs.notificationSystem;
+        let self = this;
         notificationSystem.clearNotifications();
         notificationSystem.addNotification({
-            message: constantStrings.areYouSureFinishShift_string,
+            message: constantStrings.areYouSure_string,
             level: 'info',
             autoDismiss: 0,
             position: 'tc',
@@ -249,11 +239,31 @@ var ShiftsContainer = React.createClass({
                 label: constantStrings.yes_string,
                 callback:
                     function(){
-                        self.handleFinishShift(row)
+                        self.handleDeleteShifts()
                     }
             }
         });
     },
+
+    handleDeleteShifts: function() {
+        let notificationSystem = this.refs.notificationSystem;
+        let self = this;
+        managementServices.deleteCreatedShifts(this.state.shiftsToDelete)
+            .then(function(result) {
+                self.updateShifts(self.state.startDate, self.state.endDate);
+            })
+            .catch(function(errMsg) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMsg,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
+                });
+                self.updateShifts(self.state.startDate, self.state.endDate);
+            })
+    },
+
     editButton: function(cell, row, enumObject, rowIndex) {
         var isFinished = (row.status == 'FINISHED');
         var isStarted = (row.status == 'STARTED');
@@ -262,7 +272,6 @@ var ShiftsContainer = React.createClass({
                 <button
                     className="w3-card-2 w3-button w3-small w3-round w3-ripple"
                     style={styles.buttonStyle}
-                    type="button"
                     onClick={() =>
                         this.onClickGetReportButton(cell, row, rowIndex)}>
                     <DownloadIcon style={styles.iconStyle}/>
@@ -273,21 +282,9 @@ var ShiftsContainer = React.createClass({
                 <button
                     className="w3-card-2 w3-button w3-small w3-round w3-ripple"
                     style={styles.buttonStyle}
-                    type="button"
                     onClick={() =>
                         this.onClickEditButton(cell, row, rowIndex)}>
                     <EditIcon style={styles.iconStyle}/>
-                </button>
-            )
-        } else {
-            return (
-                <button
-                    className="w3-card-2 w3-button w3-small w3-round w3-ripple"
-                    style={styles.buttonStyle}
-                    type="button"
-                    onClick={() =>
-                        this.onClickFinishShift(cell, row, rowIndex)}>
-                    סיים
                 </button>
             )
         }
@@ -301,7 +298,6 @@ var ShiftsContainer = React.createClass({
                 <button
                     className="w3-card-2 w3-button w3-small w3-round w3-ripple"
                     style={styles.buttonStyle}
-                    type="button"
                     disabled= {isFinished}
                     onClick={() =>
                         this.onClickDeleteButton(cell, row, rowIndex)}>
@@ -324,15 +320,53 @@ var ShiftsContainer = React.createClass({
             this.updateShifts(startDateValue,endDateValue);
     },
 
+    onRowSelect: function(shift, isSelected, e){
+        let newShifts = this.state.shiftsToDelete;
+        if (isSelected) {
+            newShifts.push(shift._id);
+        }
+        else {
+            newShifts = this.state.shiftsToDelete.filter((id) => id != shift._id);
+        }
+        this.setState({
+            shiftsToDelete: newShifts
+        })
+    },
+
+    onSelectAll: function(isSelected, shifts){
+        let newShifts = this.state.shiftsToDelete;
+        if (isSelected) {
+            let newIds = shifts.map((shift) => shift._id);
+            newShifts = this.state.shiftsToDelete.concat(newIds);
+        }
+        else {
+            for(let shift of shifts) {
+                newShifts = newShifts.filter((id) => id != shift._id);
+            }
+        }
+        this.setState({
+            shiftsToDelete: newShifts
+        });
+    },
+
+    selectRowProp:function() {
+        return {
+            mode: 'checkbox',
+            clickToSelect: true,
+            onSelect: this.onRowSelect,
+            onSelectAll: this.onSelectAll
+        }
+    },
+
     renderAreaTable: function(area){
         let shiftsOfArea = this.state.shifts[area];
         return (
-            <div className="w3-round w3-card-2" style={styles.shiftTableStyle}>
+            <div style={styles.shiftTableStyle} className="w3-round w3-card-2">
                 <h1>{area}</h1>
-                <BootstrapTable data={shiftsOfArea} options={options} bordered={false} hover search
+                <BootstrapTable selectRow={this.selectRowProp()}
+                                data={shiftsOfArea} options={options} bordered={false} hover search
                                 searchPlaceholder={constantStrings.search_string}
-                                containerStyle={{border: '2px solid rgba(0, 0, 0, 0.28)'}}
-                >
+                                containerStyle={{border: '2px solid rgba(0, 0, 0, 0.28)'}}>
                     <TableHeaderColumn
                         dataField = 'storeId.managerName'
                         dataAlign = 'right'
@@ -342,14 +376,13 @@ var ShiftsContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'storeId.name'
                         dataAlign = 'right'
-                        filter = { {type: 'TextFilter', placeholder:constantStrings.enterStoreName_string} }
-                        isKey = {true}>
+                        filter = { {type: 'TextFilter', placeholder:constantStrings.enterStoreName_string} }>
                         {constantStrings.storeName_string}
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'startTime'
+                        sort = {true}
                         dataAlign = 'right'
-                        dataSort = {true}
                         dataFormat={ dateFormatter }>
                         {constantStrings.date_string}
                     </TableHeaderColumn>
@@ -393,17 +426,38 @@ var ShiftsContainer = React.createClass({
                         dataField = 'button'
                         width = '50'
                         dataFormat = {this.deleteButton}/>
+                    <TableHeaderColumn
+                        dataField = '_id'
+                        dataAlign = 'right'
+                        width = '0'
+                        isKey = {true}
+                    />
                 </BootstrapTable>
             </div>
         )
     },
 
+    renderDeletebutton: function() {
+        if(this.state.shiftsToDelete.length > 0)
+            return (
+                <button style={styles.deleteButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
+            );
+        else
+            return (
+                <button disabled style={styles.deleteButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickDeleteShifts}>{constantStrings.deleteSelectedShifts_string}</button>
+            );
+    },
+
     renderTable: function () {
         return (
-            <div className="col-xs-12" style={styles.marginBottom}>
+            <div className="col-xs-12">
                 <div className="col-sm-12">
+                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-circle" onClick={this.onClickAddShift}> + </button>
+                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickMoveToSetSalesmen}>{constantStrings.setSalesmanAndPublish_string}</button>
+                    <button style={styles.addButton} className="w3-card-4 w3-button w3-ripple w3-margin-top w3-round" onClick={this.onClickAddShiftsButton}>{constantStrings.addMultipleShifts_string}</button>
+                    {this.renderDeletebutton()}
                     <div>
-                        <p className="col-xs-2" style={styles.dateLabel}>{constantStrings.startDate_string}:</p>
+                        <p className="col-sm-2" style={styles.dateLabel}>{constantStrings.startDate_string}:</p>
                         <DateField
                             dateFormat="DD-MM-YYYY"
                             forceValidDate={true}
@@ -415,7 +469,7 @@ var ShiftsContainer = React.createClass({
                         </DateField>
                     </div>
                     <div>
-                        <p className="col-xs-2" style={styles.dateLabel}>{constantStrings.endDate_string}:</p>
+                        <p className="col-sm-2" style={styles.dateLabel}>{constantStrings.endDate_string}:</p>
                         <DateField
                             dateFormat="DD-MM-YYYY"
                             forceValidDate={true}
@@ -426,6 +480,7 @@ var ShiftsContainer = React.createClass({
                             onChange={(dateString, { dateMoment, timestamp }) => this.changeEndDate(dateMoment)}>
                         </DateField>
                     </div>
+
                 </div>
                 {Object.keys(this.state.shifts).map(this.renderAreaTable)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
@@ -454,4 +509,4 @@ var ShiftsContainer = React.createClass({
     }
 });
 
-module.exports = ShiftsContainer;
+module.exports = ShiftsCreationContainer;

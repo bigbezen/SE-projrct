@@ -45,14 +45,22 @@ var ShiftBaseContainer = React.createClass({
     render: function () {
         return (
             <div className='main-container'>
-                <div className="header navbar-fixed-top w3-theme-d4" style={styles.space}></div>
-                <div style={styles.space} className="w3-theme-l5" />
+                <div className="header navbar-fixed-top" style={styles.navbarStyle}></div>
+                <div style={styles.space}/>
                 {this.props.children}
-                <div className="footer navbar-fixed-bottom w3-theme-d4" style={styles.FooterSpace}>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleSale}><Sale/><br/>{constantsStrings.addSale_string}</button>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleEditSale}><EditSales/><br/>{constantsStrings.editSales_string}</button>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleAddComment}><AddComment/><br/>{constantsStrings.comments_string}</button>
-                    <button className="w3-theme-d5" style={styles.footerButtons} onClick={this.handleEncouragements}><Encouragements/><br/>{constantsStrings.encouragements_string}</button>
+                <div className="footer navbar-fixed-bottom" style={styles.FooterSpace}>
+                    <button style={styles.footerButtons} onClick={this.handleSale}>
+                        <span className="w3-xxlarge"><Sale/></span><br/>{constantsStrings.addSale_string}
+                    </button>
+                    <button style={styles.footerButtons} onClick={this.handleEditSale}>
+                        <span className="w3-xxlarge"><EditSales/></span><br/>{constantsStrings.editSales_string}
+                    </button>
+                    <button style={styles.footerButtons} onClick={this.handleAddComment}>
+                        <span className="w3-xxlarge"><AddComment/></span><br/>{constantsStrings.comments_string}
+                    </button>
+                    <button style={styles.footerButtons} onClick={this.handleEncouragements}>
+                        <span className="w3-xxlarge"><Encouragements/></span><br/>{constantsStrings.encouragements_string}
+                    </button>
                 </div>
             </div>
 

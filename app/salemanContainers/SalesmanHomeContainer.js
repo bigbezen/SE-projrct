@@ -109,13 +109,18 @@ var SalesmanHomeContainer = React.createClass({
                 });
             }
         }).catch(function (errMess) {
-            if(errMess != "user does not have a shift today"){
+            if(errMess != "לדייל אין משמרת היום"){
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
                     message: errMess,
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'
+                });
+            }
+            else {
+                self.setState({
+                    shift: ""
                 });
             }
         })
@@ -142,7 +147,7 @@ var SalesmanHomeContainer = React.createClass({
 
                 </div>
                 <div style={styles.buttonsStyle}>
-                    <button className="w3-btn w3-round-xlarge w3-card-4 w3-theme-d3 w3-xxxlarge" onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
+                    <button className="w3-btn w3-ripple w3-round w3-card-4 w3-xxxlarge" style={styles.startButtonStyle} onClick={this.handleStartShift}>{this.state.buttonTitle}</button>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
@@ -160,9 +165,21 @@ var SalesmanHomeContainer = React.createClass({
             </div>
         )
     },
-
+    renderNoShift:function () {
+        return(
+            <div>
+                <div className="text-center">
+                    <p className="w3-xxlarge"><b>{constantsStrings.noShiftToday_string}</b></p>
+                </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
     render: function () {
-        if(this.state.shift != null)
+        if(this.state.shift === "") {
+            return this.renderNoShift();
+        }
+        else if(this.state.shift != null)
         {
             return this.renderShift();
         }

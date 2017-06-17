@@ -1,20 +1,13 @@
 /**
- * Created by lihiverchik on 28/04/2017.
+ * Created by lihiverchik on 02/06/2017.
  */
 
 var styles = {
-    bodyStyle: {
-        'fontSize': '40px',
-        'marginBottom': '120px'
-    },
-    rowStyle: {
-        'height': '65px',
-        'marginTop': '10px',
-        'marginRight': '2px'
-    },
-    profileStyle: {
-        width: '80%',
-        margin: '50px auto auto'
+    mainContainerStyle: {
+        height: '100%',
+        width: '100%',
+        background: '-webkit-linear-gradient(#1d1c1c, #ffe8c0)',
+        overflow: 'auto',
     },
     notificationStyle: {
         NotificationItem: {
@@ -30,12 +23,19 @@ var styles = {
             },
         }
     },
+    marginTop: {
+        marginTop: '50px'
+    },
+    credentialsContainerStyle: {
+        marginTop: '50px',
+        background: 'rgba(192, 194, 195, 0.13)',
+        padding: '100px'
+    },
     buttonStyle: {
-        marginBottom: '50px',
-        marginTop: '20px',
         background: '#b79446',
         color: 'white'
     }
 };
 
 module.exports = styles;
+

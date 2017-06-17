@@ -479,17 +479,17 @@ namespace FinalProjectTest
         }
 
         //communication handler
-        private static string GetRequest(string url, string sessionId)
+        private static string GetRequest(string url, string sessionId, string param = "" )
         {
             if (string.IsNullOrEmpty(_serverUrl + url))
             {
-                var msg = $"Url is either null or empty: '{_serverUrl + url}'. Cannot send GetRequest";
+                var msg = $"Url is either null or empty: '{_serverUrl + url + param}'. Cannot send GetRequest";
                 Trace.TraceError(msg);
                 throw new ArgumentException(msg);
             }
 
-            Trace.TraceInformation($"GET req to {_serverUrl + url}");
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(_serverUrl + url);
+            Trace.TraceInformation($"GET req to {_serverUrl + url + param}");
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(_serverUrl + url + param);
 
             req.UserAgent = "API Client";
             req.Accept = "application/json";

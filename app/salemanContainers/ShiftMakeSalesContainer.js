@@ -49,7 +49,9 @@ var ShiftMakeSalesContainer = React.createClass({
             shift: null,
             subCategory_to_productList: [],
             soldProducts: {},
-            subCategoriesOpen: {}
+            searchProducts: {},
+            subCategoriesOpen: {},
+            productsMargin: 10
         }
     },
 
@@ -126,12 +128,21 @@ var ShiftMakeSalesContainer = React.createClass({
 
     onClickMinus: function(productId){
         let soldProducts = this.state.soldProducts;
+        let productsMargin = this.state.productsMargin;
+        let subCategory_to_products = this.state.subCategory_to_productList;
         soldProducts[productId]["quantity"] -= 1;
         if(soldProducts[productId]["quantity"] == 0){
-            delete soldProducts[productId]
+            subCategory_to_products[soldProducts[productId]["product"]["subCategory"]]["products"].push(soldProducts[productId]["product"]);
+            delete soldProducts[productId];
+            if(Object.keys(soldProducts).length == 0)
+                productsMargin = 0;
+            else
+                productsMargin -= 120;
         }
         this.setState({
-            soldProducts: soldProducts
+            soldProducts: soldProducts,
+            productsMargin: productsMargin,
+            subCategory_to_productList: subCategory_to_products
         });
     },
 
@@ -146,9 +157,18 @@ var ShiftMakeSalesContainer = React.createClass({
         subCategory_to_products[product.subCategory].products = subCategory_to_products[product.subCategory].products
             .filter((prod) => prod.productId != product.productId);
 
+        let productsMargin = this.state.productsMargin;
+        if(Object.keys(soldProducts).length == 1)
+            productsMargin = 280;
+        else
+            productsMargin += 120;
+
+        this.refs.searchInput.value = "";
         this.setState({
             soldProducts: soldProducts,
-            subCategory_to_productsList: subCategory_to_products
+            subCategory_to_productList: subCategory_to_products,
+            productsMargin: productsMargin,
+            searchProducts: {}
         });
     },
 
@@ -174,7 +194,8 @@ var ShiftMakeSalesContainer = React.createClass({
                 }
                 self.setState({
                     soldProducts: {},
-                    subCategory_to_productList: subCategory_to_productList
+                    subCategory_to_productList: subCategory_to_productList,
+                    productsMargin: 0
                 })
             }).catch(function(errMsg){
             notificationSystem.clearNotifications();
@@ -209,7 +230,8 @@ var ShiftMakeSalesContainer = React.createClass({
                 }
                 self.setState({
                     soldProducts: {},
-                    subCategory_to_productList: subCategory_to_productList
+                    subCategory_to_productList: subCategory_to_productList,
+                    productsMargin: 10
                 })
             }).catch(function(errMsg){
             notificationSystem.clearNotifications();
@@ -222,20 +244,41 @@ var ShiftMakeSalesContainer = React.createClass({
         })
     },
 
+    onChangeSearch: function(event) {
+        let productName = event.target.value;
+        let subCategory_to_productList = this.state.subCategory_to_productList;
+        let isEmpty = productName.trim() == "";
+        if(isEmpty) {
+            this.setState({
+                searchProducts: {}
+            });
+        }
+        else {
+            let searchProducts = Object.keys(subCategory_to_productList)
+                .map((subCategory) => subCategory_to_productList[subCategory].products)
+                .reduce((a, b) => a.concat(b), [])
+                .filter((product) => product.name.includes(productName));
+            this.setState({
+                searchProducts: searchProducts
+            });
+        }
+
+    },
+
     renderStartedSale(){
         if(Object.keys(this.state.soldProducts).length > 0){
             let soldProducts = Object.keys(this.state.soldProducts).map((id) => this.state.soldProducts[id]);
             return(
                 <div>
-                    <div style={styles.reportTopContainer}>
-                        <div style={styles.reportButtonsContainer}>
-                            <button onClick={this.onClickAddSale} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8" > {constantStrings.reportSale_string}</button>
+                    <div className="navbar-fixed-top" style={styles.reportTopContainer}>
+                        <div className="w3-ripple" style={styles.reportButtonsContainer}>
+                            <button onClick={this.onClickAddSale} className="w3-round-xlarge w3-xxxlarge w3-card-8" style={styles.reportButtonStyle}> {constantStrings.reportSale_string}</button>
                         </div>
-                        <div style={styles.reportButtonsContainer}>
-                            <button onClick={this.onClickOpenBottle} className="w3-round-xxlarge w3-theme-d5 w3-xxxlarge w3-card-8">{constantStrings.reportOpen_string}</button>
+                        <div className="w3-ripple" style={styles.reportButtonsContainer}>
+                            <button onClick={this.onClickOpenBottle} className="w3-round-xlarge w3-xxxlarge w3-card-8" style={styles.reportButtonStyle}>{constantStrings.reportOpen_string}</button>
                         </div>
                     </div>
-                    <div className="col-sm-10 col-sm-offset-1" style={{marginTop: '20px'}}>
+                    <div className="navbar-fixed-top" style={styles.selectedStringContainerStyle}>
                         <h1 className="text-center"><b>{constantStrings.selectedProducts_string}</b></h1>
                         {soldProducts.map(this.renderEachSoldProduct)}
                     </div>
@@ -250,8 +293,8 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderEachSoldProduct: function(productAndQuantity){
         return (
-            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge"
-                style={styles.productSaleRow}>
+            <div className="col-sm-10 col-sm-offset-1 w3-round-xlarge w3-xxxlarge w3-card-4"
+                style={styles.soldProductRow}>
                 <span style={{float: 'right', marginTop: '15px'}}>{productAndQuantity.product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}}>
                     <span onClick={() => this.onClickPlus(productAndQuantity.product.productId)}><PlusIcon/></span>
@@ -264,7 +307,7 @@ var ShiftMakeSalesContainer = React.createClass({
 
     renderEachProduct: function(product){
         return (
-            <div className="col-sm-12 w3-round-xlarge w3-theme-l4 w3-xxxlarge"
+            <div className="col-sm-12 w3-round-xlarge w3-xxxlarge w3-card-4 w3-ripple"
                  style={styles.productSaleRow}  onClick={() => this.onClickProduct(product)}>
                 <span style={{float: 'right', marginTop: '15px'}}>{product.name}</span>
                 <span style={{float: 'left', marginTop: '15px'}} className="w3-xxxlarge"><PlusIcon /></span>
@@ -292,9 +335,10 @@ var ShiftMakeSalesContainer = React.createClass({
     renderProductsForSubCategory: function(category){
         let self = this;
         let productsAndCategory = this.state.subCategory_to_productList[category];
+        productsAndCategory.products = productsAndCategory.products.sort(this.productSortingMethod);
         return (
             <div className="col-sm-12" key={category} style={{marginTop: '15px'}}>
-                <button className="w3-btn w3-round-xlarge w3-theme-d3 col-sm-12 text-center" style={{marginBottom: '10px'}} onClick={function(){
+                <button className="w3-btn w3-round-xlarge col-sm-12 text-center" style={{marginBottom: '10px', background:'rgba(121, 97, 43, 0.63)'}} onClick={function(){
                     let subCategoriesOpen = self.state.subCategoriesOpen;
                     subCategoriesOpen[category] = !subCategoriesOpen[category];
                     self.setState({subCategoriesOpen: subCategoriesOpen});
@@ -303,7 +347,7 @@ var ShiftMakeSalesContainer = React.createClass({
                     {this.renderArrow(self.state.subCategoriesOpen[category])}
                 </button>
                 <Collapse in={this.state.subCategoriesOpen[category]}>
-                    <div className="col-sm-10">
+                    <div className="col-sm-10 col-sm-offset-1">
                         {productsAndCategory.products.map(this.renderEachProduct)}
                     </div>
                 </Collapse>
@@ -311,21 +355,43 @@ var ShiftMakeSalesContainer = React.createClass({
         )
     },
 
+    renderAllProductsOrSearchProducts: function(){
+        let categories = Object.keys(this.state.subCategory_to_productList).sort();
+        if(Object.keys(this.state.searchProducts).length == 0)
+            return (
+                categories.map(this.renderProductsForSubCategory)
+            );
+        else
+            return (
+                <div className="col-sm-10 col-sm-offset-1">
+                    {this.state.searchProducts.map(this.renderEachProduct)}
+                </div>
+            )
+    },
+
     renderProducts(){
         let self = this;
-        let categories = Object.keys(this.state.subCategory_to_productList).sort();
+        let searchText = constantStrings.search_string;
+
         return(
             <div>
-                <div className="w3-theme-d5 col-xs-12">
-                    <button className="col-xs-offset-7 w3-theme-d5 w3-xxxlarge btn"
-                            onClick={this.handleFinishShift} type="submit">
+                <div className="col-xs-12" style={styles.headerStyle}>
+                    <button className="col-xs-offset-7 btn navbar-fixed-top"
+                            onClick={this.handleFinishShift} type="submit"
+                            style={{fontSize:'40px', background:'#54504b', color:'white'}}>
                         {constantStrings.endShift_string}
                         <StartShiftIcon/>
                     </button>
                 </div>
                 {this.renderStartedSale()}
-                <div>
-                    {categories.map(this.renderProductsForSubCategory)}
+                <div style={{paddingTop: this.state.productsMargin + 'px'}} className="w3-xxxlarge">
+                    <input className="col-sm-12 w3-round-large" type="search" onChange={this.onChangeSearch}
+                           ref="searchInput" placeholder={constantStrings.productSearch_string}
+                            />
+                </div>
+                <div style={{marginBottom: '50px'}}>
+                    {this.renderAllProductsOrSearchProducts()}
+
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

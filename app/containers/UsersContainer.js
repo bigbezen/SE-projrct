@@ -14,9 +14,10 @@ var NotificationSystem  = require('react-notification-system');
 var TrashIcon           = require('react-icons/lib/fa/trash-o');
 var EditIcon            = require('react-icons/lib/md/edit');
 var userServices        = require('../communication/userServices');
+var sorting             = require('../utils/SortingMethods');
 
 function dateFormatter(cell, row) {
-    return moment(cell).format('YYYY-MM-DD');
+    return moment(cell).format('DD-MM-YYYY');
 }
 
 function flatList(users) {
@@ -35,16 +36,30 @@ var UsersContainer = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     getInitialState() {
         this.setSessionId();
+        this.setShiftsEndDate();
         this.setUserType();
+        this.setShiftsStartDate();
         return{
             users: null,
             username: null
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -79,7 +94,7 @@ var UsersContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         managementServices.getAllUsers().then(function (n) {
-            var flatUsers = flatList(n);
+            var flatUsers = flatList(n.sort(sorting.salesmenSortingMethod));
             self.setState({
                 users: flatUsers
             });
@@ -180,11 +195,12 @@ var UsersContainer = React.createClass({
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2"
+                className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                style={styles.buttonStyle}
                 type="button"
                 onClick={() =>
                     this.onClickEditButton(cell, row, rowIndex)}>
-                <EditIcon/>
+                <EditIcon style={styles.iconStyle}/>
             </button>
         )
     },
@@ -192,11 +208,12 @@ var UsersContainer = React.createClass({
     deleteButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2"
+                className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                style={styles.buttonStyle}
                 type="button"
                 onClick={() =>
                     this.onClickDeleteButton(cell, row, rowIndex)}>
-                <TrashIcon/>
+                <TrashIcon style={styles.iconStyle}/>
             </button>
         )
     },
@@ -204,11 +221,12 @@ var UsersContainer = React.createClass({
     renderTable: function () {
         return (
             <div className="col-xs-12" style={styles.marginBottom}>
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle " onClick={this.onClickAddButton}> + </button>
+                <button className="w3-card-4 w3-button w3-xlarge w3-circle w3-ripple" style={styles.addButtonStyle} onClick={this.onClickAddButton}> + </button>
                 <span className="pull-left">
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-round" style={styles.getReportButtonStyle} onClick={this.onClickGetReportButton}> הורד דוח </button>
+                <button className="w3-card-4 w3-button w3-large w3-round w3-ripple" style={styles.getReportButtonStyle} onClick={this.onClickGetReportButton}> הורד דוח </button>
                 </span>
-                    <BootstrapTable data={this.state.users} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
+                <div className="w3-round" style={styles.tableStyle}>
+                <BootstrapTable data={this.state.users} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                     <TableHeaderColumn
                         dataField = 'personal.id'
                         dataAlign = 'right'
@@ -271,6 +289,7 @@ var UsersContainer = React.createClass({
                         dataFormat = {this.deleteButton}>
                     </TableHeaderColumn>
                 </BootstrapTable>
+                </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )

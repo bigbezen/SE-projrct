@@ -58,7 +58,8 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-let monthlyJob  = scheduler.scheduleJob('46 * * * *', _genarateMonthlyReport);
+let monthlyReportJob  = scheduler.scheduleJob('* * 18 * *', _genarateMonthlyReport);
+let finishShiftsJob = scheduler.scheduleJob('* 0 * * *', _finishStartedShifts);
 
 console.log('server is now running on port: ', {'port': port});
 function _connectToDb(){
@@ -80,7 +81,9 @@ async function _genarateMonthlyReport(){
     let res = await reportsService.genarateMonthlyUserHoursReport();
     res = await reportsService.genarateMonthAnalysisReport();
 }
-
+async function _finishStartedShifts(){
+    let res = await shiftService.finishStartedShifts();
+}
 
 function _setapApiEndpoints() {
     app.use('/scripts', express.static(path.join(__dirname, '/../scripts')));
@@ -259,8 +262,20 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        console.log('bla');
         let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, req.query.date);
+        if(result.code == 200)
+            res.status(200).send(result.shift);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.get('/salesman/getCurrentShiftForRandomTests', async function (req, res) {
+
+        if(!('sessionid' in req.headers)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getSalesmanCurrentShift(req.headers.sessionid, new Date().toISOString());
         if(result.code == 200)
             res.status(200).send(result.shift);
         else
@@ -284,7 +299,7 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.km, req.body.parking);
+        let result = await shiftService.reportExpenses(req.body.sessionId, req.body.shiftId, req.body.km, req.body.parking, req.body.extraExpenses);
         if(result.code == 200)
             res.status(200).send(result.shift);
         else
@@ -314,8 +329,23 @@ function _setapApiEndpoints() {
         }
     });
 
-    app.post('/salesman/shiftRegister', function (req, res) {
-        res.status(200).send('registration to shift');
+    app.post('/salesman/submitConstraints', async function (req, res) {
+        if(!validator.submitConstraints(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result;
+        try {
+            result = await shiftService.submitConstraints(req.body.sessionId, req.body.constraints);
+        }
+        catch(err){
+            res.status(500).send(err);
+            return;
+        }
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
     });
 
 //Management Services
@@ -618,9 +648,10 @@ function _setapApiEndpoints() {
             res.status(404).send('invalid parameters');
             return;
         }
-        let result = await shiftService.automateGenerateShifts(req.body.sessionId, req.body.starttime, req.body.endTime);
+
+        let result = await shiftService.automateGenerateShifts(req.body.sessionId, req.body.startTime, req.body.endTime);
         if(result.code == 200)
-            res.status(200).send(result.shifts);
+            res.status(200).send(result.shiftArr);
         else
             res.status(result.code).send(result.err);
     });
@@ -631,6 +662,19 @@ function _setapApiEndpoints() {
             return;
         }
         let result = await shiftService.publishShifts(req.body.sessionId, req.body.shiftArr);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+    });
+
+
+    app.post('/management/deleteCreatedShifts', async function(req, res) {
+        if(!('sessionId' in req.body)){
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.deleteCreatedShifts(req.body.sessionId, req.body.idsArr);
         if(result.code == 200)
             res.status(200).send();
         else
@@ -649,12 +693,36 @@ function _setapApiEndpoints() {
             res.status(result.code).send(result.err);
     });
 
+    app.get('/management/getShiftsByStatus', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('status' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getAllShiftsByStatus(req.headers.sessionid, req.query.status);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.get('/management/getSalesmanFinishedShifts', async function(req, res){
         if(!('sessionid' in req.headers) || (!('salesmanId' in req.query))) {
             res.status(404).send('invalid parameters');
             return;
         }
         let result = await shiftService.getSalesmanFinishedShifts(req.headers.sessionid, req.query.salesmanId);
+        if(result.code == 200)
+            res.status(200).send(result.shifts);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.get('/management/getStoreShiftsByStatus', async function(req, res){
+        if(!('sessionid' in req.headers) || (!('storeId' in req.query)) || (!('status' in req.query))) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.getStoreShiftsByStatus(req.headers.sessionid, req.query.storeId, req.query.status);
         if(result.code == 200)
             res.status(200).send(result.shifts);
         else
@@ -757,6 +825,18 @@ function _setapApiEndpoints() {
         res.status(200).send('get a specific shift details');
     });
 
+    app.post('/manager/finishShift', async function (req, res) {
+        if(!validator.managerEndShift(req.body)) {
+            res.status(404).send('invalid parameters');
+            return;
+        }
+        let result = await shiftService.managerEndShift(req.body.sessionId, req.body.shiftId);
+        if(result.code == 200)
+            res.status(200).send();
+        else
+            res.status(result.code).send(result.err);
+    });
+
     app.get('/manager/getShortages', function (req, res) {
         res.status(200).send('get shortages');
     });
@@ -841,9 +921,28 @@ function _setapApiEndpoints() {
         //     return;
         // }
         let result = await reportsService.getMonthlyHoursSalesmansReportXl(req.body.sessionId, req.body.year, req.body.month);
-        console.log('bla');
         if(result.code == 200)
             res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/manager/exportOrderEventsReport', async function(req, res){
+        // if(!validator.exportMonthlyHoursReport(req.body)){
+        //     res.status(404).send('invalid parameters');
+        //     return;
+        // }
+        let result = await reportsService.getOrderEventReportXL(req.body.sessionId, req.body.year, req.body.month);
+        if(result.code == 200)
+            res.status(200).send(result.report);
+        else
+            res.status(result.code).send(result.err);
+    });
+
+    app.post('/manager/getEventsReportXl', async function(req, res){
+        let result = await reportsService.getOrderEventReportXL(req.body.sessionId, req.body.year, req.body.month);
+        if(result.code == 200)
+            res.status(200).send();
         else
             res.status(result.code).send(result.err);
     });
@@ -926,6 +1025,18 @@ function _setapApiEndpoints() {
             let result = await deletionService.cleanEncs();
             if(result.result.ok == 1)
                 res.status(200).send("encouragements are successfully deleted");
+            else
+                res.status(500).send("could not delete");
+        }
+        else
+            res.status(404).send("unauthorized");
+    });
+
+    app.get('/super/cleanFinshedShifts', async function(req, res){
+        if(req.query.super == "ibblsservice"){
+            let result = await deletionService.cleanFInishedShifts();
+            if(result.result.ok == 1)
+                res.status(200).send("shiftd are successfully deleted");
             else
                 res.status(500).send("could not delete");
         }

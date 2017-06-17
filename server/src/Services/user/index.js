@@ -72,7 +72,6 @@ let login = async function(username, password){
     else
         return {'code': '500', 'err': 'something went wrong'};
 
-
 };
 
 let logout = async function(sessionId) {
@@ -146,10 +145,13 @@ let editUser = async function(sessionId, username, userDetails){
             return {'code': 409, 'err': constansStrings.UsernameOrIdAlreadyExists}
         }
     }
-    if(userDetails.personal.id != user.personal.id){
-        let isExistId = await dal.getUserById(userDetails.personal.id);
-        if(isExistId != null){
-            return {'code': 409, 'err': constansStrings.UsernameOrIdAlreadyExists}
+    if(userDetails.personal.id != undefined) {
+        if (userDetails.personal.id != user.personal.id) {
+            let isExistId = await dal.getUserById(userDetails.personal.id);
+            if (isExistId != null) {
+                return {'code': 409, 'err': constansStrings.UsernameOrIdAlreadyExists}
+            }
+            userDetails.password = cypher.encrypt(userDetails.personal.id);
         }
     }
 

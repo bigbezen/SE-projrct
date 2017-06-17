@@ -8,6 +8,7 @@ var userServices        = require('../communication/userServices');
 var NotificationSystem  = require('react-notification-system');
 var managementService   = require('../communication/managementServices');
 var moment              = require('moment');
+var paths               = require('../utils/Paths');
 
 var SalesmanShiftsScheduleContainer = React.createClass({
 
@@ -15,13 +16,12 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
 
-    setSessionId: function() {
-        var sessId = localStorage.getItem('sessionId');
-        if (!sessId) {
-            sessId = 0;
+    getInitialState() {
+        this.setSessionId();
+        this.setUserType();
+        return {
+            shifts: null
         }
-        localStorage.setItem('sessionId', sessId);
-        userServices.setSessionId(sessId);
     },
 
     setUserType: function() {
@@ -33,10 +33,13 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         userServices.setUserType(userType);
     },
 
-    getInitialState() {
-        return {
-            shifts: null
+    setSessionId: function() {
+        var sessId = localStorage.getItem('sessionId');
+        if (!sessId) {
+            sessId = 0;
         }
+        localStorage.setItem('sessionId', sessId);
+        userServices.setSessionId(sessId);
     },
 
     componentDidMount() {
@@ -61,7 +64,8 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         managementService.getShiftsFromDate(currentDate).then(function (result) {
             var sortedShifts = result.sort(self.sortShifts)
-                .filter((shift) => shift.status != 'FINISHED');
+                .filter((shift) =>
+                    ((shift.status == 'PUBLISHED') || shift.type.includes(constantsStrings.shiftType_event)));
             self.setState({
                 shifts: sortedShifts
             });
@@ -73,6 +77,12 @@ var SalesmanShiftsScheduleContainer = React.createClass({
                 autoDismiss: 0,
                 position: 'tc'
             });
+        })
+    },
+
+    handleMoveToAssignShifts: function(){
+        this.context.router.push({
+            pathname: paths.salesman_assignShifts_path
         })
     },
 
@@ -91,15 +101,29 @@ var SalesmanShiftsScheduleContainer = React.createClass({
         var endTime = moment(shift.endTime).format('H:mm');
         return(
             <div key={i} className="row w3-card-4 w3-round-large" style={styles.shiftStyle}>
-                <header className="w3-container w3-theme-d3 w3-round-large">
+                <header className="w3-container w3-round" style={styles.headerStyle}>
                     <p className="w3-xxxlarge" style={styles.textStyleRight}>{shiftDate}</p>
                     <p className="w3-xxxlarge" style={styles.textStyleLeft}> {startTime}-{endTime}</p>
                 </header>
 
-                <div className="w3-container text-center">
-                    <p className="w3-xxxlarge" >{constantsStrings.storeName_string}: {shift.storeId.name}</p>
+                <div className="w3-container" >
+                    <p className="w3-xxxlarge"><b>{constantsStrings.shiftType_string}</b>: {shift.type}</p>
+                    <p className="w3-xxxlarge"><b>{constantsStrings.storeName_string}</b>: {shift.storeId.name}</p>
+                    <p className="w3-xxxlarge"><b>{constantsStrings.city_string}</b>: {shift.storeId.city}</p>
+                    <p className="w3-xxxlarge"><b>{constantsStrings.managerComment_string}</b>: {shift.managerComment}</p>
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
+
+    renderAssignShiftsButton: function() {
+        return (
+            <div className="navbar-fixed-top text-center" style={{marginTop: '80px'}}>
+                <button className="w3-button w3-xxlarge w3-round w3-card-4 w3-ripple" style={styles.assignButton}
+                        onClick={this.handleMoveToAssignShifts}>
+                    {constantsStrings.assignShifts_string}
+                </button>
             </div>
         )
     },
@@ -107,16 +131,30 @@ var SalesmanShiftsScheduleContainer = React.createClass({
     renderTable: function() {
         return (
             <div className='main-container' style={styles.bodyStyle}>
-                <div className="w3-container">
+                {this.renderAssignShiftsButton()}
+                <div className="w3-container" style={{marginTop: '130px'}}>
                     {this.state.shifts.map(this.renderEachShift)}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
     },
-
+    renderNoShifts:function () {
+        return(
+            <div>
+                <div className="text-center">
+                    {this.renderAssignShiftsButton()}
+                    <p className="w3-xxlarge" style={{marginTop: '120px'}}><b>{constantsStrings.noShifts_string}</b></p>
+                </div>
+                <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
+            </div>
+        )
+    },
     render: function () {
-        if(this.state.shifts != null)
+        if(this.state.shifts != null && this.state.shifts.length == 0){
+            return this.renderNoShifts();
+        }
+        else if(this.state.shifts != null)
         {
             return this.renderTable();
         }

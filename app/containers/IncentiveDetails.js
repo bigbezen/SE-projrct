@@ -9,6 +9,8 @@ var styles              = require('../styles/managerStyles/styles');
 var paths               = require('../utils/Paths');
 var managementServices  = require('../communication/managementServices');
 var userServices        = require('../communication/userServices');
+var DeleteIcon          = require('react-icons/lib/fa/close');
+var moment              = require('moment');
 
 var IncentiveDetails = React.createClass({
 
@@ -19,6 +21,8 @@ var IncentiveDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return {
             productsForIncentive: [1],
             products: [],
@@ -27,7 +31,13 @@ var IncentiveDetails = React.createClass({
             productsOfSubCategory: []
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -35,6 +45,13 @@ var IncentiveDetails = React.createClass({
         }
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
+    },
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
     },
 
     setSessionId: function() {
@@ -140,8 +157,12 @@ var IncentiveDetails = React.createClass({
         this.refs.subCategory.value = constantsStrings.dropDownChooseString;
     },
 
-    deleteProduct: function(){
-        var newProducts = this.state.productsForIncentive.slice(0, -1);
+    deleteProduct: function(i){
+        var newProducts = this.state.productsForIncentive;
+        if(i == undefined)
+            newProducts = newProducts.slice(0, -1);
+        else
+            newProducts.splice(i, 1);
 
         this.setState({
             productsForIncentive: newProducts,
@@ -166,7 +187,8 @@ var IncentiveDetails = React.createClass({
     renderProductChoice: function(product, i){
         return (
             <div className="row" style={styles.productSelect}>
-                <select key={i} className="col-xs-6 col-xs-offset-2" onChange={this.onChangeProduct}
+                <span className="col-sm-1 col-sm-offset-1"><a onClick={() => this.deleteProduct(i)}><DeleteIcon/></a></span>
+                <select key={i} className="col-xs-6" onChange={this.onChangeProduct}
                     ref={"product" + i} data="" >
                     {this.getOptions(this.state.products, i)}
                 </select>
@@ -178,7 +200,7 @@ var IncentiveDetails = React.createClass({
         if(this.state.editedIncentive == undefined)
             return constantsStrings.add_string;
         else
-            return constantsStrings.edit_string;
+            return constantsStrings.save_string;
     },
 
     handleSubmitIncentive: function () {
@@ -279,7 +301,7 @@ var IncentiveDetails = React.createClass({
 
     addNewIncentive: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-card-4" style={styles.editBodyStyle}>
                 <form className="form-horizontal text-right w3-text-black" onSubmit={function(e){
                     e.preventDefault();
                 }}>
@@ -296,7 +318,6 @@ var IncentiveDetails = React.createClass({
                         <input type="text"
                                className="col-xs-6 col-xs-offset-2"
                                ref="nameBox"
-                               required
                         />
                     </div>
 
@@ -321,8 +342,7 @@ var IncentiveDetails = React.createClass({
 
                     <div className="form-group">
                         <div className="row">
-                            <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" onClick={this.addProduct}>+</button>
-                            <button className="w3-card-4 w3-circle w3-button" onClick={this.deleteProduct}>-</button>
+                            <button className="w3-card-4 w3-circle w3-button col-xs-offset-2" style={styles.addBottleButtonStyle} onClick={this.addProduct}>+</button>
                         </div>
                     </div>
 
@@ -350,8 +370,9 @@ var IncentiveDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-button w3-card-4 btn w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-button w3-card-4 btn col-xs-6 col-xs-offset-2"
                             type="submit"
+                            style={styles.saveButtonStyle}
                         onClick={this.handleSubmitIncentive}>
                             {this.renderEditOrAddString()}
                         </button>

@@ -33,9 +33,11 @@ var SalesmanProfileContainer = React.createClass({
     },
 
     getInitialState() {
-      return({
-          profile: null
-      })
+        this.setSessionId();
+        this.setUserType();
+        return({
+            profile: null
+        })
     },
 
     componentDidMount() {
@@ -68,14 +70,14 @@ var SalesmanProfileContainer = React.createClass({
 
     renderProfile: function () {
         return(
-        <div className="row w3-card-4 w3-round-large w3-container" style={styles.profileStyle}>
+        <div className="row w3-card-8 w3-round w3-container" style={styles.profileStyle}>
                 <p className="w3-xxlarge"><b>{constantsStrings.firstName_string}</b>: {this.state.profile.personal.firstName}</p>
                 <p className="w3-xxlarge"><b>{constantsStrings.lastName_string}</b>: {this.state.profile.personal.lastName}</p>
                 <p className="w3-xxlarge"><b>{constantsStrings.username_string}</b>: {this.state.profile.username}</p>
                 <p className="w3-xxlarge"><b>{constantsStrings.email_string}</b>: {this.state.profile.contact.email}</p>
                 <p className="w3-xxlarge"><b>{constantsStrings.phone_string}</b>: {this.state.profile.contact.phone}</p>
             <div className="text-center">
-                <button className="w3-theme-d3 w3-xxlarge w3-round-xlarge w3-card-4" style={styles.buttonStyle} onClick={this.handleChangePassword}> {constantsStrings.changePassButton_string}</button>
+                <button className="w3-button w3-xxlarge w3-round w3-card-4 w3-ripple" style={styles.buttonStyle} onClick={this.handleChangePassword}> {constantsStrings.changePassButton_string}</button>
             </div>
             <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
         </div>

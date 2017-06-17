@@ -13,6 +13,9 @@ var NotificationSystem  = require('react-notification-system');
 var styles              = require('../styles/managerStyles/styles');
 var userServices        = require('../communication/userServices');
 
+import 'react-date-picker/index.css';
+import { DateField, DatePicker } from 'react-date-picker';
+
 var UserDetails = React.createClass({
 
     contextTypes: {
@@ -22,6 +25,8 @@ var UserDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
         return {
             editing: false,
             gender: '',
@@ -29,7 +34,20 @@ var UserDetails = React.createClass({
             prevUsername:''
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -103,7 +121,7 @@ var UserDetails = React.createClass({
         }*/
         var newUser = new userInfo();
         newUser.username = this.refs.usernameBox.value;
-        newUser.startDate = this.refs.startDateBox.value;
+        newUser.startDate = moment(this.refs.startDateBox.state.value).toDate();
         //personal
         newUser.personal = {};
         newUser.personal.id = this.refs.idBox.value;
@@ -200,7 +218,7 @@ var UserDetails = React.createClass({
 
     addNewUser: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-card-4" style={styles.editBodyStyle}>
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right w3-text-black">
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
@@ -232,10 +250,17 @@ var UserDetails = React.createClass({
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.startDate_string}:</label>
                     </div>
                     <div className="form-group ">
-                        <input type="date"
-                               className="col-xs-4 col-xs-offset-2"
-                               ref="startDateBox"
-                        />
+                        <div className="col-xs-offset-2">
+                            <DateField
+                                dateFormat="DD-MM-YYYY"
+                                forceValidDate={true}
+                                defaultValue={(new Date()).getTime()}
+                                ref="startDateBox"
+                                updateOnDateClick={true}
+                                collapseOnDateClick={true}
+                            >
+                            </DateField>
+                        </div>
                     </div>
 
                     <div className="form-group ">
@@ -379,7 +404,7 @@ var UserDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-card-4 w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-button w3-card-4 col-xs-4 col-xs-offset-2 w3-round w3-ripple" style={styles.editStyle}
                             type="submit">
                             {this.getButtonString()}
                         </button>
@@ -397,7 +422,7 @@ var UserDetails = React.createClass({
         this.state.gender = this.currProduct.personal.sex;
         this.state.role = this.currProduct.jobDetails.userType;
         this.refs.usernameBox.value = this.currProduct.username;
-        this.refs.startDateBox.value = moment(this.currProduct.startDate).format('YYYY-MM-DD');
+        this.refs.startDateBox.state.value = moment(this.currProduct.startDate).toDate().getTime();
         this.refs.salaryBox.value = this.currProduct.jobDetails.salary;
         //personal
         this.refs.idBox.value = this.currProduct.personal.id;

@@ -14,6 +14,7 @@ var TrashIcon           = require('react-icons/lib/fa/trash-o');
 var EditIcon            = require('react-icons/lib/md/edit');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
+var moment              = require('moment');
 
 var options = {
     noDataText: constantStrings.NoDataText_string
@@ -33,7 +34,13 @@ var ProductsContainer = React.createClass({
         localStorage.setItem('sessionId', sessId);
         userServices.setSessionId(sessId);
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -46,11 +53,19 @@ var ProductsContainer = React.createClass({
     getInitialState() {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return{
             products: null
         }
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     componentDidMount() {
         this.updateProducts();
     },
@@ -127,11 +142,12 @@ var ProductsContainer = React.createClass({
     editButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2 col-xs-offset-2"
+                className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                style={styles.buttonStyle}
                 type="button"
                 onClick={() =>
                     this.onClickEditButton(cell, row, rowIndex)}>
-                <EditIcon/>
+                <EditIcon style={styles.iconStyle}/>
             </button>
         )
     },
@@ -139,11 +155,12 @@ var ProductsContainer = React.createClass({
     deleteButton: function(cell, row, enumObject, rowIndex) {
         return (
             <button
-                className="w3-card-2"
+                className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                style={styles.buttonStyle}
                 type="button"
                 onClick={() =>
                     this.onClickDeleteButton(cell, row, rowIndex)}>
-                <TrashIcon/>
+                <TrashIcon style={styles.iconStyle}/>
             </button>
         )
     },
@@ -151,8 +168,8 @@ var ProductsContainer = React.createClass({
     renderTable: function () {
         return (
             <div className="col-xs-12">
-                <button className="w3-card-2 w3-button w3-theme-d5 w3-margin-top w3-circle" onClick={this.onClickAddButton}> + </button>
-                <div style={styles.marginBottom}>
+                <button className="w3-card-4 w3-button w3-xlarge w3-circle w3-ripple" style={styles.addButtonStyle} onClick={this.onClickAddButton}> + </button>
+                <div className="w3-round" style={styles.tableStyle}>
                     <BootstrapTable data={this.state.products} options={options} bordered={false} hover search searchPlaceholder={constantStrings.search_string}>
                         <TableHeaderColumn
                             dataField = 'name'
@@ -185,11 +202,6 @@ var ProductsContainer = React.createClass({
                             filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.product_subCategory }
                             filter={ { type: 'SelectFilter', placeholder:constantStrings.selectSubCategory_string,options: constantStrings.product_subCategory } }>
                             {constantStrings.subCategory_string}
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
-                            dataField = 'notifyManager'
-                            dataAlign = 'right'>
-                            {constantStrings.notifyManager_string}
                         </TableHeaderColumn>
                         <TableHeaderColumn
                             dataAlign = 'right'

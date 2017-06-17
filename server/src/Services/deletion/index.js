@@ -62,6 +62,11 @@ let cleanSMHReport = async function(){
     return result;
 };
 
+let cleanFInishedShifts = async function(){
+    let result = await shifts.remove({'status': 'FINISHED'});
+    return result;
+};
+
 let initiateProductsDb =  async function(){
     let productsSpirit = [
         {
@@ -160,8 +165,8 @@ let initiateProductsDb =  async function(){
         {name: 'פייר פראן רזרב', subCategory: 'Cogniac',},
         {name: "פייר פראן סלקסיון דה אנג'לס", subCategory: 'Cogniac',},
         {name: 'פייר פראן אבל', subCategory: 'Cogniac',},
-        {name: "סמירנוף רד 500 מל", subCategory: 'Vodka',},
-        {name: "סמירנוף בלאק 500 מל", subCategory: 'Vodka',},
+        {name: "סמירנוף רד 700 מל", subCategory: 'Vodka',},
+        {name: "סמירנוף בלאק 700 מל", subCategory: 'Vodka',},
         {name: "סמירנוף רד 1000 מל", subCategory: 'Vodka',},
         {name: "סמירנוף בלאק 1000 מל", subCategory: 'Vodka',},
         {name: "סמירנוף גולד", subCategory: 'Vodka',},
@@ -243,7 +248,6 @@ let initiateProductsDb =  async function(){
             wine: 'יין'
         };
     try {
-        console.log('bla');
         for (let product of productsSpirit) {
             let prod = new products();
             prod.name = product.name;
@@ -254,9 +258,7 @@ let initiateProductsDb =  async function(){
             prod.minRequiredAmount = 1;
             prod.notifyManager = false;
 
-            console.log('bla');
             let result = await prod.save();
-            console.log('bla');
         }
         for (let product of productsWine) {
             let prod = new products();
@@ -287,6 +289,7 @@ module.exports.cleanEncs = cleanEncs;
 module.exports.cleanMAReports = cleanMAReport;
 module.exports.cleanSMHReports = cleanSMHReport;
 module.exports.initiateProducts = initiateProductsDb;
+module.exports.cleanFInishedShifts = cleanFInishedShifts;
 
 
 

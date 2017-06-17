@@ -12,43 +12,7 @@ var styles                  = require('../styles/salesmanStyles/editSaleStyles')
 var moment                  = require('moment');
 var userServices            = require('../communication/userServices');
 var NotificationSystem      = require('react-notification-system');
-
-const cellEditProp = {
-    mode: 'click',
-};
-
-function dateFormatter(cell, row) {
-    return moment(cell).format('H:mm');
-}
-
-class QuantityEditor extends React.Component {
-    constructor(props) {
-        super(props);
-        this.updateData = this.updateData.bind(this);
-    }
-    focus() {
-        this.refs.inputRef.focus();
-    }
-    componentDidMount(){
-        this.refs.inputRef.value = this.props.row.quantity;
-    }
-    updateData() {
-        this.props.onUpdate(this.props.row, this.refs.inputRef.value);
-    }
-    render() {
-        return (
-            <span>
-        <input
-            ref='inputRef'
-            style={ styles.quantityEditorStyle }
-            onBlur={this.updateData}
-            type='text'/>
-      </span>
-        );
-    }
-}
-
-const createPriceEditor = (onUpdate, props) => (<QuantityEditor onUpdate={ onUpdate } {...props}/>);
+var CloseIcon               = require('react-icons/lib/fa/close');
 
 var EditSaleContainer = React.createClass({
 
@@ -91,10 +55,10 @@ var EditSaleContainer = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         salesmanServices.getCurrentShift().then(function (currShift) {
-            self.setState(
-                {shift: currShift,
-                    sales: currShift.sales
-                });
+            self.setState({
+                shift: currShift,
+                sales: currShift.sales
+            });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
@@ -105,13 +69,24 @@ var EditSaleContainer = React.createClass({
             });
         })
     },
-
-    onUpdateAmount: function (row, amount) {
+    onUpdateAmount: function (row, i) {
+        var quantity = this.refs["quantity" + i].value;
+        this.updateAmount(row,quantity);
+    },
+    updateAmount:function (sale,quantity){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.editSale(this.state.shift._id, row.productId, row.timeOfSale, amount).then(function (n) {
-            self.updateShift();
-        }).catch(function (errMess) {
+        salesmanServices.editSale(this.state.shift._id, sale.productId, sale.timeOfSale, quantity)
+            .then(function (n) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: constantStrings.editSuccessMessage_string,
+                    level: 'info',
+                    autoDismiss: 1,
+                    position: 'tc'
+                });
+                self.updateShift();
+            }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
                 message: errMess,
@@ -120,37 +95,51 @@ var EditSaleContainer = React.createClass({
                 position: 'tc'
             });
         });
-        this.updateShift();
     },
 
-    renderSales: function () {
-        return(
-            <div>
-                <div className="w3-card-8 col-xs-offset-1 col-xs-10" style={styles.products_table_container}>
-                    <h1><b>{constantStrings.press_quantity_for_edit}</b></h1>
-                    <BootstrapTable data={this.state.sales} hover bordered={false} cellEdit={ cellEditProp }>
-                        <TableHeaderColumn
-                            dataField = 'name'
-                            dataAlign = 'right'
-                            tdStyle = {styles.productName_column}
-                            editable={ false }
-                            isKey = {true}>
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
-                            dataField = 'quantity'
-                            tdStyle = {styles.products_table_body}
-                            customEditor={ { getElement: createPriceEditor, customEditorParameters: { onUpdate: this.onUpdateAmount } }}
-                            dataAlign = 'right'>
-                        </TableHeaderColumn>
-                        <TableHeaderColumn
-                            dataField = 'timeOfSale'
-                            dataFormat={ dateFormatter }
-                            dataAlign = 'right'
-                            editable={ false }
-                            tdStyle = {styles.time_column}>
-                        </TableHeaderColumn>
-                    </BootstrapTable>
+    handleQuantityChange(){
+        var arr = this.state.shift.sales;
+        for(var i=0; i<arr.length; i++){
+            arr[i].quantity = this.refs["quantity" + i].value;
+        }
+        this.setState({
+            sales: arr
+        })
+    },
+    renderEachSale: function(sale, i){
+        var saleTime = new Date(sale.timeOfSale) ;
+        var saleTimeFormated = saleTime.toLocaleTimeString('en-GB');
+        return (
+
+            <div key={i} className="row w3-card-4 w3-round" style={styles.saleContStyle}>
+                <header className="w3-container w3-round" style={styles.headerStyle}>
+                    <div className="w3-xxlarge">
+                        <a href="javascript:void(0)" onClick={() => this.updateAmount(sale, "0")}>
+                            <CloseIcon/>
+                        </a>
+                    </div>
+                    <p className="w3-xxxlarge" style={styles.storeStyle}>{sale.name}</p>
+                    <p className="w3-xxxlarge" style={styles.dateStyle}> {saleTimeFormated}</p>
+                </header>
+                <div className="w3-xxlarge text-center" style={styles.expContainerStyle}>
+                    <p><b>{constantStrings.quantity_string}</b>:&nbsp;
+                        <input type="number" min="0" style={styles.inputStyle} ref={"quantity" + i} value={this.state.sales[i].quantity} onChange={this.handleQuantityChange}/>
+                    </p>
                 </div>
+                <div className="text-center">
+                    <button className="w3-xxlarge w3-btn w3-card-4 w3-round w3-ripple" style={styles.buttonStyle} onClick={() => this.onUpdateAmount(sale, i)}>
+                        {constantStrings.save_string}
+                    </button>
+                </div>
+
+            </div>
+        )
+    },
+
+    renderList: function(){
+        return (
+            <div className="w3-container col-sm-10 col-sm-offset-1" style={styles.bodyStyle}>
+                {this.state.sales.map(this.renderEachSale)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
@@ -168,7 +157,7 @@ var EditSaleContainer = React.createClass({
     render: function () {
         if(this.state.shift != null)
         {
-            return this.renderSales();
+            return this.renderList();
         }
         else
         {

@@ -5,6 +5,7 @@ var storeSchema = new Schema({
     'name': String,
     'managerName': String,
     'phone': String,
+    'managerEmail': String,
     'city': String,
     'address': String,
     'area': String,

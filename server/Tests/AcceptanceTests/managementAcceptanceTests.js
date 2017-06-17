@@ -370,7 +370,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add store invalid parameters', async function () {
@@ -404,17 +404,17 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'store already exist');
+            assert.equal(res.response.data, constantString.storeAlreadyExist);
         });
 
-        it('add existing name and different area', async function () {
+        it('add existing name and different city', async function () {
             let res = await axios.post(serverUrl + 'management/addStore', {
                 storeDetails: newStore,
                 sessionId: manager.sessionId,
             });
             assert.equal(res.status, 200);
 
-            newStore.area = 'different'
+            newStore.city = 'different';
             res = await axios.post(serverUrl + 'management/addStore', {
                 storeDetails: newStore,
                 sessionId: manager.sessionId,
@@ -444,7 +444,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add product invalid subCetagory', async function () {
@@ -509,7 +509,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'product already exist');
+            assert.equal(res.response.data, constantString.productAlreadyExist);
         });
     });
 
@@ -528,7 +528,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('add shift valid', async function () {
@@ -589,7 +589,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'shifts dates are before current time');
+            assert.equal(res.response.data, constantString.shiftsCurrentTimeError);
         });
 
         it('add shift store by not exist', async function () {
@@ -605,7 +605,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data,  'One or more of the stores does not exist');
+            assert.equal(res.response.data, constantString.storeDoesNotExist);
         });
     });
 
@@ -632,7 +632,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('publish shift valid', async function () {
@@ -695,7 +695,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 409);
-            assert.equal(res.response.data, 'trying to publish a shift that is already published');
+            assert.equal(res.response.data, constantString.shiftAlreadyPublished);
         });
     });
 
@@ -794,7 +794,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
     });
 
@@ -835,7 +835,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied')
+            assert.equal(res.response.data, constantString.permssionDenied)
         });
     });
 
@@ -901,7 +901,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied')
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
     });
 
@@ -971,7 +971,7 @@ describe('management acceptance test', function(){
                 return err;
             });
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'user not authorized')
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('edit shift not shift already started', async function () {
@@ -996,7 +996,7 @@ describe('management acceptance test', function(){
                 return err;
             });
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied shift already started');
+            assert.equal(res.response.data, constantString.shiftAlreadyStarted);
         });
     });
 
@@ -1063,7 +1063,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 400);
-            assert.equal(res.response.data, 'cannot edit this product');
+            assert.equal(res.response.data, constantString.productCannotBeEdited);
         });
 
         it('edit product not by manager ', async function () {
@@ -1078,7 +1078,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('edit product invalid name', async function () {
@@ -1226,7 +1226,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 400);
-            assert.equal(res.response.data, 'cannot edit this store');
+            assert.equal(res.response.data, constantString.somthingBadHappend);
         });
 
         it('edit store not by manager ', async function () {
@@ -1242,7 +1242,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('edit store invalid name', async function () {
@@ -1388,7 +1388,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('get all products invalid parameters', async function () {
@@ -1436,7 +1436,7 @@ describe('management acceptance test', function(){
             });
 
             assert.equal(res.response.status, 401);
-            assert.equal(res.response.data, 'permission denied');
+            assert.equal(res.response.data, constantString.permssionDenied);
         });
 
         it('get all stores invalid parameters', async function () {

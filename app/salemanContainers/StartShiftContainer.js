@@ -44,14 +44,37 @@ var StartShiftContainer = React.createClass({
         this.setUserType();
         var shift = this.props.location.state.newShift;
         shift.salesReport = shift.salesReport.sort(this.productSortingMethod);
+        var productsDict = this.getProductsDict(shift.salesReport);
         for(var index in shift.salesReport){
             shift.salesReport[index].stockStartShift = 1;
         }
         return{
-            shift: shift
+            shift: shift,
+            productDictionary: productsDict
         }
     },
-
+    getProductsDict(products)
+    {
+        var productsDict = [];
+        var subCategories = [];
+        products.forEach(function(prod) {
+            if (subCategories.indexOf(prod.subCategory)==-1) {
+                subCategories.push(prod.subCategory)
+            }
+        });
+        subCategories.forEach(function(subCategory) {
+            var productsArray = [];
+            for(var i=0; i<products.length; i++) {
+                 if(products[i].subCategory===subCategory) {
+                     productsArray.push(products[i])
+                 }
+             }
+             productsDict.push(
+                 { subCategory:subCategory,
+                      products:productsArray })
+        });
+        return productsDict;
+    },
     productSortingMethod: function(a, b){
         if(a.category != b.category){
             if(a.category == constantsStrings['ספיריט'])
@@ -133,39 +156,41 @@ var StartShiftContainer = React.createClass({
                     </div>
                     <div style={styles.product__detail} className="col-sm-10">
                         <h1 className="w3-xxxlarge col-sm-12"><b> {product.name} </b></h1>
-                        <h1 className="w3-xxlarge col-sm-12">{product.subCategory}</h1>
                     </div>
                 </li>
         );
     },
-
+    renderEachSubCategory: function(productsBySub, i) {
+        return (
+            <ul className="w3-card-4 w3-round" style={styles.subCategory}>
+                <h1>{productsBySub.subCategory}</h1>
+                {productsBySub.products.map(this.renderEachProduct)}
+            </ul>
+        );
+    },
     renderStartShift: function () {
         return (
             <div>
-                <div className="w3-theme-d5 col-xs-12" style={styles.top__title}>
+                <div className="col-xs-12" style={styles.top__title}>
                     <h1 className="w3-xxxlarge">{constantsStrings.storeStatus_string}</h1>
                     <div style={styles.start__button}>
                         <span className="w3-xxxlarge"
                               onClick={this.onReturn}>
                             <BackButtonIcon/>
                         </span>
-                        <button className="col-xs-offset-7 w3-theme-d4 w3-card-4 w3-xxxlarge btn"
+                        <button className="col-xs-offset-7 w3-card-4 w3-xxxlarge btn w3-ripple" style={styles.buttonStyle}
                                 onClick={this.handleSubmitReport} type="submit">
                             {constantsStrings.startShift_string}
                             <StartShiftIcon/>
                         </button>
                     </div>
                 </div>
-                <div style={styles.space} className="w3-theme-l5">
+                <div style={styles.space}>
                 </div>
-                <div>
-                    <ul className="col-xs-10 col-xs-offset-1 w3-card-4" style={styles.products__list}>
-                            {this.props.location.state.newShift.salesReport.map(this.renderEachProduct)}
-                    </ul>
+                <div className="w3-container text-center" style={{'paddingBottom': '80px'}}>
+                    {this.state.productDictionary.map(this.renderEachSubCategory)}
                 </div>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
-
-
            </div>
         )
     },

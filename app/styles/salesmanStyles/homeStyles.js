@@ -32,17 +32,23 @@ var styles = {
     notificationStyle: {
         NotificationItem: {
             DefaultStyle: {
-                fontSize: 'large',
-                width: '350px',
-                height: '60px',
+                fontSize: '50px',
+                width: '500px',
+                height: '200px',
                 textAlign: 'center',
-                margin: '100px -20px'
+                margin: '100px -80px'
             },
-            info: {
-                height: '100px'
+            error: {
+                height: '200px',
+                width: '500px',
+                fontSize: '50px'
             },
         }
     },
+    startButtonStyle : {
+        background: '#b79446',
+        color: 'white'
+    }
 
 };
 

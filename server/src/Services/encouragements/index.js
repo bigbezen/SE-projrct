@@ -105,28 +105,41 @@ let calculateEncouragements = async function(salesReport){
     let encouragements = await dal.getAllEncouragements();
     if(encouragements.length == 0 || salesReport.length == 0)
         return [];
-
-    encouragements = encouragements.map(function(x){
-        x = x.toObject();
-        x.products = x.products.map(y => y.toString());
-        return x;
+    encouragements = encouragements
+        .sort((enc1, enc2) => enc2.numOfProducts - enc1.numOfProducts)
+        .map(function(x){
+            x = x.toObject();
+            x.products = x.products.map(y => y.toString());
+            return x;
     });
 
     let earnedEncs = [];
 
     for(let enc of encouragements){
-        var sold = salesReport.filter(function(product){
+        var prodsInEnc = salesReport
+            .filter(function(product){
             return ( underscore.contains(enc.products, product.productId.toString()));
-        }).map(function(product) {
+        });
+        let totalSold = prodsInEnc
+            .map(function(product) {
             return product.sold;
         }).reduce((sold1, sold2) => sold1 + sold2, 0);
 
-        var numOfAchivedEnc = parseInt(sold / enc.numOfProducts);
+        var numOfAchivedEnc = parseInt(totalSold / enc.numOfProducts);
         if (numOfAchivedEnc > 0){
             earnedEncs.push({
                 'encouragement': enc._id,
                 'count': numOfAchivedEnc
             });
+
+            let numOfProductsToReduce = numOfAchivedEnc * enc.numOfProducts;
+            for(let prod of prodsInEnc) {
+                if(numOfProductsToReduce > 0 && prod.sold > 0) {
+                    let amountToReduce = (numOfProductsToReduce > prod.sold) ? prod.sold : numOfProductsToReduce;
+                    prod.sold -= amountToReduce;
+                    numOfProductsToReduce -= amountToReduce;
+                }
+            }
         }
     }
 

@@ -10,6 +10,11 @@ var styles              = require('../styles/managerStyles/styles');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
 
+var managementServices  = require('../communication/managementServices');
+
+import 'react-date-picker/index.css';
+import { DateField, DatePicker } from 'react-date-picker';
+
 var ShiftDetails = React.createClass({
 
     contextTypes: {
@@ -19,9 +24,26 @@ var ShiftDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
-        return {}
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
+        return {
+            chosenDate: new Date()
+        }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -42,46 +64,83 @@ var ShiftDetails = React.createClass({
 
     handleSubmitShift: function (e) {
         e.preventDefault();
-        var startTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
+        console.log(e);
+        if(this.refs.startTimeBox.value == "" || this.refs.endTimeBox.value == "")
+            return;
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem;
+        let date = this.refs.dateBox.state.value;
+        var startTime = moment(date).format('YYYY-MM-DD') + ' ' + this.refs.startTimeBox.value;
         startTime = moment(startTime).format('YYYY-MM-DD HH:mm Z');
-        var endTime = moment(this.refs.dateBox.value).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
-        endTime = moment(endTime).format('YYYY-MM-DD HH-mm Z');
+        var endTime = moment(date).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
+        endTime = moment(endTime).format('YYYY-MM-DD HH:mm Z');
 
-        this.context.router.push({
-            pathname: paths.manager_createMultipleShifts_path,
-            query: {'startTime': startTime, 'endTime': endTime}
-        })
+        managementServices.generateShiftsForDate(startTime, endTime)
+            .then(function(result){
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: constantsStrings.addSuccessMessage_string,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc'
+                });
+                self.context.router.push({
+                    pathname: paths.manager_shifts_creation_path
+                })
+            })
+            .catch(function(errMsg){
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMsg,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
+                });
+        });
+
     },
 
-    onChangeStarTime: function(){
+    onChangeStartTime: function(){
         this.refs.endTimeBox.value = this.refs.startTimeBox.value;
     },
 
+    onChangeDate: function(a, b) {
+        console.log(a);
+        console.log(b);
+        this.state.chosenDate = new Date(a);
+    },
+
+
     createAllShifts: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-l4 text-center">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 text-center" style={styles.editBodyStyle}>
                 <h1>יצירת קבוצת משמרות</h1>
                 <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
-
-                    <div className="form-group ">
+                    <div className="form-group">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
-                        <input type="date"
-                               className="col-xs-5"
-                               ref="dateBox"
-                        />
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            defaultValue={(new Date()).getTime()}
+                            ref="dateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp}) => {this.onChangeDate(dateString, dateMoment, timestamp)}}
+                        >
+                        </DateField>
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>
+                        <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startTime_string}</label>
                         <input type="time"
                                className="col-xs-5"
                                ref="startTimeBox"
-                               onChange={this.onChangeStarTime}
+                               onChange={this.onChangeStartTime}
                         />
                     </div>
 
                     <div className="form-group ">
-                        <label className="col-xs-2 col-xs-offset-2">{constantsStrings.endDate_string}</label>
+                        <label className="col-xs-2 col-xs-offset-2">{constantsStrings.endTime_string}</label>
                         <input type="time"
                                className="col-xs-5"
                                ref="endTimeBox"
@@ -90,9 +149,10 @@ var ShiftDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-theme-d5 col-xs-4 col-xs-offset-4"
+                            className="w3-button col-xs-5 col-xs-offset-4 w3-round w3-ripple"
+                            style={styles.editStyle}
                             type="submit">
-                            {constantsStrings.add_string}
+                            {constantsStrings.save_string}
                         </button>
                     </div>
                 </form>

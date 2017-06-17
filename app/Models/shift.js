@@ -7,6 +7,7 @@ var shiftModel = {
     'status': String,
     'type': String,
     'salesmanId': String,
+    'managerComment': String,
     'constraints': [
         {
             'stewardId': String,

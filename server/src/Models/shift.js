@@ -9,7 +9,9 @@ var shiftSchema = new Schema({
     'type': String,
     'numOfKM': Number,
     'parkingCost': Number,
+    'extraExpenses': Number,
     'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
+    'managerComment': String,
     'constraints': [
         {
             'salesmanId': {type: mongoose.Schema.Types.ObjectId, ref: 'user'},

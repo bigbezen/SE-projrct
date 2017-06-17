@@ -11,6 +11,7 @@ var NotificationSystem  = require('react-notification-system');
 var EditIcon            = require('react-icons/lib/md/edit');
 var salesChart          = undefined;
 var userServices        = require('../communication/userServices');
+var sorting             = require('../utils/SortingMethods');
 
 var ReportsSalesReport = React.createClass({
 
@@ -35,14 +36,31 @@ var ReportsSalesReport = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     getInitialState() {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return{
             salesmen: undefined,
+            stores: undefined,
             shifts: [],
-            chosenShift: undefined
+            chosenShift: undefined,
+            showLoader: false
         }
     },
 
@@ -57,10 +75,16 @@ var ReportsSalesReport = React.createClass({
             .then(function(result) {
                 var salesmen = result.filter(function(user){
                     return user.jobDetails.userType == 'salesman'
-                });
-                self.setState({
-                    salesmen: salesmen
-                });
+                }).sort(sorting.salesmenSortingMethod);
+
+                managementServices.getAllStores()
+                    .then(function(stores){
+                        self.setState({
+                            salesmen: salesmen,
+                            stores: stores.sort(sorting.storeSortingMethod)
+                        })
+                    });
+
             })
             .catch(function(err) {
                 notificationSystem.clearNotifications();
@@ -69,6 +93,47 @@ var ReportsSalesReport = React.createClass({
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc',
+                });
+            });
+    },
+
+    storeChanged: function(event) {
+        if(event.target.selectedIndex == 0)
+            return;
+        var self = this;
+        var notificationSystem = this.refs.notificationSystem
+        this.setState({
+            chosenShift: undefined,
+            shifts: []
+        });
+
+        this.refs.selectSalesman.selectedIndex = 0;
+        var store = this.state.stores[event.target.selectedIndex - 1];
+
+        managementServices.getStoreShiftsByStatus(store._id, 'FINISHED')
+            .then(function(result){
+                if(result.length == 0){
+                    notificationSystem.clearNotifications();
+                    notificationSystem.addNotification({
+                        message: constantStrings.noShifts_string,
+                        level: 'error',
+                        autoDismiss: 0,
+                        position: 'tc',
+                    });
+                }
+                else{
+                    self.setState({
+                        shifts: result
+                    });
+                }
+            })
+            .catch(function (errMess) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
                 });
             });
     },
@@ -82,6 +147,8 @@ var ReportsSalesReport = React.createClass({
             chosenShift: undefined,
             shifts: []
         });
+
+        this.refs.selectStore.selectedIndex = 0;
 
         var salesman = this.state.salesmen[event.target.selectedIndex - 1];
         managementServices.getSalesmanFinishedShifts(salesman._id)
@@ -101,18 +168,21 @@ var ReportsSalesReport = React.createClass({
                     });
                 }
             }).catch(function (errMess) {
-            notificationSystem.clearNotifications();
-            notificationSystem.addNotification({
-                message: errMess,
-                level: 'error',
-                autoDismiss: 0,
-                position: 'tc'
-            });
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: errMess,
+                    level: 'error',
+                    autoDismiss: 0,
+                    position: 'tc'
+                });
         })
     },
 
     shiftChanged: function(event) {
         var selectedIndex = event.target.selectedIndex;
+        this.setState({
+            chosenShift: undefined
+        });
         if(selectedIndex > 0) {
             var chosenShift = this.state.shifts[selectedIndex - 1];
             this.setState({
@@ -142,7 +212,7 @@ var ReportsSalesReport = React.createClass({
 
     renderComment: function(comment){
         return (
-            <p className="col-sm-10 col-sm-offset-1 w3-round-xlarge w3-theme-l4 w3-large">{comment}</p>
+            <p className="col-sm-10 col-sm-offset-1 w3-round w3-large" style={styles.commentStyle}>{comment}</p>
         )
     },
 
@@ -161,16 +231,18 @@ var ReportsSalesReport = React.createClass({
                 <div>
                     <div className="text-center">
                         <h1 className="w3-xxlarge">{constantStrings.reportsSalesReportTitle_string}</h1>
-                        <button className="w3-btn w3-round-xlarge w3-theme-d5 w3-card-4" onClick={this.onClickExportReport}>
+                        <button className="w3-button w3-round w3-card-4 w3-ripple" style={styles.editStyle} onClick={this.onClickExportReport}>
                             {constantStrings.getReport_string}
                         </button>
                     </div>
+                    <div style={styles.marginBottom} className="col-sm-10 col-sm-offset-1 w3-card-2 w3-round">
+                        <div className="text-center col-sm-12">
+                            <h4>{constantStrings.commentsFromShift_string}</h4>
+                        </div>
+                        {this.state.chosenShift.shiftComments.map(this.renderComment)}
+                    </div>
                     <div className="col-sm-12">
                         {productsByCategory.map(this.renderCategoriesProducts)}
-                    </div>
-                    <div style={styles.marginTop} className="col-sm-12">
-                        <h1 className="col-sm-offset-5 col-sm-1">{constantStrings.commentsFromShift_string}</h1>
-                        {this.state.chosenShift.shiftComments.map(this.renderComment)}
                     </div>
                 </div>
             )
@@ -182,11 +254,11 @@ var ReportsSalesReport = React.createClass({
         return (
             <div className="w3-container col-sm-6">
                 <h1 className="col-sm-offset-1">{productsOfOneCategory.cat}</h1>
-                <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black">
+                <div className="row col-sm-12 w3-round w3-card-2 w3-text-black" style={styles.headerStyle}>
                     <p className="col-sm-4" style={styles.listHeader}><b>{constantStrings.subCategory_string}</b></p>
                     <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.productName_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsSold_string}</b></p>
+                    <p className="col-sm-2" style={styles.listHeader}><b>{constantStrings.reportsNumberOfProductsOpened_string}</b></p>
                 </div>
                 {productsOfOneCategory.products.map(this.renderSalesProducts)}
             </div>
@@ -195,19 +267,24 @@ var ReportsSalesReport = React.createClass({
 
     renderSalesProducts: function(product, i){
         return (
-            <div className="row col-sm-10 col-sm-offset-1 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
-                 style={{marginTop: '10px', height: '45px'}}>
+            <div className="row col-sm-12 w3-round w3-card-2 w3-text-black "
+                 style={(product.sold || product.opened) > 0 ? styles.soldProdRowStyle : styles.prodRowStyle }>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
-                <p className="w3-xlarge col-sm-1" onClick={() => this.onClickEditButton(product, i)}><EditIcon/></p>
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
+                <p className="w3-card-2 w3-button w3-small w3-round w3-ripple"
+                   style={styles.buttonStyle} onClick={() => this.onClickEditButton(product, i)}><EditIcon style={styles.iconStyle}/></p>
             </div>
         )
     },
 
     onClickExportReport: function(){
         var notificationSystem = this.refs.notificationSystem;
+        var self = this;
+        this.setState({
+            showLoader: true
+        });
         managerServices.getSaleReportXl(this.state.chosenShift)
             .then(function(data) {
                 notificationSystem.clearNotifications();
@@ -217,6 +294,9 @@ var ReportsSalesReport = React.createClass({
                     autoDismiss: 2,
                     position: 'tc',
                 });
+                self.setState({
+                    showLoader: false
+                });
             })
             .catch(function(err){
                 notificationSystem.clearNotifications();
@@ -225,6 +305,9 @@ var ReportsSalesReport = React.createClass({
                     level: 'error',
                     autoDismiss: 1,
                     position: 'tc',
+                });
+                self.setState({
+                    showLoader: false
                 });
             });
     },
@@ -259,20 +342,30 @@ var ReportsSalesReport = React.createClass({
 
     getSalesmenOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option className="w3-round-large" key="defaultSalesman">{constantStrings.defaultSalesmanDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round" key="defaultSalesman">{constantStrings.defaultSalesmanDropDown_string}</option>);
         var salesmen = this.state.salesmen;
         for(var i=0; i<salesmen.length; i++){
-            optionsForDropdown.push(<option className="w3-round-large" key={"salesman" + i}>{salesmen[i].personal.firstName + " " + salesmen[i].personal.lastName}</option>)
+            optionsForDropdown.push(<option className="w3-round" key={"salesman" + i}>{salesmen[i].personal.firstName + " " + salesmen[i].personal.lastName}</option>)
+        }
+        return optionsForDropdown;
+    },
+
+    getStoresOptions: function() {
+        var optionsForDropdown = [];
+        optionsForDropdown.push(<option className="w3-round" key="defaultSalesman">{constantStrings.defaultStoreDropDown_string}</option>);
+        var stores = this.state.stores;
+        for(var i=0; i<stores.length; i++){
+            optionsForDropdown.push(<option className="w3-round" key={"store" + i}>{stores[i].area + " - " + stores[i].city + " - " + stores[i].name + " - " + stores[i].address}</option>)
         }
         return optionsForDropdown;
     },
 
     getShiftsOptions: function() {
         var optionsForDropdown = [];
-        optionsForDropdown.push(<option className="w3-round-large" key="defaultShift">{constantStrings.defaultShiftDropDown_string}</option>);
+        optionsForDropdown.push(<option className="w3-round" key="defaultShift">{constantStrings.defaultDateDropDown_string}</option>);
         var shifts = this.state.shifts;
         for(var i=0; i<shifts.length; i++){
-            optionsForDropdown.push(<option className="w3-round-large" key={"shift" + i}>{moment(shifts[i].startTime).format('YYYY-MM-DD')}</option>)
+            optionsForDropdown.push(<option className="w3-round" key={"shift" + i}>{moment(shifts[i].startTime).format('DD-MM-YYYY')}</option>)
         }
         return optionsForDropdown;
     },
@@ -285,6 +378,21 @@ var ReportsSalesReport = React.createClass({
         )
     },
 
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
+    },
+
     render: function () {
         if(this.state.salesmen == undefined){
             return this.renderLoading();
@@ -292,20 +400,41 @@ var ReportsSalesReport = React.createClass({
         else {
             return (
                 <div className="w3-container">
-                    <div className="col-sm-offset-1">
-                        <div className="row">
-                            <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-3 w3-large w3-card-4 w3-round-large">
-                                {this.getSalesmenOptions()}
-                            </select>
+                    <div className="text-center">
+                        <h1>{constantStrings.reportsSalesReportTitle_string}</h1>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="col-sm-offset-2">
+                            <div className="row">
+                                <select onChange={this.salesmanChanged} ref="selectSalesman" className="col-sm-8 w3-large w3-card-4 w3-round">
+                                    {this.getSalesmenOptions()}
+                                </select>
+                            </div>
+                            <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
+                                <select onChange={this.shiftChanged} ref="selectShiftSalesman" className="col-sm-8 w3-large w3-card-4 w3-round">
+                                    {this.getShiftsOptions()}
+                                </select>
+                            </div>
                         </div>
-                        <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
-                            <select onChange={this.shiftChanged} ref="selectShift" className="col-sm-3 w3-large w3-card-4 w3-round-large">
-                                {this.getShiftsOptions()}
-                            </select>
+                    </div>
+
+                    <div className="col-sm-6">
+                        <div className="col-sm-offset-2">
+                            <div className="row">
+                                <select onChange={this.storeChanged} ref="selectStore" className="col-sm-8 w3-large w3-card-4 w3-round">
+                                    {this.getStoresOptions()}
+                                </select>
+                            </div>
+                            <div className="row" style={{marginTop: '10px', marginBottom: '20px'}}>
+                                <select onChange={this.shiftChanged} ref="selectShiftStore" className="col-sm-8 w3-large w3-card-4 w3-round">
+                                    {this.getShiftsOptions()}
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <div style={{marginBottom: '30px'}}>
+                        {this.loader()}
                         {this.renderSalesReportList()}
                     </div>
                     <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>

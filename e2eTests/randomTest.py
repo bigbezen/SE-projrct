@@ -42,16 +42,13 @@ class randomActions(unittest.TestCase):
             screens = screenMap.navigate[screen]
             nextScreenKey, btn = random.choice(list(screens.items()))
             driver.find_element_by_xpath(btn).click()
-            sleep(3)
+            sleep(2)
             self.assertEqual(driver.current_url, screenMap.screens.get(nextScreenKey))
             screen = int(nextScreenKey)
 
+        driver.find_element_by_xpath(containers.managerHome.logoutTab).click()
+        sleep(2)
+        self.assertEqual(driver.current_url, helper.url)
+
     def tearDown(self):
         self.driver.close()
-
-    def getKeyOfIndex(self, nextScreenIndex, screens):
-        retVal = ""
-        for key, value in screens.items():
-            if screens.values().index(value) == nextScreenIndex:
-                retVal = key
-        return retVal

@@ -10,6 +10,7 @@ var paths               = require('../utils/Paths');
 var styles              = require('../styles/managerStyles/styles');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
+var moment              = require('moment');
 
 var StoreDetails = React.createClass({
 
@@ -20,13 +21,21 @@ var StoreDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
         return {
             editing: false,
             area:'',
             channel:''
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -35,7 +44,13 @@ var StoreDetails = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
-
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setSessionId: function() {
         var sessId = localStorage.getItem('sessionId');
         if (!sessId) {
@@ -90,6 +105,7 @@ var StoreDetails = React.createClass({
         newStore.name = this.refs.nameBox.value;
         newStore.managerName = this.refs.managerNameBox.value;
         newStore.phone = this.refs.phoneBox.value;
+        newStore.managerEmail = this.refs.emailBox.value;
         newStore.city = this.refs.cityBox.value;
         newStore.address = this.refs.addressBox.value;
         newStore.area = this.state.area;
@@ -162,7 +178,7 @@ var StoreDetails = React.createClass({
 
     addNewStore: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-card-4" style={styles.editBodyStyle}>
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right w3-text-black">
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
@@ -201,6 +217,15 @@ var StoreDetails = React.createClass({
                         />
                     </div>
 
+                    <div className="form-group ">
+                        <label className="col-xs-4 col-xs-offset-2">{constantsStrings.email_string}:</label>
+                    </div>
+                    <div className="form-group ">
+                        <input type="text" min={0}
+                               className="col-xs-4 col-xs-offset-2"
+                               ref="emailBox"
+                        />
+                    </div>
 
                     <div className="form-group ">
                         <label className="col-xs-4 col-xs-offset-2">{constantsStrings.city_string}:</label>
@@ -246,7 +271,7 @@ var StoreDetails = React.createClass({
 
                     <div className="form-group">
                         <button
-                            className="w3-btn w3-card-4 w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-button w3-card-4 col-xs-4 col-xs-offset-2 w3-round w3-ripple" style={styles.editStyle}
                             type="submit">
                             {this.getButtonString()}
                         </button>
@@ -258,16 +283,17 @@ var StoreDetails = React.createClass({
     },
 
     setFields: function () {
-        this.currSrure = this.props.location.query;
-        this.state.area =  this.currSrure.area;
-        this.state.channel = this.currSrure.channel;
-        this.refs.nameBox.value = this.currSrure.name;
-        this.refs.managerNameBox.value = this.currSrure.managerName;
-        this.refs.phoneBox.value = this.currSrure.phone;
-        this.refs.cityBox.value = this.currSrure.city;
-        this.refs.addressBox.value = this.currSrure.address;
-        this.refs.areaBox.value = this.currSrure.area;
-        this.refs.channelBox.value = this.currSrure.channel;
+        let currStore = this.props.location.query;
+        this.state.area =  currStore.area;
+        this.state.channel = currStore.channel;
+        this.refs.nameBox.value = currStore.name;
+        this.refs.managerNameBox.value = currStore.managerName;
+        this.refs.phoneBox.value = currStore.phone;
+        this.refs.emailBox.value = currStore.managerEmail;
+        this.refs.cityBox.value = currStore.city;
+        this.refs.addressBox.value = currStore.address;
+        this.refs.areaBox.value = currStore.area;
+        this.refs.channelBox.value = currStore.channel;
     },
 
     render: function () {

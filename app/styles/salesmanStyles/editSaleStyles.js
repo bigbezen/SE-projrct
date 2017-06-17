@@ -30,7 +30,7 @@ var editSaleStyles = {
         height: '100px'
     },
     products_table_container: {
-        backgroundColor: 'RGB(255,255,255)',
+        backgroundColor: 'rgba(140, 137, 133, 0.43)',
         marginBottom: '150px',
         fontSize: '50px'
     },
@@ -60,6 +60,56 @@ var editSaleStyles = {
         fontSize: '45px',
         width: '35%',
         fontWeight: 'bold',
+    },
+    notificationStyle: {
+        NotificationItem: {
+            DefaultStyle: {
+                fontSize: '50px',
+                width: '500px',
+                height: '200px',
+                textAlign: 'center',
+                margin: '100px -80px'
+            },
+            info: {
+                height: '200px',
+                width: '500px',
+                fontSize: '50px'
+            },
+        }
+    },
+    storeStyle: {
+        textAlign:'right',
+        float:'right'
+    },
+    dateStyle: {
+        textAlign:'left',
+        float:'left'
+    },
+    inputStyle: {
+        marginTop: '3px',
+        width: '120px'
+    },
+    buttonStyle: {
+        margin: '15px',
+        paddingTop: '5px',
+        paddingBottom: '5px',
+        paddingLeft: '20px',
+        paddingRight: '20px',
+        background: 'rgb(183, 148, 70)',
+        color: 'white'
+    },
+    headerStyle: {
+        color: 'white',
+        background: 'rgb(132, 132, 132)'
+    },
+    expContainerStyle: {
+        marginTop: '10px'
+    },
+    saleContStyle: {
+        marginTop: '20px'
+    },
+    bodyStyle: {
+        'marginBottom': '150px'
     }
 };
 

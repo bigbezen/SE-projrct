@@ -10,6 +10,7 @@ var paths               = require('../utils/Paths');
 var NotificationSystem  = require('react-notification-system');
 var styles              = require('../styles/managerStyles/styles');
 var userServices        = require('../communication/userServices');
+var moment              = require('moment');
 
 var ProductDetails = React.createClass({
 
@@ -20,13 +21,28 @@ var ProductDetails = React.createClass({
     getInitialState: function () {
         this.setSessionId();
         this.setUserType();
+        this.setShiftsStartDate();
+        this.setShiftsEndDate();
         return {
             editing: false,
             category:'',
             subCategory:''
         }
     },
-
+    setShiftsEndDate: function() {
+        var shiftEndDate = localStorage.getItem('shiftEndDate');
+        if (!shiftEndDate) {
+            shiftEndDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftEndDate', shiftEndDate);
+    },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setUserType: function() {
         var userType = localStorage.getItem('userType');
         if (!userType) {
@@ -116,7 +132,7 @@ var ProductDetails = React.createClass({
         newProduct.category = this.state.category;
         newProduct.subCategory = this.state.subCategory;
         newProduct.minRequiredAmount =  0;
-        newProduct.notifyManager = this.refs.notifyBox.checked;
+        newProduct.notifyManager = false;
 
         var context = this.context;
         var notificationSystem = this.refs.notificationSystem;
@@ -186,7 +202,7 @@ var ProductDetails = React.createClass({
 
     addNewProduct: function() {
         return (
-            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-theme-d4 w3-card-8">
+            <div className="jumbotron col-xs-offset-3 col-xs-6 w3-card-4" style={styles.editBodyStyle}>
                 <form onSubmit={this.handleSubmitUser} className="form-horizontal text-right w3-text-black">
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
@@ -235,17 +251,9 @@ var ProductDetails = React.createClass({
                         </select>
                     </div>
 
-                    <div className="form-group ">
-                        <label className="col-xs-3 col-xs-offset-2">{constantsStrings.notifyManager_string}:</label>
-                        <input type="checkbox"
-                               className="col-xs-1"
-                               ref="notifyBox"
-                        />
-                    </div>
-
                     <div className="form-group">
                         <button
-                            className="w3-button w3-card-4 btn w3-theme-d5 col-xs-4 col-xs-offset-2"
+                            className="w3-button w3-card-4 col-xs-4 col-xs-offset-2 w3-round w3-ripple" style={styles.editStyle}
                             type="submit">
                             {this.getButtonString()}
                         </button>
@@ -266,7 +274,7 @@ var ProductDetails = React.createClass({
         this.refs.categoryBox.value = this.currProduct.category;
         //this.refs.subCategoryBox.value = this.currProduct.subCategory;
         //this.refs.minAmountBox.value = this.currProduct.minRequiredAmount;
-        this.refs.notifyBox.checked = this.currProduct.notifyManager;
+        //this.refs.notifyBox.checked = this.currProduct.notifyManager;
     },
 
     render: function () {

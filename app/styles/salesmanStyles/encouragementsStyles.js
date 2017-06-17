@@ -18,6 +18,8 @@ var styles = {
         marginRight: '25px',
         marginTop: '5px',
         marginBottom: '5px',
+        background: '#b79446',
+        color: 'white'
     },
     encouragementStyle: {
         paddingLeft: '0px',
@@ -30,14 +32,16 @@ var styles = {
     notificationStyle: {
         NotificationItem: {
             DefaultStyle: {
-                fontSize: 'large',
-                width: '350px',
-                height: '60px',
+                fontSize: '50px',
+                width: '500px',
+                height: '200px',
                 textAlign: 'center',
-                margin: '100px -20px'
+                margin: '100px -80px'
             },
             info: {
-                height: '100px'
+                height: '200px',
+                width: '500px',
+                fontSize: '50px'
             },
         }
     },
@@ -48,6 +52,10 @@ var styles = {
     encStatus: {
         textAlign:'left',
         float:'left'
+    },
+    headerStyle: {
+        background: 'rgba(84, 80, 75, 0.75)',
+        color: 'white'
     }
 };
 

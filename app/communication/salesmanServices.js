@@ -16,6 +16,11 @@ var helpers = {
         return connection.salesmanRequests.startShift(shift);
     },
 
+    getFinishedShifts: function(){
+        console.log('salesmanServices- getFinishedShifts ');
+        return connection.managementRequests.getShiftsByStatus('FINISHED');
+    },
+
     getActiveShift: function(shiftId) {
         console.log('salesmanServices- getActiveShift ');
         return connection.salesmanRequests.getActiveShift(shiftId);
@@ -36,9 +41,9 @@ var helpers = {
         return connection.salesmanRequests.reportOpen(shiftId, products);
     },
 
-    reportExpenses: function(shiftId, km, parking){
+    reportExpenses: function(shiftId, km, parking, other){
         console.log('salesmanServices- reportExpenses');
-        return connection.salesmanRequests.reportExpenses(shiftId, km, parking);
+        return connection.salesmanRequests.reportExpenses(shiftId, km, parking,other);
     },
 
     editSale: function(shiftId,productId, saleTime, quantity){
@@ -84,6 +89,11 @@ var helpers = {
     shiftRegister: function(){
         console.log('salesmanServices- shiftRegister');
         return connection.salesmanRequests.shiftRegister();
+    },
+
+    submitConstraints: function(constraints){
+        console.log('salesmanServices- submitConstraints');
+        return connection.salesmanRequests.submitConstraints(constraints);
     }
 };
 

@@ -44,7 +44,7 @@ function timeFormatter(cell, row) {
     return moment(cell).format('H:mm');
 }
 
-var ShiftsContainer = React.createClass({
+var ShiftsFinishedContainer = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -67,18 +67,12 @@ var ShiftsContainer = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
-
-    getInitialState() {
-        this.setSessionId();
-        this.setUserType();
-        this.setShiftsStartDate();
-        this.setShiftsEndDate();
-        var currentDate = moment().format('YYYY-MM-DD');
-        return{
-            shifts: null,
-            startDate: currentDate,
-            endDate:currentDate
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
         }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
     },
     setShiftsEndDate: function() {
         var shiftEndDate = localStorage.getItem('shiftEndDate');
@@ -87,6 +81,19 @@ var ShiftsContainer = React.createClass({
         }
         localStorage.setItem('shiftEndDate', shiftEndDate);
     },
+    getInitialState() {
+        this.setSessionId();
+        this.setUserType();
+        this.setShiftsEndDate();
+        this.setShiftsStartDate();
+        var currentDate = moment().format('YYYY-MM-DD');
+        return{
+            shifts: null,
+            startDate: currentDate,
+            endDate:currentDate
+        }
+    },
+
     componentDidMount: function() {
         let month = (new Date()).getMonth();
         let year = (new Date()).getFullYear();
@@ -100,13 +107,7 @@ var ShiftsContainer = React.createClass({
         }
         this.updateShifts(shiftStartDate, endOfMonth);
     },
-    setShiftsStartDate: function() {
-        var shiftStartDate = localStorage.getItem('shiftStartDate');
-        if (!shiftStartDate) {
-            shiftStartDate = moment().format('YYYY-MM-DD');
-        }
-        localStorage.setItem('shiftStartDate', shiftStartDate);
-    },
+
     updateShifts(startDate, endDate) {
         localStorage.setItem('shiftStartDate', startDate);
         localStorage.setItem('shiftEndDate', endDate);
@@ -114,7 +115,7 @@ var ShiftsContainer = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
 
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
-            result = result.filter((shift) => shift.status != "CREATED" && shift.status != "FINISHED");
+            result = result.filter((shift) => shift.status == "FINISHED" && !(shift.type.includes(constantStrings.shiftType_event)));
             let areas = new Set(result.map((shift) => shift.storeId.area));
             let areaToShifts = {};
             for(let area of areas){
@@ -454,4 +455,4 @@ var ShiftsContainer = React.createClass({
     }
 });
 
-module.exports = ShiftsContainer;
+module.exports = ShiftsFinishedContainer;

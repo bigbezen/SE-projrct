@@ -18,7 +18,7 @@ screens = {
     "8": "http://localhost:3000/#/manager/salesReport",
     "9": "http://localhost:3000/#/manager/monthlyHoursReport",
     "10": "http://localhost:3000/#/manager/monthlyAnalysisReport",
-    "11": "http://localhost:3000/#/manager/humanResourcesReport",
+    "11": "http://localhost:3000/#/manager/humanResourcesReport"
 }
 
 navigate = [
@@ -147,13 +147,3 @@ navigate = [
     }
 ]
 
-#     "10": "",
-#   "11": "",
-#    "12": "",
-#    "13": "",
-#    "14": "",
-#    "15": "",
-#    "16": "",
-#    "17": "",
-#    "18": "",
-#    "19": "",

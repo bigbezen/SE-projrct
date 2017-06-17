@@ -9,7 +9,7 @@ var moment              = require('moment');
 var NotificationSystem  = require('react-notification-system');
 var userServices        = require('../communication/userServices');
 
-var ReportHumanResources = React.createClass({
+var ReportOrderEvents = React.createClass({
 
     contextTypes: {
         router: React.PropTypes.object.isRequired
@@ -32,6 +32,13 @@ var ReportHumanResources = React.createClass({
         localStorage.setItem('userType', userType);
         userServices.setUserType(userType);
     },
+    setShiftsStartDate: function() {
+        var shiftStartDate = localStorage.getItem('shiftStartDate');
+        if (!shiftStartDate) {
+            shiftStartDate = moment().format('YYYY-MM-DD');
+        }
+        localStorage.setItem('shiftStartDate', shiftStartDate);
+    },
     setShiftsEndDate: function() {
         var shiftEndDate = localStorage.getItem('shiftEndDate');
         if (!shiftEndDate) {
@@ -49,24 +56,17 @@ var ReportHumanResources = React.createClass({
             showLoader: false
         }
     },
-    setShiftsStartDate: function() {
-        var shiftStartDate = localStorage.getItem('shiftStartDate');
-        if (!shiftStartDate) {
-            shiftStartDate = 0;
-        }
-        localStorage.setItem('shiftStartDate', shiftStartDate);
-    },
-    onClickExportReport: function() {
 
-        var self = this;
+    onClickExportReport: function() {
         var notificationSystem = this.refs.notificationSystem;
         var datepickerVal = this.refs.datepicker.value.split('-');
+        var self = this;
         if(datepickerVal.length != 2)
             return;
         this.setState({
             showLoader: true
         });
-        managerServices.exportSalaryForHumanResourceReport(parseInt(datepickerVal[0]), parseInt(datepickerVal[1]) - 1)
+        managerServices.exportOrderEventsReport(parseInt(datepickerVal[0]), parseInt(datepickerVal[1]) - 1)
             .then(function(data){
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
@@ -114,11 +114,11 @@ var ReportHumanResources = React.createClass({
             <div className="w3-container">
                 <div className="col=sm-12">
                     <div className="row text-center">
-                        <h2>{constantStrings.reportsHumanResourcesReportTitle_string}</h2>
+                        <h2>{constantStrings.reportsOrderEventsReportTitle_string}</h2>
                     </div>
                     <div className="row">
                         <input className="col-sm-2 w3-card-4 w3-round" ref="datepicker" type="month"/>
-                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle}  onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
+                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
                     </div>
                 </div>
                 {this.loader()}
@@ -128,4 +128,4 @@ var ReportHumanResources = React.createClass({
     }
 });
 
-module.exports = ReportHumanResources;
+module.exports = ReportOrderEvents;

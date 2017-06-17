@@ -5,18 +5,27 @@ let dal             = require('../../DAL/dal');
 let mailer          = require('../../Utils/Mailer/index');
 let fs              = require('fs');
 let moment          = require('moment');
+let momentTz        = require('moment-timezone');
 let Excel           = require('exceljs');
 let userModel       = require('../../Models/user');
+let constantString  = require('../../Utils/Constans/ConstantStrings.js');
 let monthlyUserHoursReportModel = require('../../Models/Reports/SummaryMonthlyHoursReport');
 let monthAnalysisReportModel = require('../../Models/Reports/monthAnalysisReport');
 let days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+let encCategory = [constantString.encCatagoryManager, constantString.encCatagorywiskey,constantString.encCatagoryCampary, constantString.encCatagoryVodks, constantString.encCatagoryTavor, constantString.encCatagoryBerdens];
 let encouragementFactor = 0.0376;
 
 let getSaleReportXl =  async function(sessionId, shiftId){
     let user = await permissions.validatePermissionForSessionId(sessionId, 'getSaleReportXl');
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
+    let result = await createXLSaleReport(shiftId, [user.contact.email]);
+  //  let content = ' מצורף דוח טעימות של:' + salesman.username;
+ //   mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
+    return {'code': 200};
+};
 
+let createXLSaleReport =  async function(shiftId, emails){
     let shift = await dal.getShiftsByIds([shiftId]);
     shift = shift[0];
     if(shift == null)
@@ -34,103 +43,109 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     salesman = salesman[0];
 
     let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('saleReport.xlsx')
-        .then(async function() {
-            let worksheet = workbook.getWorksheet(1);
+    let saved1 = await workbook.xlsx.readFile('saleReport.xlsx');
+    let worksheet = workbook.getWorksheet(1);
 
-            //write the store name
-            let row = worksheet.getRow(9);
-            row.getCell(2).value = store.name; // B9's value
-            row.commit();
+    //write the store name
+    let row = worksheet.getRow(9);
+    row.getCell(2).value = store.name; // B9's value
+    row.commit();
 
-            //write the shift date
-            row = worksheet.getRow(9);
-            row.getCell(5).value = shift.startTime.toDateString(); // E9's value
-            row.commit();
+    //write the shift date
+    row = worksheet.getRow(9);
+    row.getCell(5).value = shift.startTime.toDateString(); // E9's value
+    row.commit();
 
-            //write the salesman name
-            row = worksheet.getRow(11);
-            row.getCell(5).value = salesman.username; // E11's value
-            row.commit();
+    //write the salesman name
+    row = worksheet.getRow(11);
+    row.getCell(5).value = salesman.username; // E11's value
+    row.commit();
+    //write start time
+    row = worksheet.getRow(13);
+    row.getCell(2).value = moment(new Date(shift.startTime)).tz( 'Asia/Jerusalem').format('HH:mm');// E11's value
+    row.commit();
 
-            //write start time
-            row = worksheet.getRow(13);
-            row.getCell(2).value = shift.startTime.toTimeString(); // E11's value
-            row.commit();
+    //write finish time
+    row = worksheet.getRow(13);
+    row.getCell(5).value = moment(new Date(shift.endTime)).tz( 'Asia/Jerusalem').format('HH:mm'); // E11's value
+    row.commit();
+    //write the shift comment
+    let comments = "";
+    for (let i = 0; i < shift.shiftComments.length; i++) {
+        comments = comments + shift.shiftComments[i] + "\n";
+    }
+    row = worksheet.getRow(90);
+    row.getCell(1).value = comments; // A90's value
+    row.commit();
 
-            //write finish time
-            row = worksheet.getRow(13);
-            row.getCell(5).value = shift.endTime.toTimeString(); // E11's value
-            row.commit();
-
-           //write the shift comment
-            let comments = "";
-            for (let i = 0; i < shift.shiftComments.length; i++) {
-                comments = comments + shift.shiftComments[i] + "\n";
+    //write the sales
+    let salesSpiritRow = 86;
+    let salesWeinRow = 86;
+    let openedSpritRow = 65;
+    let openedWeinRow = 65;
+    let shortageRow = 18;
+    for (let i = 0; i < shift.salesReport.length; i++) {
+        let product = await dal.getProductById(shift.salesReport[i].productId);
+        if (shift.salesReport[i].sold > 0) {
+            if(product.category == 'ספיריט') {
+                row = worksheet.getRow(salesSpiritRow);
+                row.getCell(1).value = product.subCategory;
+                row.getCell(2).value = product.name;
+                row.getCell(4).value = shift.salesReport[i].sold;
+                salesSpiritRow = salesSpiritRow + 1;
             }
-            row = worksheet.getRow(90);
-            row.getCell(1).value = comments; // A90's value
-            row.commit();
-
-            //write the sales
-            let salesSpiritRow = 58;
-            let salesWeinRow = 58;
-            let openedSpritRow = 45;
-            let openedWeinRow = 45;
-            let shortageRow = 18;
-            for (let i = 0; i < shift.salesReport.length; i++) {
-                let product = await dal.getProductById(shift.salesReport[i].productId);
-                if (shift.salesReport[i].sold > 0) {
-                    if(product.category == 'ספיריט') {
-                        row = worksheet.getRow(salesSpiritRow);
-                        row.getCell(1).value = product.subCategory;
-                        row.getCell(2).value = product.name;
-                        row.getCell(4).value = shift.salesReport[i].sold;
-                        salesSpiritRow = salesSpiritRow + 1;
-                    }
-                    else{
-                        row = worksheet.getRow(salesWeinRow);
-                        row.getCell(7).value = product.subCategory;
-                        row.getCell(8).value = product.name;
-                        row.getCell(9).value = shift.salesReport[i].sold;
-                        salesWeinRow = salesWeinRow + 1;
-                    }
-                    row.commit();
-                }
-
-                if(shift.salesReport[i].opened > 0) {
-                    //opened battle
-                    if(product.category == 'ספיריט') {
-                        row = worksheet.getRow(openedSpritRow);
-                        row.getCell(1).value = product.subCategory;
-                        row.getCell(2).value = product.name;
-                        row.getCell(4).value = shift.salesReport[i].opened;
-                        openedSpritRow = openedSpritRow + 1;
-                    }
-                    else {
-                        row = worksheet.getRow(openedWeinRow);
-                        row.getCell(6).value = product.subCategory;
-                        row.getCell(7).value = product.name;
-                        row.getCell(8).value = shift.salesReport[i].opened;
-                        openedWeinRow = openedWeinRow + 1;
-                    }
-                    row.commit();
-                }
-
-                if(shift.salesReport[i].stockEndShift == 0) {
-                    //shortage battle
-                    row = worksheet.getRow(shortageRow);
-                    row.getCell(1).value = product.subCategory;
-                    row.getCell(2).value = product.name;
-                    shortageRow = shortageRow + 1;
-                    row.commit();
-                }
+            else{
+                row = worksheet.getRow(salesWeinRow);
+                row.getCell(7).value = product.subCategory;
+                row.getCell(8).value = product.name;
+                row.getCell(9).value = shift.salesReport[i].sold;
+                salesWeinRow = salesWeinRow + 1;
             }
-            return workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
-        });
+            row.commit();
+        }
 
+        if(shift.salesReport[i].opened > 0) {
+            //opened battle
+            if(product.category == 'ספיריט') {
+                row = worksheet.getRow(openedSpritRow);
+                row.getCell(1).value = product.subCategory;
+                row.getCell(2).value = product.name;
+                row.getCell(4).value = shift.salesReport[i].opened;
+                openedSpritRow = openedSpritRow + 1;
+            }
+            else {
+                row = worksheet.getRow(openedWeinRow);
+                row.getCell(6).value = product.subCategory;
+                row.getCell(7).value = product.name;
+                row.getCell(8).value = shift.salesReport[i].opened;
+                openedWeinRow = openedWeinRow + 1;
+            }
+            row.commit();
+        }
+
+        if(shift.salesReport[i].stockEndShift == 0) {
+            //shortage battle
+            if(shortageRow < 57) {
+                row = worksheet.getRow(shortageRow);
+                row.getCell(1).value = product.subCategory;
+                row.getCell(2).value = product.name;
+                shortageRow = shortageRow + 1;
+                row.commit();
+            }
+        }
+    }
+
+    //write the formulas
+    worksheet.getRow(83).getCell(4).value = {'formula': 'SUM($D$58:$D$81)'};
+    worksheet.getRow(83).getCell(9).value = {'formula': 'SUM(I58:I81)'};
+
+    await workbook.xlsx.writeFile( 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
+
+    let agentEmail = store.managerEmail;
+    if(agentEmail != null)
+        emails.push(agentEmail);
     let content = ' מצורף דוח טעימות של:' + salesman.username;
-    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username, content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + '.xlsx');
+    mailer.sendMailWithFile(emails, 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
     return {'code': 200};
 };
 
@@ -183,36 +198,42 @@ let getSalesmanListXL = async function(sessionId){
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(6).value = salesman.contact.address.street;
                     row.getCell(6).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(7).value = salesman.contact.address.number;
+                    row.getCell(7).value = salesman.contact.address.street;
                     row.getCell(7).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(8).value = salesman.contact.address.city;
+                    row.getCell(8).value = salesman.contact.address.number;
                     row.getCell(8).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(9).value = salesman.contact.address.zip;
+                    row.getCell(9).value = salesman.contact.address.city;
                     row.getCell(9).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
                         right: {style:'medium'}
                     };
-                    row.getCell(10).value = salesman.contact.phone;
+                    row.getCell(10).value = salesman.contact.address.zip;
                     row.getCell(10).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(11).value = salesman.contact.phone;
+                    row.getCell(11).border = {
                         top: {style:'medium'},
                         left: {style:'medium'},
                         bottom: {style:'medium'},
@@ -230,6 +251,240 @@ let getSalesmanListXL = async function(sessionId){
     mailer.sendMailWithFile([user.contact.email], 'IBBLS - רשימת דיילים ', content, 'salesReports/salesmanListReport.xlsx');
     return {'code': 200};
 
+};
+
+let getOrderEventReportXL = async function(sessionId, year, month){
+    let user = await permissions.validatePermissionForSessionId(sessionId, 'getOrderEventReportXL');
+    if(user == null)
+        return {'code': 401, 'err': constantString.permssionDenied};
+
+    let eventShifts = await dal.getEventShifts(year, month);
+    let eventsName = new  Set();
+    for(let shift of eventShifts){
+        eventsName.add(shift.type);
+    }
+
+    let workbook = new Excel.Workbook();
+    workbook.xlsx.readFile('orderJob.xlsx')
+        .then(async function() {
+            for(let eventName of eventsName){
+                let worksheet = workbook.addWorksheet(eventName);
+                let shifts = eventShifts.filter(function (shift) {
+                    return shift.type == eventName;
+                });
+
+                let setStoresName = new Set();
+                for(let shift of shifts){
+                    setStoresName.add(shift.storeId.name);
+                }
+
+                let rowCount = 1;
+                for(let storeName of setStoresName){
+                    rowCount++;
+                    rowCount++;
+                    let currentsShifts = shifts.filter(function (shift) {
+                       return shift.storeId.name == storeName;
+                    });
+
+                    //write the event type
+                    let row = worksheet.getRow(rowCount);
+                    row.getCell(2).value = 'שם האירוע';
+                    row.getCell(2).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(2).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.getCell(3).value = storeName;
+                    row.getCell(3).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(3).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.commit();
+                    rowCount++;
+                    rowCount++;
+
+                    row = worksheet.getRow(rowCount);
+                    row.getCell(1).value = 'תאריך';
+                    row.getCell(1).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(1).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(2).value = 'שם העובדת';
+                    row.getCell(2).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(2).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(3).value = 'מס שעות העבודה';
+                    row.getCell(3).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(3).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(4).value = 'נסיעות';
+                    row.getCell(4).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(4).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(5).value = 'סה"כ לתשלום';
+                    row.getCell(5).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99CCF0FF'},
+                        bgColor:{argb:'99CCF0FF'}
+                    };
+                    row.getCell(5).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                    row.commit();
+                    rowCount++;
+
+                    for(let shift of currentsShifts){
+                        row = worksheet.getRow(rowCount);
+                        row.getCell(1).value = new Date(shift.startTime).toLocaleString();
+                        row.getCell(1).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+
+                        row.getCell(2).value = shift.salesmanId.personal.firstName + " " + shift.salesmanId.personal.lastName;
+                        row.getCell(2).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+
+                        let duration = parseInt((shift.endTime - shift.startTime)/36e5, 10);
+                        row.getCell(3).value = duration;
+                        row.getCell(3).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+                        if(shift.numOfKM != null && shift.parkingCost != null){
+                            row.getCell(4).value = shift.numOfKM * 0.7 + shift.parkingCost;
+                        }
+                        else{
+                            row.getCell(4).value = 0;
+                        }
+                        row.getCell(4).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+
+                        if(shift.numOfKM != null && shift.parkingCost != null){
+                            let expensesCost = shift.numOfKM * 0.7 + shift.parkingCost;
+                            row.getCell(5).value = _calcEventCost(duration, expensesCost);
+                        }
+                        else{
+                            row.getCell(5).value = _calcEventCost(duration, 0);
+                        }
+
+                        row.getCell(5).border = {
+                            top: {style:'medium'},
+                            left: {style:'medium'},
+                            bottom: {style:'medium'},
+                            right: {style:'medium'}
+                        };
+                        row.commit();
+                        rowCount++;
+                    }
+
+                    row = worksheet.getRow(rowCount);
+                    row.getCell(4).value = 'סה"כ';
+                    row.getCell(4).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99FFFF00'},
+                        bgColor:{argb:'99FFFF00'}
+                    };
+                    row.getCell(4).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+
+                    row.getCell(5).value = {'formula':'SUM(E' + (rowCount - currentsShifts.length) + ':E' + (rowCount - 1) + ')'};
+                    row.getCell(5).fill = {
+                        type: 'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'99FFFF00'},
+                        bgColor:{argb:'99FFFF00'}
+                    };
+                    row.getCell(5).border = {
+                        top: {style:'medium'},
+                        left: {style:'medium'},
+                        bottom: {style:'medium'},
+                        right: {style:'medium'}
+                    };
+                }
+            }
+
+            return workbook.xlsx.writeFile('monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
+   });
+    let content = 'מורף הזמנת עבודה לחודש ' + (month + 1) + ' ' + year;
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח הזמנת עבודה ' + (month + 1) + ' ' + year, content, 'monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
+
+    return {'code': 200};
 };
 
 let getMonthAnalysisReportXL = async function(sessionId, year){
@@ -251,9 +506,9 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
             row.getCell(3).value = 'ניתוח כללי ' + year;
             let monthRow = 4;
             let encouragement = await dal.getAllEncouragements();
-            for(let i = 0; i < encouragement.length; i++){
+            for(let i = 0; i < encCategory.length; i++){
                 row = worksheet.getRow(monthRow);
-                row.getCell(6 + i).value = encouragement[i].name;
+                row.getCell(6 + i).value = encCategory[i];
             }
 
             let monthCol;
@@ -270,9 +525,9 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
                 monthCol++;
 
                 //write all the encouragement
-                for(let j = 0; j < encouragement.length; j++){
+                for(let j = 0; j < encCategory.length; j++){
                     for(let enc of monthData.monthlyEncoragement){
-                        if(enc.encouragement._id.equals(encouragement[j]._id)){
+                        if(enc.encouragement.name.includes(encCategory[j])){
                             row.getCell(monthCol).value = enc.amount;
                             monthCol++;
                         }
@@ -402,12 +657,13 @@ let genarateMonthAnalysisReport = async function() {
     }
 
     let monthShifts = await dal.getMonthShifts(year, month);
+    let monthShiftsEvent = await dal.getEventShifts(year, month);
     for(let currentShift of monthShifts){
         let salesman = await dal.getUserByobjectId(currentShift.salesmanId);
         let duration = parseInt((currentShift.endTime - currentShift.startTime)/36e5, 10);
         let store = await dal.getStoresByIds([currentShift.storeId]);
         store = store[0];
-        if(currentShift.type == 'אירוע'){
+        if(currentShift.type.includes('אירוע')){
             yearReport.monthData[month].salesmanCost.events += duration*salesman.jobDetails.salary;
         }
         else if(store.channel == 'מסורתי - חם'){
@@ -440,6 +696,8 @@ let genarateMonthAnalysisReport = async function() {
                 yearReport.monthData[month].openedCount.organized+= sale.opened;
             }
         }
+
+        //create all the enc
         for(let shiftEnc of currentShift.encouragements){
             for(let encReport of yearReport.monthData[month].monthlyEncoragement){
                 if(encReport.encouragement._id.equals(shiftEnc.encouragement._id)){
@@ -796,9 +1054,9 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
         let maxEncCol;
         //write the encouragements names
         let allEnc = await dal.getAllEncouragements();
-        for(let i = 0; i < allEnc.length; i++){
+        for(let i = 0; i < encCategory.length; i++){
             row = worksheet.getRow(7);
-            row.getCell(17 + i).value = allEnc[i].name;//R+i7
+            row.getCell(17 + i).value = encCategory[i];//R+i7
             maxEncCol = 17 + i;
         }
         //add all the shifts and the encouragements
@@ -813,9 +1071,15 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
             row.getCell(3).value = shiftStore.name;
             row.getCell(4).value = shiftStore.city;
             row.getCell(5).value = currentShift.type;
-            row.getCell(6).value = new Date(currentShift.startTime).getHours() + ":" + moment(new Date(currentShift.startTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.startTime).getSeconds()).format("ss");
-            row.getCell(7).value = new Date(currentShift.endTime).getHours() + ":" + moment(new Date(currentShift.endTime).getMinutes()).format("mm") + ":" + moment(new Date(currentShift.endTime).getSeconds()).format("ss");
-            row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+            row.getCell(6).value = moment(new Date(currentShift.startTime)).tz( 'Asia/Jerusalem').format('HH:mm');
+            row.getCell(7).value = moment(new Date(currentShift.endTime)).tz( 'Asia/Jerusalem').format('HH:mm');
+            if(currentShift.numOfKM != null && currentShift.parkingCost != null){
+                row.getCell(15).value = currentShift.numOfKM * 0.7 + currentShift.parkingCost;
+            }
+            else{
+                row.getCell(15).value = 0;
+            }
+
             //add formulas
             row.getCell(8).value = {'formula': 'IF((G' + rowCountFormula + '-F' + rowCountFormula + ')<0,(1-F' + rowCountFormula + '+G' + rowCountFormula +'),(G' + rowCountFormula + '-F' + rowCountFormula +'))'};//'=IF((G8-F8)<0,(1-F8+G8),(G8-F8))'
             row.getCell(9).value = {'formula': 'H' + rowCountFormula + '*24'};
@@ -826,7 +1090,7 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
             row.getCell(14).value = {'formula': 'IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>0.79),"120%",IF(AND($I' + rowCountFormula + '>2,$G' + rowCountFormula + '>=0,$F' + rowCountFormula + '>0.7083),"130%","100%"))'};
             for(let enc of currentShift.encouragements){
                 for(let k = 18; k <= maxEncCol; k++){
-                    if(worksheet.getRow(7).getCell(k).value == enc.encouragement.name){
+                    if(enc.encouragement.name.includes(worksheet.getRow(7).getCell(k).value )){
                         row.getCell(k).value = enc.encouragement.rate * enc.count;
                     }
                 }
@@ -853,8 +1117,17 @@ let getSalaryForHumanResourceReport = async function(sessionId, year, month){
     return {'code': 200};
 };
 
+let _calcEventCost = function(numOfHours, expensesCost){
+    let totalCost = constantString.eventSalary
+                    + constantString.eventSalary * 0.1276
+                    + constantString.eventSalary * (0.1433 + 0.009)
+                    + ((expensesCost * 0.0376)/numOfHours);
+    return Math.round(totalCost * numOfHours);
+};
+
 
 module.exports.getSaleReportXl = getSaleReportXl;
+module.exports.createXLSaleReport = createXLSaleReport;
 module.exports.getMonthlyUserHoursReport = getMonthlyUserHoursReport;
 module.exports.genarateMonthlyUserHoursReport = genarateMonthlyUserHoursReport;
 module.exports.getMonthlyHoursSalesmansReportXl = getMonthlyHoursSalesmansReportXl;
@@ -865,3 +1138,4 @@ module.exports.getMonthlyAnalysisReport = getMonthlyAnalysisReport;
 module.exports.getMonthAnalysisReportXL = getMonthAnalysisReportXL;
 module.exports.updateMonthlySalesmanHoursReport = updateMonthlySalesmanHoursReport;
 module.exports.updateMonthlyAnalysisReport = updateMonthlyAnalysisReport;
+module.exports.getOrderEventReportXL = getOrderEventReportXL;

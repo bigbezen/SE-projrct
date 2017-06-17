@@ -63,6 +63,10 @@ module.exports = {
         return userModel.find({'_id': {$in: ids}});
     },
 
+    getManagers: async function(){
+        return userModel.find({'jobDetails.userType': 'manager'});
+    },
+
     //----------------------------------------------------- STORES ----------------------------------------------
 
     editStore: async function (storeDetails) {
@@ -82,8 +86,8 @@ module.exports = {
         return storeModel.find({'_id': {$in: ids}});
     },
 
-    getStoreByNameAndArea: async function (name, area) {
-        return storeModel.findOne({'name': name, 'area': area});
+    getStoreByNameAndArea: async function (name, address, city) {
+        return storeModel.findOne({'name': name, 'address': address, 'city': city});
     },
 
     // ------------------------------------------------ PRODUCTS ------------------------------------------------
@@ -150,6 +154,13 @@ module.exports = {
         return shiftModel.find({'_id': {$in: shiftIds}});
     },
 
+    getShiftsByIdsWithStores: async function(shiftIds){
+        shiftIds = shiftIds.map(x => mongoose.Types.ObjectId(x));
+        return shiftModel.find({'_id': {$in: shiftIds}}, {'salesReport': 0})
+            .populate('storeId')
+            .populate('salesmanId');
+    },
+
     getShiftsFromDate: async function(fromDate, salesmanId){
         return shiftModel.find({$and: [{'startTime': {$gte: fromDate}}, {'salesmanId': salesmanId}]})
             .populate('salesmanId')
@@ -162,12 +173,40 @@ module.exports = {
         return shiftModel.findOne({$and: [{'startTime': {$gte: startDate}}, {'salesmanId': salesmanId}, {'endTime': {$lte: new Date(endDate)}}]})
     },
 
+    getShiftsByStatus: function(status){
+        return shiftModel.find({'status': status})
+            .populate('storeId')
+            .populate('salesmanId');
+    },
+
+    getShiftsByStatusFiltered: function(status){
+        return shiftModel.find({'status': status}, {'salesReport': 0, 'sales': 0})
+            .populate('storeId')
+            .populate('salesmanId');
+    },
+
+    getSalesmanShiftsByStatus: function(status, id){
+        return shiftModel.find({'status': status, 'salesmanId': mongoose.Types.ObjectId(id)}, {'salesReport': 0, 'sales': 0})
+            .populate('storeId')
+            .populate('salesmanId');
+    },
+
+    removeCreatedShifts: function(idsArr){
+        return shiftModel.remove({'_id': {$in: idsArr}});
+    },
+
     updateShift: async function(shift){
         return shiftModel.update({'_id': shift._id}, shift, {upsert: false});
     },
 
     editShift: async function(shiftDetails){
         return shiftModel.update({'_id': mongoose.Types.ObjectId(shiftDetails._id)}, shiftDetails, { upsert: false })
+    },
+
+    getEventShifts: async function(year, month){
+        var startMonth = new Date(year, month, 1);
+        var endMonth = new Date(year, month, 1).setMonth(startMonth.getMonth() + 1);
+        return shiftModel.find({$and: [{'status': 'FINISHED'}, {'startTime': {$gte: startMonth, $lt: endMonth}}, {'type': {$regex : ".*אירוע.*"}}]}).populate('storeId').populate('salesmanId');
     },
 
     editSalesReport: async function(shiftId, salesReport, encouragements){
@@ -186,8 +225,24 @@ module.exports = {
     },
 
     getSalesmanCurrentShift: async function(salesmanId, date){
+        // let publishedShifts = await shiftModel.find({
+        //     $and: [{'salesmanId': salesmanId}, {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}]
+        // });
+        // console.log('bla');
+        // if(!publishedShifts)
+        //     return null;
+        // if(publishedShifts.length == 0)
+        //     return null;
+        // let HALF_HOUR_IN_MS = 1800000;
+        // let currentShifts = publishedShifts.filter((shift) =>
+        //         (((new Date(date)).getTime() >= ((new Date(shift.startTime)).getTime() - HALF_HOUR_IN_MS)) &&
+        //         ((new Date(shift.endTime)).getTime() >= (new Date(date).getTime()))))
+        //     .sort((shift1, shift2) => (new Date(shift1.startTime)).getTime() - (new Date(shift2.startTime)).getTime());
+        // console.log('bla');
+        // return currentShifts[0];
+
         let startOfDay = new Date((new Date(date)).setHours(0, 0, 0));
-        let endOfDay = new Date((new Date(date)).setHours(23, 59, 59));
+        let endOfDay = new Date((new Date(startOfDay)).setDate(startOfDay.getDate() + 1));
 
         return shiftModel.findOne({$and: [{'salesmanId': salesmanId},
             {$or: [{'status': 'PUBLISHED'}, {'status': 'STARTED'}]}, {'startTime': {$gte: startOfDay, $lt: endOfDay}}]});
@@ -212,7 +267,8 @@ module.exports = {
     getShiftsOfRange: async function(startDate, endDate){
         startDate = new Date((new Date(startDate)).setHours(0, 0, 0));
         endDate = new Date((new Date(endDate)).setHours(23, 59, 59));
-        return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lte: new Date(endDate)}}]})
+        return shiftModel.find({$and: [{'startTime': {$gte: startDate}}, {'endTime': {$lte: new Date(endDate)}}]},
+            {'salesReport': 0, 'sales': 0, 'constraints': 0})
             .populate('salesmanId')
             .populate('storeId');
     },
@@ -226,6 +282,31 @@ module.exports = {
             .populate('salesmanId')
             .populate('storeId')
             .populate('salesReport.productId');
+    },
+
+    removeConstraints: async function(date, area, salesmanId){
+        let shifts = await shiftModel.find({'startTime': date, 'status': 'CREATED'})
+            .populate('storeId');
+        for(let shift of shifts){
+            if(shift.storeId.area == area){
+                shift.constraints = shift.constraints.filter((constraint) => constraint.salesmanId.toString() != salesmanId.toString());
+                await shift.save();
+            }
+
+        }
+
+    },
+//, {$pullAll: {'constraints.salesmanId': salesmanId}}
+    setConstraints: async function(date, area, constraint){
+        let shifts = await shiftModel.find({'startTime': date, 'status': 'CREATED'})
+            .populate('storeId');
+        for(let shift of shifts){
+            if(shift.storeId.area == area){
+                shift.constraints.push(constraint);
+                await shift.save();
+            }
+        }
+
     },
 
     // ------------------------------------------------- MESSAGES -----------------------------------------------

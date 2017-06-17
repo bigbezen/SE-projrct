@@ -11,7 +11,7 @@ var styles              = require('../styles/salesmanStyles/shiftExpensesStyles'
 var userServices        = require('../communication/userServices');
 var EditIcon            = require('react-icons/lib/md/edit');
 var NotificationSystem  = require('react-notification-system');
-
+var moment              = require('moment');
 
 var ShiftsExpensesContainer = React.createClass({
 
@@ -52,8 +52,16 @@ var ShiftsExpensesContainer = React.createClass({
     updateShifts(){
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.getAllShifts().then(function (shifts) {
-            self.setState({shifts: shifts});
+        salesmanServices.getFinishedShifts().then(function (shifts) {
+            var filteredShifts = shifts.filter(function (shift) {
+                var currentMonth = moment().format('MMMM');
+                var shiftsMonth = moment(shift.startTime).format('MMMM');
+                return shiftsMonth === currentMonth ;
+            });
+            filteredShifts.sort(function(a,b){
+                return new Date(b.startTime) - new Date(a.startTime);
+            });
+            self.setState({shifts: filteredShifts});
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
             notificationSystem.addNotification({
@@ -68,10 +76,19 @@ var ShiftsExpensesContainer = React.createClass({
     onClickEditButton: function(shift, index){
         var numOfKM = this.refs["numOfKM" + index].value;
         var parkingCost = this.refs["parkingCost" + index].value;
+        var otherExpenses = this.refs["otherExpense" + index].value;
         var shiftId = shift._id;
         var notificationSystem = this.refs.notificationSystem;
-        salesmanServices.reportExpenses(shiftId,numOfKM,parkingCost)
-            .then(function(result) {})
+        salesmanServices.reportExpenses(shiftId,numOfKM,parkingCost,otherExpenses)
+            .then(function(result) {
+                notificationSystem.clearNotifications();
+                notificationSystem.addNotification({
+                    message: constantStrings.reportExpenseSuccess,
+                    level: 'success',
+                    autoDismiss: 2,
+                    position: 'tc',
+                });
+            })
             .catch(function(err) {
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
@@ -93,28 +110,36 @@ var ShiftsExpensesContainer = React.createClass({
         var shiftDate = new Date(shift.startTime) ;
         var ShiftDateFormated = shiftDate.toLocaleDateString('en-GB');
         return (
-            <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black"
-                 style={styles.rowStyle}>
-                <p className="col-sm-3"><b>{shift.store.name}</b></p>
-                <p className="col-sm-3">{ShiftDateFormated}</p>
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"numOfKM" + i} defaultValue={shift.numOfKM} />
-                <p className="col-sm-1"></p>
-                <input className="col-sm-2" type="number" min="0" style={{marginTop: '3px'}} ref={"parkingCost" + i} defaultValue={shift.parkingCost} />
-                <p className="col-sm-1"></p>
-                <p className="w3-xlarge" onClick={() => this.onClickEditButton(shift, i)}><EditIcon style={{marginRight: '20px'}}/></p>
+
+        <div key={i} className="row w3-card-4 w3-round" style={styles.expStyle}>
+            <header className="w3-container w3-round" style={styles.headerStyle}>
+                <p className="w3-xxxlarge" style={styles.storeStyle}>{shift.storeId.name}</p>
+                <p className="w3-xxxlarge" style={styles.dateStyle}> {ShiftDateFormated}</p>
+            </header>
+            <div className="w3-container" style={styles.expContainerStyle}>
+                <p><b>{constantStrings.km_string}</b>:&nbsp;
+                    <input type="number" min="0" style={styles.inputStyle}  ref={"numOfKM" + i} defaultValue={shift.numOfKM} />
+                </p>
+                <p><b>{constantStrings.parking_string}</b>:&nbsp;
+                    <input type="number" min="0" style={styles.inputStyle}  ref={"parkingCost" + i} defaultValue={shift.parkingCost} />
+                </p>
+                <p><b>{constantStrings.other_expenses}</b>:&nbsp;
+                    <input type="number" min="0" style={styles.inputStyle} ref={"otherExpense" + i} defaultValue={shift.extraExpenses} />
+                </p>
             </div>
+            <div className="text-center">
+                <button className="w3-button w3-card-4 w3-round w3-ripple" style={styles.buttonStyle} onClick={() => this.onClickEditButton(shift, i)}>
+                    {constantStrings.save_string}
+                </button>
+            </div>
+
+        </div>
         )
     },
 
     renderList: function(){
         return (
             <div className="w3-container col-sm-12" style={styles.bodyStyle}>
-                <div className="row col-sm-12 w3-theme-l4 w3-round-large w3-card-4 w3-text-black" style={styles.rowStyle}>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.store_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.date_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.km_string}</b></p>
-                    <p className="col-sm-3" style={styles.listHeader}><b>{constantStrings.parking_string}</b></p>
-                </div>
                 {this.state.shifts.map(this.renderEachShift)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

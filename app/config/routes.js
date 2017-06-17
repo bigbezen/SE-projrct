@@ -16,6 +16,9 @@ var Product                 = require('../containers/ProductDetails');
 var Store                   = require('../containers/StoreDetails');
 var User                    = require('../containers/UserDetails');
 var Shifts                  = require('../containers/ShiftsContainer');
+var ShiftsFinished          = require('../containers/ShiftsFinishedContainer');
+var ShiftsCreation          = require('../containers/ShiftsCreationContainer');
+var ShiftsEvents            = require('../containers/ShiftsEventsContainer');
 var Shift                   = require('../containers/ShiftDetails');
 var CreateShifts            = require('../containers/ShiftsGenerator');
 var MultipleShiftsCreation  = require('../containers/ShiftsCreateMultipleShifts');
@@ -32,13 +35,14 @@ var shiftComments           = require('../salemanContainers/ShiftCommentsContain
 var ShiftEncouragements     = require('../salemanContainers/ShiftEncouragementsContainer');
 var IncentivesContainer     = require('../containers/IncentivesContainer');
 var Incentive               = require('../containers/IncentiveDetails');
-var Reports                 = require('../containers/ReportsBase');
 var SalesReport             = require('../containers/ReportsSalesReport');
 var MonthlyAnalysisReport   = require('../containers/ReportsMonthlyAnalysis');
-var MonthlyHoursReport      = require('../containers/ReportsMonthlyHours')
+var MonthlyHoursReport      = require('../containers/ReportsMonthlyHours');
 var HumanResourcesReport    = require('../containers/ReportsHumanResources');
+var OrderEventsReport       = require('../containers/ReportsOrderEvents');
 var SalesmanShiftsExpenses  = require('../salemanContainers/shiftExpensesContainer');
 var SalesmanProfile         = require('../salemanContainers/SalesmanProfileContainer');
+var SalesmanAssignShifts    = require('../salemanContainers/AssignShiftsContainer');
 var SalesmanShiftSchedule   = require('../salemanContainers/SalesmanShiftsScheduleContainer');
 var SalesmanBase            = require('../salemanContainers/SalesmanBaseContainer');
 
@@ -52,6 +56,9 @@ var routes = (
             <Route path='stores' component={Stores} />
             <Route path='products' component={Products} />
             <Route path='shifts' component={Shifts} />
+            <Route path='shiftsFinished' component={ShiftsFinished} />
+            <Route path='shiftsCreation' component={ShiftsCreation} />
+            <Route path='shiftsEvents' component={ShiftsEvents} />
             <Route path='product' component={Product} />
             <Route path='store' component={Store} />
             <Route path='user' component={User} />
@@ -61,15 +68,15 @@ var routes = (
             <Route path='incentives' component={IncentivesContainer}/>
             <Route path='incentive' component={Incentive} />
             <Route path='changePassword' component={ChangePass}/>
-            <Route path='reports' component={Reports} />
             <Route path='salesReport' component={SalesReport} />
             <Route path='monthlyAnalysisReport' component={MonthlyAnalysisReport} />
             <Route path='monthlyHoursReport' component={MonthlyHoursReport} />
             <Route path='humanResourcesReport' component={HumanResourcesReport} />
+            <Route path='orderEventsReport' component={OrderEventsReport} />
+
         </Route>
         <Route path='/member/'>
             <Route path='retrievePassword' component={RetrievePass}/>
-            <Route path='reports' component={Reports} />
         </Route>
         <Route path='/salesman/' component={SalesmanBase}>
             <Route path='startShift' component={SalesmanStartShift}/>
@@ -80,6 +87,7 @@ var routes = (
             <Route path='profile' component={SalesmanProfile}/>
             <Route path='shiftSchedule' component={SalesmanShiftSchedule}/>
             <Route path='shiftsExpenses' component={SalesmanShiftsExpenses}/>
+            <Route path='assignShifts' component={SalesmanAssignShifts}/>
             <Route path='changePassword' component={ChangePass}/>
         </Route>
 

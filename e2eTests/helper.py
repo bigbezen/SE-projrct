@@ -2,7 +2,7 @@ import datetime
 
 
 def getCurrDate():
-    return datetime.datetime.now().date().strftime("%d/%m/%Y")
+    return datetime.datetime.now().date().strftime("%Y-%m-%d")
 
 
 def getNextTime(n):
@@ -20,8 +20,12 @@ productsContainer = 'http://localhost:3000/#/manager/products'
 storesContainer = 'http://localhost:3000/#/manager/stores'
 usersContainer = 'http://localhost:3000/#/manager/users'
 shiftsContainer = 'http://localhost:3000/#/manager/shifts'
+createShiftContainer = 'http://localhost:3000/#/manager/shiftsCreation'
+createMultipleShifts = 'http://localhost:3000/#/manager/createMultipleShifts'
 reportsContainer = 'http://localhost:3000/#/manager/reports'
 incentivesContainer = 'http://localhost:3000/#/manager/incentives'
+salesReportContainer = "http://localhost:3000/#/manager/salesReport"
+monthlyReportContainer = "http://localhost:3000/#/manager/monthlyAnalysisReport"
 
 logoutManagerXpath = "//*[@id=\"app\"]/div/ul/li[9]/a"
 
@@ -78,11 +82,12 @@ existsEmail = "sds@dsfds.com"
 # incentives
 incentiveName = "תמריץ1"
 incentiveProduct = "קמפארי"
+incentiveSubCategory = "סינגל מאלט סקוטי"
 incentiveQuantity = "13"
 incentiveBonus = "100"
 
 # shifts
-shiftStore = "טיב טעם"
+shiftStore = "מכרז - נתניה - טיב טעם - משהו בנתניה"
 shiftUser = "newUser"
 shiftType = "טעימה"
 shiftDate = getCurrDate()

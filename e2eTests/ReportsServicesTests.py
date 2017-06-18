@@ -32,18 +32,32 @@ class ReportsServices(unittest.TestCase):
         sleep(3)
         self.assertEqual(driver.current_url, helper.manager_home)
         driver.find_element_by_xpath(containers.managerHome.reportsTab).click()
-        sleep(1)
-        self.assertEqual(driver.current_url, helper.reportsContainer)
+        sleep(2)
+        self.assertEqual(driver.current_url, helper.manager_home)
 
     # test-61
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_viewShiftReport_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.reports.shiftReport).click()
-        sleep(2)
+        sleep(5)
+        self.assertEqual(driver.current_url, helper.salesReportContainer)
         driver.find_element_by_xpath(containers.reports.salesman).send_keys("אבירם אדירי")
         sleep(1)
         driver.find_element_by_xpath(containers.reports.shift).send_keys("27-4-2017")
+        sleep(1)
+        self.assertEqual(driver.current_url, helper.salesReportContainer)
+
+    # todo:
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_viewShiftReportByStore_Ok(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.reports.shiftReport).click()
+        sleep(2)
+        self.assertEqual(driver.current_url, helper.salesReportContainer)
+        driver.find_element_by_xpath(containers.reports.salesman).send_keys("דרום - באר שבע - דרינק אנד קו - האורגים")
+        sleep(1)
+        driver.find_element_by_xpath(containers.reports.shift2).send_keys("27-4-2017")
         sleep(1)
         self.assertEqual(driver.current_url, helper.salesReportContainer)
 
@@ -52,12 +66,11 @@ class ReportsServices(unittest.TestCase):
     def test_sendShiftReport_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.reports.shiftReport).click()
-        sleep(2)
+        sleep(5)
         driver.find_element_by_xpath(containers.reports.salesman).send_keys("אבירם אדירי")
-        sleep(1)
+        sleep(2)
         driver.find_element_by_xpath(containers.reports.shift).send_keys("27-4-2017")
-        sleep(1)
-
+        sleep(2)
         driver.find_element_by_xpath(containers.reports.sendMail).click()
         sleep(2)
         self.assertEqual(driver.current_url, helper.salesReportContainer)
@@ -67,15 +80,15 @@ class ReportsServices(unittest.TestCase):
     def test_editShiftReport_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.reports.shiftReport).click()
-        sleep(2)
+        sleep(5)
         driver.find_element_by_xpath(containers.reports.salesman).send_keys("אבירם אדירי")
-        sleep(1)
+        sleep(2)
         driver.find_element_by_xpath(containers.reports.shift).send_keys("27-4-2017")
-        sleep(1)
+        sleep(2)
         driver.find_element_by_xpath(containers.reports.editOpen).send_keys("1")
-        sleep(1)
-        driver.find_element_by_xpath(containers.reports.editShiftBtn).click()
-        sleep(1)
+        sleep(2)
+        driver.find_element_by_xpath(containers.managerHome.reportsTab).click()
+        sleep(2)
         self.assertEqual(driver.current_url, helper.salesReportContainer)
 
     # test-64
@@ -83,7 +96,8 @@ class ReportsServices(unittest.TestCase):
     def test_viewMonthlyReport_Ok(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.reports.monthlySales).click()
-        sleep(2)
+        sleep(5)
+        self.assertEqual(driver.current_url, helper.monthlyReportContainer)
         driver.find_element_by_xpath(containers.reports.showReportBtn).click()
         sleep(1)
         self.assertEqual(driver.current_url, helper.monthlyReportContainer)

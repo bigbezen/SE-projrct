@@ -85,7 +85,7 @@ var SalesmanAssignShiftsContainer = React.createClass({
                     for (let shift of result) {
                         for (let constraint of shift.constraints) {
                             if (constraint.salesmanId == salesman._id) {
-                                availability[shift.startTime][shift.storeId.area] = constraint;
+                                availability[moment(shift.startTime).format('YYYY-MM-DD')][shift.storeId.area] = constraint;
                             }
                         }
                     }

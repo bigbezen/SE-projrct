@@ -264,7 +264,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
             <div className="col-xs-12 w3-card-2 w3-round" style={styles.shiftRowStyle}>
                 <input className="col-sm-1" style={{height: '20px'}} type="checkbox" ref={shift._id} checked={this.state.shiftsFilter[shift._id]}
                     onChange={() => this.onChangeShiftsFilter(shift._id)}/>
-                <p className="col-sm-3">{shift.storeId.name}</p>
+                <p className="col-sm-7">{shift.storeId.city + " - " + shift.storeId.name}</p>
                 <select style={{color: 'black', marginTop: '3px'}}
                         className="col-sm-4 w3-round" ref={shift._id}
                         onChange={() => this.onChangeSalesman(shift)}>

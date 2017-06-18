@@ -181,7 +181,7 @@ var IncentiveDetails = React.createClass({
     },
 
     onChangeProduct: function(){
-        this.state.refs.subCategory.value = constantsStrings.dropDownChooseString;
+        this.refs.subCategory.value = constantsStrings.dropDownChooseString;
     },
 
     renderProductChoice: function(product, i){
@@ -307,7 +307,7 @@ var IncentiveDetails = React.createClass({
                 }}>
                     <div className="form-group">
                         <h1 className="col-xs-offset-1 col-xs-9 w3-xxlarge">
-                            <b>{constantsStrings.addIncentive_string}</b>
+                            <b>{(this.state.editedIncentive == undefined) ? constantsStrings.addIncentive_string : constantsStrings.editIncentive_string}</b>
                         </h1>
                     </div>
 

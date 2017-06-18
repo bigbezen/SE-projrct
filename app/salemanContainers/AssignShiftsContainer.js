@@ -69,15 +69,11 @@ var SalesmanAssignShiftsContainer = React.createClass({
             managementService.getShiftsByStatus(constantsStrings.SHIFT_STATUS.CREATED)
                 .then(function (result) {
                     let availability = {};
-                    result = result.map(function(shift) {
-                        shift.startTime = moment(shift.startTime).format('YYYY-MM-DD');
-                        return shift;
-                    });
-                    let dates = new Set(result.map((shift) => shift.startTime));
+                    let dates = new Set(result.map((shift) => moment(shift.startTime).format('YYYY-MM-DD')));
                     for (let date of dates) {
                         availability[date] = {};
                         let areas = new Set(result.filter((shift) =>
-                        (new Date(shift.startTime)).getTime() - (new Date(date)).getTime() == 0)
+                        (new Date(moment(shift.startTime).format('YYYY-MM-DD'))).getTime() - (new Date(date)).getTime() == 0)
                             .map((shift) => shift.storeId.area));
                         for (let area of areas) {
                             availability[date][area] = {
@@ -89,7 +85,7 @@ var SalesmanAssignShiftsContainer = React.createClass({
                     for (let shift of result) {
                         for (let constraint of shift.constraints) {
                             if (constraint.salesmanId == salesman._id) {
-                                availability[shift.startTime][shift.storeId.area] = constraint;
+                                availability[moment(shift.startTime).format('YYYY-MM-DD')][shift.storeId.area] = constraint;
                             }
                         }
                     }
@@ -178,10 +174,10 @@ var SalesmanAssignShiftsContainer = React.createClass({
 
     renderByDate: function(date){
         let shiftsOfDate = this.state.shifts.filter((shift) =>
-            (new Date(shift.startTime)).getTime() - (new Date(date)).getTime() == 0);
+            (new Date(moment(shift.startTime).format('YYYY-MM-DD'))).getTime() - (new Date(date)).getTime() == 0);
         let areas = Array.from(new Set(shiftsOfDate.map((shift) => shift.storeId.area)));
 
-        let shownDate = moment(date).format('YYYY-MM-DD');
+        let shownDate = moment(date).format('DD-MM-YYYY');
         return (
             <div key={date} className="row w3-card-4 w3-round-large"
                  style={Object.assign(styles.shiftStyle, {paddingBottom: '30px'})}>
@@ -194,10 +190,10 @@ var SalesmanAssignShiftsContainer = React.createClass({
     },
 
     renderTable: function() {
-        let dates = Array.from(
-            new Set(this.state.shifts.map((shift) => shift.startTime))
-        ).sort(function(shift1, shift2){
-            return (new Date(shift1)).getTime() - (new Date(shift2)).getTime();
+        let dates = Array
+            .from(new Set(this.state.shifts.map((shift) => moment(shift.startTime).format('YYYY-MM-DD'))))
+            .sort(function(shift1, shift2){
+                return (new Date(shift1)).getTime() - (new Date(shift2)).getTime();
         });
 
         return (

@@ -159,13 +159,13 @@ var ReportsMonthlyHours = React.createClass({
             <div className="col-sm-offset-1 col-sm-8 w3-card-4 w3-round">
                 <p className="col-sm-3">{salesman.user.personal.firstName + " " + salesman.user.personal.lastName}</p>
                 <b style={{marginTop: '3px'}} className="col-sm-2 w3-round w3-text-black">
-                    {salesman.numOfHours}
+                    {(salesman.numOfHours).toFixed(2)}
                 </b>
                 <b style={{marginTop: '3px'}} className="col-sm-2 w3-round w3-text-black">
-                    {salesman.sales}
+                    {(salesman.sales).toFixed(2)}
                 </b>
                 <b style={{marginTop: '3px'}} className="col-sm-2 w3-round w3-text-black">
-                    {salesman.opened}
+                    {(salesman.opened).toFixed(2)}
                 </b>
 
             </div>

@@ -285,7 +285,9 @@ module.exports = {
     },
 
     removeConstraints: async function(date, area, salesmanId){
-        let shifts = await shiftModel.find({'startTime': date, 'status': 'CREATED'})
+        let startDate = new Date((new Date(date)).setHours(0, 0));
+        let endDate = new Date((new Date(date)).setHours(23, 59));
+        let shifts = await shiftModel.find({'startTime': {$gte: startDate}, 'endTime': {$lte: endDate}, 'status': 'CREATED'})
             .populate('storeId');
         for(let shift of shifts){
             if(shift.storeId.area == area){
@@ -298,7 +300,9 @@ module.exports = {
     },
 //, {$pullAll: {'constraints.salesmanId': salesmanId}}
     setConstraints: async function(date, area, constraint){
-        let shifts = await shiftModel.find({'startTime': date, 'status': 'CREATED'})
+        let startDate = new Date((new Date(date)).setHours(0, 0));
+        let endDate = new Date((new Date(date)).setHours(23, 59));
+        let shifts = await shiftModel.find({'startTime': {$gte: startDate}, 'endTime': {$lte: endDate}, 'status': 'CREATED'})
             .populate('storeId');
         for(let shift of shifts){
             if(shift.storeId.area == area){

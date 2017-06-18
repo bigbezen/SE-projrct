@@ -75,7 +75,6 @@ function _connectToDb(){
     });
     db.once('open', function() {
         console.log('connected to db successfuly');
-        dal.cleanDbOnStart();
         userService.setAdminUser();
     });
 }

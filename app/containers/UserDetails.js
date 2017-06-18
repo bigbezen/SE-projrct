@@ -31,7 +31,8 @@ var UserDetails = React.createClass({
             editing: false,
             gender: '',
             role: '',
-            prevUsername:''
+            prevUsername:'',
+            showLoader: false
         }
     },
     setShiftsEndDate: function() {
@@ -150,7 +151,11 @@ var UserDetails = React.createClass({
         newUser.jobDetails.salary = this.refs.salaryBox.value;
 
         var context = this.context;
+        var self = this;
         var notificationSystem = this.refs.notificationSystem;
+        self.setState({
+            showLoader: true
+        });
         if (this.state.editing) {
             newUser._id = this.props.location.query._id;
             var prevName = this.state.prevUsername;
@@ -175,6 +180,9 @@ var UserDetails = React.createClass({
                     autoDismiss: 0,
                     position: 'tc'
                 });
+                self.setState({
+                    showLoader: false
+                });
             })
         }else {
             managementServices.addUser(newUser).then(function (n) {
@@ -198,6 +206,9 @@ var UserDetails = React.createClass({
                     autoDismiss: 0,
                     position: 'tc'
                 });
+                self.setState({
+                    showLoader: false
+                });
             })
         }
     },
@@ -214,6 +225,21 @@ var UserDetails = React.createClass({
             return constantsStrings.edit_string;
         }
         return constantsStrings.add_string;
+    },
+
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center form-group">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
     },
 
     addNewUser: function() {
@@ -409,6 +435,7 @@ var UserDetails = React.createClass({
                             {this.getButtonString()}
                         </button>
                     </div>
+                    {this.loader()}
                 </form>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>

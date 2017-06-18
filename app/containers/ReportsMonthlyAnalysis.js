@@ -165,19 +165,19 @@ var ReportsMonthlyAnalysis = React.createClass({
                 <div className="col-sm-10" style={{padding: '0'}}>
                     <p className="col-sm-12">{constantStrings.dictionary["traditionalHot"]}</p>
                     <b className="w3-round col-sm-12">
-                        {sectionData.traditionalHot}
+                        {(sectionData.traditionalHot).toFixed(2)}
                     </b>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
                     <p className="col-sm-12">{constantStrings.dictionary["traditionalOrganized"]}</p>
                     <b className="w3-round col-sm-12">
-                        {sectionData.traditionalOrganized}
+                        {(sectionData.traditionalOrganized).toFixed(2)}
                     </b>
                 </div>
                 <div className="col-sm-10" style={{padding: '0'}}>
                     <p className="col-sm-12">{constantStrings.dictionary["organized"]}</p>
                     <b className="w3-round col-sm-12">
-                        {sectionData.organized}
+                        {(sectionData.organized).toFixed(2)}
                     </b>
                 </div>
 
@@ -190,7 +190,7 @@ var ReportsMonthlyAnalysis = React.createClass({
             <div style={styles.col} className="w3-round">
                 <u className="col-sm-12">{encouragement.encouragement.name}</u>
                 <b className="w3-round col-sm-12">
-                    {encouragement.amount}
+                    {(encouragement.amount).toFixed(2)}
                 </b>
 
             </div>

@@ -244,7 +244,6 @@ var ReportsSalesReport = React.createClass({
             return (
                 <div>
                     <div className="text-center">
-                        <h1 className="w3-xxlarge">{constantStrings.reportsSalesReportTitle_string}</h1>
                         <button className="w3-button w3-round w3-card-4 w3-ripple" style={styles.editStyle} onClick={this.onClickExportReport}>
                             {constantStrings.getReport_string}
                         </button>

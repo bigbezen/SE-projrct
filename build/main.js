@@ -124,8 +124,8 @@ app.locals.mongourl = localdb;
 
 _connectToDb();
 _setapApiEndpoints();
-var monthlyReportJob = scheduler.scheduleJob('* * 18 * *', _genarateMonthlyReport);
-var finishShiftsJob = scheduler.scheduleJob('* 0 * * *', _finishStartedShifts);
+//let monthlyReportJob  = scheduler.scheduleJob('* * 18 * *', _genarateMonthlyReport);
+//let finishShiftsJob = scheduler.scheduleJob('* 0 * * *', _finishStartedShifts);
 
 console.log('server is now running on port: ', { 'port': port });
 function _connectToDb() {
@@ -2872,7 +2872,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/super/cleanAnalyzeReports', function () {
+    app.get('/super/cleanFinshedShifts', function () {
         var _ref75 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee75(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee75$(_context75) {
@@ -2885,12 +2885,12 @@ function _setapApiEndpoints() {
                             }
 
                             _context75.next = 3;
-                            return deletionService.cleanMAReports();
+                            return deletionService.cleanFInishedShifts();
 
                         case 3:
                             result = _context75.sent;
 
-                            if (result.result.ok == 1) res.status(200).send("reports are successfully deleted");else res.status(500).send("could not delete");
+                            if (result.result.ok == 1) res.status(200).send("shiftd are successfully deleted");else res.status(500).send("could not delete");
                             _context75.next = 8;
                             break;
 
@@ -2910,7 +2910,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/super/cleanMonthlyHoursReports', function () {
+    app.get('/super/cleanAnalyzeReports', function () {
         var _ref76 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee76(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee76$(_context76) {
@@ -2923,7 +2923,7 @@ function _setapApiEndpoints() {
                             }
 
                             _context76.next = 3;
-                            return deletionService.cleanSMHReports();
+                            return deletionService.cleanMAReports();
 
                         case 3:
                             result = _context76.sent;
@@ -2948,7 +2948,7 @@ function _setapApiEndpoints() {
         };
     }());
 
-    app.get('/super/initiateProducts', function () {
+    app.get('/super/cleanMonthlyHoursReports', function () {
         var _ref77 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee77(req, res) {
             var result;
             return _regenerator2.default.wrap(function _callee77$(_context77) {
@@ -2961,12 +2961,12 @@ function _setapApiEndpoints() {
                             }
 
                             _context77.next = 3;
-                            return deletionService.initiateProducts();
+                            return deletionService.cleanSMHReports();
 
                         case 3:
                             result = _context77.sent;
 
-                            if (result == true) res.status(200).send("products are initiated in db");else res.status(500).send("could not initiate products db");
+                            if (result.result.ok == 1) res.status(200).send("reports are successfully deleted");else res.status(500).send("could not delete");
                             _context77.next = 8;
                             break;
 
@@ -2983,6 +2983,44 @@ function _setapApiEndpoints() {
 
         return function (_x149, _x150) {
             return _ref77.apply(this, arguments);
+        };
+    }());
+
+    app.get('/super/initiateProducts', function () {
+        var _ref78 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee78(req, res) {
+            var result;
+            return _regenerator2.default.wrap(function _callee78$(_context78) {
+                while (1) {
+                    switch (_context78.prev = _context78.next) {
+                        case 0:
+                            if (!(req.query.super == "ibblsservice")) {
+                                _context78.next = 7;
+                                break;
+                            }
+
+                            _context78.next = 3;
+                            return deletionService.initiateProducts();
+
+                        case 3:
+                            result = _context78.sent;
+
+                            if (result == true) res.status(200).send("products are initiated in db");else res.status(500).send("could not initiate products db");
+                            _context78.next = 8;
+                            break;
+
+                        case 7:
+                            res.status(404).send("unauthorized");
+
+                        case 8:
+                        case 'end':
+                            return _context78.stop();
+                    }
+                }
+            }, _callee78, this);
+        }));
+
+        return function (_x151, _x152) {
+            return _ref78.apply(this, arguments);
         };
     }());
 }

@@ -69,7 +69,8 @@ var ShiftDetails = React.createClass({
             shiftType: constantsStrings.shiftType_taste,
             shiftTypeEvent: false,
             storesForDropDown:[] ,
-            salesmenForDropDown:[]
+            salesmenForDropDown:[],
+            showLoader: false
         }
     },
 
@@ -189,6 +190,9 @@ var ShiftDetails = React.createClass({
         var context = this.context;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
+        self.setState({
+            showLoader: true
+        });
         if (this.state.editing) {
             newShift._id = this.props.location.query._id;
             managementServices.editShift(newShift).then(function (n) {
@@ -199,7 +203,7 @@ var ShiftDetails = React.createClass({
                     autoDismiss: 1,
                     position: 'tc',
                     onRemove: function (notification) {
-                        var path = ""
+                        var path = "";
                         if(self.props.location.query.status != "CREATED" && self.props.location.query.type == "טעימה") {
                             path = paths.manager_shifts_path
                         } else if(self.props.location.query.status != "CREATED") {
@@ -219,6 +223,9 @@ var ShiftDetails = React.createClass({
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'
+                });
+                self.setState({
+                    showLoader: false
                 });
             })
         }else {
@@ -243,6 +250,9 @@ var ShiftDetails = React.createClass({
                     autoDismiss: 0,
                     position: 'tc'
                 });
+                self.setState({
+                    showLoader: false
+                })
             })
         }
     },
@@ -291,6 +301,21 @@ var ShiftDetails = React.createClass({
                        className="col-xs-4 col-xs-offset-2"
                        ref="eventType"/>
             );
+    },
+
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center form-group">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
     },
 
     addNewShift: function() {
@@ -398,6 +423,7 @@ var ShiftDetails = React.createClass({
                             {this.getButtonString()}
                         </button>
                     </div>
+                    {this.loader()}
                 </form>
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
@@ -430,7 +456,7 @@ var ShiftDetails = React.createClass({
         this.refs.dateBox.state.value =  moment(currShift.startTime).toDate().getTime();
         this.refs.startTimeBox.value = moment(currShift.startTime).format('HH:mm');
         this.refs.endTimeBox.value = moment(currShift.endTime).format('HH:mm');
-        this.refs.managerCommentBox.value = currShift.managerComment;
+        this.refs.managerCommentBox.value = currShift.managerComment == undefined ? "" : currShift.managerComment;
     },
 
     render: function () {

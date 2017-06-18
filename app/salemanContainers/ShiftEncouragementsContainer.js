@@ -106,7 +106,8 @@ var ShiftEncouragementsContainer = React.createClass({
             let numOfAchievedEnc = parseInt(totalSold / enc.numOfProducts);
             allEncs.push({
                 'encouragement': enc,
-                'amountSold': numOfAchievedEnc > 0 ? totalSold : 0
+                'amountSold': (totalSold % enc.numOfProducts),
+                'achivedSoFar': numOfAchievedEnc
             });
             totalEarnedSoFar += enc.rate * numOfAchievedEnc;
 
@@ -133,36 +134,6 @@ var ShiftEncouragementsContainer = React.createClass({
         });
     },
 
-    updateEncouragementsStatus(shift, encouragements){
-        var encouragementsStatus = [];
-        var totalEncouragementsStatus = 0;
-        var salesReport = shift.salesReport;
-        var soldProducts = {};
-        var i;
-        for(i=0; i<salesReport.length; i++) {
-            var product = salesReport[i];
-            soldProducts[product.productId] = product.sold;
-        }
-        var j;
-        for (j=0; j<encouragements.length; j++) {
-            var count = 0;
-            var encouragement = encouragements[j];
-            encouragement.products.forEach(function(prod) {
-                if(encouragement.active){
-                    count+=soldProducts[prod._id];
-                }
-            });
-            var numberOfEnc = Math.floor(count/encouragement.numOfProducts);
-            var totalRate = numberOfEnc*encouragement.rate;
-            totalEncouragementsStatus+=totalRate;
-            encouragementsStatus[j] = {encouragement: encouragement,
-                                        amountSold: count};
-        }
-        this.setState({encouragementsStatus : encouragementsStatus,
-                  totalEncouragementsStatus : totalEncouragementsStatus})
-
-    },
-
     renderProductRow: function(product, i) {
         return (
             <p>&nbsp;&nbsp;<label style={{fontSize:'30px'}}>{product.subCategory}</label>{" - " + product.name}</p>
@@ -177,7 +148,8 @@ var ShiftEncouragementsContainer = React.createClass({
                     <p className="w3-xxxlarge" style={styles.encStatus}> {encouragementStatus.amountSold}/{encouragementStatus.encouragement.numOfProducts}</p>
                 </header>
                 <div className="w3-container">
-                    <p><b>{constantsStrings.products_string} :</b></p>
+                    <p style={{float: 'left'}}><b>{constantsStrings.incentivesAchieved_string}:</b> {encouragementStatus.achivedSoFar}</p>
+                    <p><b>{constantsStrings.products_string}:</b></p>
                     {encouragementStatus.encouragement.products.map(this.renderProductRow)}
                     <p><b>{constantsStrings.incentiveRateSalesman_string}</b>: {encouragementStatus.encouragement.rate} {constantsStrings.ils_string}</p>
                 </div>

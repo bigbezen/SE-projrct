@@ -310,13 +310,13 @@ var ShiftsCreationContainer = React.createClass({
     changeStartDate: function (date) {
         var startDateValue = moment(date).toDate();
         var endDateValue = moment(this.refs.endDateBox.state.value).toDate();
-        if(startDateValue.getTime() < endDateValue.getTime())
+        if(startDateValue.getTime() <= endDateValue.getTime())
             this.updateShifts(startDateValue,endDateValue);
     },
     changeEndDate: function (date) {
         var startDateValue = moment(this.refs.startDateBox.state.value).toDate();
         var endDateValue = moment(date).toDate();
-        if(startDateValue.getTime() < endDateValue.getTime())
+        if(startDateValue.getTime() <= endDateValue.getTime())
             this.updateShifts(startDateValue,endDateValue);
     },
 
@@ -381,7 +381,7 @@ var ShiftsCreationContainer = React.createClass({
                     </TableHeaderColumn>
                     <TableHeaderColumn
                         dataField = 'startTime'
-                        sort = {true}
+                        dataSort = {true}
                         dataAlign = 'right'
                         dataFormat={ dateFormatter }>
                         {constantStrings.date_string}

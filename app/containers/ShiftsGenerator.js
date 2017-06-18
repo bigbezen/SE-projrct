@@ -27,7 +27,8 @@ var ShiftDetails = React.createClass({
         this.setShiftsEndDate();
         this.setShiftsStartDate();
         return {
-            chosenDate: new Date()
+            chosenDate: new Date(),
+            showLoader: false
         }
     },
     setShiftsEndDate: function() {
@@ -75,6 +76,9 @@ var ShiftDetails = React.createClass({
         var endTime = moment(date).format('YYYY-MM-DD') + ' ' +  this.refs.endTimeBox.value;
         endTime = moment(endTime).format('YYYY-MM-DD HH:mm Z');
 
+        self.setState({
+            showLoader: true
+        });
         managementServices.generateShiftsForDate(startTime, endTime)
             .then(function(result){
                 notificationSystem.clearNotifications();
@@ -85,8 +89,9 @@ var ShiftDetails = React.createClass({
                     position: 'tc'
                 });
                 self.context.router.push({
-                    pathname: paths.manager_shifts_creation_path
-                })
+                    pathname: paths.manager_shifts_creation_path,
+                    showLoader: false
+                });
             })
             .catch(function(errMsg){
                 notificationSystem.clearNotifications();
@@ -95,6 +100,9 @@ var ShiftDetails = React.createClass({
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'
+                });
+                self.setState({
+                    showLoader: false
                 });
         });
 
@@ -110,11 +118,26 @@ var ShiftDetails = React.createClass({
         this.state.chosenDate = new Date(a);
     },
 
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
+    },
 
     createAllShifts: function() {
         return (
             <div className="jumbotron col-xs-offset-3 col-xs-6 text-center" style={styles.editBodyStyle}>
                 <h1>יצירת קבוצת משמרות</h1>
+                {this.loader()}
                 <form onSubmit={this.handleSubmitShift} className="form-horizontal text-right">
                     <div className="form-group">
                         <label className="col-xs-2 col-xs-offset-2">{constantsStrings.startDate_string}</label>

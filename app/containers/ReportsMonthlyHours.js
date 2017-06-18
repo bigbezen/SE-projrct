@@ -98,10 +98,14 @@ var ReportsMonthlyHours = React.createClass({
         var datepickerVal = this.refs.datepicker.value.split('-');
         if(datepickerVal.length != 2)
             return;
+        self.setState({
+            showLoader: true
+        });
         managerServices.getMonthlyHoursReportData(parseInt(datepickerVal[0]), parseInt(datepickerVal[1] - 1))
             .then(function(data){
                 self.setState({
-                    report: data
+                    report: data,
+                    showLoader: false
                 })
             })
             .catch(function(err){
@@ -113,7 +117,8 @@ var ReportsMonthlyHours = React.createClass({
                     position: 'tc',
                 });
                 self.setState({
-                    report: undefined
+                    report: undefined,
+                    showLoader: false
                 })
             })
     },
@@ -153,15 +158,15 @@ var ReportsMonthlyHours = React.createClass({
         return (
             <div className="col-sm-offset-1 col-sm-8 w3-card-4 w3-round">
                 <p className="col-sm-3">{salesman.user.personal.firstName + " " + salesman.user.personal.lastName}</p>
-                <input type="number" ref={index + "numOfHours"} min="0" style={{marginTop: '3px'}}
-                       className="col-sm-2 w3-round w3-text-black" defaultValue={salesman.numOfHours}
-                        onChange={() => this.onChangeValue(index, "numOfHours")} />
-                <input type="number" ref={index + "sales"} min="0" style={{marginTop: '3px'}}
-                       className="col-sm-2 w3-round w3-text-black" defaultValue={salesman.sales}
-                       onChange={() => this.onChangeValue(index, "sales")} />
-                <input type="number" ref={index + "opened"} min="0" style={{marginTop: '3px'}}
-                       className="col-sm-2 w3-round w3-text-black" defaultValue={salesman.opened}
-                       onChange={() => this.onChangeValue(index, "opened")} />
+                <b style={{marginTop: '3px'}} className="col-sm-2 w3-round w3-text-black">
+                    {salesman.numOfHours}
+                </b>
+                <b style={{marginTop: '3px'}} className="col-sm-2 w3-round w3-text-black">
+                    {salesman.sales}
+                </b>
+                <b style={{marginTop: '3px'}} className="col-sm-2 w3-round w3-text-black">
+                    {salesman.opened}
+                </b>
 
             </div>
         )
@@ -215,7 +220,6 @@ var ReportsMonthlyHours = React.createClass({
                     <div className="row">
                         <input className="col-sm-2 w3-card-4 w3-round" ref="datepicker" type="month"/>
                         <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickGetReport}>{constantStrings.reportsShowReport_string}</button>
-                        <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickEditReport}>{constantStrings.editReport_string}</button>
                         <button className="col-sm-1 w3-button w3-round w3-card-4 w3-ripple" style={styles.reportsButtonStyle} onClick={this.onClickExportReport}>{constantStrings.getReport_string}</button>
 
                     </div>

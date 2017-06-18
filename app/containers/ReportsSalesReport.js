@@ -104,7 +104,8 @@ var ReportsSalesReport = React.createClass({
         var notificationSystem = this.refs.notificationSystem
         this.setState({
             chosenShift: undefined,
-            shifts: []
+            shifts: [],
+            showLoader: true
         });
 
         this.refs.selectSalesman.selectedIndex = 0;
@@ -126,6 +127,9 @@ var ReportsSalesReport = React.createClass({
                         shifts: result
                     });
                 }
+                self.setState({
+                    showLoader: false
+                });
             })
             .catch(function (errMess) {
                 notificationSystem.clearNotifications();
@@ -134,6 +138,9 @@ var ReportsSalesReport = React.createClass({
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'
+                });
+                self.setState({
+                    showLoader: false
                 });
             });
     },
@@ -145,7 +152,8 @@ var ReportsSalesReport = React.createClass({
         var notificationSystem = this.refs.notificationSystem;
         this.setState({
             chosenShift: undefined,
-            shifts: []
+            shifts: [],
+            showLoader: true
         });
 
         this.refs.selectStore.selectedIndex = 0;
@@ -167,6 +175,9 @@ var ReportsSalesReport = React.createClass({
                         shifts: result
                     });
                 }
+                self.setState({
+                    showLoader: false
+                });
             }).catch(function (errMess) {
                 notificationSystem.clearNotifications();
                 notificationSystem.addNotification({
@@ -174,6 +185,9 @@ var ReportsSalesReport = React.createClass({
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'
+                });
+                self.setState({
+                    showLoader: false
                 });
         })
     },

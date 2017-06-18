@@ -221,14 +221,32 @@ let getAllShiftsByStatus = async function(sessionId, status){
         return {code: 409, err: constantString.noSuchShiftStatus};
     }
 
-    let shifts = [];
-    if(isAuthorized.jobDetails.userType == 'manager') {
-        shifts = await dal.getShiftsByStatusFiltered(status);
+    let shifts = await dal.getShiftsByStatusFiltered(status);
+
+    shifts = shifts.map(function(shift) {
+        shift = shift.toObject();
+        shift.salesman = shift.salesmanId;
+        if(shift.salesmanId != undefined)
+            shift.salesmanId = shift.salesman._id;
+        return shift;
+    });
+    if(!shifts){
+        return {code: 500, err: constantString.serverError};
     }
-    else if(isAuthorized.jobDetails.userType == 'salesman') {
-        console.log('bla');
-        shifts = await dal.getSalesmanShiftsByStatus(status, isAuthorized._id.toString());
+    return {code: 200, shifts: shifts};
+};
+
+let getSalesmenShiftsByStatus = async function(sessionId, status){
+    logger.info('Services.shift.index.getAllShiftsByStatus', {'session-id': sessionId, 'status': status});
+    let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'getAllShiftsByStatus', null);
+    if(isAuthorized == null)
+        return {'code': 401, 'err': constantString.permssionDenied};
+
+    if(SHIFT_STATUS[status] == undefined){
+        return {code: 409, err: constantString.noSuchShiftStatus};
     }
+
+    let shifts = await dal.getSalesmanShiftsByStatus(status, isAuthorized._id.toString());
     shifts = shifts.map(function(shift) {
         shift = shift.toObject();
         shift.salesman = shift.salesmanId;
@@ -952,6 +970,7 @@ module.exports.reportExpenses = reportExpenses;
 module.exports.getShiftsOfRange = getShiftsOfRange;
 module.exports.getSalesmanLiveShift = getSalesmanLiveShift;
 module.exports.getAllShiftsByStatus = getAllShiftsByStatus;
+module.exports.getSalesmenShiftsByStatus = getSalesmenShiftsByStatus;
 module.exports.submitConstraints = submitConstraints;
 module.exports.getStoreShiftsByStatus = getStoreShiftsByStatus;
 module.exports.finishStartedShifts = finishStartedShifts;

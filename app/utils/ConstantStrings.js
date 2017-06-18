@@ -68,6 +68,7 @@ class ConstantStrings extends React.Component {
     static incentiveNumOfProducts_string = 'כמות הבקבוקים למכירה בתמריץ';
     static incentiveRate_string ='גודל התמריץ';
     static incentiveRateSalesman_string ='תגמול';
+    static incentivesAchieved_string = 'נצברו';
 
     static incentivePickProducts_string = 'בחר מוצרים';
     static incentiveProducts_string = 'מוצרים בתמריץ';
@@ -262,7 +263,6 @@ class ConstantStrings extends React.Component {
     static userRoleForDropDown =
         [
             ['salesman', 'דייל'],
-            ['agent', 'סוכן שטח'],
             ['manager', 'מנהל']
         ];
 

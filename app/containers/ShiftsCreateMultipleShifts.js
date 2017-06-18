@@ -143,6 +143,8 @@ var ShiftsCreateMultipleShifts = React.createClass({
         }
         else{
             salesmanId = shift.salesmanId;
+            let salesman = this.state.salesmen.filter((curr) => curr._id == salesmanId)[0];
+            availableSalesmen[salesmanId] = salesman;
             optionsForDropdown.push(<option>{constantsStrings.dropDownChooseString}</option>)
         }
         let salesmen = Object.keys(availableSalesmen).map((id) => availableSalesmen[id])
@@ -175,7 +177,6 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
 
     getConstraints: function(salesmen, shifts){
-        let blabla = salesmen;
         let salesmenObj = {};
         for(let salesman of salesmen){
             salesmenObj[salesman._id] = salesman;

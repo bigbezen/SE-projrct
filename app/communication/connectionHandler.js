@@ -3,7 +3,7 @@
  */
 var axios = require('axios');
 var remoteServer = 'https://ibbls.herokuapp.com/';
-var ngrok = 'https://7a269114.ngrok.io/';
+var ngrok = 'https://7a0d859a.ngrok.io/';
 var localServer = 'http://localhost:3000/';
 var serverUrl = localServer;
 var sessionId = null;
@@ -723,7 +723,7 @@ var managerRequests = {
 var salesmanRequests = {
     //TODO:
     getCurrentShift: function() {
-        let date = new Date();
+        let date = (new Date()).toDateString();
         return axios.get(serverUrl + 'salesman/getCurrentShift?date=' + date, {
             headers:{
                 sessionId:sessionId
@@ -731,6 +731,20 @@ var salesmanRequests = {
         }).then(function (info) {
             return info.data;
         }).catch(function (err) {
+            errorMessage('Error:', err.response.data);
+            throw err.response.data;
+        })
+    },
+
+    getSalesmenShiftsByStatus: function(status) {
+        console.log('get shifts of range');
+        return axios.get(serverUrl + 'salesmen/getSalesmanShiftsByStatus?status=' + status, {
+            headers: {
+                sessionId: sessionId
+            }
+        }).then(function(info) {
+            return info.data;
+        }).catch(function (err){
             errorMessage('Error:', err.response.data);
             throw err.response.data;
         })

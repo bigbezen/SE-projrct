@@ -22,7 +22,7 @@ let getSaleReportXl =  async function(sessionId, shiftId){
     let result = await createXLSaleReport(shiftId, [user.contact.email]);
   //  let content = ' מצורף דוח טעימות של:' + salesman.username;
  //   mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח טעימות של '+ salesman.username + ' '  + store.name + ' ' + shift.startTime.toDateString(), content, 'salesReports/sale report ' + shift.startTime.toDateString() + ' ' + salesman.username + ' ' + store.name + '.xlsx');
-    return {'code': 200};
+    return result;
 };
 
 let createXLSaleReport =  async function(shiftId, emails){
@@ -265,21 +265,19 @@ let getOrderEventReportXL = async function(sessionId, year, month){
     }
 
     let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('orderJob.xlsx')
-        .then(async function() {
-            for(let eventName of eventsName){
-                let worksheet = workbook.addWorksheet(eventName);
-                let shifts = eventShifts.filter(function (shift) {
-                    return shift.type == eventName;
-                });
+    let read = await workbook.xlsx.readFile('orderJob.xlsx');
+    for(let eventName of eventsName){
+        let worksheet = workbook.addWorksheet(eventName);
+        let shifts = eventShifts.filter(function (shift) {
+            return shift.type == eventName;
+        });
 
-                let setStoresName = new Set();
-                for(let shift of shifts){
-                    setStoresName.add(shift.storeId.name);
-                }
-
-                let rowCount = 1;
-                for(let storeName of setStoresName){
+        let setStoresName = new Set();
+        for(let shift of shifts){
+            setStoresName.add(shift.storeId.name);
+        }
+        let rowCount = 1;
+        for(let storeName of setStoresName){
                     rowCount++;
                     rowCount++;
                     let currentsShifts = shifts.filter(function (shift) {
@@ -477,10 +475,9 @@ let getOrderEventReportXL = async function(sessionId, year, month){
                         right: {style:'medium'}
                     };
                 }
-            }
+    }
 
-            return workbook.xlsx.writeFile('monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
-   });
+    let write = await  workbook.xlsx.writeFile('monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
     let content = 'מורף הזמנת עבודה לחודש ' + (month + 1) + ' ' + year;
     mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח הזמנת עבודה ' + (month + 1) + ' ' + year, content, 'monthReport/הזמנת עבודה' + (month + 1) + '.xlsx');
 
@@ -492,13 +489,13 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let report = await dal.getMonthAnalysisReport(year);
-    if(report == null)
+    let report = await genarateMonthAnalysisReport(year);
+    if(report.code != 200)
         return {'code': 404, 'err': 'report still not genarated'};
 
+    report = report.report;
     let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('monthAnalysisReport.xlsx')
-        .then(async function() {
+    let read = await workbook.xlsx.readFile('monthAnalysisReport.xlsx');
             let formArr = ['SUM(B5:B16)','SUM(C5:C16)','SUM(D5:D16)','SUM(E5:E16)','SUM(F5:F16)','SUM(G5:G16)','SUM(H5:H16)','SUM(I5:I16)','SUM(J5:J16)','SUM(K5:K16)','SUM(L5:L16)','SUM(M5:M16)','SUM(N5:N16)','SUM(O5:O16)','SUM(P5:P16)','SUM(Q5:Q16)','SUM(R5:R16)','SUM(S5:S16)','SUM(T5:T16)','SUM(U5:U16)','SUM(V5:V16)','SUM(W5:W16)','SUM(X5:X16)','SUM(Y5:Y16)','SUM(Z5:Z16)','SUM(AA5:AA16)','SUM(AB5:AB16)','SUM(AC5:AC16)','SUM(AD5:AD16)','SUM(AE5:AE16)','SUM(AF5:AF16)','SUM(AG5:AG16)'];
             let worksheet = workbook.getWorksheet(1);
             worksheet.name = year;
@@ -586,16 +583,15 @@ let getMonthAnalysisReportXL = async function(sessionId, year){
                 row.getCell(monthCol).value = {'formula':formArr[i]};
                 monthCol++;
             }
-            return workbook.xlsx.writeFile('monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
-        });
+
+    await workbook.xlsx.writeFile('monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
 
     let content = ' מצורף דוח ניתוח ערוץ דיול חודשי:' + year;
     mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח ניתוח ערוץ דיול חודשי ' + ' ' + year, content, 'monthReport/ניתוח ערוץ דיול חודשי ' + year + '.xlsx');
     return {'code': 200};
 };
 
-let genarateMonthAnalysisReport = async function() {
-    let year = new Date().getFullYear();
+let genarateMonthAnalysisReport = async function(year) {
     let month = new Date().getMonth();
     let storeTraditionalHot = new Set();
     let storeTraditionalOrganized = new Set();
@@ -654,6 +650,53 @@ let genarateMonthAnalysisReport = async function() {
         }
 
         yearReport = await dal.addMonthAnalysisReport(yearReport);
+    }
+    else{
+        yearReport = yearReport.toObject();
+        let monthReport = {'month': (month + 1),
+            'salesmanCost':{
+                'traditionalHot': 0,
+                'traditionalOrganized': 0,
+                'organized': 0,
+                'events': 0
+            },
+            'totalHours': {
+                'traditionalHot': 0,
+                'traditionalOrganized': 0,
+                'organized': 0
+            },
+            'shiftsCount': {
+                'traditionalHot': 0,
+                'traditionalOrganized': 0,
+                'organized': 0
+            },
+            'uniqueCount': {
+                'traditionalHot': 0,
+                'traditionalOrganized': 0,
+                'organized': 0
+            },
+            'saleBottlesCount': {
+                'traditionalHot': 0,
+                'traditionalOrganized': 0,
+                'organized': 0
+            },
+            'openedCount': {
+                'traditionalHot': 0,
+                'traditionalOrganized': 0,
+                'organized': 0
+            },
+            'saleAverage': {
+                'traditionalHot': 0,
+                'traditionalOrganized': 0,
+                'organized': 0
+            },
+            'monthlyEncoragement': []
+        };
+        let allEnc = await dal.getAllEncouragements();
+        for(let enc of allEnc){
+            monthReport.monthlyEncoragement.push({'encouragement': enc, 'amount': 0});
+        }
+        yearReport.monthData[month] = monthReport;
     }
 
     let monthShifts = await dal.getMonthShifts(year, month);
@@ -721,7 +764,7 @@ let genarateMonthAnalysisReport = async function() {
     }
 
     let res = await dal.editMonthAnalysisReport(yearReport);
-    return {'code':200};
+    return {'code':200, 'report':yearReport};
 };
 
 let getMonthlyAnalysisReport = async function(sessionId, year){
@@ -729,11 +772,11 @@ let getMonthlyAnalysisReport = async function(sessionId, year){
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let report = await dal.getMonthAnalysisReport(year);
-    if(report == null)
+    let report = await genarateMonthAnalysisReport(year);
+    if(report.code != 200)
         return {'code': 404, 'err': 'report still not genarated'};
 
-    return {'code':200, 'report': report};
+    return {'code':200, 'report': report.report};
 };
 
 let updateMonthlyAnalysisReport = async function(sessionId, year, report){
@@ -758,13 +801,13 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
     if(user == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let report = await dal.getMonthlyUserHoursReport(year, month);
-    if(report == null)
+    let report = await genarateMonthlyUserHoursReport(year, month);
+    if(report.code != 200)
         return {'code': 404, 'err': 'report still not genarated'};
 
+    report = report.report;
     let workbook = new Excel.Workbook();
-    workbook.xlsx.readFile('monthlyHoursReport.xlsx')
-        .then(async function() {
+    let write = await workbook.xlsx.readFile('monthlyHoursReport.xlsx');
             let worksheet = workbook.getWorksheet('ריכוז שעות ותמריצים');
             //write the month and the year
             //write the store name
@@ -943,23 +986,27 @@ let getMonthlyHoursSalesmansReportXl = async function(sessionId, year, month){
                     right: {style: 'medium'}
                 };
             }
-            return workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
-        });
+            await workbook.xlsx.writeFile('monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
 
     let content = ' מצורף דוח סיכום שעות דיול חודשי:' + (month + 1) + ' ' + year;
-    mailer.sendMailWithFile(['matanbezen@gmail.com'], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
+    mailer.sendMailWithFile([user.contact.email], 'IBBLS - דוח סיכום שעות דיול חודשי ' + (month + 1) + ' ' + year, content, 'monthReport/דוח שעות דיול חודשי '+ (month + 1) + ' ' + year + '.xlsx');
     return {'code': 200};
 };
 
-let genarateMonthlyUserHoursReport = async function() {
-    let date = new Date();
-    let report = new monthlyUserHoursReportModel();
-    let shifts = await dal.getMonthShifts(date.getFullYear(), date.getMonth());
+let genarateMonthlyUserHoursReport = async function(year,month) {
+    let report = await dal.getMonthlyUserHoursReport(year, month);
+    let exist = true;
+    if(report == null){
+        report = new monthlyUserHoursReportModel();
+        exist = false;
+    }
+
+    let shifts = await dal.getMonthShifts(year, month);
     let users = await dal.getAllUsers();
 
     //add month and year
-    report.month = date.getMonth();
-    report.year = date.getFullYear();
+    report.month = month;
+    report.year = year;
     report.salesmansData = [];
 
     //initilize all users
@@ -987,8 +1034,15 @@ let genarateMonthlyUserHoursReport = async function() {
         }
     }
 
-    let res = await dal.addMonthlySalesmanReport(report);
-    return {'report': res ,'code': 200 ,'err': null};
+    let res;
+    if(!exist){
+        res = await dal.addMonthlySalesmanReport(report);
+    }
+    else {
+        res = await dal.editMonthlyUserHoursReport(report)
+    }
+
+    return {'report': report ,'code': 200 ,'err': null};
 };
 
 let getMonthlyUserHoursReport = async function(sessionId, year, month){
@@ -996,11 +1050,11 @@ let getMonthlyUserHoursReport = async function(sessionId, year, month){
     if(aut == null)
         return {'code': 401, 'err': 'user not authorized'};
 
-    let report = await dal.getMonthlyUserHoursReport(year, month);
-    if(report == null)
+    let report = await genarateMonthlyUserHoursReport(year, month);
+    if(report.report == null)
         return {'code': 404, 'err': 'report still not genarated'};
 
-    report = report.toObject();
+    report = report.report.toObject();
     for(let userData of report.salesmansData){
         let user = await dal.getUserByobjectId(userData.user);
         userData.name = user.personal.firstName + ' ' + user.personal.lastName;

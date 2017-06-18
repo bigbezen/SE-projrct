@@ -37,18 +37,21 @@ class randomActions(unittest.TestCase):
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_randomActions(self):
         driver = self.driver
-        screen = 0
+        screen = 1
         for x in range(0, self.NUM_OF_ACTIONS):
             screens = screenMap.navigate[screen]
             nextScreenKey, btn = random.choice(list(screens.items()))
+            print(btn)
             driver.find_element_by_xpath(btn).click()
             sleep(2)
-            self.assertEqual(driver.current_url, screenMap.screens.get(nextScreenKey))
+            if ((btn != containers.managerHome.reportsTab) & (btn != containers.managerHome.ShiftsTab)):
+                self.assertEqual(driver.current_url, screenMap.screens.get(nextScreenKey))
             screen = int(nextScreenKey)
 
         driver.find_element_by_xpath(containers.managerHome.logoutTab).click()
         sleep(2)
         self.assertEqual(driver.current_url, helper.url)
+        print("-------- done! --------")
 
     def tearDown(self):
         self.driver.close()

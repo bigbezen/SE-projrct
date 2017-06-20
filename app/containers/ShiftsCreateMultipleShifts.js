@@ -128,25 +128,32 @@ var ShiftsCreateMultipleShifts = React.createClass({
         }
     },
 
-    getSalesmanOptions: function(shift, availableSalesmen){
+    getSalesmanOptions: function(shift, availableSalesmen, nonAvailableSalesmen){
         let salesmanId = "";
 
         var optionsForDropdown = [];
+        let isDefaultSelected = true;
         if(shift.salesmanId == undefined){
-            if(shift.storeId.defaultSalesman == undefined ||
-                (shift.storeId.defaultSalesman != undefined && availableSalesmen[shift.storeId.defaultSalesman] == undefined))
-                optionsForDropdown.push(<option selected>{constantsStrings.dropDownChooseString}</option>);
-            else{
+            if(!(shift.storeId.defaultSalesman == undefined ||
+                (shift.storeId.defaultSalesman != undefined && availableSalesmen[shift.storeId.defaultSalesman] == undefined))) {
                 salesmanId = shift.storeId.defaultSalesman;
-                optionsForDropdown.push(<option>{constantsStrings.dropDownChooseString}</option>);
+                isDefaultSelected = false;
             }
         }
         else{
             salesmanId = shift.salesmanId;
-            let salesman = this.state.salesmen.filter((curr) => curr._id == salesmanId)[0];
-            availableSalesmen[salesmanId] = salesman;
-            optionsForDropdown.push(<option>{constantsStrings.dropDownChooseString}</option>)
+            if(nonAvailableSalesmen[salesmanId] == undefined) {
+                let salesman = this.state.salesmen.filter((curr) => curr._id == salesmanId)[0];
+                availableSalesmen[salesmanId] = salesman;
+                isDefaultSelected = false;
+            }
         }
+        if(isDefaultSelected)
+            optionsForDropdown.push(<option selected>{constantsStrings.dropDownChooseString}</option>);
+        else
+            optionsForDropdown.push(<option>{constantsStrings.dropDownChooseString}</option>);
+
+
         let salesmen = Object.keys(availableSalesmen).map((id) => availableSalesmen[id])
             .sort(sorting.salesmenSortingMethod);
         for(var salesman of salesmen){
@@ -187,9 +194,15 @@ var ShiftsCreateMultipleShifts = React.createClass({
         }
         // transform into an object to remove duplicates
         let constraintsObj = {};
+        let nonAvailable = {};
         for(let constraint of constraints){
             if(constraint.isAvailable == true || (constraint.comment != undefined && constraint.comment.length > 0))
                 constraintsObj[constraint.salesmanId] = constraint;
+            else {
+                if (!constraint.isAvailable) {
+                    nonAvailable[constraint.salesmanId] = true;
+                }
+            }
         }
         // move back into an array of objects
         constraints = [];
@@ -213,7 +226,10 @@ var ShiftsCreateMultipleShifts = React.createClass({
         for(let constraint of constraints){
             constraint.salesman = salesmenObj[constraint.salesmanId];
         }
-        return constraints.sort(sorting.constraintsSortingMethod);
+        return {
+            constraints: constraints.sort(sorting.constraintsSortingMethod),
+            nonAvailable: nonAvailable
+        };
     },
 
     onClickRemoveShift: function(shiftId){
@@ -258,7 +274,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     },
 
-    renderShiftsOfArea: function(shift, availableSalesmen) {
+    renderShiftsOfArea: function(shift, availableSalesmen, nonAvailableSalesmen) {
         let self = this;
         return (
             <div className="col-xs-12 w3-card-2 w3-round" style={styles.shiftRowStyle}>
@@ -268,7 +284,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
                 <select style={{color: 'black', marginTop: '3px'}}
                         className="col-sm-4 w3-round" ref={shift._id}
                         onChange={() => this.onChangeSalesman(shift)}>
-                    {this.getSalesmanOptions(shift, availableSalesmen)}
+                    {this.getSalesmanOptions(shift, availableSalesmen, nonAvailableSalesmen)}
                 </select>
 
             </div>
@@ -290,6 +306,8 @@ var ShiftsCreateMultipleShifts = React.createClass({
         let salesmen = this.state.salesmen;
 
         let constraints = this.getConstraints(salesmen, shifts);
+        let nonAvailableSalesmen = constraints.nonAvailable;
+        constraints = constraints.constraints;
         let constraintSalesmen = constraints.map((cons) => cons.salesman);
         let availableSalesmen = {};
         for(let salesman of constraintSalesmen) {
@@ -302,7 +320,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
                     <div className="col-sm-5">
                         <h2>{area.area}</h2>
                         <div>
-                            {shifts.map((shift) => this.renderShiftsOfArea(shift, availableSalesmen))}
+                            {shifts.map((shift) => this.renderShiftsOfArea(shift, availableSalesmen, nonAvailableSalesmen))}
                         </div>
                     </div>
                     <div className="col-sm-offset-2 col-sm-5">

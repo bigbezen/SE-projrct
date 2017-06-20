@@ -113,13 +113,17 @@ var EditSaleContainer = React.createClass({
 
             <div key={i} className="row w3-card-4 w3-round" style={styles.saleContStyle}>
                 <header className="w3-container w3-round" style={styles.headerStyle}>
-                    <div className="w3-xxlarge">
-                        <a href="javascript:void(0)" onClick={() => this.updateAmount(sale, "0")}>
+
+                    <div className="col-sm-12">
+                        <a style={{float: 'right', fontSize: '40px', marginLeft: '10px'}} href="javascript:void(0)" onClick={() => this.updateAmount(sale, "0")}>
                             <CloseIcon/>
                         </a>
+                        <p className="w3-xxxlarge" style={styles.storeStyle}>{sale.name}</p>
+                        <p className="w3-xxxlarge" style={styles.dateStyle}> {saleTimeFormated}</p>
                     </div>
-                    <p className="w3-xxxlarge" style={styles.storeStyle}>{sale.name}</p>
-                    <p className="w3-xxxlarge" style={styles.dateStyle}> {saleTimeFormated}</p>
+                    <div className="col-sm-12">
+                        <p className="w3-xxlarge" style={styles.storeStyle}>{sale.subCategory}</p>
+                    </div>
                 </header>
                 <div className="w3-xxlarge text-center" style={styles.expContainerStyle}>
                     <p><b>{constantStrings.quantity_string}</b>:&nbsp;

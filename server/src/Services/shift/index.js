@@ -693,6 +693,7 @@ let endShift = async function(sessionId, shift){
     else {
         let managers = await dal.getManagers();
         let emails  = [];
+        emails.push(salesman.contact.email);
         for(let manager of managers){
             emails.push(manager.contact.email);
         }
@@ -933,12 +934,15 @@ let _endShift = async function(shiftId){
 
     shiftDb.encouragements = encouragements;
 
+    let salesman = await dal.getUserById(shiftDb.salesmanId);
+
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)
         return {'code': 500, 'err': constantString.somthingBadHappend};
     else{
         let managers = await dal.getManagers();
         let emails  = [];
+        emails.push(salesman.contact.email);
         for(let manager of managers){
             emails.push(manager.contact.email);
         }

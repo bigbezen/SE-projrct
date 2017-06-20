@@ -265,6 +265,7 @@ var UsersContainer = React.createClass({
                     <TableHeaderColumn
                         dataField = 'jobDetails.userType'
                         dataAlign = 'right'
+                        dataSort = {true}
                         filterFormatted dataFormat={ helpers.enumFormatter } formatExtraData={ constantStrings.user_role }
                         filter={ { type: 'SelectFilter', placeholder:constantStrings.selectRole_string, options: constantStrings.user_role } }>
                         {constantStrings.role_string}

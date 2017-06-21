@@ -68,6 +68,7 @@ var ShiftDetails = React.createClass({
         console.log(e);
         if(this.refs.startTimeBox.value == "" || this.refs.endTimeBox.value == "")
             return;
+        this.refs.submit.disabled = true;
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         let date = this.refs.dateBox.state.value;
@@ -101,6 +102,7 @@ var ShiftDetails = React.createClass({
                     autoDismiss: 0,
                     position: 'tc'
                 });
+                this.refs.submit.disabled = false;
                 self.setState({
                     showLoader: false
                 });
@@ -174,6 +176,7 @@ var ShiftDetails = React.createClass({
                         <button
                             className="w3-button col-xs-5 col-xs-offset-4 w3-round w3-ripple"
                             style={styles.editStyle}
+                            ref="submit"
                             type="submit">
                             {constantsStrings.save_string}
                         </button>

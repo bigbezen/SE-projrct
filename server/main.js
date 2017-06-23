@@ -855,9 +855,6 @@ function _setapApiEndpoints() {
         res.status(200).send('get shortages');
     });
 
-    app.post('/manager/publishShifts', function (req, res) {
-        res.status(200).send('publish shifts');
-    });
 
     app.get('/manager/getSaleReportXl', async function (req, res) {
         var result = await reportsService.getSaleReportXl(req.headers.sessionid, req.headers.shiftid);

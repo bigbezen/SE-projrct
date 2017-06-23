@@ -162,10 +162,12 @@ let automateGenerateShifts = async function (sessionId, startTime, endTime){
 
 let publishShifts = async function(sessionId, shiftArr){
     logger.info('Services.shift.index.publishShifts', {'session-id': sessionId});
+    console.log('bla');
     let isAuthorized = await permissions.validatePermissionForSessionId(sessionId, 'publishShifts', null);
     if(isAuthorized == null)
         return {'code': 401, 'err': constantString.permssionDenied};
 
+    console.log('bla');
     //get a list of shift Ids and user Ids from shiftArr @param
     let shiftIds = shiftArr.map(x => x._id);
     let uniqueUserIds = [];
@@ -177,6 +179,8 @@ let publishShifts = async function(sessionId, shiftArr){
         if (index == userIds.indexOf(userIds[index]))
             uniqueUserIds.push(userIds[index]);
     }
+
+    console.log('bla');
 
     //get a list of shifts and users from db according to the ids lists
     //check that all id that we got as a parameter is a valid object in the db
@@ -190,17 +194,14 @@ let publishShifts = async function(sessionId, shiftArr){
         if(user.jobDetails.userType != 'salesman')
             return {'code': 409, 'err': constantString.userDoestSalesman};
 
-
     //check that all given shifts are on status 'CREATED'
     //change shifts' status to "PUBLISED"
     for(let shift of dbShifts)
         if(shift.status != 'CREATED')
             return {'code': 409, 'err': constantString.shiftAlreadyPublished};
-
     for(let shift of shiftArr)
         shift.status = 'PUBLISHED';
     let nonSavedShifts = await dal.publishShifts(shiftArr);
-
     if(nonSavedShifts.length == 0) {
         let shifts = await dal.getShiftsByIdsWithStores(shiftIds);
         _sendEmailsToAgents(shifts);

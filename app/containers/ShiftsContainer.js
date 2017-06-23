@@ -77,7 +77,8 @@ var ShiftsContainer = React.createClass({
         return{
             shifts: null,
             startDate: currentDate,
-            endDate:currentDate
+            endDate:currentDate,
+            showLoader: false
         }
     },
     setShiftsEndDate: function() {
@@ -112,7 +113,9 @@ var ShiftsContainer = React.createClass({
         localStorage.setItem('shiftEndDate', endDate);
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-
+        this.setState({
+            showLoader: true
+        });
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
             result = result.filter((shift) => shift.status != "CREATED" && shift.status != "FINISHED");
             let areas = new Set(result.map((shift) => shift.storeId.area));
@@ -126,7 +129,8 @@ var ShiftsContainer = React.createClass({
             self.setState({
                 shifts: areaToShifts,
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                showLoader: false
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -135,6 +139,9 @@ var ShiftsContainer = React.createClass({
                 level: 'error',
                 autoDismiss: 0,
                 position: 'tc'
+            });
+            self.setState({
+                showLoader: false
             });
         })
     },
@@ -427,10 +434,26 @@ var ShiftsContainer = React.createClass({
                         </DateField>
                     </div>
                 </div>
+                {this.loader()}
                 {Object.keys(this.state.shifts).map(this.renderAreaTable)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
+    },
+
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
     },
 
     renderLoading:function () {

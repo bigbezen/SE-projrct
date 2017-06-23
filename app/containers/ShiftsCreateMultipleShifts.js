@@ -16,6 +16,9 @@ var CloseIcon           = require('react-icons/lib/fa/close');
 var underscore          = require('underscore');
 var sorting             = require('../utils/SortingMethods');
 
+import 'react-date-picker/index.css';
+import { DateField, DatePicker } from 'react-date-picker';
+
 var ShiftsCreateMultipleShifts = React.createClass({
 
     contextTypes: {
@@ -31,7 +34,10 @@ var ShiftsCreateMultipleShifts = React.createClass({
             newShifts: undefined,
             salesmen: [],
             shiftsFilter: {},
-            selectAll: true
+            selectAll: true,
+            startDate: moment().format('YYYY-MM-DD'),
+            endDate: moment().format('YYYY-MM-DD'),
+            showLoader: false
         }
     },
     setShiftsEndDate: function() {
@@ -49,21 +55,53 @@ var ShiftsCreateMultipleShifts = React.createClass({
         localStorage.setItem('shiftStartDate', shiftStartDate);
     },
     componentDidMount: function(){
+
+        let shiftStartDate = localStorage.getItem('shiftStartDate');
+        if(!shiftStartDate){
+            shiftStartDate = moment(new Date()).format('YYYY-MM-DD');
+        }
+        let shiftEndDate = localStorage.getItem('shiftEndDate');
+        if(!shiftEndDate){
+            shiftEndDate = moment(new Date()).format('YYYY-MM-DD');
+        }
+
+        this.setState({
+            startDate: shiftStartDate,
+            endDate: shiftEndDate
+        });
+
+        this.updateShifts(shiftStartDate, shiftEndDate);
+    },
+
+    updateShifts: function(startDate, endDate) {
         var notificationSystem = this.refs.notificationSystem;
         var self = this;
-
-        managementServices.getShiftsByStatus(constantsStrings.SHIFT_STATUS.CREATED)
+        localStorage.setItem('shiftStartDate', startDate);
+        localStorage.setItem('shiftEndDate', endDate);
+        this.setState({
+            showLoader: true
+        });
+        managementServices.getShiftsOfRange(startDate, endDate)
             .then(function(shifts){
                 managementServices.getAllUsers()
                     .then(function(users){
                         let salesmen = users.filter((user) => user.jobDetails.userType == 'salesman');
+                        shifts = shifts.filter((shift) => shift.status == constantsStrings.SHIFT_STATUS.CREATED)
+                            .map(function(shift){
+                                if(shift.salesmanId != undefined)
+                                    shift.salesmanId = shift.salesmanId._id;
+                                return shift;
+                            });
                         let shiftsFilter = {};
                         for(let shift of shifts)
                             shiftsFilter[shift._id] = true;
                         self.setState({
                             newShifts: shifts,
                             salesmen: salesmen,
-                            shiftsFilter: shiftsFilter
+                            shiftsFilter: shiftsFilter,
+                            startDate: startDate,
+                            endDate: endDate,
+                            showLoader: false
                         })
                     })
             })
@@ -74,6 +112,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
                     level: 'error',
                     autoDismiss: 0,
                     position: 'tc'
+                });
+                self.setState({
+                    showLoader: false
                 });
             });
     },
@@ -100,8 +141,18 @@ var ShiftsCreateMultipleShifts = React.createClass({
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
         let shiftsToPublish = this.state.newShifts.filter((shift) => (shift.salesmanId != undefined)
-                                                        && this.state.shiftsFilter[shift._id]);
+        && this.state.shiftsFilter[shift._id])
+            .map(function(shift){
+                let newShift = {
+                    salesmanId: shift.salesmanId,
+                    _id: shift._id
+                };
+                return newShift;
+            });
         if(shiftsToPublish.length > 0){
+            this.setState({
+                showLoader: true
+            });
             managementServices.publishMultipleShifts(shiftsToPublish)
                 .then(function(result){
                     let a = 2;
@@ -118,6 +169,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
                         level: 'error',
                         autoDismiss: 0,
                         position: 'tc'
+                    });
+                    self.setState({
+                        showLoader: false
                     });
                 });
         }
@@ -159,11 +213,11 @@ var ShiftsCreateMultipleShifts = React.createClass({
         for(var salesman of salesmen){
             if(salesman._id == salesmanId){
                 optionsForDropdown.push(<option selected>{salesman.personal.firstName + ' ' + salesman.personal.lastName}
-                                        </option>)
+                </option>)
             }
             else{
                 optionsForDropdown.push(<option>{salesman.personal.firstName + ' ' + salesman.personal.lastName}
-                                        </option>)
+                </option>)
             }
         }
         return optionsForDropdown;
@@ -176,7 +230,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
             var firstName = salesmanName.split(' ')[0];
             var lastName = salesmanName.split(' ')[1];
             salesmanId = this.state.salesmen.filter((salesman) => salesman.personal.firstName == firstName &&
-                                                    salesman.personal.lastName == lastName);
+            salesman.personal.lastName == lastName);
             salesmanId = salesmanId[0]._id;
         }
         shift.salesmanId = salesmanId;
@@ -279,7 +333,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
         return (
             <div className="col-xs-12 w3-card-2 w3-round" style={styles.shiftRowStyle}>
                 <input className="col-sm-1" style={{height: '20px'}} type="checkbox" ref={shift._id} checked={this.state.shiftsFilter[shift._id]}
-                    onChange={() => this.onChangeShiftsFilter(shift._id)}/>
+                       onChange={() => this.onChangeShiftsFilter(shift._id)}/>
                 <p className="col-sm-7">{shift.storeId.city + " - " + shift.storeId.name}</p>
                 <select style={{color: 'black', marginTop: '3px'}}
                         className="col-sm-4 w3-round" ref={shift._id}
@@ -340,7 +394,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
     renderShiftsOfDate: function(date){
         let shifts = this.state.newShifts
             .filter((shift) => (new Date(moment(shift.startTime).format('YYYY-MM-DD'))).getTime()
-                - (new Date(date)).getTime() == 0);
+            - (new Date(date)).getTime() == 0);
         date = moment(date).format('DD-MM-YYYY');
 
         let areas = new Set(shifts.map((shift) => shift.storeId.area));
@@ -363,7 +417,70 @@ var ShiftsCreateMultipleShifts = React.createClass({
         );
     },
 
-    render: function () {
+    changeStartDate: function (date) {
+        var startDateValue = moment(date).toDate();
+        var endDateValue = this.refs.endDateBox.toMoment().toDate();
+        if(startDateValue.getTime() < endDateValue.getTime())
+            this.updateShifts(startDateValue,endDateValue);
+    },
+    changeEndDate: function (date) {
+        var startDateValue = this.refs.startDateBox.toMoment().toDate();
+        var endDateValue = moment(date).toDate();
+        if(startDateValue.getTime() < endDateValue.getTime())
+            this.updateShifts(startDateValue,endDateValue);
+    },
+
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
+    },
+
+    render: function() {
+        return (
+            <div className="w3-container">
+                <div className="col-sm-12">
+                    <div>
+                        <p className="col-xs-2" style={styles.dateLabel}>{constantStrings.startDate_string}:</p>
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            value={(new Date(this.state.startDate)).getTime()}
+                            ref="startDateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp }) => this.changeStartDate(dateMoment)}>
+                        </DateField>
+                    </div>
+                    <div>
+                        <p className="col-xs-2" style={styles.dateLabel}>{constantStrings.endDate_string}:</p>
+                        <DateField
+                            dateFormat="DD-MM-YYYY"
+                            forceValidDate={true}
+                            value={(new Date(this.state.endDate)).getTime()}
+                            ref="endDateBox"
+                            updateOnDateClick={true}
+                            collapseOnDateClick={true}
+                            onChange={(dateString, { dateMoment, timestamp }) => this.changeEndDate(dateMoment)}>
+                        </DateField>
+                    </div>
+                </div>
+                {this.loader()}
+                {this.renderPage()}
+            </div>
+        )
+    },
+
+    renderPage: function () {
         if(this.state.newShifts == undefined)
             return (
                 <div>
@@ -406,3 +523,4 @@ var ShiftsCreateMultipleShifts = React.createClass({
 });
 
 module.exports = ShiftsCreateMultipleShifts;
+

@@ -60,7 +60,8 @@ var ReportsSalesReport = React.createClass({
             stores: undefined,
             shifts: [],
             chosenShift: undefined,
-            showLoader: false
+            showLoader: false,
+            salesReport: undefined
         }
     },
 
@@ -199,13 +200,19 @@ var ReportsSalesReport = React.createClass({
         });
         if(selectedIndex > 0) {
             var chosenShift = this.state.shifts[selectedIndex - 1];
+            let salesReport = {};
+            for(let product of chosenShift.salesReport) {
+                salesReport[product.productId] = product;
+            }
             this.setState({
-                chosenShift: chosenShift
+                chosenShift: chosenShift,
+                salesReport: salesReport
             });
         }
         else{
             this.setState({
-                chosenShift: undefined
+                chosenShift: undefined,
+                salesReport: undefined
             })
         }
     },
@@ -263,6 +270,22 @@ var ReportsSalesReport = React.createClass({
         }
     },
 
+    onChangeSold: function(id, i){
+        let salesReport = this.state.salesReport;
+        salesReport[id]["sold"] = this.refs[id + "editSold" + i].value;
+        this.setState({
+            salesReport: salesReport
+        });
+    },
+
+    onChangeOpened: function(id, i){
+        let salesReport = this.state.salesReport;
+        salesReport[id]["opened"] = this.refs[id + "editOpened" + i].value;
+        this.setState({
+            salesReport: salesReport
+        });
+    },
+
     renderCategoriesProducts: function(productsOfOneCategory){
         return (
             <div className="w3-container col-sm-6">
@@ -284,8 +307,10 @@ var ReportsSalesReport = React.createClass({
                  style={(product.sold || product.opened) > 0 ? styles.soldProdRowStyle : styles.prodRowStyle }>
                 <p className="col-sm-4"><b>{product.subCategory}</b></p>
                 <p className="col-sm-3">{product.name}</p>
-                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editSold" + i} defaultValue={product.sold} />
-                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}} ref={product._id + "editOpened" + i} defaultValue={product.opened} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}}
+                       ref={product.productId + "editSold" + i} value={product.sold} onChange={() => this.onChangeSold(product.productId, i)} />
+                <input className="col-sm-2 w3-text-black" type="number" min="0" style={{marginTop: '3px'}}
+                       ref={product.productId + "editOpened" + i} value={product.opened} onChange={() => this.onChangeOpened(product.productId, i)} />
                 <p className="w3-card-2 w3-button w3-small w3-round w3-ripple"
                    style={styles.buttonStyle} onClick={() => this.onClickEditButton(product, i)}><EditIcon style={styles.iconStyle}/></p>
             </div>
@@ -326,8 +351,9 @@ var ReportsSalesReport = React.createClass({
     },
 
     onClickEditButton: function(product, index){
-        var newSold = this.refs[product._id + "editSold" + index].value;
-        var newOpened = this.refs[product._id + "editOpened" + index].value;
+        let salesReport = this.state.salesReport;
+        var newSold = salesReport[product.productId]["sold"];
+        var newOpened = salesReport[product.productId]["opened"];
         var productId = product.productId;
         var shiftId = this.state.chosenShift._id;
         var notificationSystem = this.refs.notificationSystem;

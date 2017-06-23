@@ -144,6 +144,7 @@ var SalesmanHomeContainer = React.createClass({
                     <p>{constantsStrings.city_string}: {this.state.shift.store.city}</p>
                     <p>{constantsStrings.startTime_string}: {formatedStartime}</p>
                     <p>{constantsStrings.endTime_string}: {formatedEndTime}</p>
+                    <p>{constantsStrings.managerComment_string}: {this.state.shift.managerComment}</p>
 
                 </div>
                 <div style={styles.buttonsStyle}>

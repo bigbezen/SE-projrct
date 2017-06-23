@@ -89,7 +89,8 @@ var ShiftsCreationContainer = React.createClass({
             shifts: null,
             startDate: currentDate,
             endDate:currentDate,
-            shiftsToDelete: []
+            shiftsToDelete: [],
+            showLoader: false
         }
     },
 
@@ -112,7 +113,9 @@ var ShiftsCreationContainer = React.createClass({
         localStorage.setItem('shiftEndDate', endDate);
         var self = this;
         var notificationSystem = this.refs.notificationSystem;
-
+        self.setState({
+            showLoader: true
+        });
         managementServices.getShiftsOfRange(startDate,endDate).then(function (result) {
             result = result.filter((shift) => shift.status == "CREATED");
             let areas = new Set(result.map((shift) => shift.storeId.area));
@@ -127,7 +130,8 @@ var ShiftsCreationContainer = React.createClass({
                 shifts: areaToShifts,
                 startDate: startDate,
                 endDate: endDate,
-                shiftsToDelete: []
+                shiftsToDelete: [],
+                showLoader: false
             });
         }).catch(function (errMess) {
             notificationSystem.clearNotifications();
@@ -136,6 +140,9 @@ var ShiftsCreationContainer = React.createClass({
                 level: 'error',
                 autoDismiss: 0,
                 position: 'tc'
+            });
+            self.setState({
+                showLoader: false
             });
         })
     },
@@ -482,10 +489,26 @@ var ShiftsCreationContainer = React.createClass({
                     </div>
 
                 </div>
+                {this.loader()}
                 {Object.keys(this.state.shifts).map(this.renderAreaTable)}
                 <NotificationSystem style={styles.notificationStyle} ref="notificationSystem"/>
             </div>
         )
+    },
+
+    loader: function() {
+        if(this.state.showLoader) {
+            return (
+                <div className="text-center">
+                    <h1>...Loading</h1>
+                </div>
+            );
+        }
+        else {
+            return (
+                <span></span>
+            )
+        }
     },
 
     renderLoading:function () {

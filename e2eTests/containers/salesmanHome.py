@@ -9,3 +9,6 @@ expensesKm = "//*[@id=\"app\"]/div/div[3]/div[2]/input[1]"
 expensesParking = "//*[@id=\"app\"]/div/div[3]/div[2]/input[2]"
 editExpenses = "//*[@id=\"app\"]/div/div[3]/div[2]/p[5]/svg"
 
+setShiftsBtn = "//*[@id=\"app\"]/div/div[3]/div[1]/div/button"
+setShiftCheckbox = "//*[@id=\"app\"]/div/div[3]/div[2]/div[1]/div[1]/input"
+sendShiftsBtn = "//*[@id=\"app\"]/div/div[3]/div[1]/button"

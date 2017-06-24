@@ -21,7 +21,7 @@ storesContainer = 'http://localhost:3000/#/manager/stores'
 usersContainer = 'http://localhost:3000/#/manager/users'
 shiftsContainer = 'http://localhost:3000/#/manager/shifts'
 createShiftContainer = 'http://localhost:3000/#/manager/shiftsCreation'
-createMultipleShifts = 'http://localhost:3000/#/manager/createMultipleShifts'
+publishShiftsContainer = 'http://localhost:3000/#/manager/createMultipleShifts'
 reportsContainer = 'http://localhost:3000/#/manager/reports'
 incentivesContainer = 'http://localhost:3000/#/manager/incentives'
 salesReportContainer = "http://localhost:3000/#/manager/salesReport"
@@ -40,6 +40,7 @@ salesman_sale = "http://localhost:3000/#/salesman/shift/sale"
 salesman_endShift = "http://localhost:3000/#/salesman/endShift"
 salesman_profile = "http://localhost:3000/#/salesman/home/profile"
 salesman_shiftSchedule = "http://localhost:3000/#/salesman/home/shiftSchedule"
+salesman_setShifts = "http://localhost:3000/#/salesman/home/assignShifts"
 salesman_expenses = "http://localhost:3000/#/salesman/home/shiftsExpenses"
 
 # login

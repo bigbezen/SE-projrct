@@ -239,7 +239,7 @@ class ManagementServices(unittest.TestCase):
     # test-21
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addStore_badName(self):
-        # todo: check if relevant
+        # requierments has been changed by the user
         return
 
     # test-22
@@ -263,7 +263,7 @@ class ManagementServices(unittest.TestCase):
     # test-23
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_editStore_badName(self):
-        # todo: check if relevant
+        # requierments has been changed by the user
         return
 
     # test-24
@@ -393,7 +393,70 @@ class ManagementServices(unittest.TestCase):
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_addShift_ok(self):
         self.createShift()
-      #  self.publishShift()
+
+    # test-71
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_addShift_badTime(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.managerHome.CreateShiftTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.createShiftContainer)
+        driver.find_element_by_xpath(containers.shifts.add).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.shifts.store).send_keys(helper.shiftStore)
+        driver.find_element_by_xpath(containers.shifts.username).send_keys(helper.shiftUser)
+        driver.find_element_by_xpath(containers.shifts.type).send_keys(helper.shiftType)
+        driver.find_element_by_xpath(containers.shifts.startTime).send_keys(helper.shiftEndTime)
+        driver.find_element_by_xpath(containers.shifts.endTime).send_keys(helper.shiftStartTime)
+
+        driver.find_element_by_xpath(containers.shifts.addBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertNotEqual(driver.current_url, helper.createShiftContainer)
+        return
+
+    # test-68
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_addMultipleShifts_ok(self):
+        self.createMultipleShifts()
+
+    # test-72
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_addMultipleShifts_badTime(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.managerHome.CreateShiftTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.createShiftContainer)
+        driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[4]/div[1]/div[1]/div/input").click()
+        driver.find_element_by_xpath(containers.shifts.addMultiple).click()
+        sleep(2)
+
+        driver.find_element_by_xpath(containers.shifts.startTimeMultiple).send_keys(helper.shiftEndTime)
+        driver.find_element_by_xpath(containers.shifts.endTimeMultiple).send_keys(helper.shiftStartTime)
+
+        driver.find_element_by_xpath(containers.shifts.addMultipleBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertNotEqual(driver.current_url, helper.createShiftContainer)
+
+    # test-69
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_publishMultipleShifts_ok(self):
+        self.createMultipleShifts()
+        self.publishShift()
+
+    # test-67
+    @pytest.mark.timeout(MAX_RUNNING_TIME)
+    def test_publishShift_ok(self):
+        self.createShift()
+        self.publishShift()
 
     # test-31
     @pytest.mark.timeout(MAX_RUNNING_TIME)
@@ -549,7 +612,7 @@ class ManagementServices(unittest.TestCase):
 
         self.assertEqual(driver.current_url, helper.incentivesContainer)
 
-    #test-39
+    # test-39
     @pytest.mark.timeout(MAX_RUNNING_TIME)
     def test_setup_ok(self):
         self.assertTrue(True)
@@ -596,11 +659,32 @@ class ManagementServices(unittest.TestCase):
         self.assertEqual(driver.current_url, helper.createShiftContainer)
         return
 
+    def createMultipleShifts(self):
+        driver = self.driver
+        driver.find_element_by_xpath(containers.managerHome.ShiftsTab).click()
+        driver.implicitly_wait(300)
+
+        driver.find_element_by_xpath(containers.managerHome.CreateShiftTab).click()
+        driver.implicitly_wait(300)
+        self.assertEqual(driver.current_url, helper.createShiftContainer)
+        driver.find_element_by_xpath("//*[@id=\"app\"]/div/div[4]/div[1]/div[1]/div/input").click()
+        driver.find_element_by_xpath(containers.shifts.addMultiple).click()
+        sleep(2)
+
+        driver.find_element_by_xpath(containers.shifts.startTimeMultiple).send_keys(helper.shiftStartTime)
+        driver.find_element_by_xpath(containers.shifts.endTimeMultiple).send_keys(helper.shiftEndTime)
+
+        driver.find_element_by_xpath(containers.shifts.addMultipleBtn).click()
+        driver.implicitly_wait(300)
+        sleep(3)
+        self.assertEqual(driver.current_url, helper.createShiftContainer)
+        return
+
     def publishShift(self):
         driver = self.driver
         driver.find_element_by_xpath(containers.shifts.publish).click()
         sleep(3)
-        self.assertEqual(driver.current_url, helper.createMultipleShifts)
+        self.assertEqual(driver.current_url, helper.publishShiftsContainer)
         driver.find_element_by_xpath(containers.shifts.publishBtn).click()
         sleep(3)
         self.assertEqual(driver.current_url, helper.createShiftContainer)

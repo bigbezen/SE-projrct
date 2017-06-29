@@ -79,6 +79,10 @@ var ShiftsCreateMultipleShifts = React.createClass({
         localStorage.setItem('shiftStartDate', startDate);
         localStorage.setItem('shiftEndDate', endDate);
         this.setState({
+            startDate: startDate,
+            endDate: endDate
+        });
+        this.setState({
             showLoader: true
         });
         managementServices.getShiftsOfRange(startDate, endDate)
@@ -99,8 +103,6 @@ var ShiftsCreateMultipleShifts = React.createClass({
                             newShifts: shifts,
                             salesmen: salesmen,
                             shiftsFilter: shiftsFilter,
-                            startDate: startDate,
-                            endDate: endDate,
                             showLoader: false
                         })
                     })
@@ -184,7 +186,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     getSalesmanOptions: function(shift, availableSalesmen, nonAvailableSalesmen){
         let salesmanId = "";
-
+        let salesmen = Object.keys(availableSalesmen).map((id) => availableSalesmen[id]);
         var optionsForDropdown = [];
         let isDefaultSelected = true;
         if(shift.salesmanId == undefined){
@@ -196,9 +198,9 @@ var ShiftsCreateMultipleShifts = React.createClass({
         }
         else{
             salesmanId = shift.salesmanId;
-            if(nonAvailableSalesmen[salesmanId] == undefined) {
+            if(nonAvailableSalesmen[salesmanId] == undefined && availableSalesmen[salesmanId] == undefined) {
                 let salesman = this.state.salesmen.filter((curr) => curr._id == salesmanId)[0];
-                availableSalesmen[salesmanId] = salesman;
+                salesmen.push(salesman);
                 isDefaultSelected = false;
             }
         }
@@ -208,8 +210,7 @@ var ShiftsCreateMultipleShifts = React.createClass({
             optionsForDropdown.push(<option>{constantsStrings.dropDownChooseString}</option>);
 
 
-        let salesmen = Object.keys(availableSalesmen).map((id) => availableSalesmen[id])
-            .sort(sorting.salesmenSortingMethod);
+        salesmen = salesmen.sort(sorting.salesmenSortingMethod);
         for(var salesman of salesmen){
             if(salesman._id == salesmanId){
                 optionsForDropdown.push(<option selected>{salesman.personal.firstName + ' ' + salesman.personal.lastName}
@@ -419,14 +420,14 @@ var ShiftsCreateMultipleShifts = React.createClass({
 
     changeStartDate: function (date) {
         var startDateValue = moment(date).toDate();
-        var endDateValue = this.refs.endDateBox.toMoment().toDate();
-        if(startDateValue.getTime() < endDateValue.getTime())
+        var endDateValue = new Date(this.state.endDate);
+        if(startDateValue.getTime() <= endDateValue.getTime())
             this.updateShifts(startDateValue,endDateValue);
     },
     changeEndDate: function (date) {
-        var startDateValue = this.refs.startDateBox.toMoment().toDate();
+        var startDateValue = new Date(this.state.startDate);
         var endDateValue = moment(date).toDate();
-        if(startDateValue.getTime() < endDateValue.getTime())
+        if(startDateValue.getTime() <= endDateValue.getTime())
             this.updateShifts(startDateValue,endDateValue);
     },
 

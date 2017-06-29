@@ -820,9 +820,9 @@ let updateSalesReport = async function(sessionId, shiftId, productId, newSold, n
         }
     }
 
-    let newEncouragements = await encouragementServices.calculateEncouragements(shift.salesReport);
+    let copySalesReport = _copySalesReport(shift.salesReport);
+    let newEncouragements = await encouragementServices.calculateEncouragements(copySalesReport);
     let res = await dal.editSalesReport(shift._id, shift.salesReport, newEncouragements);
-
     if(res.ok == 0)
         return {'shift': shift, 'code':400, 'err': constantString.shiftCannotBeEdited};
 
@@ -875,6 +875,20 @@ let deleteCreatedShifts = async function(sessionId, idsArr) {
     }
 
 
+};
+
+let _copySalesReport = function(salesReport){
+    let newSalesReport = [];
+    for(let i in salesReport){
+        newSalesReport.push({
+            'productId': salesReport[i].productId,
+            'stockStartShift': salesReport[i].stockStartShift,
+            'stockEndShift': salesReport[i].stockEndShift,
+            'sold': salesReport[i].sold,
+            'opened': salesReport[i].opened
+        })
+    }
+    return newSalesReport;
 };
 
 let _createNewSalesReport = async function(){
@@ -935,7 +949,7 @@ let _endShift = async function(shiftId){
 
     shiftDb.encouragements = encouragements;
 
-    let salesman = await dal.getUserById(shiftDb.salesmanId);
+    let salesman = await dal.getUserByobjectId(shiftDb.salesmanId);
 
     let result = await dal.updateShift(shiftDb);
     if(result.ok != 1)
